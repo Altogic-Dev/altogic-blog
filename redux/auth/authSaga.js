@@ -1,5 +1,5 @@
 import { call, takeEvery, put, fork, take } from "redux-saga/effects";
-import { authActions, authResultActions, setAuthState } from "./authSlice";
+import { authActions, authResultActions, setAuthState} from "./authSlice";
 
 function* fetchDataSaga({payload}) {
   try {
