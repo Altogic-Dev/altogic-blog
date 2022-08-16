@@ -1,39 +1,39 @@
-import { useState, Fragment } from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import { useState, Fragment } from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import { Listbox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 
 const options = [
-  { id: 1, tag: "Draft" },
-  { id: 2, tag: "Stats" },
-  { id: 3, tag: "Settings" },
+  { id: 1, tag: 'Draft' },
+  { id: 2, tag: 'Stats' },
+  { id: 3, tag: 'Settings' },
 ];
 
 const newsletters = [
   {
     id: 0,
-    href: "#",
-    title: "Tincidunt rhoncus, sit dolor mollis feugiat.",
+    href: '#',
+    title: 'Tincidunt rhoncus, sit dolor mollis feugiat.',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    date: "July 29",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    date: 'July 29',
   },
   {
     id: 1,
-    href: "#",
-    title: "Tincidunt rhoncus, sit dolor mollis feugiat.",
+    href: '#',
+    title: 'Tincidunt rhoncus, sit dolor mollis feugiat.',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    date: "July 15",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    date: 'July 15',
   },
   {
     id: 2,
-    href: "#",
-    title: "Tincidunt rhoncus, sit dolor mollis feugiat.",
+    href: '#',
+    title: 'Tincidunt rhoncus, sit dolor mollis feugiat.',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    date: "July 19",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    date: 'July 19',
   },
 ];
 
@@ -109,8 +109,8 @@ export default function PublicationsNewsletter() {
                           className={({ active }) =>
                             `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
                               active
-                                ? "bg-slate-50 text-slate-700"
-                                : "text-slate-700"
+                                ? 'bg-slate-50 text-slate-700'
+                                : 'text-slate-700'
                             }`
                           }
                           value={option}

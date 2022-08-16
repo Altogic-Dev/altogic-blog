@@ -1,55 +1,55 @@
-import Head from "next/head";
-import Layout from "../components/Layout";
+import Head from 'next/head';
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
-} from "@heroicons/react/solid";
+} from '@heroicons/react/solid';
+import Layout from '../layouts/Layout';
 
 const statistics = [
   {
     title:
-      "Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...",
+      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    send: "431",
-    opened: "33",
-    clicked: "33",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    send: '431',
+    opened: '33',
+    clicked: '33',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    send: "431",
-    opened: "33",
-    clicked: "33",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    send: '431',
+    opened: '33',
+    clicked: '33',
   },
   {
     title:
-      "Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...",
+      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    send: "431",
-    opened: "33",
-    clicked: "33",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    send: '431',
+    opened: '33',
+    clicked: '33',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    send: "431",
-    opened: "33",
-    clicked: "33",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    send: '431',
+    opened: '33',
+    clicked: '33',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    send: "431",
-    opened: "33",
-    clicked: "33",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    send: '431',
+    opened: '33',
+    clicked: '33',
   },
 ];
 

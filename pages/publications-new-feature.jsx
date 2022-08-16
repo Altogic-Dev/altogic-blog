@@ -1,6 +1,6 @@
-import Head from "next/head";
-import Layout from "../components/Layout";
-import Sections from "../components/Sections";
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import Sections from '../components/Sections';
 
 export default function PublicationsNewFeature() {
   return (

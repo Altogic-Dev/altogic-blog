@@ -1,71 +1,71 @@
-import React from "react";
-import Head from "next/head";
-import { Tab } from "@headlessui/react";
-import Layout from "../components/Layout";
-import dynamic from "next/dynamic";
-const ReadingBarChart = dynamic(import("../components/ReadingBarChart"), {
+import React from 'react';
+import Head from 'next/head';
+import { Tab } from '@headlessui/react';
+import Layout from '../layouts/Layout';
+import dynamic from 'next/dynamic';
+const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,
 });
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 const statistics = [
   {
     title:
-      "Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...",
+      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...",
+      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
 ];
 
@@ -90,10 +90,10 @@ export default function PublicationsStats() {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                    'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                     selected
-                      ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                      : "text-slate-500"
+                      ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                      : 'text-slate-500'
                   )
                 }
               >
@@ -102,10 +102,10 @@ export default function PublicationsStats() {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                    'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                     selected
-                      ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                      : "text-slate-500"
+                      ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                      : 'text-slate-500'
                   )
                 }
               >
@@ -118,7 +118,7 @@ export default function PublicationsStats() {
                   <div className="max-w-[344px] w-full space-y-2">
                     <p className="text-3xl font-semibold tracking-md">3,453</p>
                     <h2 className="text-slate-700 text-xl tracking-md">
-                      Minutes read{" "}
+                      Minutes read{' '}
                       <span className="font-semibold">12 Months</span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">

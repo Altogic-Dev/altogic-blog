@@ -1,20 +1,20 @@
-import React, { Fragment, useState } from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import { Listbox, Transition, Switch } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/solid";
-import { ChevronDownIcon } from "@heroicons/react/outline";
+import React, { Fragment, useState } from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import { Listbox, Transition, Switch } from '@headlessui/react';
+import { CheckIcon } from '@heroicons/react/solid';
+import { ChevronDownIcon } from '@heroicons/react/outline';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 const tabTypes = [
-  { name: "Many Stories (Features page)" },
-  { name: "Many Stories (Using tags)" },
-  { name: "Single Story" },
-  { name: "All Archived Stories" },
-  { name: "About The Publication" },
+  { name: 'Many Stories (Features page)' },
+  { name: 'Many Stories (Using tags)' },
+  { name: 'Single Story' },
+  { name: 'All Archived Stories' },
+  { name: 'About The Publication' },
 ];
 
 export default function PublicationsNavigation() {
@@ -130,9 +130,9 @@ export default function PublicationsNavigation() {
                             className={({ active }) =>
                               classNames(
                                 active
-                                  ? "text-white bg-gray-50"
-                                  : "text-gray-900",
-                                "cursor-default select-none relative py-2 pl-3.5 pr-9"
+                                  ? 'text-white bg-gray-50'
+                                  : 'text-gray-900',
+                                'cursor-default select-none relative py-2 pl-3.5 pr-9'
                               )
                             }
                             value={tabType}
@@ -141,8 +141,8 @@ export default function PublicationsNavigation() {
                               <>
                                 <span
                                   className={classNames(
-                                    selected ? "font-semibold" : "font-normal",
-                                    "block truncate text-slate-800"
+                                    selected ? 'font-semibold' : 'font-normal',
+                                    'block truncate text-slate-800'
                                   )}
                                 >
                                   {tabType.name}
@@ -272,9 +272,9 @@ export default function PublicationsNavigation() {
                             className={({ active }) =>
                               classNames(
                                 active
-                                  ? "text-white bg-gray-50"
-                                  : "text-gray-900",
-                                "cursor-default select-none relative py-2 pl-3.5 pr-9"
+                                  ? 'text-white bg-gray-50'
+                                  : 'text-gray-900',
+                                'cursor-default select-none relative py-2 pl-3.5 pr-9'
                               )
                             }
                             value={tabType}
@@ -283,8 +283,8 @@ export default function PublicationsNavigation() {
                               <>
                                 <span
                                   className={classNames(
-                                    selected ? "font-semibold" : "font-normal",
-                                    "block truncate text-slate-800"
+                                    selected ? 'font-semibold' : 'font-normal',
+                                    'block truncate text-slate-800'
                                   )}
                                 >
                                   {tabType.name}
@@ -373,15 +373,15 @@ export default function PublicationsNavigation() {
                       checked={enabled}
                       onChange={setEnabled}
                       className={classNames(
-                        enabled ? "bg-purple-600" : "bg-gray-200",
-                        "relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        enabled ? 'bg-purple-600' : 'bg-gray-200',
+                        'relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
                       )}
                     >
                       <span
                         aria-hidden="true"
                         className={classNames(
-                          enabled ? "translate-x-5" : "translate-x-0",
-                          "pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                          enabled ? 'translate-x-5' : 'translate-x-0',
+                          'pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                         )}
                       />
                     </Switch>

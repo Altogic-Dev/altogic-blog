@@ -1,89 +1,89 @@
-import React, { Fragment, useState } from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import { Listbox, Transition } from "@headlessui/react";
+import React, { Fragment, useState } from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import { Listbox, Transition } from '@headlessui/react';
 import {
   CheckIcon,
   ChevronDownIcon,
   XIcon,
   PlusIcon,
-} from "@heroicons/react/solid";
+} from '@heroicons/react/solid';
 
 const peoples = [
   {
     id: 1,
-    name: "Wade Cooper",
-    userName: "@olivirhye",
+    name: 'Wade Cooper',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 2,
-    name: "Arlene Mccoy",
-    userName: "@olivirhye",
+    name: 'Arlene Mccoy',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 3,
-    name: "Devon Webb",
-    userName: "@olivirhye",
+    name: 'Devon Webb',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80',
   },
   {
     id: 4,
-    name: "Tom Cook",
-    userName: "@olivirhye",
+    name: 'Tom Cook',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 5,
-    name: "Tanya Fox",
-    userName: "@olivirhye",
+    name: 'Tanya Fox',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 6,
-    name: "Hellen Schmidt",
-    userName: "@olivirhye",
+    name: 'Hellen Schmidt',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 7,
-    name: "Caroline Schultz",
-    userName: "@olivirhye",
+    name: 'Caroline Schultz',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1568409938619-12e139227838?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1568409938619-12e139227838?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 8,
-    name: "Mason Heaney",
-    userName: "@olivirhye",
+    name: 'Mason Heaney',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 9,
-    name: "Claudie Smitham",
-    userName: "@olivirhye",
+    name: 'Claudie Smitham',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1584486520270-19eca1efcce5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1584486520270-19eca1efcce5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
   {
     id: 10,
-    name: "Emil Schaefer",
-    userName: "@olivirhye",
+    name: 'Emil Schaefer',
+    userName: '@olivirhye',
     avatar:
-      "https://images.unsplash.com/photo-1561505457-3bcad021f8ee?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
+      'https://images.unsplash.com/photo-1561505457-3bcad021f8ee?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function PublishSettings() {
@@ -144,7 +144,7 @@ export default function PublishSettings() {
                     Porttitor fames arcu quis fusce augue enim. Quis at habitant
                     diam at. Suscipit tristique risus, at donec. In turpis vel
                     et quam imperdiet. Ipsum molestie aliquet sodales id est ac
-                    volutpat.{" "}
+                    volutpat.{' '}
                   </p>
                   <figure>
                     <img
@@ -300,7 +300,7 @@ export default function PublishSettings() {
                               className="flex-shrink-0 h-6 w-6 rounded-full"
                             />
                             <span className="ml-2 block truncate">
-                              {selected.name}{" "}
+                              {selected.name}{' '}
                               <span className="text-slate-500">
                                 {selected.userName}
                               </span>
@@ -328,9 +328,9 @@ export default function PublishSettings() {
                                 className={({ active }) =>
                                   classNames(
                                     active
-                                      ? "text-white bg-gray-50"
-                                      : "text-gray-900",
-                                    "cursor-default select-none relative py-2 pl-3.5 pr-9"
+                                      ? 'text-white bg-gray-50'
+                                      : 'text-gray-900',
+                                    'cursor-default select-none relative py-2 pl-3.5 pr-9'
                                   )
                                 }
                                 value={people}
@@ -346,12 +346,12 @@ export default function PublishSettings() {
                                       <span
                                         className={classNames(
                                           selected
-                                            ? "font-semibold"
-                                            : "font-normal",
-                                          "ml-2 block truncate text-slate-800"
+                                            ? 'font-semibold'
+                                            : 'font-normal',
+                                          'ml-2 block truncate text-slate-800'
                                         )}
                                       >
-                                        {people.name}{" "}
+                                        {people.name}{' '}
                                         <span className="text-slate-500">
                                           {people.userName}
                                         </span>
