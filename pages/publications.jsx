@@ -1,21 +1,21 @@
-import React from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import PublicationPostCard from "../components/PublicationsPostCard";
-import Sidebar from "../components/Sidebar";
+import React from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import PublicationPostCard from '../components/PublicationsPostCard';
+import Sidebar from '../layouts/SideBar';
 
 const posts = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -23,14 +23,14 @@ const posts = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -38,14 +38,14 @@ const posts = [
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -53,14 +53,14 @@ const posts = [
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -68,14 +68,14 @@ const posts = [
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -83,14 +83,14 @@ const posts = [
   {
     id: 5,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -98,14 +98,14 @@ const posts = [
   {
     id: 6,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -113,14 +113,14 @@ const posts = [
   {
     id: 7,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -128,14 +128,14 @@ const posts = [
   {
     id: 8,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: true,
     firstPadding: true,
     bigImage: true,
@@ -146,14 +146,14 @@ const latests = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: false,
     firstPadding: false,
     bigImage: false,
@@ -161,14 +161,14 @@ const latests = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: false,
     firstPadding: false,
     bigImage: false,
@@ -176,14 +176,14 @@ const latests = [
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
-    title: "Fermentum massa tincidunt placerat.",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
+    title: 'Fermentum massa tincidunt placerat.',
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    readMoreUrl: "#",
-    personName: "Olivia Rhye",
-    date: "June 29",
-    storiesCount: "2",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, euaugue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    readMoreUrl: '#',
+    personName: 'Olivia Rhye',
+    date: 'June 29',
+    storiesCount: '2',
     bookmark: false,
     firstPadding: false,
     bigImage: false,

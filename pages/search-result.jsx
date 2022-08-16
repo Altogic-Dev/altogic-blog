@@ -1,128 +1,128 @@
-import React from "react";
-import Head from "next/head";
-import { Tab } from "@headlessui/react";
-import Layout from "../components/Layout";
-import Sidebar from "../components/Sidebar";
-import PostCard from "../components/PostCard";
+import React from 'react';
+import Head from 'next/head';
+import { Tab } from '@headlessui/react';
+import Layout from '../layouts/Layout';
+import Sidebar from '../layouts/SideBar';
+import PostCard from '../components/PostCard';
 
 const posts = [
   {
     id: 0,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 1,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Money",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Money',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 2,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "App",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'App',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 3,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Art",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Art',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 4,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Mindfulness",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Mindfulness',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 5,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
@@ -132,42 +132,42 @@ const peoples = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
 ];
 
@@ -175,130 +175,130 @@ const publications = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
 ];
 
 const topics = [
   {
     id: 0,
-    name: "Technology",
-    href: "#",
+    name: 'Technology',
+    href: '#',
   },
   {
     id: 1,
-    name: "Money",
-    href: "#",
+    name: 'Money',
+    href: '#',
   },
   {
     id: 2,
-    name: "App",
-    href: "#",
+    name: 'App',
+    href: '#',
   },
   {
     id: 3,
-    name: "Mindfulness",
-    href: "#",
+    name: 'Mindfulness',
+    href: '#',
   },
   {
     id: 4,
-    name: "Art",
-    href: "#",
+    name: 'Art',
+    href: '#',
   },
   {
     id: 5,
-    name: "Yoga",
-    href: "#",
+    name: 'Yoga',
+    href: '#',
   },
   {
     id: 6,
-    name: "Caravan Camping",
-    href: "#",
+    name: 'Caravan Camping',
+    href: '#',
   },
   {
     id: 7,
-    name: "Technology",
-    href: "#",
+    name: 'Technology',
+    href: '#',
   },
   {
     id: 8,
-    name: "Money",
-    href: "#",
+    name: 'Money',
+    href: '#',
   },
   {
     id: 9,
-    name: "App",
-    href: "#",
+    name: 'App',
+    href: '#',
   },
   {
     id: 10,
-    name: "Mindfulness",
-    href: "#",
+    name: 'Mindfulness',
+    href: '#',
   },
   {
     id: 11,
-    name: "Art",
-    href: "#",
+    name: 'Art',
+    href: '#',
   },
   {
     id: 12,
-    name: "Yoga",
-    href: "#",
+    name: 'Yoga',
+    href: '#',
   },
   {
     id: 13,
-    name: "Caravan Camping",
-    href: "#",
+    name: 'Caravan Camping',
+    href: '#',
   },
   {
     id: 14,
-    name: "Yoga",
-    href: "#",
+    name: 'Yoga',
+    href: '#',
   },
   {
     id: 15,
-    name: "Caravan Camping",
-    href: "#",
+    name: 'Caravan Camping',
+    href: '#',
   },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function SearchResult() {
@@ -325,10 +325,10 @@ export default function SearchResult() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
@@ -337,10 +337,10 @@ export default function SearchResult() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
@@ -349,10 +349,10 @@ export default function SearchResult() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
@@ -361,10 +361,10 @@ export default function SearchResult() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
@@ -376,8 +376,8 @@ export default function SearchResult() {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}

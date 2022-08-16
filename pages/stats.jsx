@@ -1,50 +1,50 @@
-import React from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import StatsCard from "../components/StatsCard";
+import React from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import StatsCard from '../components/StatsCard';
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
-} from "@heroicons/react/solid";
-import dynamic from "next/dynamic";
-const ReadingBarChart = dynamic(import("../components/ReadingBarChart"), {
+} from '@heroicons/react/solid';
+import dynamic from 'next/dynamic';
+const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,
 });
 
 const statCards = [
   {
-    title: "Total Blogs",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Total Blogs',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
   {
-    title: "Total Blogs",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Total Blogs',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 0,
   },
   {
-    title: "Total Blogs",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Total Blogs',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
   {
-    title: "Total Blogs",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Total Blogs',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 0,
   },
   {
-    title: "Total Blogs",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Total Blogs',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
 ];
@@ -52,58 +52,58 @@ const statCards = [
 const statistics = [
   {
     title:
-      "Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...",
+      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...",
+      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
     description:
-      "In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
   {
     title:
-      "Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.",
+      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
     description:
-      "Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.",
-    views: "431",
-    reads: "33",
-    readRatio: "33",
-    fans: "33",
-    href: "#",
+      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
+    views: '431',
+    reads: '33',
+    readRatio: '33',
+    fans: '33',
+    href: '#',
   },
 ];
 

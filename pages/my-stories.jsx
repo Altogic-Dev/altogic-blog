@@ -1,128 +1,128 @@
-import React, { Fragment, useState } from "react";
-import Head from "next/head";
-import { Tab, Menu, Transition } from "@headlessui/react";
-import Layout from "../components/Layout";
-import Sidebar from "../components/Sidebar";
-import PostCard from "../components/PostCard";
+import React, { Fragment, useState } from 'react';
+import Head from 'next/head';
+import { Tab, Menu, Transition } from '@headlessui/react';
+import Layout from '../layouts/Layout';
+import Sidebar from '../layouts/SideBar';
+import PostCard from '../components/PostCard';
 
 const posts = [
   {
     id: 0,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 1,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Money",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Money',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 2,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "App",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'App',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 3,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Art",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Art',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 4,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Mindfulness",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Mindfulness',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 5,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
@@ -131,134 +131,134 @@ const posts = [
 const drafts = [
   {
     id: 0,
-    href: "#",
+    href: '#',
     draft: true,
-    title: "Fermentum massa tincidunt placerat.",
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 1,
-    href: "#",
+    href: '#',
     draft: true,
-    title: "Fermentum massa tincidunt placerat.",
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Money",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Money',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 2,
-    href: "#",
+    href: '#',
     draft: true,
-    title: "Fermentum massa tincidunt placerat.",
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "App",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'App',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 3,
-    href: "#",
+    href: '#',
     draft: true,
-    title: "Fermentum massa tincidunt placerat.",
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Art",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Art',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 4,
-    href: "#",
+    href: '#',
     draft: true,
-    title: "Fermentum massa tincidunt placerat.",
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Mindfulness",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Mindfulness',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 5,
-    href: "#",
+    href: '#',
     draft: true,
-    title: "Fermentum massa tincidunt placerat.",
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function MyStories() {
@@ -463,18 +463,18 @@ export default function MyStories() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
                     Published
                     <span
                       className={classNames(
-                        "inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full",
-                        selectedIndex == 0 ? "bg-purple-50 text-purple-900" : ""
+                        'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
+                        selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
                       )}
                     >
                       45
@@ -483,18 +483,18 @@ export default function MyStories() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
                     Drafts
                     <span
                       className={classNames(
-                        "inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full",
-                        selectedIndex == 0 ? "" : "bg-purple-50 text-purple-900"
+                        'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
+                        selectedIndex == 0 ? '' : 'bg-purple-50 text-purple-900'
                       )}
                     >
                       2
@@ -506,8 +506,8 @@ export default function MyStories() {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}
@@ -527,8 +527,8 @@ export default function MyStories() {
                     {drafts.map((draft) => (
                       <PostCard
                         key={draft.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={draft.author.href}
                         authorName={draft.author.name}
                         authorImage={draft.author.image}

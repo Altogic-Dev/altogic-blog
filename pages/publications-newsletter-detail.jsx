@@ -1,72 +1,72 @@
-import React, { Fragment, useState } from "react";
-import Head from "next/head";
-import { Menu, Transition, Switch } from "@headlessui/react";
-import Layout from "../components/Layout";
-import Sidebar from "../components/Sidebar";
-import PostCard from "../components/PostCard";
+import React, { Fragment, useState } from 'react';
+import Head from 'next/head';
+import { Menu, Transition, Switch } from '@headlessui/react';
+import Layout from '../layouts/Layout';
+import Sidebar from '../layouts/SideBar';
+import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 const posts = [
   {
     id: 0,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 1,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Money",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Money',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
   {
     id: 2,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "App",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'App',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
@@ -90,15 +90,15 @@ export default function PublicationsNewsletterDetail() {
               <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200">
                 <img className="w-10 h-10" src="./hi-avatar.svg" alt="" />
                 <span className="text-slate-500 text-sm tracking-sm">
-                  Published in{" "}
+                  Published in{' '}
                   <span className="text-slate-700 font-semibold">HiThemes</span>
                 </span>
               </div>
               <div className="bg-purple-50 text-slate-600 px-8 py-4 mb-16 rounded-lg tracking-sm">
-                This is an email from{" "}
+                This is an email from{' '}
                 <span className="font-semibold">
                   HiThemes Biweekly Newsletter,
-                </span>{" "}
+                </span>{' '}
                 a newsletter by HiThemes.
               </div>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
@@ -402,7 +402,7 @@ export default function PublicationsNewsletterDetail() {
                     Porttitor fames arcu quis fusce augue enim. Quis at habitant
                     diam at. Suscipit tristique risus, at donec. In turpis vel
                     et quam imperdiet. Ipsum molestie aliquet sodales id est ac
-                    volutpat.{" "}
+                    volutpat.{' '}
                   </p>
                   <figure>
                     <img
@@ -804,7 +804,7 @@ export default function PublicationsNewsletterDetail() {
                   <div className="flex items-center justify-between gap-2 mb-10">
                     <div>
                       <p className="text-slate-600 mb-1 text-xl tracking-md">
-                        More from{" "}
+                        More from{' '}
                         <span className="text-slate-700 font-semibold">
                           Olivia Rhye
                         </span>
@@ -812,7 +812,7 @@ export default function PublicationsNewsletterDetail() {
                       <p className="max-w-xl text-slate-600 text-xs tracking-sm">
                         Faucibus consequat, massa risus, dignissim interdum
                         feugiat sollicitudin tortor. Volutpat, elementum diam id
-                        nunc pellentesque suspendisse sagittis.{" "}
+                        nunc pellentesque suspendisse sagittis.{' '}
                       </p>
                     </div>
                     <button
@@ -924,8 +924,8 @@ export default function PublicationsNewsletterDetail() {
                           htmlFor="list-name"
                           className="block text-slate-700 text-sm font-medium tracking-sm mb-1.5"
                         >
-                          {" "}
-                          List name{" "}
+                          {' '}
+                          List name{' '}
                         </label>
                         <div className="mt-1">
                           <input
@@ -942,15 +942,15 @@ export default function PublicationsNewsletterDetail() {
                           checked={enabled}
                           onChange={setEnabled}
                           className={classNames(
-                            enabled ? "bg-purple-600" : "bg-gray-200",
-                            "relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                            enabled ? 'bg-purple-600' : 'bg-gray-200',
+                            'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
                           )}
                         >
                           <span
                             aria-hidden="true"
                             className={classNames(
-                              enabled ? "translate-x-4" : "translate-x-0",
-                              "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                              enabled ? 'translate-x-4' : 'translate-x-0',
+                              'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                             )}
                           />
                         </Switch>

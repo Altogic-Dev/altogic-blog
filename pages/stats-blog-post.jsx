@@ -1,67 +1,67 @@
-import React from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import StatsCard from "../components/StatsCard";
+import React from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
+import StatsCard from '../components/StatsCard';
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
-} from "@heroicons/react/solid";
-import dynamic from "next/dynamic";
-const ViewAreaChart = dynamic(import("../components/ViewAreaChart"), {
+} from '@heroicons/react/solid';
+import dynamic from 'next/dynamic';
+const ViewAreaChart = dynamic(import('../components/ViewAreaChart'), {
   ssr: false,
 });
 
-const MemberAreaChart = dynamic(import("../components/MemberAreaChart"), {
+const MemberAreaChart = dynamic(import('../components/MemberAreaChart'), {
   ssr: false,
 });
 
 const statCards = [
   {
-    title: "Views",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Views',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
   {
-    title: "Average Reading Time",
-    number: "123",
-    percentNumber: "2",
-    lastTime: "last 12 Months",
+    title: 'Average Reading Time',
+    number: '123',
+    percentNumber: '2',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
 ];
 
 const viewStatsCards = [
   {
-    title: "Lifetime Views",
-    number: "5",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Lifetime Views',
+    number: '5',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
   {
-    title: "Internal Views",
-    number: "5",
-    percentNumber: "2",
-    lastTime: "last 12 Months",
+    title: 'Internal Views',
+    number: '5',
+    percentNumber: '2',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
   {
-    title: "External Views",
-    number: "123",
-    percentNumber: "2",
-    lastTime: "last 12 Months",
+    title: 'External Views',
+    number: '123',
+    percentNumber: '2',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
 ];
 
 const memberStatsCards = [
   {
-    title: "Lifetime Member Reading Times",
-    number: "23455",
-    percentNumber: "60",
-    lastTime: "last 12 Months",
+    title: 'Lifetime Member Reading Times',
+    number: '23455',
+    percentNumber: '60',
+    lastTime: 'last 12 Months',
     upDown: 1,
   },
 ];

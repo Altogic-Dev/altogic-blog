@@ -1,47 +1,47 @@
-import React from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
+import React from 'react';
+import Head from 'next/head';
+import Layout from '../layouts/Layout';
 
 const editors = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
 ];
 
@@ -49,122 +49,122 @@ const writers = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 5,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 6,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 7,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 8,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 9,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 10,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 11,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 12,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 13,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 14,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
 ];
 

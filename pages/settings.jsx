@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import Head from 'next/head';
 import { RadioGroup } from '@headlessui/react';
-import Layout from '../components/Layout';
+import Layout from '../layouts/Layout';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

@@ -1,54 +1,54 @@
-import React from "react";
-import Head from "next/head";
-import { Tab } from "@headlessui/react";
-import Layout from "../components/Layout";
-import Sidebar from "../components/Sidebar";
+import React from 'react';
+import Head from 'next/head';
+import { Tab } from '@headlessui/react';
+import Layout from '../layouts/Layout';
+import Sidebar from '../layouts/SideBar';
 
 const allNotifications = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Omar Lipshutz",
-    desc: "Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.",
-    intermediateText: "clapped for",
-    time: "3 days ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Omar Lipshutz',
+    desc: 'Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.',
+    intermediateText: 'clapped for',
+    time: '3 days ago',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
 ];
 
@@ -56,52 +56,52 @@ const responses = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "responsed to",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'responsed to',
+    time: '1 hour ago',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Omar Lipshutz",
-    desc: "Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.",
-    intermediateText: "responsed to",
-    time: "3 days ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Omar Lipshutz',
+    desc: 'Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.',
+    intermediateText: 'responsed to',
+    time: '3 days ago',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "responsed to",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'responsed to',
+    time: '1 hour ago',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "responsed to",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'responsed to',
+    time: '1 hour ago',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "responsed to",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'responsed to',
+    time: '1 hour ago',
   },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function Notifications() {
@@ -127,10 +127,10 @@ export default function Notifications() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
@@ -139,10 +139,10 @@ export default function Notifications() {
                   <Tab
                     className={({ selected }) =>
                       classNames(
-                        "inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none",
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
                         selected
-                          ? "text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700"
-                          : "text-slate-500"
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
                       )
                     }
                   >
@@ -165,11 +165,11 @@ export default function Notifications() {
                           <span className="text-sm font-light tracking-sm text-slate-500">
                             <strong className="text-slate-600 font-semibold">
                               {allNotification.name}
-                            </strong>{" "}
-                            {allNotification.intermediateText}{" "}
+                            </strong>{' '}
+                            {allNotification.intermediateText}{' '}
                             <strong className="text-slate-600 font-semibold">
                               {allNotification.desc}
-                            </strong>{" "}
+                            </strong>{' '}
                             <span className="text-slate-400 text-xs">
                               {allNotification.time}
                             </span>
@@ -193,11 +193,11 @@ export default function Notifications() {
                           <span className="text-sm font-light tracking-sm text-slate-500">
                             <strong className="text-slate-600 font-semibold">
                               {response.name}
-                            </strong>{" "}
-                            {response.intermediateText}{" "}
+                            </strong>{' '}
+                            {response.intermediateText}{' '}
                             <strong className="text-slate-600 font-semibold">
                               {response.desc}
-                            </strong>{" "}
+                            </strong>{' '}
                             <span className="text-slate-400 text-xs">
                               {response.time}
                             </span>

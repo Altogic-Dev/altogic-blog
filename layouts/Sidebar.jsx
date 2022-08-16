@@ -1,87 +1,87 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
-import SidebarTitle from "./SidebarTitle";
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useState } from 'react';
+import SidebarTitle from '../components/SidebarTitle';
 
 const storiesFollows = [
   {
     id: 0,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
     badge: 3,
   },
   {
     id: 1,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
     badge: 5,
   },
   {
     id: 2,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
     badge: 7,
   },
   {
     id: 3,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 4,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 5,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 6,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 7,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 8,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 9,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
   {
     id: 10,
-    name: "Oliva Rhy",
+    name: 'Oliva Rhy',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    href: '#',
   },
 ];
 
@@ -89,80 +89,80 @@ const whoFollows = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Oliva Rhy",
-    desc: "Author, The Straight Dope, or What I learned from my first...",
-    href: "#",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Oliva Rhy',
+    desc: 'Author, The Straight Dope, or What I learned from my first...',
+    href: '#',
   },
 ];
 
 const topics = [
   {
     id: 0,
-    name: "Technology",
-    href: "#",
+    name: 'Technology',
+    href: '#',
   },
   {
     id: 1,
-    name: "Money",
-    href: "#",
+    name: 'Money',
+    href: '#',
   },
   {
     id: 2,
-    name: "App",
-    href: "#",
+    name: 'App',
+    href: '#',
   },
   {
     id: 3,
-    name: "Mindfulness",
-    href: "#",
+    name: 'Mindfulness',
+    href: '#',
   },
   {
     id: 4,
-    name: "Art",
-    href: "#",
+    name: 'Art',
+    href: '#',
   },
   {
     id: 5,
-    name: "Yoga",
-    href: "#",
+    name: 'Yoga',
+    href: '#',
   },
   {
     id: 6,
-    name: "Caravan Camping",
-    href: "#",
+    name: 'Caravan Camping',
+    href: '#',
   },
 ];
 
@@ -170,85 +170,85 @@ const stories = [
   {
     id: 0,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Omar Lipshutz",
-    desc: "Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.",
-    intermediateText: "clapped for",
-    time: "3 days ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Omar Lipshutz',
+    desc: 'Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.',
+    intermediateText: 'clapped for',
+    time: '3 days ago',
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
   {
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
-    desc: "Lorem Ipsum Dolor Sit Amet",
-    intermediateText: "published",
-    time: "1 hour ago",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
+    desc: 'Lorem Ipsum Dolor Sit Amet',
+    intermediateText: 'published',
+    time: '1 hour ago',
   },
 ];
 
 const followings = [
   {
     id: 0,
-    href: "#",
+    href: '#',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Emilia Gates",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Emilia Gates',
   },
   {
     id: 1,
-    href: "#",
+    href: '#',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Marley Rhiel Madsen",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Marley Rhiel Madsen',
   },
   {
     id: 2,
-    href: "#",
+    href: '#',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Omar Lipshutz",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Omar Lipshutz',
   },
   {
     id: 3,
-    href: "#",
+    href: '#',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Emma Laurden",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Emma Laurden',
   },
   {
     id: 4,
-    href: "#",
+    href: '#',
     image:
-      "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-    name: "Olivia Rhye",
+      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+    name: 'Olivia Rhye',
   },
 ];
 
@@ -913,11 +913,11 @@ export default function Sidebar({
                 <span className="text-sm font-light tracking-sm text-slate-500">
                   <strong className="text-slate-600 font-semibold">
                     {story.name}
-                  </strong>{" "}
-                  {story.intermediateText}{" "}
+                  </strong>{' '}
+                  {story.intermediateText}{' '}
                   <strong className="text-slate-600 font-semibold">
                     {story.desc}
-                  </strong>{" "}
+                  </strong>{' '}
                   <span className="text-slate-400 text-xs">{story.time}</span>
                 </span>
               </li>
