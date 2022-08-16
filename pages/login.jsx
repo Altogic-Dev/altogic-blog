@@ -1,4 +1,4 @@
-import Head from "next/head";
+import Head from 'next/head';
 
 export default function Login() {
   return (
@@ -13,6 +13,7 @@ export default function Login() {
           href="https://www.altogic.com/"
           className="flex fixed bottom-3 right-3 sm:bottom-8 sm:right-8 z-50"
           target="_blank"
+          rel="noreferrer"
         >
           <img src="./powered-by-altogic.svg" alt="" />
         </a>
@@ -129,10 +130,7 @@ export default function Login() {
 
                         <div className="mt-1 grid grid-cols-4 gap-3">
                           <div>
-                            <a
-                              href="#"
-                              className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-500 hover:bg-gray-50"
-                            >
+                            <a className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-slate-500 hover:bg-gray-50">
                               <span className="sr-only">
                                 Sign in with Google
                               </span>
@@ -143,7 +141,7 @@ export default function Login() {
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
-                                <g clip-path="url(#clip0_1015_28687)">
+                                <g clipPath="url(#clip0_1015_28687)">
                                   <path
                                     d="M23.7663 12.9661C23.7663 12.1504 23.7001 11.3302 23.559 10.5277H12.2402V15.1487H18.722C18.453 16.6391 17.5888 17.9575 16.3233 18.7952V21.7936H20.1903C22.4611 19.7036 23.7663 16.617 23.7663 12.9661Z"
                                     fill="#4285F4"
@@ -213,7 +211,7 @@ export default function Login() {
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
-                                <g clip-path="url(#clip0_1015_28702)">
+                                <g clipPath="url(#clip0_1015_28702)">
                                   <path
                                     d="M22.2283 0.689667H1.77167C1.30179 0.689667 0.851161 0.876324 0.518909 1.20858C0.186657 1.54083 0 1.99146 0 2.46133V22.918C0 23.3879 0.186657 23.8385 0.518909 24.1708C0.851161 24.503 1.30179 24.6897 1.77167 24.6897H22.2283C22.6982 24.6897 23.1488 24.503 23.4811 24.1708C23.8133 23.8385 24 23.3879 24 22.918V2.46133C24 1.99146 23.8133 1.54083 23.4811 1.20858C23.1488 0.876324 22.6982 0.689667 22.2283 0.689667ZM7.15333 21.1347H3.545V9.673H7.15333V21.1347ZM5.34667 8.08467C4.93736 8.08236 4.53792 7.95886 4.19873 7.72975C3.85955 7.50065 3.59584 7.1762 3.44088 6.79736C3.28591 6.41851 3.24665 6.00226 3.32803 5.60112C3.40941 5.19998 3.6078 4.83194 3.89816 4.54345C4.18851 4.25495 4.55782 4.05893 4.95947 3.98013C5.36112 3.90132 5.77711 3.94326 6.15495 4.10065C6.53279 4.25804 6.85554 4.52383 7.08247 4.86448C7.30939 5.20512 7.43032 5.60536 7.43 6.01467C7.43386 6.2887 7.38251 6.56071 7.27901 6.81447C7.17551 7.06824 7.02198 7.29857 6.82757 7.49173C6.63316 7.6849 6.40185 7.83695 6.14742 7.93882C5.893 8.04069 5.62067 8.09029 5.34667 8.08467ZM20.4533 21.1447H16.8467V14.883C16.8467 13.0363 16.0617 12.4663 15.0483 12.4663C13.9783 12.4663 12.9283 13.273 12.9283 14.9297V21.1447H9.32V9.68133H12.79V11.2697H12.8367C13.185 10.5647 14.405 9.35967 16.2667 9.35967C18.28 9.35967 20.455 10.5547 20.455 14.0547L20.4533 21.1447Z"
                                     fill="#0A66C2"
@@ -248,7 +246,7 @@ export default function Login() {
                                 fill="none"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
-                                <g clip-path="url(#clip0_1015_28711)">
+                                <g clipPath="url(#clip0_1015_28711)">
                                   <path
                                     d="M24 12.6897C24 6.06225 18.6274 0.689667 12 0.689667C5.37258 0.689667 0 6.06225 0 12.6897C0 18.6791 4.3882 23.6437 10.125 24.5439V16.1584H7.07812V12.6897H10.125V10.0459C10.125 7.03842 11.9166 5.37717 14.6576 5.37717C15.9701 5.37717 17.3438 5.61154 17.3438 5.61154V8.56467H15.8306C14.34 8.56467 13.875 9.48975 13.875 10.4397V12.6897H17.2031L16.6711 16.1584H13.875V24.5439C19.6118 23.6437 24 18.6791 24 12.6897Z"
                                     fill="#1877F2"
@@ -276,7 +274,7 @@ export default function Login() {
                     </div>
                   </form>
                   <p className="text-center mt-8 text-sm text-slate-500">
-                    Don't have an account yet?{" "}
+                    Don't have an account yet?{' '}
                     <a
                       href="/create-an-account"
                       className="font-medium text-purple-700 tracking-sm hover:text-purple-500"
