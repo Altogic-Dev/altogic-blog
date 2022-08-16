@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { Tab } from "@headlessui/react";
 import Layout from "../components/Layout";
 import PostCard from "../components/PostCard";
 import Sidebar from "../components/Sidebar";
+import { authActions } from "../redux/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const posts = [
   {
@@ -134,6 +136,12 @@ function classNames(...classes) {
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const dispatch = useDispatch()
+  const isLoading = useSelector(state => state.auth.isLoading);
+console.log({isLoading})
+  useEffect(()=>{
+    dispatch(authActions.fetchDataRequest())
+  },[])
 
   return (
     <div>
