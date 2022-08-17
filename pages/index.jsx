@@ -10,12 +10,12 @@ import { authActions } from '../redux/auth/authSlice';
 const posts = [
   {
     id: 0,
-    href: '#',
+    href: '/post/first-post',
     title: 'Fermentum massa tincidunt placerat.',
     infoText:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
     badgeName: 'Technology',
-    badgeUrl: '/',
+    badgeUrl: '/test',
     min: '9 min',
     image:
       'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
@@ -193,27 +193,6 @@ export default function Home() {
                   </Tab>
                 </Tab.List>
                 <Tab.Panels>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))}
-                  </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
