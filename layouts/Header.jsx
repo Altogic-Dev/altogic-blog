@@ -24,7 +24,7 @@ export default function Header() {
           </div>
           <Popover.Group as="nav" className="hidden lg:flex gap-1">
             <a
-              href="#"
+              href="/"
               className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
             >
               <svg
@@ -63,7 +63,7 @@ export default function Header() {
               </a>
             </Link>
             <a
-              href="#"
+              href="my-stories"
               className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
             >
               <svg
