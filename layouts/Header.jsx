@@ -39,7 +39,7 @@ export default function Header() {
                 />
               </svg>
               Home
-            </button>{' '}
+            </button>
             <button
               type="button"
               className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
@@ -59,7 +59,7 @@ export default function Header() {
                 />
               </svg>
               Lists
-            </button>{' '}
+            </button>
             <button
               type="button"
               className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
@@ -79,7 +79,7 @@ export default function Header() {
                 />
               </svg>
               Stories
-            </button>{' '}
+            </button>
           </Popover.Group>
           <div className="flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 lg:w-0 gap-4">
             <button
@@ -156,11 +156,11 @@ export default function Header() {
                           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                             <strong className="font-semibold">
                               İsmail Erüstün
-                            </strong>{' '}
-                            liked your{' '}
+                            </strong>
+                            liked your
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
-                            </strong>{' '}
+                            </strong>
                             forum!
                           </div>
                         </div>
@@ -197,11 +197,11 @@ export default function Header() {
                           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                             <strong className="font-semibold">
                               Emillia Gates
-                            </strong>{' '}
-                            liked your{' '}
+                            </strong>
+                            liked your
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
-                            </strong>{' '}
+                            </strong>
                             forum!
                           </div>
                         </div>
@@ -296,11 +296,11 @@ export default function Header() {
                               <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                                 <strong className="font-semibold">
                                   İsmail Erüstün
-                                </strong>{' '}
-                                liked your{' '}
+                                </strong>
+                                liked your
                                 <strong className="font-semibold">
                                   Lorem Ipsum Dolor Sit Amet
-                                </strong>{' '}
+                                </strong>
                                 forum!
                               </div>
                             </div>
@@ -337,11 +337,11 @@ export default function Header() {
                               <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                                 <strong className="font-semibold">
                                   Emillia Gates
-                                </strong>{' '}
-                                liked your{' '}
+                                </strong>
+                                liked your
                                 <strong className="font-semibold">
                                   Lorem Ipsum Dolor Sit Amet
-                                </strong>{' '}
+                                </strong>
                                 forum!
                               </div>
                             </div>
@@ -486,7 +486,7 @@ export default function Header() {
                             />
                           </svg>
                           View profile
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                       <Menu.Item>
                         <button
@@ -515,7 +515,7 @@ export default function Header() {
                             />
                           </svg>
                           Settings
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                       <Menu.Item>
                         <button
@@ -537,7 +537,7 @@ export default function Header() {
                             />
                           </svg>
                           Stats
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                     </div>
                     <div>
@@ -586,7 +586,7 @@ export default function Header() {
                             />
                           </svg>
                           Altogic
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                       <Menu.Item>
                         <button
@@ -605,7 +605,7 @@ export default function Header() {
                             />
                           </svg>
                           Manage Publications
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                     </div>
                     <div>
@@ -629,7 +629,7 @@ export default function Header() {
                             />
                           </svg>
                           Help
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                       <Menu.Item>
                         <button
@@ -651,7 +651,7 @@ export default function Header() {
                             />
                           </svg>
                           Logout
-                        </button>{' '}
+                        </button>
                       </Menu.Item>
                     </div>
                   </div>
@@ -713,7 +713,7 @@ export default function Header() {
               strokeLinejoin="round"
             />
           </svg>
-        </button>{' '}
+        </button>
         <button
           type="button"
           className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
@@ -808,7 +808,7 @@ export default function Header() {
                         />
                       </svg>
                       View profile
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                   <Menu.Item>
                     <button
@@ -837,7 +837,7 @@ export default function Header() {
                         />
                       </svg>
                       Settings
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                   <Menu.Item>
                     <button
@@ -859,7 +859,7 @@ export default function Header() {
                         />
                       </svg>
                       Stats
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                 </div>
                 <div>
@@ -908,7 +908,7 @@ export default function Header() {
                         />
                       </svg>
                       Altogic
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                   <Menu.Item>
                     <button
@@ -927,7 +927,7 @@ export default function Header() {
                         />
                       </svg>
                       Manage Publications
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                 </div>
                 <div>
@@ -951,7 +951,7 @@ export default function Header() {
                         />
                       </svg>
                       Help
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                   <Menu.Item>
                     <button
@@ -973,7 +973,7 @@ export default function Header() {
                         />
                       </svg>
                       Logout
-                    </button>{' '}
+                    </button>
                   </Menu.Item>
                 </div>
               </div>
