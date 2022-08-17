@@ -1,10 +1,12 @@
-import React from "react";
-import Footer from "./Footer";
-import Header from "./Header";
+import React from 'react';
+import Footer from './Footer';
+import Header from './Header';
+import ScrollToTop from '@/components/ScrollToTop';
 
 export default function Layout({ children }) {
   return (
     <div>
+      <ScrollToTop />
       <Header />
       <main>{children}</main>
       <Footer />
