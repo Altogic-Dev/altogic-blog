@@ -1,8 +1,11 @@
-import { Fragment, useState } from "react";
-import { Menu, Dialog, Popover, Transition } from "@headlessui/react";
-import { XIcon } from "@heroicons/react/outline";
+import { Fragment, useState } from 'react';
+import { Menu, Dialog, Popover, Transition } from '@headlessui/react';
+import { XIcon } from '@heroicons/react/outline';
+import Link from 'next/link';
+import { Router, useRouter } from 'next/router';
 
 export default function Header() {
+  const router = useRouter();
   const [mobileNotifications, setMobileNotifications] = useState(false);
 
   return (
@@ -40,26 +43,25 @@ export default function Header() {
               </svg>
               Home
             </a>
-            <a
-              href="#"
-              className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
-            >
-              <svg
-                className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
-                viewBox="0 0 25 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M5.86719 7.8C5.86719 6.11984 5.86719 5.27976 6.19417 4.63803C6.48179 4.07354 6.94073 3.6146 7.50522 3.32698C8.14695 3 8.98703 3 10.6672 3H15.0672C16.7473 3 17.5874 3 18.2292 3.32698C18.7936 3.6146 19.2526 4.07354 19.5402 4.63803C19.8672 5.27976 19.8672 6.11984 19.8672 7.8V21L12.8672 17L5.86719 21V7.8Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Lists
-            </a>
+            <Link href="list-detail">
+              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                <svg
+                  className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.86719 7.8C5.86719 6.11984 5.86719 5.27976 6.19417 4.63803C6.48179 4.07354 6.94073 3.6146 7.50522 3.32698C8.14695 3 8.98703 3 10.6672 3H15.0672C16.7473 3 17.5874 3 18.2292 3.32698C18.7936 3.6146 19.2526 4.07354 19.5402 4.63803C19.8672 5.27976 19.8672 6.11984 19.8672 7.8V21L12.8672 17L5.86719 21V7.8Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Lists
+              </a>
+            </Link>
             <a
               href="#"
               className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
@@ -84,6 +86,7 @@ export default function Header() {
           <div className="flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 lg:w-0 gap-4">
             <button
               type="button"
+              onClick={() => router.push('/write-a-story')}
               className="inline-flex items-center justify-center w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
               <svg
@@ -156,11 +159,11 @@ export default function Header() {
                           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                             <strong className="font-semibold">
                               İsmail Erüstün
-                            </strong>{" "}
-                            liked your{" "}
+                            </strong>{' '}
+                            liked your{' '}
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
-                            </strong>{" "}
+                            </strong>{' '}
                             forum!
                           </div>
                         </div>
@@ -197,11 +200,11 @@ export default function Header() {
                           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                             <strong className="font-semibold">
                               Emillia Gates
-                            </strong>{" "}
-                            liked your{" "}
+                            </strong>{' '}
+                            liked your{' '}
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
-                            </strong>{" "}
+                            </strong>{' '}
                             forum!
                           </div>
                         </div>
@@ -296,11 +299,11 @@ export default function Header() {
                               <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                                 <strong className="font-semibold">
                                   İsmail Erüstün
-                                </strong>{" "}
-                                liked your{" "}
+                                </strong>{' '}
+                                liked your{' '}
                                 <strong className="font-semibold">
                                   Lorem Ipsum Dolor Sit Amet
-                                </strong>{" "}
+                                </strong>{' '}
                                 forum!
                               </div>
                             </div>
@@ -337,11 +340,11 @@ export default function Header() {
                               <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                                 <strong className="font-semibold">
                                   Emillia Gates
-                                </strong>{" "}
-                                liked your{" "}
+                                </strong>{' '}
+                                liked your{' '}
                                 <strong className="font-semibold">
                                   Lorem Ipsum Dolor Sit Amet
-                                </strong>{" "}
+                                </strong>{' '}
                                 forum!
                               </div>
                             </div>
@@ -930,7 +933,7 @@ export default function Header() {
                 <div>
                   <Menu.Item>
                     <a
-                      href="#"
+                      href="/write-a-story"
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg
@@ -952,7 +955,7 @@ export default function Header() {
                   </Menu.Item>
                   <Menu.Item>
                     <a
-                      href="#"
+                      href="/write-a-story"
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg
