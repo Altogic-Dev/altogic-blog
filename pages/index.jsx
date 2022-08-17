@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../layouts/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '../layouts/SideBar';
-import { authActions } from '../redux/auth/authSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 const posts = [
   {
@@ -137,10 +137,10 @@ function classNames(...classes) {
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.auth.isLoading);
-  console.log({ isLoading });
+  const userId = "62fc93b3f0443684eae8cc3f"
+  
   useEffect(() => {
-    dispatch(authActions.fetchDataRequest());
+    dispatch(followerConnectionActions.getFollowingStoriesRequest(userId));
   }, []);
 
   return (
