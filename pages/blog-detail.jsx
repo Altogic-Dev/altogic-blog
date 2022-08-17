@@ -1097,7 +1097,7 @@ export default function BlogDetail() {
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
                 profile
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
                 followButton

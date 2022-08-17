@@ -257,7 +257,7 @@ export default function Sidebar({
   topicMatch,
   peopleMatch,
   storiesYouFollow,
-  whoTheFollow,
+  whoToFollow,
   popularTopics,
   popularStories,
   mobilePopularStories,
@@ -267,7 +267,7 @@ export default function Sidebar({
   editButton,
   publicationProfile,
 }) {
-  const [whoTheFollowModal, setWhoTheFollowModal] = useState(false);
+  const [whoToFollowModal, setWhoToFollowModal] = useState(false);
 
   return (
     <>
@@ -442,7 +442,7 @@ export default function Sidebar({
               ))}
             </ul>
             <button
-              onClick={() => setWhoTheFollowModal(!whoTheFollowModal)}
+              onClick={() => setWhoToFollowModal(!whoToFollowModal)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             >
               See more suggestions
@@ -461,11 +461,11 @@ export default function Sidebar({
                 />
               </svg>
             </button>
-            <Transition appear show={whoTheFollowModal} as={Fragment}>
+            <Transition appear show={whoToFollowModal} as={Fragment}>
               <Dialog
                 as="div"
                 className="relative z-10"
-                onClose={() => setWhoTheFollowModal(false)}
+                onClose={() => setWhoToFollowModal(false)}
               >
                 <Transition.Child
                   as={Fragment}
@@ -743,7 +743,7 @@ export default function Sidebar({
           </div>
         </div>
       )}
-      {whoTheFollow && (
+      {whoToFollow && (
         <div>
           <SidebarTitle title="Who the follow" />
           <div>
@@ -778,7 +778,7 @@ export default function Sidebar({
               ))}
             </ul>
             <button
-              onClick={() => setWhoTheFollowModal(!whoTheFollowModal)}
+              onClick={() => setWhoToFollowModal(!whoToFollowModal)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             >
               See more suggestions
@@ -797,11 +797,11 @@ export default function Sidebar({
                 />
               </svg>
             </button>
-            <Transition appear show={whoTheFollowModal} as={Fragment}>
+            <Transition appear show={whoToFollowModal} as={Fragment}>
               <Dialog
                 as="div"
                 className="relative z-10"
-                onClose={() => setWhoTheFollowModal(false)}
+                onClose={() => setWhoToFollowModal(false)}
               >
                 <Transition.Child
                   as={Fragment}

@@ -137,8 +137,8 @@ function classNames(...classes) {
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const userId = "62fc93b3f0443684eae8cc3f"
-  
+  const userId = '62fc93b3f0443684eae8cc3f';
+
   useEffect(() => {
     dispatch(followerConnectionActions.getFollowingStoriesRequest(userId));
   }, []);
@@ -221,7 +221,7 @@ export default function Home() {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 storiesYouFollow
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
               />

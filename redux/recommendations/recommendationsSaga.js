@@ -1,11 +1,11 @@
 import { call, takeEvery, put, fork, take } from 'redux-saga/effects';
-import FollowerConnectionService from '@/services/followerConnection';
-import { followerConnectionActions } from './followerConnectionSlice';
+import RecommendationsService from '@/services/recommendations';
+import { recommendationsActions } from './recommendationsSlice';
 
-function* getFollowingStoriesSaga({ payload: userId }) {
+function* getWhoToFollowSaga({ payload: userId }) {
   try {
     const { data, error } = yield call(
-      FollowerConnectionService.getFollowingStories,
+      RecommendationsService.getFollowingStories,
       userId
     );
     console.log({ data, error });
@@ -17,7 +17,7 @@ function* getFollowingStoriesSaga({ payload: userId }) {
 
 export default function* rootSaga() {
   yield takeEvery(
-    followerConnectionActions.getFollowingStoriesRequest.type,
-    getFollowingStoriesSaga
+    recommendationsActions.getWhoToFollowRequest.type,
+    getWhoToFollowSaga
   );
 }

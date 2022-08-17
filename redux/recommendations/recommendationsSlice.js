@@ -3,18 +3,18 @@ import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
-  followingStories: null,
+  whoToFollow: [],
 };
 
 // Actual Slice
-export const followerConnectionSlice = createSlice({
-  name: 'followerConnection',
+export const recommendationsSlice = createSlice({
+  name: 'whoToFollow',
   initialState,
   reducers: {
     // Action to set the authentication status
-    getFollowingStoriesRequest(state, action) {},
-    getFollowingStoriesSuccess(state, action) {
-      state.followingStories = action.payload;
+    getWhoToFollowRequest(state, action) {},
+    getWhoToFollowSuccess(state, action) {
+      state.whoToFollow = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -22,13 +22,13 @@ export const followerConnectionSlice = createSlice({
       [HYDRATE]: (state, action) => {
         return {
           ...state,
-          ...action.payload.followerConnection,
+          ...action.payload.whoToFollow,
         };
       },
     },
   },
 });
 
-export const followerConnectionActions = followerConnectionSlice.actions;
+export const recommendationsActions = recommendationsSlice.actions;
 
-export default followerConnectionSlice.reducer;
+export default recommendationsSlice.reducer;
