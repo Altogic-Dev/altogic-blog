@@ -1,23 +1,22 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { HYDRATE } from "next-redux-wrapper";
+import { createSlice } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
   authState: false,
   isLoading: true,
-  error: null
+  error: null,
 };
 
 // Actual Slice
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
-
     // Action to set the authentication status
     fetchDataRequest(state, action) {
       state.isLoading = true;
-      console.log({state, action})
+      console.log({ state, action });
     },
     fetchDataSuccess(state, action) {
       state.isLoading = false;
@@ -27,7 +26,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    
+
     setAuthState(state, action) {
       state.authState = action.payload;
     },
@@ -41,7 +40,6 @@ export const authSlice = createSlice({
         };
       },
     },
-
   },
 });
 
