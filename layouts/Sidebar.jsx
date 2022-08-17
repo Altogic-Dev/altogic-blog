@@ -1,5 +1,4 @@
 import { Dialog, Transition } from '@headlessui/react';
-import Link from 'next/link';
 import { Fragment, useState } from 'react';
 import SidebarTitle from '../components/SidebarTitle';
 
@@ -262,7 +261,7 @@ export default function Sidebar({
   popularStories,
   mobilePopularStories,
   profile,
-  following,
+
   followButton,
   editButton,
   publicationProfile,
@@ -312,8 +311,8 @@ export default function Sidebar({
             sollicitudin tortor. Volutpat, elementum diam id nunc pellentesque
             suspendisse sagittis. Pharetra, pulvinar augue nunc ut.
           </p>
-          <a
-            href="#"
+          <button
+            type="button"
             className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
           >
             More information
@@ -331,7 +330,7 @@ export default function Sidebar({
                 strokeLinejoin="round"
               />
             </svg>
-          </a>
+          </button>
           <div>
             <h2 className="text-slate-600 mb-2 text-base tracking-sm">
               Followers
@@ -344,8 +343,8 @@ export default function Sidebar({
             </h2>
             <ul className="flex items-center">
               <li>
-                <a
-                  href="#"
+                <button
+                  type="button"
                   className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
                 >
                   <svg
@@ -361,11 +360,11 @@ export default function Sidebar({
                       fill="currentColor"
                     />
                   </svg>
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="#"
+                <button
+                  type="button"
                   className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
                 >
                   <svg
@@ -381,11 +380,11 @@ export default function Sidebar({
                       fill="currentColor"
                     />
                   </svg>
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="#"
+                <button
+                  type="button"
                   className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
                 >
                   <svg
@@ -401,7 +400,7 @@ export default function Sidebar({
                       fill="currentColor"
                     />
                   </svg>
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -432,16 +431,18 @@ export default function Sidebar({
                       </span>
                     </div>
                   </div>
-                  <a
+                  <button
+                    type="button"
                     href={whoFollow.href}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                   >
                     Follow
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
             <button
+              type="button"
               onClick={() => setWhoTheFollowModal(!whoTheFollowModal)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             >
@@ -519,12 +520,13 @@ export default function Sidebar({
                                     </span>
                                   </div>
                                 </div>
-                                <a
+                                <button
+                                  type="button"
                                   href={whoFollow.href}
                                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                 >
                                   Follow
-                                </a>
+                                </button>
                               </li>
                             ))}
                           </ul>
@@ -551,13 +553,14 @@ export default function Sidebar({
           <SidebarTitle title="Topics matching Development" spacing="mb-4" />
           <div className="flex flex-wrap gap-x-2 gap-y-4">
             {topics.map((topic) => (
-              <a
+              <button
+                type="button"
                 key={topic.id}
                 href={topic.href}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
               >
                 {topic.name}
-              </a>
+              </button>
             ))}
           </div>
         </div>
@@ -639,25 +642,24 @@ export default function Sidebar({
                 </>
               )}
               {editButton && (
-                <>
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                  >
-                    Edit Profile
-                  </button>
-                </>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                >
+                  Edit Profile
+                </button>
               )}
             </div>
           </div>
         </div>
       )}
-      {following && (
+      {followings && (
         <div>
           <SidebarTitle title="Following" spacing="mb-4" />
           <div className="flex flex-col gap-3">
             {followings.map((following) => (
-              <a
+              <button
+                type="button"
                 key={following.id}
                 href={following.href}
                 className="inline-flex items-center gap-2 text-slate-700 text-sm font-medium tracking-sm hover:text-purple-700"
@@ -668,38 +670,14 @@ export default function Sidebar({
                   alt={following.name}
                 />
                 <span>{following.name}</span>
-              </a>
+              </button>
             ))}
-            <Link href="#">
-              <a className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700">
-                See all (221)
-                <svg
-                  className="w-5 h-5 text-purple-700"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16676M15.8333 10.0001L9.99996 15.8334"
-                    stroke="currentColor"
-                    strokeWidth="1.66667"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
-            </Link>
-          </div>
-        </div>
-      )}
-      {mobilePopularStories && (
-        <div className="flex items-center justify-between bg-purple-50 p-4 rounded-lg">
-          <span className="text-slate-700 text-sm font-semibold tracking-sm">
-            Popular Stories
-          </span>
-          <Link href="#">
-            <p className="inline-flex items-center gap-2 text-xs tracking-sm text-purple-700">
-              See all popular stories
+
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
+            >
+              See all (221)
               <svg
                 className="w-5 h-5 text-purple-700"
                 viewBox="0 0 20 20"
@@ -714,8 +692,33 @@ export default function Sidebar({
                   strokeLinejoin="round"
                 />
               </svg>
-            </p>
-          </Link>
+            </button>
+          </div>
+        </div>
+      )}
+      {mobilePopularStories && (
+        <div className="flex items-center justify-between bg-purple-50 p-4 rounded-lg">
+          <span className="text-slate-700 text-sm font-semibold tracking-sm">
+            Popular Stories
+          </span>
+
+          <p className="inline-flex items-center gap-2 text-xs tracking-sm text-purple-700">
+            See all popular stories
+            <svg
+              className="w-5 h-5 text-purple-700"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16676M15.8333 10.0001L9.99996 15.8334"
+                stroke="currentColor"
+                strokeWidth="1.66667"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </p>
         </div>
       )}
       {storiesYouFollow && (
@@ -723,7 +726,8 @@ export default function Sidebar({
           <SidebarTitle title="Stories you follow" spacing="mb-4" />
           <div className="flex items-center gap-3 overflow-x-auto">
             {storiesFollows.map((storiesFollow) => (
-              <a
+              <button
+                type="button"
                 key={storiesFollow.id}
                 href={storiesFollow.href}
                 className="relative w-14 h-14 flex-shrink-0"
@@ -738,7 +742,7 @@ export default function Sidebar({
                     {storiesFollow.badge}
                   </span>
                 )}
-              </a>
+              </button>
             ))}
           </div>
         </div>
@@ -768,16 +772,18 @@ export default function Sidebar({
                       </span>
                     </div>
                   </div>
-                  <a
+                  <button
+                    type="button"
                     href={whoFollow.href}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                   >
                     Follow
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
             <button
+              type="button"
               onClick={() => setWhoTheFollowModal(!whoTheFollowModal)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             >
@@ -855,12 +861,13 @@ export default function Sidebar({
                                     </span>
                                   </div>
                                 </div>
-                                <a
+                                <button
+                                  type="button"
                                   href={whoFollow.href}
                                   className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                 >
                                   Follow
-                                </a>
+                                </button>
                               </li>
                             ))}
                           </ul>
@@ -887,13 +894,14 @@ export default function Sidebar({
           <SidebarTitle title="Popular Topics" spacing="mb-4" />
           <div className="flex flex-wrap gap-x-2 gap-y-4">
             {topics.map((topic) => (
-              <a
+              <button
+                type="button"
                 key={topic.id}
                 href={topic.href}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
               >
                 {topic.name}
-              </a>
+              </button>
             ))}
           </div>
         </div>
