@@ -2,8 +2,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
-
-const { default: SidebarTitle } = require('../SidebarTitle');
+import SidebarTitle from '../SidebarTitle';
 
 export default function WhoToFollow() {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
