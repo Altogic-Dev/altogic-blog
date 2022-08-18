@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../layouts/Layout';
+import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
-import Sidebar from '../layouts/SideBar';
+import Sidebar from '../layout/Sidebar';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 const posts = [
@@ -137,8 +137,8 @@ function classNames(...classes) {
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const userId = "62fc93b3f0443684eae8cc3f"
-  
+  const userId = '62fc93b3f0443684eae8cc3f';
+
   useEffect(() => {
     dispatch(followerConnectionActions.getFollowingStoriesRequest(userId));
   }, []);
@@ -221,7 +221,7 @@ export default function Home() {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 storiesYouFollow
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
               />

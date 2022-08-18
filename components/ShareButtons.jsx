@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+
 import {
   FacebookShareButton,
   LinkedinShareButton,
@@ -8,6 +9,7 @@ import {
 
 function ShareButtons() {
   const router = useRouter();
+
   const [basePath, setBasePath] = useState();
   const shareUrl = basePath + router.asPath;
 
