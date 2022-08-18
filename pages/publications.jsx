@@ -1,8 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
-import Layout from '../layouts/Layout';
+import Layout from '../layout/Layout';
 import PublicationPostCard from '../components/PublicationsPostCard';
-import Sidebar from '../layouts/SideBar';
+import Sidebar from '../layout/SideBar';
 
 const posts = [
   {

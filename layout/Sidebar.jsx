@@ -2,6 +2,9 @@ import Link from 'next/link';
 import { Fragment } from 'react';
 import SidebarTitle from '../components/SidebarTitle';
 import WhoToFollow from '@/components/sidebar/WhoToFollow';
+import { useRouter } from 'next/router';
+import { useDispatch } from 'react-redux';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 const storiesFollows = [
   {
@@ -223,6 +226,12 @@ export default function Sidebar({
   editButton,
   publicationProfile,
 }) {
+  const router = useRouter();
+  const userId = router.query.id;
+  const dispatch = useDispatch();
+  const handleFollow = () => {
+    dispatch(followerConnectionActions.followUserRequest(userId));
+  };
   return (
     <>
       <form action="" className="hidden lg:block">
@@ -403,6 +412,9 @@ export default function Sidebar({
               {followButton && (
                 <>
                   <button
+                    onClick={() => {
+                      handleFollow;
+                    }}
                     type="button"
                     className="inline-flex items-center justify-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   >
