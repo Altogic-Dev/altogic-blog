@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 import dynamic from 'next/dynamic';
 const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,

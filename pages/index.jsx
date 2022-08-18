@@ -4,7 +4,7 @@ import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
-import Sidebar from '../layouts/SideBar';
+import Sidebar from '@/layout/SideBar';
 import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from "luxon"
 import _ from 'lodash';
@@ -146,10 +146,9 @@ export default function Home() {
   
   const followingStories = useSelector(state => state.story.followingStories)
   const followingStoriesInfo = useSelector(state => state.story.followingStoriesInfo)
-
+  const userId = useSelector(state => _.get(state.auth.user, "_id"))
+  
   const dispatch = useDispatch();
-
-  const userId = "62fc93b3f0443684eae8cc3f"
 
   const getFollowingStories = (page) => {
         dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
@@ -250,25 +249,6 @@ export default function Home() {
                       ))}
                     </ListObserver>
                   )}
-                    {/* {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={"BUNEEEEE"}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))} */}
                   </Tab.Panel>
 
                   <Tab.Panel className="divide-y divide-gray-200">
@@ -315,17 +295,3 @@ export default function Home() {
     </div>
   );
 }
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  (store) =>
-    async ({ params }) => {
-      // we can set the initial state from here
-      // we are setting to false but you can run your custom logic here
-      console.log("State on server", store.getState());
-      return {
-        props: {
-          authState: false,
-        },
-      };
-    }
-);

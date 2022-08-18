@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 import { Listbox, Transition, Switch } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/solid';
 import { ChevronDownIcon } from '@heroicons/react/outline';

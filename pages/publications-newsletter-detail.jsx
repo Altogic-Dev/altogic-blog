@@ -1,8 +1,8 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Menu, Transition, Switch } from '@headlessui/react';
-import Layout from '../layouts/Layout';
-import Sidebar from '../layouts/SideBar';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/SideBar';
 import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
