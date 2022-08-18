@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+
 import {
   FacebookShareButton,
   LinkedinShareButton,
@@ -9,8 +9,6 @@ import {
 
 function ShareButtons() {
   const router = useRouter();
-  const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.auth.isLoading);
 
   const [basePath, setBasePath] = useState();
   const shareUrl = basePath + router.asPath;
@@ -22,11 +20,6 @@ function ShareButtons() {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(shareUrl);
   };
-
-  console.log({ isLoading });
-  useEffect(() => {
-    dispatch(authActions.fetchDataRequest());
-  }, []);
 
   return (
     <ul className="flex items-center">

@@ -4,6 +4,9 @@ import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
 const initialState = {
   whoToFollow: [],
+  whoToFollowLoading: false,
+  whoToFollowMinimized: [],
+  whoToFollowMinimizedLoading: false,
 };
 
 // Actual Slice
@@ -12,8 +15,18 @@ export const recommendationsSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getWhoToFollowRequest(state, action) {},
+    getWhoToFollowMinimizedRequest(state, action) {
+      state.whoToFollowMinimizedLoading = true;
+    },
+    getWhoToFollowMinimizedSuccess(state, action) {
+      state.whoToFollowMinimizedLoading = false;
+      state.whoToFollowMinimized = action.payload;
+    },
+    getWhoToFollowRequest(state, action) {
+      state.isLoading = true;
+    },
     getWhoToFollowSuccess(state, action) {
+      state.isLoading = false;
       state.whoToFollow = action.payload;
     },
 
@@ -23,6 +36,7 @@ export const recommendationsSlice = createSlice({
         return {
           ...state,
           ...action.payload.whoToFollow,
+          ...action.payload.whoToFollowMinimized,
         };
       },
     },
