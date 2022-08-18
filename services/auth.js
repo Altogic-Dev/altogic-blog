@@ -56,5 +56,8 @@ const AuthService = {
   async resendVerificationEmail(email) {
     return auth.resendVerificationEmail(email);
   },
+  async resetPassword({ accessToken, newPassword }) {
+    return auth.resetPwdWithToken(accessToken, newPassword);
+  },
 };
 export default AuthService;
