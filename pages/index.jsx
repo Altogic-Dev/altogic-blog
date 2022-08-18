@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../layouts/Layout';
+import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
-import Sidebar from '../layouts/SideBar';
+import Sidebar from '../layout/Sidebar';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 const posts = [

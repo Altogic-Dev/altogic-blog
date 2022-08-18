@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react';
 import { Menu, Dialog, Popover, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import { Router, useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 export default function Header() {
   const router = useRouter();

@@ -1,8 +1,7 @@
-import WhoToFollow from '@/components/sidebar/WhoToFollow';
-import { Dialog, Transition } from '@headlessui/react';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import SidebarTitle from '../components/SidebarTitle';
+import WhoToFollow from '@/components/sidebar/WhoToFollow';
 
 const storiesFollows = [
   {

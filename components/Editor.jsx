@@ -9,7 +9,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
 });
 
-export function Editor() {
+export default function Editor() {
   const [value, setValue] = useState();
   const quillRef = useRef();
 
@@ -28,5 +28,3 @@ export function Editor() {
     </div>
   );
 }
-
-export default Editor;

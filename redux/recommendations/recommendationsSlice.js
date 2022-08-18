@@ -11,7 +11,7 @@ const initialState = {
 
 // Actual Slice
 export const recommendationsSlice = createSlice({
-  name: 'whoToFollow',
+  name: 'recommendations',
   initialState,
   reducers: {
     // Action to set the authentication status

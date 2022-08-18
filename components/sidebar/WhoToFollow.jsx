@@ -5,18 +5,18 @@ import { recommendationsActions } from '@/redux/recommendations/recommendationsS
 
 const { default: SidebarTitle } = require('../SidebarTitle');
 
-export default function WhoToFollow({ whoToFollowMinimized, whoToFollow }) {
+export default function WhoToFollow() {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
-  const isLoading = useSelector((state) => state.whoToFollow.isLoading);
+  const isLoading = useSelector((state) => state.recommendations.isLoading);
   const whoToFollowMinimized = useSelector(
-    (state) => state.whoToFollow.whoToFollowMinimized
+    (state) => state.recommendations.whoToFollowMinimized
   );
-  const whoToFollow = useSelector((state) => state.whoToFollow.whoToFollow);
+  const whoToFollow = useSelector((state) => state.recommendations.whoToFollow);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(recommendationsActions.getWhoToFolloMinimizedwRequest());
+    dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
   }, []);
 
   const handleSeeMore = () => {
