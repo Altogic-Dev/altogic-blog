@@ -1,6 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
-import Layout from '../layouts/Layout';
+import Layout from '../layout/Layout';
 import StatsCard from '../components/StatsCard';
 import {
   ArrowNarrowLeftIcon,

@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import Layout from '../layouts/Layout';
-import Sidebar from '../layouts/SideBar';
+import Layout from '../layout/Layout';
+import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
@@ -1097,7 +1097,7 @@ export default function BlogDetail() {
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
                 profile
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
                 followButton

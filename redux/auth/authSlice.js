@@ -1,47 +1,83 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { HYDRATE } from "next-redux-wrapper";
-
+import { createSlice } from '@reduxjs/toolkit';
+import AuthService from '@/services/auth';
+import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
 const initialState = {
-  authState: false,
   isLoading: true,
-  error: null
+  error: null,
+  user: AuthService.getUser(),
+  isAuthenticated: false,
 };
 
-// Actual Slice
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
-
-    // Action to set the authentication status
-    fetchDataRequest(state, action) {
+    registerRequested(state) {
       state.isLoading = true;
-      console.log({state, action})
     },
-    fetchDataSuccess(state, action) {
+    registerSuccess(state, action) {
       state.isLoading = false;
-      state.authState = action.payload;
+      state.user = action.payload;
+      window.location.href = `/mail-verification?email=${state.user.email}`;
     },
-    fetchDataFailure(state, action) {
+    registerFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },
-    
-    setAuthState(state, action) {
-      state.authState = action.payload;
+    getAuthGrantRequested(state) {
+      state.isLoading = true;
+    },
+    loginSuccess(state, action) {
+      state.isLoading = false;
+      state.user = action.payload;
+      state.isAuthenticated = true;
+      window.location.href = '/';
+    },
+    getAuthGrantFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    setUser(state, action) {
+      state.user = action.payload;
+    },
+    loginRequested(state) {
+      state.isLoading = true;
+    },
+    loginFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    forgotPasswordRequested(state) {
+      state.isLoading = true;
+    },
+    forgotPasswordSuccess(state) {
+      state.isLoading = false;
+      window.location.href = `/forgot-password-email?email=${state.user.email}`;
+    },
+
+    forgotPasswordFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    resendVerificationEmailRequested(state) {
+      state.isLoading = true;
+    },
+    resendVerificationEmailSuccess(state) {
+      state.isLoading = false;
+    },
+    resendVerificationEmailFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
-      [HYDRATE]: (state, action) => {
-        return {
-          ...state,
-          ...action.payload.auth,
-        };
-      },
+      [HYDRATE]: (state, action) => ({
+        ...state,
+        ...action.payload.auth,
+      }),
     },
-
   },
 });
 

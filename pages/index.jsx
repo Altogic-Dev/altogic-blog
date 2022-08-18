@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../layouts/Layout';
+import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
-import Sidebar from '../layouts/SideBar';
-import { authActions } from '../redux/auth/authSlice';
+import Sidebar from '../layout/Sidebar';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 const posts = [
   {
     id: 0,
-    href: '#',
+    href: '/post/first-post',
     title: 'Fermentum massa tincidunt placerat.',
     infoText:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
     badgeName: 'Technology',
-    badgeUrl: '/',
+    badgeUrl: '/test',
     min: '9 min',
     image:
       'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
@@ -137,10 +137,10 @@ function classNames(...classes) {
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.auth.isLoading);
-  console.log({ isLoading });
+  const userId = '62fc93b3f0443684eae8cc3f';
+
   useEffect(() => {
-    dispatch(authActions.fetchDataRequest());
+    dispatch(followerConnectionActions.getFollowingStoriesRequest(userId));
   }, []);
 
   return (
@@ -214,27 +214,6 @@ export default function Home() {
                       />
                     ))}
                   </Tab.Panel>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))}
-                  </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </div>
@@ -242,7 +221,7 @@ export default function Home() {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 storiesYouFollow
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
               />
