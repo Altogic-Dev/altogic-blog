@@ -23,5 +23,19 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'off',
     'react/jsx-props-no-spreading': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
+    'no-param-reassign': [
+      'error',
+      { props: true, ignorePropertyModificationsFor: ['state'] },
+    ],
+    'jsx-a11y/anchor-is-valid': 'off',
+    'import/extensions': 'off',
+    'no-underscore-dangle': 'off',
+  },
+  settings: {
+    'import/resolver': {
+      jsconfig: {
+        config: 'jsconfig.json',
+      },
+    },
   },
 };

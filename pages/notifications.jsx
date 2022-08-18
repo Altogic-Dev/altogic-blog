@@ -212,7 +212,7 @@ export default function Notifications() {
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
                 storiesYouFollow
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
               />

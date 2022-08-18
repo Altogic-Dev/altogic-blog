@@ -1,23 +1,20 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { HYDRATE } from "next-redux-wrapper";
+import { createSlice } from '@reduxjs/toolkit';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
-  followingStories: null
+  followingStories: null,
 };
 
 // Actual Slice
 export const followerConnectionSlice = createSlice({
-  name: "followerConnection",
+  name: 'followerConnection',
   initialState,
   reducers: {
-
     // Action to set the authentication status
-    unfollowRequest(state, action) {
-    },
-    unfollowSuccess(state, action) {
-      state.followingStories = action.payload
-    },
+
+    unfollowRequest(state, action) {},
+    unfollowSuccess(state, action) {},
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
@@ -28,7 +25,6 @@ export const followerConnectionSlice = createSlice({
         };
       },
     },
-
   },
 });
 

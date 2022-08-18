@@ -3,13 +3,15 @@ import authSaga from "./auth/authSaga";
 import followerConnectionSaga from "./followerConnection/followerConnectionSaga";
 import storySaga from "./story/storySaga";
 import reportSaga from "./report/reportSaga";
+import recommendationsSaga from "./recommendations/recommendationsSaga";
 
 function* rootSaga() {
   yield all([
     fork(authSaga), 
     fork(storySaga), 
     fork(followerConnectionSaga), 
-    fork(reportSaga)
+    fork(reportSaga),
+    fork(recommendationsSaga)
   ]);
 }
 
