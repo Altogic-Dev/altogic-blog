@@ -56,5 +56,8 @@ const AuthService = {
   async resendVerificationEmail(email) {
     return auth.resendVerificationEmail(email);
   },
+  async authenticateWithProvider(provider) {
+    return auth.signInWithProvider(provider);
+  },
 };
 export default AuthService;

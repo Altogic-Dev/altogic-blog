@@ -70,6 +70,13 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    authenticateWithProviderRequested(state) {
+      state.isLoading = false;
+    },
+    authenticateWithProviderFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

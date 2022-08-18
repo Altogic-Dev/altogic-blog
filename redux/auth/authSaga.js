@@ -83,6 +83,18 @@ function* resendVerificationEmail({ payload: email }) {
   }
 }
 
+function* authenticateWithProvider({payload:provider}) {
+  try {
+    const { errors } = yield call(AuthService.authenticateWithProvider,provider);
+    if (errors) {
+      throw errors.items;
+    } 
+  } catch (e) {
+    yield put(authActions.authenticateWithProviderFailure(e));
+  }
+}
+
+
 export default function* rootSaga() {
   yield takeEvery(authActions.registerRequested.type, registerSaga);
   yield takeEvery(authActions.getAuthGrantRequested.type, getAuthGrantSaga);
@@ -92,4 +104,6 @@ export default function* rootSaga() {
     authActions.resendVerificationEmailRequested.type,
     resendVerificationEmail
   );
+  yield takeEvery(authActions.authenticateWithProviderRequested.type, authenticateWithProvider);
+
 }
