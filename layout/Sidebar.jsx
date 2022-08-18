@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Fragment } from 'react';
-import SidebarTitle from '../components/SidebarTitle';
+import SidebarTitle from '@/components/SidebarTitle';
 import WhoToFollow from '@/components/sidebar/WhoToFollow';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
@@ -412,9 +412,7 @@ export default function Sidebar({
               {followButton && (
                 <>
                   <button
-                    onClick={() => {
-                      handleFollow;
-                    }}
+                    onClick={handleFollow}
                     type="button"
                     className="inline-flex items-center justify-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   >
@@ -467,14 +465,12 @@ export default function Sidebar({
                 </>
               )}
               {editButton && (
-                <>
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                  >
-                    Edit Profile
-                  </button>
-                </>
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                >
+                  Edit Profile
+                </button>
               )}
             </div>
           </div>
@@ -484,18 +480,18 @@ export default function Sidebar({
         <div>
           <SidebarTitle title="Following" spacing="mb-4" />
           <div className="flex flex-col gap-3">
-            {followings.map((following) => (
+            {followings.map((person) => (
               <a
-                key={following.id}
-                href={following.href}
+                key={person.id}
+                href={person.href}
                 className="inline-flex items-center gap-2 text-slate-700 text-sm font-medium tracking-sm hover:text-purple-700"
               >
                 <img
                   className="w-6 h-6 rounded-full"
-                  src={following.image}
-                  alt={following.name}
+                  src={person.image}
+                  alt={person.name}
                 />
-                <span>{following.name}</span>
+                <span>{person.name}</span>
               </a>
             ))}
             <Link href="#">
