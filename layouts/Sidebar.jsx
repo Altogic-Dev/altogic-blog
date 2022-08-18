@@ -670,8 +670,11 @@ export default function Sidebar({
                 <span>{following.name}</span>
               </a>
             ))}
-            <Link href="#">
-              <a className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700">
+            <Link href="/">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
+              >
                 See all (221)
                 <svg
                   className="w-5 h-5 text-purple-700"
@@ -687,7 +690,7 @@ export default function Sidebar({
                     strokeLinejoin="round"
                   />
                 </svg>
-              </a>
+              </button>
             </Link>
           </div>
         </div>
@@ -697,7 +700,7 @@ export default function Sidebar({
           <span className="text-slate-700 text-sm font-semibold tracking-sm">
             Popular Stories
           </span>
-          <Link href="#">
+          <Link href="/">
             <p className="inline-flex items-center gap-2 text-xs tracking-sm text-purple-700">
               See all popular stories
               <svg
@@ -778,6 +781,7 @@ export default function Sidebar({
               ))}
             </ul>
             <button
+              type="button"
               onClick={() => setWhoTheFollowModal(!whoTheFollowModal)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             >
@@ -926,26 +930,26 @@ export default function Sidebar({
       )}
       <div>
         <ul
-          className="flex flex-wrap items-center mt-3 text-xs text-gray-500"
+          className="flex flex-wrap items-center mt-3 text-gray-500"
           style={{ listStyle: 'none' }}
         >
           <li className="pr-2 pt-2">
-            <a href="#">Writers</a>
+            <Link href="writers">Writers</Link>
           </li>
           <li className="pr-2 pt-2">
-            <a href="#">Blog</a>
+            <Link href="blog">Blogs</Link>
           </li>
           <li className="pr-2 pt-2">
-            <a href="#">Privacy</a>
+            <Link href="privacy">Privacy</Link>
           </li>
           <li className="pr-2 pt-2">
-            <a href="#">Terms</a>
+            <Link href="privacy">Terms</Link>
           </li>
           <li className="pr-2 pt-2">
-            <a href="#">About</a>
+            <Link href="privacy">About</Link>
           </li>
           <li className="pr-2 pt-2">
-            <a href="#">Altogic</a>
+            <Link href="privacy">Altogic</Link>
           </li>
         </ul>
       </div>
