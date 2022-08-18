@@ -5,7 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../layouts/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '../layouts/SideBar';
+import { storyActions } from '@/redux/story/storySlice';
+import { DateTime } from "luxon"
+import _ from 'lodash';
+import ListObserver from '@/components/ListObserver';
+import { wrapper } from '@/redux/store';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { reportActions } from '@/redux/report/reportSlice';
 
 const posts = [
   {
@@ -136,12 +142,28 @@ function classNames(...classes) {
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [listPage, setListPage] = useState(1);
+  
+  const followingStories = useSelector(state => state.story.followingStories)
+  const followingStoriesInfo = useSelector(state => state.story.followingStoriesInfo)
+
   const dispatch = useDispatch();
+
   const userId = "62fc93b3f0443684eae8cc3f"
+
+  const getFollowingStories = (page) => {
+        dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
+  }
+
+  const handleEndOfList = () => {
+    if(_.isNil(followingStoriesInfo) || followingStoriesInfo.currentPage < followingStoriesInfo.totalPages) {
+      setListPage(prev => prev + 1)
+    }
+  }
   
   useEffect(() => {
-    dispatch(followerConnectionActions.getFollowingStoriesRequest(userId));
-  }, []);
+    getFollowingStories(listPage)
+  }, [listPage]);
 
   return (
     <div>
@@ -170,14 +192,14 @@ export default function Home() {
                     }
                   >
                     Your Following
-                    <span
+                    {/* <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
                         selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
                       )}
                     >
                       8
-                    </span>
+                    </span> */}
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -194,7 +216,41 @@ export default function Home() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
+                  {!_.isNil(followingStories) && (
+                    <ListObserver onEnd={handleEndOfList}>
+                      {_.map(followingStories, story => (
+                        <PostCard
+                          key={story._id}
+                          noActiveBookmark
+                          normalMenu
+                          authorUrl={`/other-profile?id=${story.followerConnection.followingUser}`}
+                          authorName={story.followerConnection.followingName}
+                          authorImage={story.followerConnection.followingUserProfilePicture}
+                          storyUrl={`/blog-detail?id=${story._id}`}
+                          timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+                          title={story.title}
+                          infoText={story.excerpt}
+                          badgeUrl={"badgeUrl"}
+                          badgeName={_.first(story.categoryNames)}
+                          min={story.estimatedReadingTime}
+                          images={_.first(story.storyImages)}
+                          actionMenu
+                          optionButtons={{
+                            unfollow: () => dispatch(followerConnectionActions.unfollowRequest({ 
+                              userId, 
+                              followingUserId: story.followerConnection.followingUser
+                            })),
+                            report: () => dispatch(reportActions.reportStoryRequest({
+                              userId, 
+                              storyId: story._id, 
+                              reportedUserId: story.followerConnection.followingUser
+                            }))
+                          }}
+                        />
+                      ))}
+                    </ListObserver>
+                  )}
+                    {/* {posts.map((post) => (
                       <PostCard
                         key={post.id}
                         noActiveBookmark
@@ -204,7 +260,7 @@ export default function Home() {
                         authorImage={post.author.image}
                         storyUrl={post.href}
                         timeAgo={post.author.timeAgo}
-                        title={post.title}
+                        title={"BUNEEEEE"}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}
                         badgeName={post.badgeName}
@@ -212,28 +268,28 @@ export default function Home() {
                         images={post.image}
                         actionMenu={post.actionMenu}
                       />
-                    ))}
+                    ))} */}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))}
+                      {posts.map((post) => (
+                        <PostCard
+                          key={post.id}
+                          noActiveBookmark
+                          normalMenu
+                          authorUrl={post.author.href}
+                          authorName={post.author.name}
+                          authorImage={post.author.image}
+                          storyUrl={post.href}
+                          timeAgo={post.author.timeAgo}
+                          title={post.title}
+                          infoText={post.infoText}
+                          badgeUrl={post.badgeUrl}
+                          badgeName={post.badgeName}
+                          min={post.min}
+                          images={post.image}
+                          actionMenu={post.actionMenu}
+                        />
+                      ))}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
@@ -257,3 +313,17 @@ export default function Home() {
     </div>
   );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  (store) =>
+    async ({ params }) => {
+      // we can set the initial state from here
+      // we are setting to false but you can run your custom logic here
+      console.log("State on server", store.getState());
+      return {
+        props: {
+          authState: false,
+        },
+      };
+    }
+);

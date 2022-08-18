@@ -1,15 +1,11 @@
 import { db } from "@/utils/altogic"
 
 const FollowerConnectionService = {
-    getFollowingStories(userId) {
+    unfollow(userId, followingUserId) {
         return db
         .model('follower_connection')
-        .filter(`followerUser == '${userId}'`)
-        .lookup({ field: 'followingUser' })
-        // .lookup({ field: "stories" })
-        .limit(50)
-        // .sort('createdAt', 'desc')
-        .get()
+        .filter(`followerUser == '${userId}' && followingUser == '${followingUserId}'`)
+        .delete()
     }
 }
 
