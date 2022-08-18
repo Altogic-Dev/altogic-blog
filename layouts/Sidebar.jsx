@@ -924,6 +924,31 @@ export default function Sidebar({
           </ul>
         </div>
       )}
+      <div>
+        <ul
+          className="flex flex-wrap items-center mt-3 text-xs text-gray-500"
+          style={{ listStyle: 'none' }}
+        >
+          <li className="pr-2 pt-2">
+            <a href="#">Writers</a>
+          </li>
+          <li className="pr-2 pt-2">
+            <a href="#">Blog</a>
+          </li>
+          <li className="pr-2 pt-2">
+            <a href="#">Privacy</a>
+          </li>
+          <li className="pr-2 pt-2">
+            <a href="#">Terms</a>
+          </li>
+          <li className="pr-2 pt-2">
+            <a href="#">About</a>
+          </li>
+          <li className="pr-2 pt-2">
+            <a href="#">Altogic</a>
+          </li>
+        </ul>
+      </div>
     </>
   );
 }
