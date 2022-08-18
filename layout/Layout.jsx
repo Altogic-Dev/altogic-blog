@@ -2,7 +2,7 @@ import React from 'react';
 import ScrollToTop from '@/components/ScrollToTop';
 import Link from 'next/link';
 import Footer from './Footer';
-import Header from './Header';
+import Header from '../components/Header';
 
 export default function Layout({ children }) {
   return (
