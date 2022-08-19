@@ -1,4 +1,4 @@
-import { call, takeEvery, put, fork, take } from 'redux-saga/effects';
+import { call, takeEvery } from 'redux-saga/effects';
 import FollowerConnectionService from '@/services/followerConnection';
 import { followerConnectionActions } from './followerConnectionSlice';
 
