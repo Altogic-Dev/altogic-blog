@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../layout/Layout';
-import PostCard from '../components/PostCard';
-import Sidebar from '@/layout/SideBar';
+import { reportActions } from '@/redux/report/reportSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from "luxon"
 import _ from 'lodash';
-import ListObserver from '@/components/ListObserver';
 import { wrapper } from '@/redux/store';
-import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
-import { reportActions } from '@/redux/report/reportSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import ListObserver from '@/components/ListObserver';
+import Layout from '../layout/Layout';
+import PostCard from '../components/PostCard';
+import Sidebar from '@/layout/SideBar';
+
 
 const posts = [
   {

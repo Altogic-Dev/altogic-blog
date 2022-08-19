@@ -1,5 +1,6 @@
-import { call, takeEvery } from 'redux-saga/effects';
 import FollowerConnectionService from '@/services/followerConnection';
+import { call, takeEvery } from 'redux-saga/effects';
+
 import { followerConnectionActions } from './followerConnectionSlice';
 
 
@@ -26,4 +27,5 @@ function* followUserSaga({ payload: { followerUser, followingUser } }) {
 
 export default function* rootSaga() {
   yield takeEvery(followerConnectionActions.unfollowRequest.type, unfollowSaga);
+  yield takeEvery(followerConnectionActions.followUserRequest.type, followUserSaga);
 }

@@ -1,10 +1,10 @@
 
 
 import _ from "lodash";
+import StoryService from "@/services/story";
 import { call, takeEvery, put } from "redux-saga/effects";
 import { storyActions } from "./storySlice";
 
-import StoryService from "@/services/story";
 
 function* getFollowingStoriesSaga({payload: { userId, page }}) {
   try {

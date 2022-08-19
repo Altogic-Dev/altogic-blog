@@ -5,7 +5,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   followingStories: null,
   followingActionResult: null,
-  isLoading:false
+  isLoading: false,
 };
 
 // Actual Slice
@@ -18,10 +18,12 @@ export const followerConnectionSlice = createSlice({
     unfollowRequest(state) {
       state.isLoading = true;
     },
-    unfollowSuccess(state, action) {},
+    unfollowSuccess(state) {
+      state.isLoading = false;
+    },
 
     followUserRequest(state) {
-      state.isLoading = true
+      state.isLoading = true;
     },
     followUserSuccess(state, action) {
       state.isLoading = false;
@@ -36,12 +38,11 @@ export const followerConnectionSlice = createSlice({
     extraReducers: {
       [HYDRATE]: (state, action) => ({
         ...state,
-        ...action.payload.auth,
+        ...action.payload.followerConnection,
       }),
     },
   },
 });
-
 
 export const followerConnectionActions = followerConnectionSlice.actions;
 
