@@ -3,8 +3,11 @@ import { createWrapper } from 'next-redux-wrapper';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
 
-import { authSlice } from './auth/authSlice';
-import { followerConnectionSlice } from './followerConnection/followerConnectionSlice';
+
+import { authSlice } from "./auth/authSlice";
+import { followerConnectionSlice } from "./followerConnection/followerConnectionSlice";
+import { storySlice } from "./story/storySlice";
+import { reportSlice } from "./report/reportSlice";
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -14,7 +17,9 @@ const makeStore = () => {
     reducer: {
       [authSlice.name]: authSlice.reducer,
       [followerConnectionSlice.name]: followerConnectionSlice.reducer,
-      [recommendationsSlice.name]: followerConnectionSlice.reducer,
+      [storySlice.name]: storySlice.reducer,
+      [reportSlice.name]: reportSlice.reducer,
+      [recommendationsSlice.name]: followerConnectionSlice.reducer
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>

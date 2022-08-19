@@ -14,12 +14,11 @@ export const followerConnectionSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getFollowingStoriesRequest(state) {
+
+    unfollowRequest(state) {
       state.isLoading = true;
     },
-    getFollowingStoriesSuccess(state, action) {
-      state.followingStories = action.payload;
-    },
+    unfollowSuccess(state, action) {},
 
     followUserRequest(state) {
       state.isLoading = true

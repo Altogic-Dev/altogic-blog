@@ -1,8 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '../layout/Layout';
-import Sidebar from '../layout/SideBar';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/SideBar';
 
 const allNotifications = [
   {

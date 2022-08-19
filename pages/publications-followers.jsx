@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
