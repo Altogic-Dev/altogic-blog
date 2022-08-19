@@ -70,6 +70,17 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    resetPasswordRequested(state) {
+      state.isLoading = true;
+    },
+    resetPasswordSuccess(state) {
+      state.isLoading = false;
+      window.location.href = '/reset-password-successfull';
+    },
+    resetPasswordFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
     authenticateWithProviderRequested(state) {
       state.isLoading = false;
     },

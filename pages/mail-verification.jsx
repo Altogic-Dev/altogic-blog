@@ -1,11 +1,11 @@
-import Link from 'next/link';
-import { MailOpenIcon, ArrowLeftIcon } from '@heroicons/react/outline';
+import { MailOpenIcon } from '@heroicons/react/outline';
 import AuthSidebar from '@/components/AuthSidebar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Button from '@/components/Button';
 import { useDispatch } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
+import BackToLogin from '@/components/BackToLogin';
 
 export default function Login() {
   const router = useRouter();
@@ -46,12 +46,7 @@ export default function Login() {
                   </a>
                 </Button>
               </p>
-              <Link href="/login">
-                <a className="inline-flex items-center gap-2 text-sm font-medium tracking-sm text-slate-500">
-                  <ArrowLeftIcon className="w-5 h-5 text-slate-500" />
-                  Back to login
-                </a>
-              </Link>
+              <BackToLogin />
             </div>
           </div>
         </div>
