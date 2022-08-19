@@ -1,8 +1,9 @@
-import { db } from "@/utils/altogic"
+import { db } from '@/utils/altogic';
 
 const FollowerConnectionService = {
-    getFollowingStories(userId) {
-        return db
+  getFollowingStories(userId) {
+    return (
+      db
         .model('follower_connection')
         .filter(`followerUser == '${userId}'`)
         .lookup({ field: 'followingUser' })
@@ -10,7 +11,23 @@ const FollowerConnectionService = {
         .limit(50)
         // .sort('createdAt', 'desc')
         .get()
-    }
-}
+    );
+  },
 
-export default FollowerConnectionService
+  followUser(followerUser, followingUser) {
+    return db.model('follower_connection').create({
+      followerName: `${followerUser.name} ${followerUser.surname}`,
+      followerUsername: followerUser.username,
+      followerUserProfilePicture: followerUser.profilePicture,
+      followerUser: followerUser?._id,
+      followerUserAbout: followerUser.about,
+      followingName: `${followingUser.name} ${followingUser.surname}`,
+      followingUsername: followingUser.username,
+      followingUserProfilePicture: followingUser.profilePicture,
+      followingUser: followingUser?._id,
+      followingUserAbout: followingUser.about,
+    });
+  },
+};
+
+export default FollowerConnectionService;

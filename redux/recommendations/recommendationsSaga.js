@@ -25,6 +25,7 @@ function* getWhoToFollowSaga() {
 }
 export default function* rootSaga() {
   yield takeEvery(
+    recommendationsActions.getWhoToFollowMinimizedRequest.type,
     recommendationsActions.getWhoToFollowRequest.type,
     getWhoToFollowSaga,
     getWhoToFollowMinimizedSaga
