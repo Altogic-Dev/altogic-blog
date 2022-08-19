@@ -108,15 +108,15 @@ function* authenticateWithProvider({payload:provider}) {
 
 
 export default function* rootSaga() {
-  yield takeEvery(authActions.registerRequested.type, registerSaga);
-  yield takeEvery(authActions.getAuthGrantRequested.type, getAuthGrantSaga);
-  yield takeEvery(authActions.loginRequested.type, loginSaga);
-  yield takeEvery(authActions.forgotPasswordRequested.type, forgotPassword);
-  yield takeEvery(authActions.resetPasswordRequested.type, resetPassword);
+  yield takeEvery(authActions.registerRequest.type, registerSaga);
+  yield takeEvery(authActions.getAuthGrantRequest.type, getAuthGrantSaga);
+  yield takeEvery(authActions.loginRequest.type, loginSaga);
+  yield takeEvery(authActions.forgotPasswordRequest.type, forgotPassword);
+  yield takeEvery(authActions.resetPasswordRequest.type, resetPassword);
   yield takeEvery(
-    authActions.resendVerificationEmailRequested.type,
+    authActions.resendVerificationEmailRequest.type,
     resendVerificationEmail
   );
-  yield takeEvery(authActions.authenticateWithProviderRequested.type, authenticateWithProvider);
+  yield takeEvery(authActions.authenticateWithProviderRequest.type, authenticateWithProvider);
 
 }

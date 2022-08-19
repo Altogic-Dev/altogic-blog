@@ -13,7 +13,7 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    registerRequested(state) {
+    registerRequest(state) {
       state.isLoading = true;
     },
     registerSuccess(state, action) {
@@ -25,7 +25,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    getAuthGrantRequested(state) {
+    getAuthGrantRequest(state) {
       state.isLoading = true;
     },
     loginSuccess(state, action) {
@@ -41,14 +41,14 @@ export const authSlice = createSlice({
     setUser(state, action) {
       state.user = action.payload;
     },
-    loginRequested(state) {
+    loginRequest(state) {
       state.isLoading = true;
     },
     loginFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },
-    forgotPasswordRequested(state) {
+    forgotPasswordRequest(state) {
       state.isLoading = true;
     },
     forgotPasswordSuccess(state) {
@@ -60,7 +60,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    resendVerificationEmailRequested(state) {
+    resendVerificationEmailRequest(state) {
       state.isLoading = true;
     },
     resendVerificationEmailSuccess(state) {
@@ -70,7 +70,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    resetPasswordRequested(state) {
+    resetPasswordRequest(state) {
       state.isLoading = true;
     },
     resetPasswordSuccess(state) {
@@ -81,7 +81,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    authenticateWithProviderRequested(state) {
+    authenticateWithProviderRequest(state) {
       state.isLoading = false;
     },
     authenticateWithProviderFailure(state, action) {

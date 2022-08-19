@@ -7,7 +7,7 @@ export default function SocialProviders() {
 
   const handleProviderLogin = (provider) => {
 
-   dispatch(authActions.authenticateWithProviderRequested(provider));
+   dispatch(authActions.authenticateWithProviderRequest(provider));
 
   }
 

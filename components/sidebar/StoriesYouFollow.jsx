@@ -97,7 +97,7 @@ export default function StoriesYouFollow() {
             className="group relative z-[5] flex w-14 h-14 flex-shrink-0"
           >
             <a href={storiesFollow.href}>
-              <Avatar
+              <Avatar   
                 className="rounded-full"
                 src={storiesFollow.image}
                 alt={storiesFollow.name}

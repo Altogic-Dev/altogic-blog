@@ -16,7 +16,7 @@ export default function Login() {
   const dispatch = useDispatch();
 
   async function formSubmit(form) {
-    dispatch(authActions.forgotPasswordRequested({ ...form }));
+    dispatch(authActions.forgotPasswordRequest({ ...form }));
   }
   const error = useSelector((state) => state.auth.error);
   const {

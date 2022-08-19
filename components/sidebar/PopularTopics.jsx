@@ -1,49 +1,30 @@
+import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
 export default function PopularTopics() {
-    const topics = [
-        {
-          id: 0,
-          name: 'Technology',
-          href: '#',
-        },
-        {
-          id: 1,
-          name: 'Money',
-          href: '#',
-        },
-        {
-          id: 2,
-          name: 'App',
-          href: '#',
-        },
-        {
-          id: 3,
-          name: 'Mindfulness',
-          href: '#',
-        },
-        {
-          id: 4,
-          name: 'Art',
-          href: '#',
-        },
-        {
-          id: 5,
-          name: 'Yoga',
-          href: '#',
-        },
-        {
-          id: 6,
-          name: 'Caravan Camping',
-          href: '#',
-        },
-      ];
-      
+  const popularTopics = useSelector(
+    (state) => state.recommendations.popularTopics
+  );
+
+
+
+
+  const dispatch = useDispatch();
+  const getPopularTopics = () => {
+    dispatch(recommendationsActions.getPopularTopicsRequest());
+  };
+
+  useEffect(() => {
+    getPopularTopics();
+  }, []);
+
   return (
     <div>
       <SidebarTitle title="Popular Topics" spacing="mb-4" />
       <div className="flex flex-wrap gap-x-2 gap-y-4">
-        {topics.map((topic) => (
+        {popularTopics?.map((topic) => (
           <a
             key={topic.id}
             href={topic.href}

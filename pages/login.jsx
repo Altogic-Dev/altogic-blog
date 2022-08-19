@@ -26,7 +26,7 @@ export default function Login() {
   });
   async function formSubmit(data) {
     dispatch(
-      authActions.loginRequested({
+      authActions.loginRequest({
         ...data,
       })
     );
