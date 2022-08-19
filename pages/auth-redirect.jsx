@@ -32,7 +32,7 @@ export default function AuthRedirect(props) {
       router.push('/login');
     } else if (router.query.action === 'reset-pwd') {
       router.push({
-        pathname: 'set-new-password',
+        pathname: 'reset-password',
         query: { access_token: router.query.access_token },
       });
     } else if (router.query.action === 'change-email') {

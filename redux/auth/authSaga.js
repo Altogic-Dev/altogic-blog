@@ -2,11 +2,11 @@ import AuthService from '@/services/auth';
 import { takeEvery, put, call } from 'redux-saga/effects';
 import { authActions } from './authSlice';
 
-function* registerSaga({ payload: user }) {
+function* registerSaga({ payload: req }) {
   try {
-    const { data, errors } = yield call(AuthService.register, user);
-    if (data) {
-      yield put(authActions.registerSuccess(data));
+    const { user, errors } = yield call(AuthService.register, req);
+    if (user) {
+      yield put(authActions.registerSuccess(user));
     }
     if (errors) {
       throw errors.items;
@@ -43,13 +43,13 @@ function* getAuthGrantSaga({ payload }) {
 }
 function* loginSaga({ payload }) {
   try {
-    const { data, errors } = yield call(
+    const { user, errors } = yield call(
       AuthService.login,
       payload.email,
       payload.password
     );
-    if (data) {
-      yield put(authActions.loginSuccess(data));
+    if (user) {
+      yield put(authActions.loginSuccess(user));
     }
     if (errors) {
       throw errors.items;
@@ -82,12 +82,25 @@ function* resendVerificationEmail({ payload: email }) {
     yield put(authActions.resendVerificationEmailFailure(e));
   }
 }
+function* resetPassword({ payload }) {
+  try {
+    const { errors } = yield call(AuthService.resetPassword, payload);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.resetPasswordSuccess());
+    }
+  } catch (e) {
+    yield put(authActions.resetPasswordFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield takeEvery(authActions.registerRequested.type, registerSaga);
   yield takeEvery(authActions.getAuthGrantRequested.type, getAuthGrantSaga);
   yield takeEvery(authActions.loginRequested.type, loginSaga);
   yield takeEvery(authActions.forgotPasswordRequested.type, forgotPassword);
+  yield takeEvery(authActions.resetPasswordRequested.type, resetPassword);
   yield takeEvery(
     authActions.resendVerificationEmailRequested.type,
     resendVerificationEmail
