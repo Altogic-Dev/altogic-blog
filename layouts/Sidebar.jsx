@@ -1,7 +1,8 @@
+import React, { Fragment, useState, useEffect } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Link from 'next/link';
-import { Fragment, useState } from 'react';
 import SidebarTitle from '../components/SidebarTitle';
+import HoverDetails from '@/components/HoverDetails';
 
 const storiesFollows = [
   {
@@ -268,6 +269,12 @@ export default function Sidebar({
   publicationProfile,
 }) {
   const [whoTheFollowModal, setWhoTheFollowModal] = useState(false);
+  const [isShownA, setIsShownA] = useState(false);
+  const [isShownB, setIsShownB] = useState(false);
+  const [shownUser, setShownUser] = useState({});
+  useEffect(() => {
+    if (isShownA === false && isShownB === false) setShownUser({});
+  }, [isShownA, isShownB]);
 
   return (
     <>
@@ -726,24 +733,50 @@ export default function Sidebar({
           <SidebarTitle title="Stories you follow" spacing="mb-4" />
           <div className="flex items-center gap-3 overflow-x-auto">
             {storiesFollows.map((storiesFollow) => (
-              <a
-                key={storiesFollow.id}
-                href={storiesFollow.href}
-                className="relative w-14 h-14 flex-shrink-0"
-              >
-                <img
-                  className="rounded-full"
-                  src={storiesFollow.image}
-                  alt={storiesFollow.name}
-                />
-                {storiesFollow.badge && (
-                  <span className="inline-flex items-center justify-center absolute bottom-0 right-0 w-[18px] h-[18px] bg-purple-500 text-white text-xs tracking-sm rounded-full ring-2 ring-white">
-                    {storiesFollow.badge}
-                  </span>
-                )}
-              </a>
+              <Link key={storiesFollow.id} href={storiesFollow.href}>
+                <div
+                  onMouseEnter={() => {
+                    setIsShownA(true);
+                    setShownUser(storiesFollow);
+                  }}
+                  onMouseLeave={() => {
+                    setIsShownA(false);
+                    setIsShownB(false);
+                  }}
+                  className="relative w-14 h-14 flex-shrink-0 cursor-pointer"
+                >
+                  <img
+                    className="rounded-full"
+                    src={storiesFollow.image}
+                    alt={storiesFollow.name}
+                  />
+                  {storiesFollow.badge && (
+                    <span className="inline-flex items-center justify-center absolute bottom-0 right-0 w-[18px] h-[18px] bg-purple-500 text-white text-xs tracking-sm rounded-full ring-2 ring-white">
+                      {storiesFollow.badge}
+                    </span>
+                  )}
+                </div>
+              </Link>
             ))}
           </div>
+          {(isShownA || isShownB) && (
+            <div
+              className="relative"
+              onMouseEnter={() => {
+                setIsShownB(true);
+              }}
+              onMouseLeave={() => {
+                setIsShownB(false);
+                setShownUser({});
+              }}
+            >
+              <HoverDetails
+                profilePicture={shownUser.image}
+                name={shownUser.name}
+                profileHref={shownUser.profileHref}
+              />
+            </div>
+          )}
         </div>
       )}
       {whoTheFollow && (
