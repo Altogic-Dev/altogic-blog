@@ -1,5 +1,6 @@
 import AuthService from '@/services/auth';
-import { takeEvery, put, call } from 'redux-saga/effects';
+import _ from 'lodash';
+import { takeEvery, put, call, all, select } from 'redux-saga/effects';
 import { authActions } from './authSlice';
 
 function* registerSaga({ payload: user }) {
@@ -83,13 +84,46 @@ function* resendVerificationEmail({ payload: email }) {
   }
 }
 
+function* muteAuthorSaga({ payload: mutedUserId }) {
+  try {
+    const userFromLocal = yield select((state) => state.auth.user);
+    if (
+      !_.isNil(userFromLocal.mutedUsers) &&
+      _.includes(userFromLocal.mutedUsers, mutedUserId)
+    ) {
+      throw 'This user is already muted.';
+    } else {
+      const newMutedUsers = _.isNil(userFromLocal.mutedUsers)
+        ? [mutedUserId]
+        : [...userFromLocal.mutedUsers, mutedUserId];
+      const { errors } = yield call(AuthService.updateUser, {
+        mutedUser: newMutedUsers,
+      });
+      if (!errors) {
+        yield put(
+          authActions.muteAuthorSuccess({ newMutedUsers, mutedUserId })
+        );
+        AuthService.setUserFromLocal({
+          ...userFromLocal,
+          mutedUser: newMutedUsers,
+        });
+      }
+    }
+  } catch (e) {
+    console.log({ e });
+  }
+}
+
 export default function* rootSaga() {
-  yield takeEvery(authActions.registerRequested.type, registerSaga);
-  yield takeEvery(authActions.getAuthGrantRequested.type, getAuthGrantSaga);
-  yield takeEvery(authActions.loginRequested.type, loginSaga);
-  yield takeEvery(authActions.forgotPasswordRequested.type, forgotPassword);
-  yield takeEvery(
-    authActions.resendVerificationEmailRequested.type,
-    resendVerificationEmail
-  );
+  yield all([
+    takeEvery(authActions.registerRequested.type, registerSaga),
+    takeEvery(authActions.getAuthGrantRequested.type, getAuthGrantSaga),
+    takeEvery(authActions.loginRequested.type, loginSaga),
+    takeEvery(authActions.forgotPasswordRequested.type, forgotPassword),
+    takeEvery(
+      authActions.resendVerificationEmailRequested.type,
+      resendVerificationEmail
+    ),
+    takeEvery(authActions.muteAuthorRequested.type, muteAuthorSaga),
+  ]);
 }
