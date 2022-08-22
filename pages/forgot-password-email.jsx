@@ -1,10 +1,11 @@
-import { ArrowLeftIcon, KeyIcon } from '@heroicons/react/outline';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import Button from '@/components/Button';
+import BackToLogin from '@/components/BackToLogin';
+import AuthSidebar from '@/components/AuthSidebar';
+import { KeyIcon } from '@heroicons/react/outline';
 
 export default function Login() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function Login() {
   }, [router.isReady]);
 
   const resendEmail = () => {
-    dispatch(authActions.forgotPasswordRequested({ email }));
+    dispatch(authActions.forgotPasswordRequest({ email }));
   };
   return (
     <div className="relative h-screen">
@@ -44,22 +45,11 @@ export default function Login() {
                   </a>
                 </Button>
               </p>
-              <Link href="login">
-                <a className="inline-flex items-center gap-2 text-sm font-medium tracking-sm text-slate-500">
-                  <ArrowLeftIcon className="w-5 h-5 text-slate-500" />
-                  Back to login
-                </a>
-              </Link>
+              <BackToLogin />
             </div>
           </div>
         </div>
-        <div className="hidden xl:block relative">
-          <img
-            className="absolute inset-0 h-full w-full object-cover"
-            src="./login.png"
-            alt=""
-          />
-        </div>
+        <AuthSidebar />
       </div>
     </div>
   );

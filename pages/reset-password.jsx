@@ -1,24 +1,38 @@
-import { KeyIcon } from '@heroicons/react/outline';
-import Input from '@/components/Input';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
+import BackToLogin from '@/components/BackToLogin';
+import { KeyIcon } from '@heroicons/react/outline';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import AuthSidebar from '@/components/AuthSidebar';
+import Input from '@/components/Input';
 import { authActions } from '@/redux/auth/authSlice';
-import BackToLogin from '@/components/BackToLogin';
 
-export default function Login() {
+export default function ResetPassword() {
+  const router = useRouter();
+  const { query } = router;
+
+  const key = query.access_token;
+
   const registerSchema = new yup.ObjectSchema({
-    email: yup.string().email().required('Email is required'),
+    password: yup.string().required('Password is required'),
+    passwordConfirmation: yup
+      .string()
+      .min(8, 'Password must be at least 8 characters')
+      .max(50, 'Password must be at most 50 characters')
+      .oneOf([yup.ref('password'), null], 'Passwords must match'),
   });
   const dispatch = useDispatch();
-
-  async function formSubmit(form) {
-    dispatch(authActions.forgotPasswordRequest({ ...form }));
-  }
   const error = useSelector((state) => state.auth.error);
+  async function formSubmit(form) {
+    const pswChangeForm = {
+      newPassword: form.password,
+      accessToken: key,
+    };
+    dispatch(authActions.resetPasswordRequest({ ...pswChangeForm }));
+  }
+
   const {
     handleSubmit,
     register,
@@ -27,13 +41,9 @@ export default function Login() {
   } = useForm({
     resolver: yupResolver(registerSchema),
   });
-
   useEffect(() => {
     if (error) {
-      error.forEach((err) => {
-        if (err.message !== 'A user with the provided email already exists.')
-          setError('email', { type: 'manuel', message: err.message });
-      });
+      setError('email', { type: 'manuel', message: 'An error occured' });
     }
   }, [error, setError]);
   return (
@@ -46,10 +56,10 @@ export default function Login() {
                 <KeyIcon className="w-7 h-7 text-purple-600" />
               </span>
               <h1 className="text-3xl font-semibold text-slate-800">
-                Forgot password?
+                Reset password
               </h1>
               <p className="mt-4 text-base tracking-sm text-slate-600">
-                No worries, we’ll send you reset instructions.
+                Must be at least 8 characters.
               </p>
             </div>
 
@@ -57,19 +67,30 @@ export default function Login() {
               <div className="mt-6">
                 <form onSubmit={handleSubmit(formSubmit)} className="space-y-6">
                   <Input
-                    label="Email"
-                    id="email"
-                    name="email"
-                    register={register('email')}
-                    error={errors.email}
-                    placeholder="johndoe@example.com"
+                    label="Password"
+                    id="password"
+                    type="password"
+                    name="password"
+                    register={register('password')}
+                    error={errors.password}
+                    placeholder="Password"
                   />
+                  <Input
+                    label="Password Confirm"
+                    id="passwordConfirmation"
+                    type="password"
+                    name="passwordConfirmation"
+                    register={register('passwordConfirmation')}
+                    error={errors.passwordConfirmation}
+                    placeholder="Password Confirm"
+                  />
+
                   <div>
                     <button
                       type="submit"
                       className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                     >
-                      Reset password
+                      Continue
                     </button>
                   </div>
                 </form>
@@ -78,7 +99,13 @@ export default function Login() {
             </div>
           </div>
         </div>
-        <AuthSidebar />
+        <div className="hidden xl:block relative">
+          <img
+            className="absolute inset-0 h-full w-full object-cover"
+            src="./login.png"
+            alt=""
+          />
+        </div>
       </div>
     </div>
   );

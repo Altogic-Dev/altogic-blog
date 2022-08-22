@@ -61,6 +61,12 @@ const AuthService = {
   },
   async updateUser(newUser) {
     return db.model('users').object(auth.getUser()._id).update(newUser);
+
+  async resetPassword({ accessToken, newPassword }) {
+    return auth.resetPwdWithToken(accessToken, newPassword);
+  },
+  async authenticateWithProvider(provider) {
+    return auth.signInWithProvider(provider);
   },
 };
 export default AuthService;

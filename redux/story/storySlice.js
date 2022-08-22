@@ -1,32 +1,36 @@
-import { createSlice } from "@reduxjs/toolkit";
-import _ from "lodash";
-import { HYDRATE } from "next-redux-wrapper";
+import { createSlice } from '@reduxjs/toolkit';
+import _ from 'lodash';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
   followingStories: null,
   followingStoriesInfo: null,
-
   recommendedStories: null,
   recommendedStoriesInfo: null,
+  isLoading: false,
+
 };
 
 // Actual Slice
 export const storySlice = createSlice({
-  name: "story",
+  name: 'story',
   initialState,
   reducers: {
-
     // Action to set the authentication status
-    getFollowingStoriesRequest(state, action) {
+    getFollowingStoriesRequest(state) {
+      state.isLoading = true
     },
     getFollowingStoriesSuccess(state, action) {
-      if(_.isArray(state.followingStories)) {
-        state.followingStories = [...state.followingStories, ...action.payload.data]
+      if (_.isArray(state.followingStories)) {
+        state.followingStories = [
+          ...state.followingStories,
+          ...action.payload.data,
+        ];
       } else {
-        state.followingStories = action.payload.data
+        state.followingStories = action.payload.data;
       }
-      state.followingStoriesInfo = action.payload.info
+      state.followingStoriesInfo = action.payload.info;
     },
     // Action to set the authentication status
     getRecommendedStoriesRequest(state, action) {
@@ -42,14 +46,11 @@ export const storySlice = createSlice({
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
-      [HYDRATE]: (state, action) => {
-        return {
-          ...state,
-          ...action.payload.story,
-        };
-      },
+      [HYDRATE]: (state, action) => ({
+        ...state,
+        ...action.payload.story,
+      }),
     },
-
   },
 });
 

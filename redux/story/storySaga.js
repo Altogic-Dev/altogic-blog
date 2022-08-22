@@ -4,7 +4,7 @@ import { storyActions } from './storySlice';
 
 import StoryService from '@/services/story';
 
-function* getFollowingStoriesSaga({ payload: { userId, page } }) {
+function* getFollowingStoriesSaga({payload: { userId, page }}) {
   try {
     const user = yield select((state) => state.auth.user);
     const { data, error } = yield call(

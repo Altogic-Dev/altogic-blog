@@ -3,11 +3,11 @@ import _ from 'lodash';
 import { takeEvery, put, call, all, select } from 'redux-saga/effects';
 import { authActions } from './authSlice';
 
-function* registerSaga({ payload: user }) {
+function* registerSaga({ payload: req }) {
   try {
-    const { data, errors } = yield call(AuthService.register, user);
-    if (data) {
-      yield put(authActions.registerSuccess(data));
+    const { user, errors } = yield call(AuthService.register, req);
+    if (user) {
+      yield put(authActions.registerSuccess(user));
     }
     if (errors) {
       throw errors.items;
@@ -44,13 +44,13 @@ function* getAuthGrantSaga({ payload }) {
 }
 function* loginSaga({ payload }) {
   try {
-    const { data, errors } = yield call(
+    const { user, errors } = yield call(
       AuthService.login,
       payload.email,
       payload.password
     );
-    if (data) {
-      yield put(authActions.loginSuccess(data));
+    if (user) {
+      yield put(authActions.loginSuccess(user));
     }
     if (errors) {
       throw errors.items;
@@ -83,6 +83,30 @@ function* resendVerificationEmail({ payload: email }) {
     yield put(authActions.resendVerificationEmailFailure(e));
   }
 }
+function* resetPassword({ payload }) {
+  try {
+    const { errors } = yield call(AuthService.resetPassword, payload);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.resetPasswordSuccess());
+    }
+  } catch (e) {
+    yield put(authActions.resetPasswordFailure(e));
+  }
+}
+
+function* authenticateWithProvider({payload:provider}) {
+  try {
+    const { errors } = yield call(AuthService.authenticateWithProvider,provider);
+    if (errors) {
+      throw errors.items;
+    } 
+  } catch (e) {
+    yield put(authActions.authenticateWithProviderFailure(e));
+  }
+}
+
 
 function* muteAuthorSaga({ payload: mutedUserId }) {
   try {
@@ -125,5 +149,6 @@ export default function* rootSaga() {
       resendVerificationEmail
     ),
     takeEvery(authActions.muteAuthorRequested.type, muteAuthorSaga),
+    takeEvery(authActions.authenticateWithProviderRequest.type, authenticateWithProvider)
   ]);
 }
