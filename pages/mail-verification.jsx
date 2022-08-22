@@ -19,7 +19,7 @@ export default function Login() {
   }, [router.isReady]);
 
   const resendVerificationEmail = () => {
-    dispatch(authActions.resendVerificationEmailRequested(email));
+    dispatch(authActions.resendVerificationEmailRequest(email));
   };
 
   return (

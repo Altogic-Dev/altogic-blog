@@ -51,7 +51,9 @@ export default function Followings() {
   };
 
   useEffect(() => {
+
     getFollowings()
+
   }, [sessionUser]);
 
   return (

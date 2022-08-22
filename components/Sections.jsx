@@ -1,11 +1,11 @@
 import { useState, Fragment } from "react";
+import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
 import { Listbox, Transition, Tab, Switch } from "@headlessui/react";
+import Sidebar from "@/Sidebar/Sidebar";
 import PublicationsNormalCard from "./PublicationsNormalCard";
 import PublicationsFullImageVerticalCard from "./PublicationsFullImageVerticalCard";
 import PublicationsStreamCard from "./PublicationsStreamCard";
 import PublicationsListImageCard from "./PublicationsListImageCard";
-import Sidebar from "./Sidebar";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
 
 const sections = [
   { id: 1, tag: "Stories in a tag" },

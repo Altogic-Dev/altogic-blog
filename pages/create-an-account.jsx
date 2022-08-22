@@ -35,7 +35,7 @@ export default function CreateAnAccount() {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    dispatch(authActions.registerRequested(data));
+    dispatch(authActions.registerRequest(data));
   };
 
   useEffect(() => {
