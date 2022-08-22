@@ -4,38 +4,38 @@ import { recommendationsActions } from './recommendationsSlice';
 
 function* getWhoToFollowMinimizedSaga() {
   try {
-    const { data, error } = yield call(
+    const { data, errors } = yield call(
       RecommendationsService.getWhoToFollowMinimized
     );
-    console.log({ data, error });
+    if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.fetchDataSuccess());
-    else if (error) yield put(recommendationsActions.fetchDataFailure(error));
   } catch (e) {
+    yield put(recommendationsActions.fetchDataFailure(e));
     console.error({ e });
   }
 }
 
 function* getWhoToFollowSaga() {
   try {
-    const { data, error } = yield call(RecommendationsService.getWhoToFollow);
+    const { data, errors } = yield call(RecommendationsService.getWhoToFollow);
 
+    if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.getWhoToFollowSuccess(data));
-    else if (error)
-      yield put(recommendationsActions.getWhoToFollowFailure(error));
   } catch (e) {
     console.error({ e });
+    yield put(recommendationsActions.getWhoToFollowFailure(e));
   }
 }
 function* getPopularTopicsSaga() {
   try {
-    const { data, error } = yield call(RecommendationsService.getPopularTopics);
+    const { data, errors } = yield call(
+      RecommendationsService.getPopularTopics
+    );
 
-    console.log(data)
-    debugger
+    if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.fetchDataSuccess(data));
-    else if (error) yield put(recommendationsActions.fetchDataFailure(error));
   } catch (e) {
-    console.error({ e });
+    yield put(recommendationsActions.fetchDataFailure(e));
   }
 }
 export default function* rootSaga() {

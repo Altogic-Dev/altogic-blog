@@ -9,6 +9,12 @@ const FollowerConnectionService = {
       )
       .delete();
   },
+  getFollowingUsers(userId) {
+    return db
+      .model('follower_connection')
+      .filter(`followingUser == '${userId}'`)
+      .get();
+  },
 
   followUser(followerUser, followingUser) {
     return db.model('follower_connection').create({

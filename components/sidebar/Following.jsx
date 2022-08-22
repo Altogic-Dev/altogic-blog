@@ -5,60 +5,61 @@ import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
 export default function Followings() {
-  const followings = [
-    {
-      id: 0,
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      name: 'Emilia Gates',
-    },
-    {
-      id: 1,
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      name: 'Marley Rhiel Madsen',
-    },
-    {
-      id: 2,
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      name: 'Omar Lipshutz',
-    },
-    {
-      id: 3,
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      name: 'Emma Laurden',
-    },
-    {
-      id: 4,
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      name: 'Olivia Rhye',
-    },
-  ];
+  // const followings = [
+  //   {
+  //     id: 0,
+  //     href: '#',
+  //     image:
+  //       'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  //     name: 'Emilia Gates',
+  //   },
+  //   {
+  //     id: 1,
+  //     href: '#',
+  //     image:
+  //       'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  //     name: 'Marley Rhiel Madsen',
+  //   },
+  //   {
+  //     id: 2,
+  //     href: '#',
+  //     image:
+  //       'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  //     name: 'Omar Lipshutz',
+  //   },
+  //   {
+  //     id: 3,
+  //     href: '#',
+  //     image:
+  //       'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  //     name: 'Emma Laurden',
+  //   },
+  //   {
+  //     id: 4,
+  //     href: '#',
+  //     image:
+  //       'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+  //     name: 'Olivia Rhye',
+  //   },
+  // ];
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const followings = useSelector((state) => state.followerConnection.followingUsers);
   const dispatch = useDispatch();
 
   const getFollowings = () => {
-    dispatch(followerConnectionActions.getFollowingUsers(sessionUser));
+    dispatch(followerConnectionActions.getFollowingUsersRequest(sessionUser));
   };
 
   useEffect(() => {
-    dispatch(getFollowings);
+    getFollowings();
   }, [sessionUser]);
 
   return (
     <div>
       <SidebarTitle title="Following" spacing="mb-4" />
       <div className="flex flex-col gap-3">
-        {followings.map((person) => (
+        {followings?.map((person) => (
           <a
             key={person.id}
             href={person.href}
