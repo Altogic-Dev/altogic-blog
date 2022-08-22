@@ -10,6 +10,8 @@ import { storySlice } from "./story/storySlice";
 import { reportSlice } from "./report/reportSlice";
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
 import { topicsSlice } from './topics/topicsSlice';
+import {subscribeSlice} from './subscribe/subscribeSlice';
+import {publicationSlice} from './publication/publicationSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -22,6 +24,8 @@ const makeStore = () => {
       [reportSlice.name]: reportSlice.reducer,
       [recommendationsSlice.name]: followerConnectionSlice.reducer,
       [topicsSlice.name]: topicsSlice.reducer,
+      [subscribeSlice.name]: subscribeSlice.reducer,
+      [publicationSlice.name]: publicationSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>

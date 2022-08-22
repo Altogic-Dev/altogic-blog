@@ -21,7 +21,7 @@ export const subscribeSlice = createSlice({
       state.subscribeUser = action.payload;
       state.isLoading = false;
     },
-    gsubscribeUserFailure(state, action) {
+    subscribeUserFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

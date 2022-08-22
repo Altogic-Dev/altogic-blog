@@ -23,7 +23,7 @@ function* subscribeUserSaga({ payload: { subscriberUser, subscribingUser } }) {
 
 export default function* rootSaga() {
   yield takeEvery(
-    subscribeActions.subscribeUserSagaRequest.type,
+    subscribeActions.subscribeUserRequest.type,
     subscribeUserSaga
   );
 }
