@@ -37,7 +37,7 @@ export default function PostCard(props) {
                 &middot;
               </span>
               <span className="text-slate-500 text-sm tracking-sm">
-                {props.timeAgo} ago
+                {props.timeAgo}
               </span>
             </div>
           </a>
@@ -74,7 +74,7 @@ export default function PostCard(props) {
                   &middot;
                 </span>
                 <span className="text-slate-400 text-sm tracking-sm">
-                  {props.min} read
+                  {props.min} min read
                 </span>
               </div>
               {props.actionMenu && (
@@ -224,14 +224,7 @@ export default function PostCard(props) {
                             <button
                               type="button"
                               className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                            >
-                              Show less like this
-                            </button>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                              onClick={props.optionButtons?.unfollow}
                             >
                               Unfollow this author
                             </button>
@@ -240,14 +233,7 @@ export default function PostCard(props) {
                             <button
                               type="button"
                               className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                            >
-                              Mute this publication
-                            </button>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                              onClick={props.optionButtons?.report}
                             >
                               Report
                             </button>

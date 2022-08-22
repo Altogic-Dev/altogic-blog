@@ -1,11 +1,12 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
-import Layout from '../layouts/Layout';
-import Sidebar from '../layouts/SideBar';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/SideBar';
 import PostCard from '../components/PostCard';
 import PostList from '../components/PostList';
 import AboutSubscribeCard from '../components/AboutSubscribeCard';
+import { useRouter } from 'next/router';
 
 const posts = [
   {
@@ -255,12 +256,18 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function OtherProfile() {
+export default function Profile() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followersModal, setFollowersModal] = useState(false);
 
+
+  const router = useRouter()
+
+  const userId = router.query.id
+
+  console.log(userId)
   return (
     <div>
       <Head>

@@ -59,5 +59,8 @@ const AuthService = {
   async resetPassword({ accessToken, newPassword }) {
     return auth.resetPwdWithToken(accessToken, newPassword);
   },
+  async authenticateWithProvider(provider) {
+    return auth.signInWithProvider(provider);
+  },
 };
 export default AuthService;

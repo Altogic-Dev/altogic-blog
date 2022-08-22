@@ -16,7 +16,7 @@ export default function AuthRedirect(props) {
         headers: { 'Content-Type': 'application/json' },
       });
       dispatch(
-        authActions.getAuthGrantRequested({
+        authActions.getAuthGrantRequest({
           session: props?.session,
           user: props?.user,
           error: props?.error,

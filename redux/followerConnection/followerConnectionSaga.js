@@ -1,12 +1,22 @@
-import { call, takeEvery, put, fork, take } from 'redux-saga/effects';
 import FollowerConnectionService from '@/services/followerConnection';
+import { call, takeEvery } from 'redux-saga/effects';
+
 import { followerConnectionActions } from './followerConnectionSlice';
 
-function* getFollowingStoriesSaga({ payload: userId }) {
+
+function* unfollowSaga({payload: { userId, followingUserId }}) {
+  try {
+    yield call(FollowerConnectionService.unfollow, userId, followingUserId)
+  } catch (e) {
+    console.error({ e });
+  }
+}
+function* followUserSaga({ payload: { followerUser, followingUser } }) {
   try {
     const { data, error } = yield call(
-      FollowerConnectionService.getFollowingStories,
-      userId
+      FollowerConnectionService.followUser,
+      followerUser,
+      followingUser
     );
     console.log({ data, error });
     // yield put(followerConnectionActions.fetchDataSuccess());
@@ -16,8 +26,6 @@ function* getFollowingStoriesSaga({ payload: userId }) {
 }
 
 export default function* rootSaga() {
-  yield takeEvery(
-    followerConnectionActions.getFollowingStoriesRequest.type,
-    getFollowingStoriesSaga
-  );
+  yield takeEvery(followerConnectionActions.unfollowRequest.type, unfollowSaga);
+  yield takeEvery(followerConnectionActions.followUserRequest.type, followUserSaga);
 }
