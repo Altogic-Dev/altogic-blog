@@ -19,7 +19,7 @@ export default function Login() {
   }, [router.isReady]);
 
   const resendEmail = () => {
-    dispatch(authActions.forgotPasswordRequested({ email }));
+    dispatch(authActions.forgotPasswordRequest({ email }));
   };
   return (
     <div className="relative h-screen">

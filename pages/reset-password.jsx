@@ -30,7 +30,7 @@ export default function ResetPassword() {
       newPassword: form.password,
       accessToken: key,
     };
-    dispatch(authActions.resetPasswordRequested({ ...pswChangeForm }));
+    dispatch(authActions.resetPasswordRequest({ ...pswChangeForm }));
   }
 
   const {

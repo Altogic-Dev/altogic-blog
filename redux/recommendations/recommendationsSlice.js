@@ -7,7 +7,8 @@ const initialState = {
   whoToFollowLoading: false,
   whoToFollowMinimized: [],
   whoToFollowMinimizedLoading: false,
-  isLoading: false,
+  errors: [],
+  popularTopics: [],
 };
 
 // Actual Slice
@@ -22,7 +23,6 @@ export const recommendationsSlice = createSlice({
     getWhoToFollowMinimizedSuccess(state, action) {
       state.whoToFollowMinimizedLoading = false;
       state.whoToFollowMinimized = action.payload;
-      state.isLoading = false;
     },
     getWhoToFollowRequest(state) {
       state.whoToFollowLoading = true;
@@ -30,6 +30,21 @@ export const recommendationsSlice = createSlice({
     getWhoToFollowSuccess(state, action) {
       state.isLoading = false;
       state.whoToFollow = action.payload;
+    },
+    getWhoToFollowFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
+    getPopularTopicsRequest(state) {
+      state.isLoading = true;
+    },
+    getPopularTopicsSuccess(state, action) {
+      state.isLoading = false;
+      state.popularTopics = action.payload;
+    },
+    getPopularTopicsFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
