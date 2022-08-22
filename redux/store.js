@@ -20,8 +20,8 @@ const makeStore = () => {
       [followerConnectionSlice.name]: followerConnectionSlice.reducer,
       [storySlice.name]: storySlice.reducer,
       [reportSlice.name]: reportSlice.reducer,
-      [recommendationsSlice.name]: followerConnectionSlice.reducer
-      [topicsSlice.name]: followerConnectionSlice.reducer,
+      [recommendationsSlice.name]: followerConnectionSlice.reducer,
+      [topicsSlice.name]: topicsSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
