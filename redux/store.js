@@ -6,6 +6,7 @@ import rootSaga from './rootSaga';
 import { authSlice } from './auth/authSlice';
 import { followerConnectionSlice } from './followerConnection/followerConnectionSlice';
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
+import { topicsSlice } from './topics/topicsSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -15,6 +16,7 @@ const makeStore = () => {
       [authSlice.name]: authSlice.reducer,
       [followerConnectionSlice.name]: followerConnectionSlice.reducer,
       [recommendationsSlice.name]: followerConnectionSlice.reducer,
+      [topicsSlice.name]: followerConnectionSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
@@ -24,4 +26,5 @@ const makeStore = () => {
   return store;
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const wrapper = createWrapper(makeStore);

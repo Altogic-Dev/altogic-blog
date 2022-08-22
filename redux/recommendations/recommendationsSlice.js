@@ -18,16 +18,14 @@ export const recommendationsSlice = createSlice({
     // Action to set the authentication status
     getWhoToFollowMinimizedRequest(state) {
       state.whoToFollowMinimizedLoading = true;
-      state.isLoading = true
     },
     getWhoToFollowMinimizedSuccess(state, action) {
       state.whoToFollowMinimizedLoading = false;
       state.whoToFollowMinimized = action.payload;
-      state.isLoading = false
-
+      state.isLoading = false;
     },
     getWhoToFollowRequest(state) {
-      state.isLoading = true;
+      state.whoToFollowLoading = true;
     },
     getWhoToFollowSuccess(state, action) {
       state.isLoading = false;
@@ -39,8 +37,7 @@ export const recommendationsSlice = createSlice({
     extraReducers: {
       [HYDRATE]: (state, action) => ({
         ...state,
-        ...action.payload.whoToFollow,
-        ...action.payload.whoToFollowMinimized,
+        ...action.payload.recommendations,
       }),
     },
   },

@@ -1,4 +1,4 @@
-import { call, takeEvery, put, fork, take } from 'redux-saga/effects';
+import { call, takeEvery } from 'redux-saga/effects';
 import RecommendationsService from '@/services/recommendations';
 import { recommendationsActions } from './recommendationsSlice';
 
@@ -26,7 +26,10 @@ function* getWhoToFollowSaga() {
 export default function* rootSaga() {
   yield takeEvery(
     recommendationsActions.getWhoToFollowRequest.type,
-    getWhoToFollowSaga,
+    getWhoToFollowSaga
+  );
+  yield takeEvery(
+    recommendationsActions.getWhoToFollowMinimizedRequest.type,
     getWhoToFollowMinimizedSaga
   );
 }

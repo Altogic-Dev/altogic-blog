@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '../layout/Sidebar';
-import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+
 
 const posts = [
   {
@@ -173,7 +174,7 @@ export default function Home() {
                     <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
+                        selectedIndex === 0 ? 'bg-purple-50 text-purple-900' : ''
                       )}
                     >
                       8
