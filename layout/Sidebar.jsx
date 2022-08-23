@@ -7,6 +7,8 @@ import Followings from '@/components/sidebar/Following';
 import TopicMatch from '@/components/sidebar/TopicMatch';
 import Profile from '@/components/sidebar/Profile';
 import PublicationProfile from '@/components/sidebar/PublicationProfile';
+import Link from 'next/link';
+import Footer from './Footer';
 
 export default function Sidebar({
   topicMatch,
@@ -64,6 +66,7 @@ export default function Sidebar({
       {whoTheFollow && <WhoToFollow />}
       {popularTopics && <PopularTopics />}
       {popularStories && <PopularStories />}
+      <Footer />
     </>
   );
 }
