@@ -28,6 +28,7 @@ const FollowerConnectionService = {
       followingUserProfilePicture: followingUser.profilePicture,
       followingUser: followingUser?._id,
       followingUserAbout: followingUser.about,
+      unreadStories: 0,
     });
   },
 };
