@@ -7,5 +7,19 @@ const PublicationService = {
       .filter(`publication == '${publicationId}`)
       .get();
   },
+
+  getPublication(publicationName) {
+    return db
+      .model('publication')
+      .filter(`name == '${publicationName}'`)
+      .get();
+  },
+
+  getPublicationStories(publicationName) {
+    return db
+      .model('story')
+      .filter(`publicationName == '${publicationName}' && isPublication == true'`)
+      .get();
+  },
 };
 export default PublicationService;
