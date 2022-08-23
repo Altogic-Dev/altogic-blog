@@ -1,8 +1,10 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
-import Layout from '@/layout/Layout';
-import PublicationPostCard from '../components/PublicationsPostCard';
 import Sidebar from '@/layout/SideBar';
+import Layout from '@/layout/Layout';
+import PublicationPostCard from '../../components/PublicationsPostCard';
 
 const posts = [
   {
@@ -191,6 +193,10 @@ const latests = [
 ];
 
 export default function Publications() {
+  const router = useRouter();
+  const { publicationName } = router.query;
+
+  console.log(publicationName);
   return (
     <div>
       <Head>
@@ -206,7 +212,7 @@ export default function Publications() {
           <div className="mt-[100px] mb-20">
             <img
               className="mb-[60px] w-[300px] h-[76px]"
-              src="./logo-hithemes.svg"
+              src="/logo-hithemes.svg"
               alt=""
             />
             <h2 className="text-slate-600 max-w-4xl text-2xl tracking-md">

@@ -49,6 +49,18 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    getPopularTopicsRequest(state) {
+      state.isLoading = true;
+    },
+    getPopularTopicsSuccess(state, action) {
+      state.isLoading = false;
+      state.popularTopics = action.payload;
+    },
+    getPopularTopicsFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
+
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({

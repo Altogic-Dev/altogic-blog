@@ -7,6 +7,8 @@ import { useRouter } from 'next/router';
 export default function Header() {
   const router = useRouter();
   const [mobileNotifications, setMobileNotifications] = useState(false);
+  
+
 
   return (
     <Popover className="relative bg-white border-b border-gray-200">
@@ -18,7 +20,7 @@ export default function Header() {
                 <span className="sr-only">Altogic</span>
                 <img
                   className="w-[114px] h-[39px] sm:w-[135px] sm:h-[46px]"
-                  src="./logo.svg"
+                  src="/logo.svg"
                   alt=""
                 />
               </a>
@@ -549,8 +551,9 @@ export default function Header() {
                         Publications
                       </span>
                       <Menu.Item>
+                        <Link href="/publications" >
                         <a
-                          href="#"
+                         
                           className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                         >
                           <svg
@@ -591,6 +594,7 @@ export default function Header() {
                           </svg>
                           Altogic
                         </a>
+                        </Link>
                       </Menu.Item>
                       <Menu.Item>
                         <a
@@ -871,8 +875,10 @@ export default function Header() {
                     Publications
                   </span>
                   <Menu.Item>
+                  <Link href="/publications" >
+
                     <a
-                      href="#"
+
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg
@@ -913,6 +919,7 @@ export default function Header() {
                       </svg>
                       Altogic
                     </a>
+                    </Link>
                   </Menu.Item>
                   <Menu.Item>
                     <a

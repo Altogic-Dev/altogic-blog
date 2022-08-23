@@ -26,18 +26,7 @@ function* getWhoToFollowSaga() {
     yield put(recommendationsActions.getWhoToFollowFailure(e));
   }
 }
-function* getPopularTopicsSaga() {
-  try {
-    const { data, errors } = yield call(
-      RecommendationsService.getPopularTopics
-    );
 
-    if (errors) throw errors.items;
-    if (data) yield put(recommendationsActions.fetchDataSuccess(data));
-  } catch (e) {
-    yield put(recommendationsActions.fetchDataFailure(e));
-  }
-}
 export default function* rootSaga() {
   yield takeEvery(
     recommendationsActions.getWhoToFollowMinimizedRequest.type,
@@ -51,8 +40,5 @@ export default function* rootSaga() {
     recommendationsActions.getWhoToFollowMinimizedRequest.type,
     getWhoToFollowMinimizedSaga
   );
-  yield takeEvery(
-    recommendationsActions.getPopularTopicsRequest.type,
-    getPopularTopicsSaga
-  );
+ 
 }

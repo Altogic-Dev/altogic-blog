@@ -57,6 +57,19 @@ function* getTrendingsOfTopicsSaga({ payload: topic }) {
   }
 }
 
+function* getPopularTopicsSaga() {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getPopularTopics
+    );
+
+    if (errors) throw errors.items;
+    if (data) yield put(topicsActions.fetchDataSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.fetchDataFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getLatestsOfTopicRequest.type,
@@ -69,5 +82,9 @@ export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getTrendingsOfTopicsRequest.type,
     getTrendingsOfTopicsSaga
+  );
+  yield takeEvery(
+    topicsActions.getPopularTopicsRequest.type,
+    getPopularTopicsSaga
   );
 }
