@@ -15,6 +15,7 @@ import Sidebar from '@/layout/SideBar';
 import Topic from '@/components/basic/topic';
 import Button from '@/components/basic/button';
 import { GlobeAltIcon } from '@heroicons/react/outline';
+import { authActions } from '@/redux/auth/authSlice';
 
 const posts = [
   {
@@ -171,6 +172,19 @@ export default function Home() {
     }
   };
 
+  const unfollowTopic = () => {
+    // const topics = ['Front End','Back End'];
+    const topics = followingTopicsState.filter(
+      (topic) => topic !== selectedTopic
+    );
+    setFollowingTopicsState(topics);
+    setSelectedTopic();
+    dispatch(
+      authActions.unfollowTopicRequest({
+        topics,
+      })
+    );
+  };
   useEffect(() => {
     getFollowingStories(listPage);
   }, [listPage]);
@@ -194,26 +208,32 @@ export default function Home() {
                   <span className="text-gray-500 font-lg font-light mr-5">
                     YOUR TOPICS
                   </span>
+                  <div className="flex gap-2">
                   {followingTopicsState?.map((topic) => (
                     <Topic
-                      onClick={() => setSelectedTopic((state) => state ? null : topic)} 
+                      onClick={() =>
+                        setSelectedTopic((state) =>
+                          state === topic ? null : topic
+                        )
+                      }
                       key={topic}
                       title={topic}
-                      className="rounded-xl bg-slate-400 ml-4 text-white px-4 font-light "
                     />
                   ))}
+                  </div>
                 </div>
               )}
               {selectedTopic && (
                 <div className="">
-                  <p className='text-5xl font-bold text-slate-700 mb-5 gap-2 flex'><GlobeAltIcon className='w-6'/>{selectedTopic}</p>
+                  <p className="text-5xl font-bold text-slate-700 mb-5 gap-2 flex">
+                    <GlobeAltIcon className="w-6" />
+                    {selectedTopic}
+                  </p>
                   <div className="inline-flex gap-4 mb-12">
-                    <Button primaryColor onClick={() => {}}>
+                    <Button primaryColor onClick={unfollowTopic}>
                       Unfollow
                     </Button>
-                    <Button onClick={() => {}}>
-                      Start Writing
-                    </Button>
+                    <Button onClick={() => {}}>Start Writing</Button>
                   </div>
                 </div>
               )}

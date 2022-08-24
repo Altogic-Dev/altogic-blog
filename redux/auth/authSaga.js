@@ -105,6 +105,22 @@ function* authenticateWithProvider({payload:provider}) {
     yield put(authActions.authenticateWithProviderFailure(e));
   }
 }
+function* unfollowTopicSaga({payload:{topics}}) {
+  try {
+    const { data, errors } = yield call(AuthService.unfollowTopic,topics);
+    if (errors) {
+      throw errors.items;
+    } 
+
+    if (data) {
+      yield call(AuthService.getUserFromDb);
+      setUserFromLocalStorage();
+
+    }
+  } catch (e) {
+    yield put(authActions.unfollowTopicFailure(e));
+  }
+}
 
 
 export default function* rootSaga() {
@@ -118,5 +134,6 @@ export default function* rootSaga() {
     resendVerificationEmail
   );
   yield takeEvery(authActions.authenticateWithProviderRequest.type, authenticateWithProvider);
+  yield takeEvery(authActions.unfollowTopicRequest.type, unfollowTopicSaga);
 
 }
