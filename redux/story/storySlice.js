@@ -1,6 +1,6 @@
-import { createSlice } from "@reduxjs/toolkit";
-import _ from "lodash";
-import { HYDRATE } from "next-redux-wrapper";
+import { createSlice } from '@reduxjs/toolkit';
+import _ from 'lodash';
+import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
@@ -9,35 +9,45 @@ const initialState = {
 
   recommendedStories: null,
   recommendedStoriesInfo: null,
+
+  story: null,
 };
 
 // Actual Slice
 export const storySlice = createSlice({
-  name: "story",
+  name: 'story',
   initialState,
   reducers: {
-
     // Action to set the authentication status
-    getFollowingStoriesRequest(state, action) {
-    },
+    getFollowingStoriesRequest(state, action) {},
     getFollowingStoriesSuccess(state, action) {
-      if(_.isArray(state.followingStories)) {
-        state.followingStories = [...state.followingStories, ...action.payload.data]
+      if (_.isArray(state.followingStories)) {
+        state.followingStories = [
+          ...state.followingStories,
+          ...action.payload.data,
+        ];
       } else {
-        state.followingStories = action.payload.data
+        state.followingStories = action.payload.data;
       }
-      state.followingStoriesInfo = action.payload.info
+      state.followingStoriesInfo = action.payload.info;
     },
-    // Action to set the authentication status
-    getRecommendedStoriesRequest(state, action) {
-    },
+
+    getRecommendedStoriesRequest(state, action) {},
     getRecommendedStoriesSuccess(state, action) {
-      if(_.isArray(state.recommendedStories)) {
-        state.recommendedStories = [...state.recommendedStories, ...action.payload.data]
+      if (_.isArray(state.recommendedStories)) {
+        state.recommendedStories = [
+          ...state.recommendedStories,
+          ...action.payload.data,
+        ];
       } else {
-        state.recommendedStories = action.payload.data
+        state.recommendedStories = action.payload.data;
       }
-      state.recommendedStoriesInfo = action.payload.info
+      state.recommendedStoriesInfo = action.payload.info;
+    },
+
+    getStoryRequest(state, action) {},
+    getStorySuccess(state, action) {
+      state.story = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -49,7 +59,6 @@ export const storySlice = createSlice({
         };
       },
     },
-
   },
 });
 

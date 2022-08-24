@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import { call, takeEvery, put, all, select } from 'redux-saga/effects';
-import { storyActions } from './storySlice';
-
 import StoryService from '@/services/story';
+import { storyActions } from './storySlice';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
@@ -47,6 +46,42 @@ function* getRecommendedStoriesSaga({ payload: { page } }) {
   }
 }
 
+function* getStorySaga({ payload: id }) {
+  try {
+    const { data, error } = yield call(StoryService.getStory, id);
+    if (!_.isNil(data) && _.isNil(error)) {
+      yield put(storyActions.getStorySuccess(_.first(data)));
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+export function* updateFollowerCountSaga(isIncrease) {
+  const story = yield select((state) => state.story.story);
+  if (isIncrease) {
+    yield put(
+      storyActions.getStorySuccess({
+        ...story,
+        user: {
+          ...story.user,
+          followerCount: story.user.followerCount + 1,
+        },
+      })
+    );
+  } else {
+    yield put(
+      storyActions.getStorySuccess({
+        ...story,
+        user: {
+          ...story.user,
+          followerCount: story.user.followerCount - 1,
+        },
+      })
+    );
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeEvery(
@@ -57,5 +92,6 @@ export default function* rootSaga() {
       storyActions.getRecommendedStoriesRequest.type,
       getRecommendedStoriesSaga
     ),
+    yield takeEvery(storyActions.getStoryRequest.type, getStorySaga),
   ]);
 }

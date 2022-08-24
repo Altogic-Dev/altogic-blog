@@ -1,10 +1,16 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
+import { useRouter } from 'next/router';
 import { XIcon } from '@heroicons/react/outline';
+import { storyActions } from '@/redux/story/storySlice';
+import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import Layout from '../layout/Layout';
 import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
+import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -122,10 +128,48 @@ const allResponses = [
 ];
 
 export default function BlogDetail() {
+  const router = useRouter();
+  const { id } = router.query;
+
+  const dispatch = useDispatch();
+
+  const story = useSelector((state) => state.story.story);
+  const user = useSelector((state) => state.auth.user);
+  const isFollowing = useSelector(
+    (state) => state.followerConnection.isFollowing
+  );
+  const isSubscribed = useSelector(
+    (state) => state.subscribeConnection.isSubscribed
+  );
+
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
+  const [didMount, setDidMount] = useState(true);
 
+  useEffect(() => {
+    if (!_.isNil(story) && didMount) {
+      dispatch(
+        followerConnectionActions.getFollowingRequest({
+          userId: _.get(user, '_id'),
+          followingUserId: _.get(story, 'user._id'),
+        })
+      );
+      dispatch(
+        subscribeConnectionActions.getSubscribeRequest({
+          userId: _.get(user, '_id'),
+          subscribingUserId: _.get(story, 'user._id'),
+        })
+      );
+      setDidMount(false);
+    }
+  }, [story]);
+
+  useEffect(() => {
+    if (id) dispatch(storyActions.getStoryRequest(id));
+  }, [id]);
+
+  console.log({ story });
   return (
     <div>
       <Head>
@@ -1096,11 +1140,56 @@ export default function BlogDetail() {
             </div>
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
-                profile
+                profile={{
+                  fullName: _.get(story, 'user.name'),
+                  profilePicture: _.get(story, 'user.profilePicture'),
+                  followerCount: _.get(story, 'user.followerCount'),
+                  about: _.get(story, 'user.about'),
+                  isFollowing,
+                  isSubscribed,
+                }}
+                followButton={() =>
+                  isFollowing
+                    ? dispatch(
+                        followerConnectionActions.unfollowRequest({
+                          userId: _.get(user, '_id'),
+                          followingUserId: _.get(story, 'user._id'),
+                        })
+                      )
+                    : dispatch(
+                        followerConnectionActions.followRequest({
+                          followerUser: user,
+                          followingUser: {
+                            followingUser: _.get(story, 'user._id'),
+                            followingName: _.get(story, 'user.name'),
+                            followingUserProfilePicture: _.get(
+                              story,
+                              'user.profilePicture'
+                            ),
+                            followingUsername: _.get(story, 'user.username'),
+                          },
+                        })
+                      )
+                }
+                subscribeButton={() =>
+                  isSubscribed
+                    ? dispatch(
+                        subscribeConnectionActions.unSubscribeRequest({
+                          userId: _.get(user, '_id'),
+                          subscribingUserId: _.get(story, 'user._id'),
+                        })
+                      )
+                    : dispatch(
+                        subscribeConnectionActions.subscribeRequest({
+                          userId: _.get(user, '_id'),
+                          userEmail: _.get(user, 'email'),
+                          subscribingUserId: _.get(story, 'user._id'),
+                        })
+                      )
+                }
                 whoToFollow
                 popularTopics
                 popularStories
-                followButton
               />
             </div>
           </div>
