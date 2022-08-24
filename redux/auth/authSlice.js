@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   user: AuthService.getUser(),
   isAuthenticated: false,
+  
 };
 
 export const authSlice = createSlice({

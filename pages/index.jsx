@@ -4,7 +4,7 @@ import { Tab } from '@headlessui/react';
 import { reportActions } from '@/redux/report/reportSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyActions } from '@/redux/story/storySlice';
-import { DateTime } from "luxon"
+import { DateTime } from 'luxon';
 import _ from 'lodash';
 import { wrapper } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +12,9 @@ import ListObserver from '@/components/ListObserver';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '@/layout/SideBar';
-
+import Topic from '@/components/basic/topic';
+import Button from '@/components/basic/button';
+import { GlobeAltIcon } from '@heroicons/react/outline';
 
 const posts = [
   {
@@ -144,27 +146,38 @@ function classNames(...classes) {
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [listPage, setListPage] = useState(1);
-  
-  const followingStories = useSelector(state => state.story.followingStories)
-  const followingStoriesInfo = useSelector(state => state.story.followingStoriesInfo)
-  const userId = useSelector(state => _.get(state.auth.user, "_id"))
-  
+  const [selectedTopic, setSelectedTopic] = useState();
+  const [followingTopicsState, setFollowingTopicsState] = useState([]);
+  const followingStories = useSelector((state) => state.story.followingStories);
+  const followingStoriesInfo = useSelector(
+    (state) => state.story.followingStoriesInfo
+  );
+  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
+  const followingTopics = useSelector((state) =>
+    _.get(state.auth.user, 'followingTopics')
+  );
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
-        dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
-  }
+    dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
+  };
 
   const handleEndOfList = () => {
-    if(_.isNil(followingStoriesInfo) || followingStoriesInfo.currentPage < followingStoriesInfo.totalPages) {
-      setListPage(prev => prev + 1)
+    if (
+      _.isNil(followingStoriesInfo) ||
+      followingStoriesInfo.currentPage < followingStoriesInfo.totalPages
+    ) {
+      setListPage((prev) => prev + 1);
     }
-  }
-  
+  };
+
   useEffect(() => {
-    getFollowingStories(listPage)
+    getFollowingStories(listPage);
   }, [listPage]);
 
+  useEffect(() => {
+    setFollowingTopicsState(followingTopics);
+  }, [followingTopics]);
   return (
     <div>
       <Head>
@@ -176,6 +189,34 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
+              {!_.isEmpty(followingTopicsState) && (
+                <div className="inline-flex mb-10">
+                  <span className="text-gray-500 font-lg font-light mr-5">
+                    YOUR TOPICS
+                  </span>
+                  {followingTopicsState?.map((topic) => (
+                    <Topic
+                      onClick={() => setSelectedTopic((state) => state ? null : topic)} 
+                      key={topic}
+                      title={topic}
+                      className="rounded-xl bg-slate-400 ml-4 text-white px-4 font-light "
+                    />
+                  ))}
+                </div>
+              )}
+              {selectedTopic && (
+                <div className="">
+                  <p className='text-5xl font-bold text-slate-700 mb-5 gap-2 flex'><GlobeAltIcon className='w-6'/>{selectedTopic}</p>
+                  <div className="inline-flex gap-4 mb-12">
+                    <Button primaryColor onClick={() => {}}>
+                      Unfollow
+                    </Button>
+                    <Button onClick={() => {}}>
+                      Start Writing
+                    </Button>
+                  </div>
+                </div>
+              )}
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
@@ -216,64 +257,76 @@ export default function Home() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                  {!_.isNil(followingStories) && (
-                    <ListObserver onEnd={handleEndOfList}>
-                      {_.map(followingStories, story => (
-                        <PostCard
-                          key={story._id}
-                          noActiveBookmark
-                          normalMenu
-                          authorUrl={`/other-profile?id=${story.followerConnection.followingUser}`}
-                          authorName={story.followerConnection.followingName}
-                          authorImage={story.followerConnection.followingUserProfilePicture}
-                          storyUrl={`/blog-detail?id=${story._id}`}
-                          timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
-                          title={story.title}
-                          infoText={story.excerpt}
-                          badgeUrl={"badgeUrl"}
-                          badgeName={_.first(story.categoryNames)}
-                          min={story.estimatedReadingTime}
-                          images={_.first(story.storyImages)}
-                          actionMenu
-                          optionButtons={{
-                            unfollow: () => dispatch(followerConnectionActions.unfollowRequest({ 
-                              userId, 
-                              followingUserId: story.followerConnection.followingUser
-                            })),
-                            report: () => dispatch(reportActions.reportStoryRequest({
-                              userId, 
-                              storyId: story._id, 
-                              reportedUserId: story.followerConnection.followingUser
-                            }))
-                          }}
-                        />
-                      ))}
-                    </ListObserver>
-                  )}
+                    {!_.isNil(followingStories) && (
+                      <ListObserver onEnd={handleEndOfList}>
+                        {_.map(followingStories, (story) => (
+                          <PostCard
+                            key={story._id}
+                            noActiveBookmark
+                            normalMenu
+                            authorUrl={`/other-profile?id=${story.followerConnection.followingUser}`}
+                            authorName={story.followerConnection.followingName}
+                            authorImage={
+                              story.followerConnection
+                                .followingUserProfilePicture
+                            }
+                            storyUrl={`/blog-detail?id=${story._id}`}
+                            timeAgo={DateTime.fromISO(
+                              story.createdAt
+                            ).toRelative()}
+                            title={story.title}
+                            infoText={story.excerpt}
+                            badgeUrl={'badgeUrl'}
+                            badgeName={_.first(story.categoryNames)}
+                            min={story.estimatedReadingTime}
+                            images={_.first(story.storyImages)}
+                            actionMenu
+                            optionButtons={{
+                              unfollow: () =>
+                                dispatch(
+                                  followerConnectionActions.unfollowRequest({
+                                    userId,
+                                    followingUserId:
+                                      story.followerConnection.followingUser,
+                                  })
+                                ),
+                              report: () =>
+                                dispatch(
+                                  reportActions.reportStoryRequest({
+                                    userId,
+                                    storyId: story._id,
+                                    reportedUserId:
+                                      story.followerConnection.followingUser,
+                                  })
+                                ),
+                            }}
+                          />
+                        ))}
+                      </ListObserver>
+                    )}
                   </Tab.Panel>
 
                   <Tab.Panel className="divide-y divide-gray-200">
-                      {posts.map((post) => (
-                        <PostCard
-                          key={post.id}
-                          noActiveBookmark
-                          normalMenu
-                          authorUrl={post.author.href}
-                          authorName={post.author.name}
-                          authorImage={post.author.image}
-                          storyUrl={post.href}
-                          timeAgo={post.author.timeAgo}
-                          title={post.title}
-                          infoText={post.infoText}
-                          badgeUrl={post.badgeUrl}
-                          badgeName={post.badgeName}
-                          min={post.min}
-                          images={post.image}
-                          actionMenu={post.actionMenu}
-                        />
-                      ))}
+                    {posts.map((post) => (
+                      <PostCard
+                        key={post.id}
+                        noActiveBookmark
+                        normalMenu
+                        authorUrl={post.author.href}
+                        authorName={post.author.name}
+                        authorImage={post.author.image}
+                        storyUrl={post.href}
+                        timeAgo={post.author.timeAgo}
+                        title={post.title}
+                        infoText={post.infoText}
+                        badgeUrl={post.badgeUrl}
+                        badgeName={post.badgeName}
+                        min={post.min}
+                        images={post.image}
+                        actionMenu={post.actionMenu}
+                      />
+                    ))}
                   </Tab.Panel>
-
                 </Tab.Panels>
               </Tab.Group>
             </div>
