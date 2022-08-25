@@ -208,7 +208,7 @@ export default function Home() {
                             optionButtons={{
                               mute: () =>
                                 dispatch(
-                                  authActions.muteAuthorRequested(story.user)
+                                  authActions.muteAuthorRequest(story.user)
                                 ),
                               report: () =>
                                 dispatch(

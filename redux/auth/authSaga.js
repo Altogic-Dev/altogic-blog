@@ -163,16 +163,16 @@ function* isMutedSaga({ payload: authorId }) {
 
 export default function* rootSaga() {
   yield all([
-    takeEvery(authActions.registerRequested.type, registerSaga),
-    takeEvery(authActions.getAuthGrantRequested.type, getAuthGrantSaga),
-    takeEvery(authActions.loginRequested.type, loginSaga),
-    takeEvery(authActions.forgotPasswordRequested.type, forgotPassword),
+    takeEvery(authActions.registerRequest.type, registerSaga),
+    takeEvery(authActions.getAuthGrantRequest.type, getAuthGrantSaga),
+    takeEvery(authActions.loginRequest.type, loginSaga),
+    takeEvery(authActions.forgotPasswordRequest.type, forgotPassword),
     takeEvery(
-      authActions.resendVerificationEmailRequested.type,
+      authActions.resendVerificationEmailRequest.type,
       resendVerificationEmail
     ),
     takeEvery(authActions.unfollowTopicRequest.type, unfollowTopicSaga),
-    takeEvery(authActions.muteAuthorRequested.type, muteAuthorSaga),
+    takeEvery(authActions.muteAuthorRequest.type, muteAuthorSaga),
     takeEvery(authActions.isMutedRequest.type, isMutedSaga),
     takeEvery(authActions.resetPasswordRequest.type, resetPassword),
     takeEvery(

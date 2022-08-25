@@ -8,9 +8,9 @@ function* getWhoToFollowMinimizedSaga() {
       RecommendationsService.getWhoToFollowMinimized
     );
     if (errors) throw errors.items;
-    if (data) yield put(recommendationsActions.fetchDataSuccess());
+    // if (data) yield put(recommendationsActions.fetchDataSuccess());
   } catch (e) {
-    yield put(recommendationsActions.fetchDataFailure(e));
+    // yield put(recommendationsActions.fetchDataFailure(e));
     console.error({ e });
   }
 }

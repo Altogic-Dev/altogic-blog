@@ -478,7 +478,7 @@ export default function BlogDetail() {
                                 className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                                 onClick={() =>
                                   dispatch(
-                                    authActions.muteAuthorRequested(
+                                    authActions.muteAuthorRequest(
                                       _.get(story, 'user._id')
                                     )
                                   )
@@ -964,7 +964,7 @@ export default function BlogDetail() {
                                   className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                                   onClick={() =>
                                     dispatch(
-                                      authActions.muteAuthorRequested(
+                                      authActions.muteAuthorRequest(
                                         _.get(story, 'user._id')
                                       )
                                     )
@@ -1292,7 +1292,7 @@ export default function BlogDetail() {
                                     className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                                     onClick={() =>
                                       dispatch(
-                                        authActions.muteAuthorRequested(
+                                        authActions.muteAuthorRequest(
                                           _.get(story, 'user._id')
                                         )
                                       )

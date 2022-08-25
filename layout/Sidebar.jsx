@@ -3,13 +3,13 @@ import StoriesYouFollow from '@/components/sidebar/StoriesYouFollow';
 import PopularTopics from '@/components/sidebar/PopularTopics';
 import PopularStories from '@/components/sidebar/PopularStories';
 import MobilePopularStories from '@/components/sidebar/MobilePopularStories';
-import Followings from '@/components/sidebar/Following';
+import Following from '@/components/sidebar/Following';
 import TopicMatch from '@/components/sidebar/TopicMatch';
 import Profile from '@/components/sidebar/Profile';
 import PublicationProfile from '@/components/sidebar/PublicationProfile';
-import Footer from './Footer';
 import PersonalFullStatistic from '@/components/sidebar/PersonalFullStatistic';
 import PeopleMatch from '@/components/sidebar/PeopleMatch';
+import Footer from './Footer';
 
 export default function Sidebar({
   personalFullStatistic,
@@ -65,7 +65,7 @@ export default function Sidebar({
       {profile && (
         <Profile profile={profile} followButton={followButton} editButton={editButton} />
       )}
-      {following && <Followings />}
+      {following && <Following/>}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
       {whoToFollow && <WhoToFollow />}

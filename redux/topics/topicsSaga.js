@@ -64,9 +64,9 @@ function* getPopularTopicsSaga() {
     );
 
     if (errors) throw errors.items;
-    if (data) yield put(topicsActions.fetchDataSuccess(data));
+    // if (data) yield put(topicsActions.fetchDataSuccess(data));
   } catch (e) {
-    yield put(topicsActions.fetchDataFailure(e));
+    // yield put(topicsActions.fetchDataFailure(e));
   }
 }
 

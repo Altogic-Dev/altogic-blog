@@ -103,7 +103,7 @@ export const authSlice = createSlice({
     },
 
 
-    muteAuthorRequested() {},
+    muteAuthorRequest() {},
     muteAuthorSuccess(state, action) {
       state.user = {
         ...state.user,

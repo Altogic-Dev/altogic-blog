@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
-export default function Followings() {
+export default function Following() {
   // const followings = [
   //   {
   //     id: 0,
