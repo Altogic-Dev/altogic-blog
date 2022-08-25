@@ -307,7 +307,7 @@ export default function TagFollow() {
             <div className="lg:hidden mb-4">
               
               <YourTopics mobile />
-              </div>
+
             </div>
           </div>
         </div>

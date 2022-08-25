@@ -1,20 +1,26 @@
-import { followerConnectionActions } from "@/redux/followerConnection/followerConnectionSlice";
-import { subscribeActions } from "@/redux/subscribe/subscribeSlice";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { subscribeActions } from '@/redux/subscribe/subscribeSlice';
+import _ from 'lodash';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-export default function Profile(followButton,editButton) {
+export default function Profile({profile}) {
   const sessionUser = useSelector((state) => state.auth.user);
   const router = useRouter();
   const dispatch = useDispatch();
   const userFromDatabaseId = router.query.id;
 
+  console.log(profile)
+
+  const followButton =  router.query.username !== useSelector((state) => state.auth.username);
+  const editButton =  router.query.username === useSelector((state) => state.auth.username);
+
+
   const handleFollow = () => {
     dispatch(followerConnectionActions.followUserRequest(sessionUser));
   };
   const handleSubscribe = () => {
-
     dispatch(subscribeActions.subscribeUserRequest(sessionUser));
   };
 
@@ -22,33 +28,28 @@ export default function Profile(followButton,editButton) {
     // dispatch(followerConnectionActions.getUserFromDB(userFromDatabaseId)); // get user from database is missing
   }, [userFromDatabaseId]);
 
-
   return (
     <div>
       <img
         className="w-20 h-20 mb-3 rounded-full"
-        src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+        src={_.get(profile, 'profilePicture')}
         alt=""
       />
       <div className="tracking-sm">
-        <h2 className="text-slate-700 text-base font-medium">Olivia Rhye</h2>
+        <h2 className="text-slate-700 text-base font-medium">
+          {_.get(profile, 'fullName')}
+        </h2>
         <span className="inline-block mb-3 text-slate-500 text-sm">
-          9.5k Followers
+          {_.get(profile, 'followerCount')} Followers
         </span>
-        <p className="text-slate-500 text-xs mb-8">
-          Faucibus consequat, massa risus, dignissim interdum feugiat
-          sollicitudin tortor. Volutpat, elementum diam id nunc pellentesque
-          suspendisse sagittis. Pharetra, pulvinar augue nunc ut malesuada sed
-          laoreet. Interdum pellentesque adipiscing sagittis, tincidunt. Varius
-          nec egestas eget venenatis, risus adipiscing auctor.
-        </p>
+        <p className="text-slate-500 text-xs mb-8">{_.get(profile, 'about')}</p>
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
           {followButton && (
             <>
               <button
-                onClick={handleFollow}
                 type="button"
                 className="inline-flex items-center justify-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                onClick={handleFollow}
               >
                 <svg
                   className="w-5 h-5"
@@ -62,41 +63,43 @@ export default function Profile(followButton,editButton) {
                     fill="currentColor"
                   />
                 </svg>
-                Follow
+                {_.get(profile, 'isFollowing') ? 'Unfollow' : 'Follow'}
               </button>
-              <button
-                onClick={handleSubscribe}
-                type="button"
-                className="inline-flex items-center justify-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              >
-                <svg
-                  className="w-5 h-5"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  aria-hidden="true"
+
+                <button
+                  type="button"
+                  className="inline-flex items-center justify-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  onClick={handleSubscribe}
                 >
-                  <g clipPath="url(#clip0_736_24616)">
-                    <path
-                      d="M11.5293 3.33333H5.66675C4.26662 3.33333 3.56655 3.33333 3.03177 3.60581C2.56137 3.8455 2.17892 4.22795 1.93923 4.69835C1.66675 5.23313 1.66675 5.9332 1.66675 7.33333V12.6667C1.66675 14.0668 1.66675 14.7669 1.93923 15.3016C2.17892 15.772 2.56137 16.1545 3.03177 16.3942C3.56655 16.6667 4.26662 16.6667 5.66675 16.6667H14.3334C15.7335 16.6667 16.4336 16.6667 16.9684 16.3942C17.4388 16.1545 17.8212 15.772 18.0609 15.3016C18.3334 14.7669 18.3334 14.0668 18.3334 12.6667V8.33333M1.66675 5.83333L8.47085 10.5962C9.02182 10.9819 9.29731 11.1747 9.59697 11.2494C9.86166 11.3154 10.1385 11.3154 10.4032 11.2494C10.7029 11.1747 10.9783 10.9819 11.5293 10.5962L14.3334 8.33333"
-                      stroke="currentColor"
-                      strokeWidth="1.66667"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M15.6667 5.83333C15.6667 6.38561 16.1145 6.83333 16.6667 6.83333C17.219 6.83333 17.6667 6.38561 17.6667 5.83333H15.6667ZM17.6667 0.833328C17.6667 0.281043 17.219 -0.166672 16.6667 -0.166672C16.1145 -0.166672 15.6667 0.281043 15.6667 0.833328H17.6667ZM14.1667 2.33333C13.6145 2.33333 13.1667 2.78104 13.1667 3.33333C13.1667 3.88561 13.6145 4.33333 14.1667 4.33333V2.33333ZM19.1667 4.33333C19.719 4.33333 20.1667 3.88561 20.1667 3.33333C20.1667 2.78104 19.719 2.33333 19.1667 2.33333V4.33333ZM17.6667 5.83333V0.833328H15.6667V5.83333H17.6667ZM14.1667 4.33333H19.1667V2.33333H14.1667V4.33333Z"
-                      fill="currentColor"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_736_24616">
-                      <rect width="20" height="20" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
-                Subscribe
-              </button>
+                  <svg
+                    className="w-5 h-5"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <g clipPath="url(#clip0_736_24616)">
+                      <path
+                        d="M11.5293 3.33333H5.66675C4.26662 3.33333 3.56655 3.33333 3.03177 3.60581C2.56137 3.8455 2.17892 4.22795 1.93923 4.69835C1.66675 5.23313 1.66675 5.9332 1.66675 7.33333V12.6667C1.66675 14.0668 1.66675 14.7669 1.93923 15.3016C2.17892 15.772 2.56137 16.1545 3.03177 16.3942C3.56655 16.6667 4.26662 16.6667 5.66675 16.6667H14.3334C15.7335 16.6667 16.4336 16.6667 16.9684 16.3942C17.4388 16.1545 17.8212 15.772 18.0609 15.3016C18.3334 14.7669 18.3334 14.0668 18.3334 12.6667V8.33333M1.66675 5.83333L8.47085 10.5962C9.02182 10.9819 9.29731 11.1747 9.59697 11.2494C9.86166 11.3154 10.1385 11.3154 10.4032 11.2494C10.7029 11.1747 10.9783 10.9819 11.5293 10.5962L14.3334 8.33333"
+                        stroke="currentColor"
+                        strokeWidth="1.66667"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                      <path
+                        d="M15.6667 5.83333C15.6667 6.38561 16.1145 6.83333 16.6667 6.83333C17.219 6.83333 17.6667 6.38561 17.6667 5.83333H15.6667ZM17.6667 0.833328C17.6667 0.281043 17.219 -0.166672 16.6667 -0.166672C16.1145 -0.166672 15.6667 0.281043 15.6667 0.833328H17.6667ZM14.1667 2.33333C13.6145 2.33333 13.1667 2.78104 13.1667 3.33333C13.1667 3.88561 13.6145 4.33333 14.1667 4.33333V2.33333ZM19.1667 4.33333C19.719 4.33333 20.1667 3.88561 20.1667 3.33333C20.1667 2.78104 19.719 2.33333 19.1667 2.33333V4.33333ZM17.6667 5.83333V0.833328H15.6667V5.83333H17.6667ZM14.1667 4.33333H19.1667V2.33333H14.1667V4.33333Z"
+                        fill="currentColor"
+                      />
+                    </g>
+                    <defs>
+                      <clipPath id="clip0_736_24616">
+                        <rect width="20" height="20" fill="white" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  {_.get(profile, 'isSubscribed') ? 'Unsubscribe' : 'Subscribe'}
+                </button>
+
             </>
           )}
           {editButton && (
