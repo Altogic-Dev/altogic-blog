@@ -1,18 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
+import { reportActions } from '@/redux/report/reportSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { storyActions } from '@/redux/story/storySlice';
+import { DateTime } from 'luxon';
+import Topic from '@/components/basic/topic';
+import { GlobeAltIcon } from '@heroicons/react/outline';
+import Button from '@/components/basic/button';
+import _ from 'lodash';
+import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import ListObserver from '@/components/ListObserver';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '@/layout/SideBar';
-import { storyActions } from '@/redux/story/storySlice';
-import { DateTime } from 'luxon';
-import _ from 'lodash';
-import ListObserver from '@/components/ListObserver';
-import { wrapper } from '@/redux/store';
-import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
-import { reportActions } from '@/redux/report/reportSlice';
-import { authActions } from '@/redux/auth/authSlice';
+
+
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -22,6 +28,8 @@ export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
+  const [selectedTopic, setSelectedTopic] = useState();
+  const [followingTopicsState, setFollowingTopicsState] = useState([]);
 
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
@@ -33,6 +41,10 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
+
+  const followingTopics = useSelector((state) =>
+    _.get(state.auth.user, 'followingTopics')
+  );
   const userId = useSelector((state) => _.get(state.auth.user, '_id'));
 
   const dispatch = useDispatch();
@@ -42,6 +54,20 @@ export default function Home() {
   };
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
+  };
+  
+  const unfollowTopic = () => {
+    // const topics = ['Front End','Back End'];
+    const topics = followingTopicsState.filter(
+      (topic) => topic !== selectedTopic
+    );
+    setFollowingTopicsState(topics);
+    setSelectedTopic();
+    dispatch(
+      authActions.unfollowTopicRequest({
+        topics,
+      })
+    );
   };
 
   const handleFollowingEndOfList = () => {
@@ -80,6 +106,11 @@ export default function Home() {
     }
   }, [selectedIndex]);
 
+  useEffect(() => {
+    setFollowingTopicsState(followingTopics);
+  }, [followingTopics]);
+
+
   return (
     <div>
       <Head>
@@ -91,6 +122,40 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
+            {!_.isEmpty(followingTopicsState) && (
+                <div className="inline-flex mb-10">
+                  <span className="text-gray-500 font-lg font-light mr-5">
+                    YOUR TOPICS
+                  </span>
+                  <div className="flex gap-2">
+                  {followingTopicsState?.map((topic) => (
+                    <Topic
+                      onClick={() =>
+                        setSelectedTopic((state) =>
+                          state === topic ? null : topic
+                        )
+                      }
+                      key={topic}
+                      title={topic}
+                    />
+                  ))}
+                  </div>
+                </div>
+              )}
+              {selectedTopic && (
+                <div className="">
+                  <p className="text-5xl font-bold text-slate-700 mb-5 gap-2 flex">
+                    <GlobeAltIcon className="w-6" />
+                    {selectedTopic}
+                  </p>
+                  <div className="inline-flex gap-4 mb-12">
+                    <Button primaryColor onClick={unfollowTopic}>
+                      Unfollow
+                    </Button>
+                    <Button onClick={() => {}}>Start Writing</Button>
+                  </div>
+                </div>
+              )}
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
@@ -138,16 +203,16 @@ export default function Home() {
                             key={story._id}
                             noActiveBookmark
                             normalMenu
-                            authorUrl={`/other-profile?id=${story.user}`}
+                            authorUrl={`/profile/${story.username}`}
                             authorName={story.username}
                             authorImage={story.userProfilePicture}
-                            storyUrl={`/blog-detail?id=${story._id}`}
+                            storyUrl={`/story/${story.storySlug}`}
                             timeAgo={DateTime.fromISO(
                               story.createdAt
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl={'badgeUrl'}
+                            badgeUrl='badgeUrl'
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
@@ -192,7 +257,7 @@ export default function Home() {
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl={'badgeUrl'}
+                            badgeUrl='badgeUrl'
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}

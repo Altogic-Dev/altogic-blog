@@ -7,15 +7,14 @@ import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
-import Layout from '../layout/Layout';
-import Sidebar from '../layout/Sidebar';
-import PostCard from '../components/PostCard';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
+import PostCard from '@/components/PostCard';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/SideBar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
 const posts = [
   {
     id: 0,

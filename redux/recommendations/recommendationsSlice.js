@@ -7,6 +7,8 @@ const initialState = {
   whoToFollowLoading: false,
   whoToFollowMinimized: [],
   whoToFollowMinimizedLoading: false,
+  errors: [],
+  popularTopics: [],
 };
 
 // Actual Slice
@@ -15,30 +17,32 @@ export const recommendationsSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getWhoToFollowMinimizedRequest(state, action) {
+    getWhoToFollowMinimizedRequest(state) {
       state.whoToFollowMinimizedLoading = true;
     },
     getWhoToFollowMinimizedSuccess(state, action) {
       state.whoToFollowMinimizedLoading = false;
       state.whoToFollowMinimized = action.payload;
     },
-    getWhoToFollowRequest(state, action) {
-      state.isLoading = true;
+    getWhoToFollowRequest(state) {
+      state.whoToFollowLoading = true;
     },
     getWhoToFollowSuccess(state, action) {
       state.isLoading = false;
       state.whoToFollow = action.payload;
     },
-
+    getWhoToFollowFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
+   
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
+
     extraReducers: {
-      [HYDRATE]: (state, action) => {
-        return {
-          ...state,
-          ...action.payload.whoToFollow,
-          ...action.payload.whoToFollowMinimized,
-        };
-      },
+      [HYDRATE]: (state, action) => ({
+        ...state,
+        ...action.payload.recommendations,
+      }),
     },
   },
 });

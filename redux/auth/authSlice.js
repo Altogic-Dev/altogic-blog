@@ -7,13 +7,14 @@ const initialState = {
   error: null,
   user: AuthService.getUser(),
   isAuthenticated: false,
+  
 };
 
 export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
-    registerRequested(state) {
+    registerRequest(state) {
       state.isLoading = true;
     },
     registerSuccess(state, action) {
@@ -25,7 +26,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    getAuthGrantRequested(state) {
+    getAuthGrantRequest(state) {
       state.isLoading = true;
     },
     loginSuccess(state, action) {
@@ -41,14 +42,14 @@ export const authSlice = createSlice({
     setUser(state, action) {
       state.user = action.payload;
     },
-    loginRequested(state) {
+    loginRequest(state) {
       state.isLoading = true;
     },
     loginFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },
-    forgotPasswordRequested(state) {
+    forgotPasswordRequest(state) {
       state.isLoading = true;
     },
     forgotPasswordSuccess(state) {
@@ -60,7 +61,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    resendVerificationEmailRequested(state) {
+    resendVerificationEmailRequest(state) {
       state.isLoading = true;
     },
     resendVerificationEmailSuccess(state) {
@@ -70,6 +71,36 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    resetPasswordRequest(state) {
+      state.isLoading = true;
+    },
+    resetPasswordSuccess(state) {
+      state.isLoading = false;
+      window.location.href = '/reset-password-successfull';
+    },
+    resetPasswordFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    authenticateWithProviderRequest(state) {
+      state.isLoading = false;
+    },
+    authenticateWithProviderFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+    unfollowTopicRequest(state) {
+      state.isLoading = true;
+    },
+    unfollowTopicSuccess(state) {
+      state.isLoading = false;
+    },
+    unfollowTopicFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
 
     muteAuthorRequested() {},
     muteAuthorSuccess(state, action) {
@@ -78,6 +109,7 @@ export const authSlice = createSlice({
         mutedUser: action.payload.newMutedUsers
       }
     },
+
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

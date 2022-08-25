@@ -3,7 +3,7 @@ import { call, takeEvery, put, all, select } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 
-function* getFollowingStoriesSaga({ payload: { userId, page } }) {
+function* getFollowingStoriesSaga({payload: { userId, page }}) {
   try {
     const user = yield select((state) => state.auth.user);
     const { data, error } = yield call(
