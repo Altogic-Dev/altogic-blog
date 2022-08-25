@@ -1,8 +1,9 @@
-import { Fragment, useState } from "react";
-import { Menu, Transition, Switch } from "@headlessui/react";
+import { Fragment, useState } from 'react';
+import { Menu, Transition, Switch } from '@headlessui/react';
+import _ from 'lodash';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function PostCard(props) {
@@ -220,15 +221,28 @@ export default function PostCard(props) {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          <Menu.Item>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                              onClick={props.optionButtons?.unfollow}
-                            >
-                              Unfollow this author
-                            </button>
-                          </Menu.Item>
+                          {!_.isNil(props.optionButtons?.unfollow) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.unfollow}
+                              >
+                                Unfollow this author
+                              </button>
+                            </Menu.Item>
+                          )}
+                          {!_.isNil(props.optionButtons?.mute) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.mute}
+                              >
+                                Mute this author
+                              </button>
+                            </Menu.Item>
+                          )}
                           <Menu.Item>
                             <button
                               type="button"
@@ -368,8 +382,8 @@ export default function PostCard(props) {
                         htmlFor="list-name"
                         className="block text-slate-700 text-sm font-medium tracking-sm mb-1.5"
                       >
-                        {" "}
-                        List name{" "}
+                        {' '}
+                        List name{' '}
                       </label>
                       <div className="mt-1">
                         <input
@@ -386,15 +400,15 @@ export default function PostCard(props) {
                         checked={enabled}
                         onChange={setEnabled}
                         className={classNames(
-                          enabled ? "bg-purple-600" : "bg-gray-200",
-                          "relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          enabled ? 'bg-purple-600' : 'bg-gray-200',
+                          'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
                         )}
                       >
                         <span
                           aria-hidden="true"
                           className={classNames(
-                            enabled ? "translate-x-4" : "translate-x-0",
-                            "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                            enabled ? 'translate-x-4' : 'translate-x-0',
+                            'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                           )}
                         />
                       </Switch>

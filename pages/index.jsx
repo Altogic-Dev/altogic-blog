@@ -7,6 +7,7 @@ import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import { wrapper } from '@/redux/store';
+import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import ListObserver from '@/components/ListObserver';
 import Layout from '../layout/Layout';
@@ -146,22 +147,40 @@ function classNames(...classes) {
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+
   const [listPage, setListPage] = useState(1);
   const [selectedTopic, setSelectedTopic] = useState();
   const [followingTopicsState, setFollowingTopicsState] = useState([]);
+
+  const [followingListPage, setFollowingListPage] = useState(1);
+  const [recommendedListPage, setRecommendedListPage] = useState(1);
+
+
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo
   );
+
   const userId = useSelector((state) => _.get(state.auth.user, '_id'));
   const followingTopics = useSelector((state) =>
     _.get(state.auth.user, 'followingTopics')
   );
+
+  const recommendedStories = useSelector(
+    (state) => state.story.recommendedStories
+  );
+  const recommendedStoriesInfo = useSelector(
+    (state) => state.story.recommendedStoriesInfo
+  );
+  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
+
+
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
     dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
   };
+
 
   const handleEndOfList = () => {
     if (
@@ -188,6 +207,47 @@ export default function Home() {
   useEffect(() => {
     getFollowingStories(listPage);
   }, [listPage]);
+
+  const getRecommendedStories = (page) => {
+    dispatch(storyActions.getRecommendedStoriesRequest({ page }));
+  };
+
+  const handleFollowingEndOfList = () => {
+    if (
+      _.isNil(followingStoriesInfo) ||
+      followingStoriesInfo.currentPage < followingStoriesInfo.totalPages
+    ) {
+      setFollowingListPage((prev) => prev + 1);
+    }
+  };
+
+  const handleRecommendedEndOfList = () => {
+    if (
+      _.isNil(recommendedStoriesInfo) ||
+      recommendedStoriesInfo.currentPage < recommendedStoriesInfo.totalPages
+    ) {
+      setRecommendedListPage((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    getFollowingStories(followingListPage);
+  }, [followingListPage]);
+
+  useEffect(() => {
+    if (selectedIndex !== 0) getRecommendedStories(recommendedListPage);
+  }, [recommendedListPage]);
+
+  useEffect(() => {
+    if (
+      selectedIndex === 1 &&
+      _.isNil(recommendedStories) &&
+      recommendedListPage === 1
+    ) {
+      getRecommendedStories(followingListPage);
+    }
+  }, [selectedIndex]);
+
 
   useEffect(() => {
     setFollowingTopicsState(followingTopics);
@@ -278,18 +338,16 @@ export default function Home() {
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
-                      <ListObserver onEnd={handleEndOfList}>
+                      <ListObserver onEnd={handleFollowingEndOfList}>
+
                         {_.map(followingStories, (story) => (
                           <PostCard
                             key={story._id}
                             noActiveBookmark
                             normalMenu
-                            authorUrl={`/other-profile?id=${story.followerConnection.followingUser}`}
-                            authorName={story.followerConnection.followingName}
-                            authorImage={
-                              story.followerConnection
-                                .followingUserProfilePicture
-                            }
+                            authorUrl={`/other-profile?id=${story.user}`}
+                            authorName={story.username}
+                            authorImage={story.userProfilePicture}
                             storyUrl={`/blog-detail?id=${story._id}`}
                             timeAgo={DateTime.fromISO(
                               story.createdAt
@@ -306,8 +364,7 @@ export default function Home() {
                                 dispatch(
                                   followerConnectionActions.unfollowRequest({
                                     userId,
-                                    followingUserId:
-                                      story.followerConnection.followingUser,
+                          followingUserId: story.user,
                                   })
                                 ),
                               report: () =>
@@ -315,8 +372,7 @@ export default function Home() {
                                   reportActions.reportStoryRequest({
                                     userId,
                                     storyId: story._id,
-                                    reportedUserId:
-                                      story.followerConnection.followingUser,
+                                    reportedUserId: story.user,
                                   })
                                 ),
                             }}
@@ -327,25 +383,44 @@ export default function Home() {
                   </Tab.Panel>
 
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))}
+                      <ListObserver onEnd={handleRecommendedEndOfList}>
+                        {_.map(recommendedStories, (story) => (
+                          <PostCard
+                            key={story._id}
+                            noActiveBookmark
+                            normalMenu
+                            authorUrl={`/other-profile?id=${story.user}`}
+                            authorName={story.username}
+                            authorImage={story.userProfilePicture}
+                            storyUrl={`/blog-detail?id=${story._id}`}
+                            timeAgo={DateTime.fromISO(
+                              story.createdAt
+                            ).toRelative()}
+                            title={story.title}
+                            infoText={story.excerpt}
+                            badgeUrl={'badgeUrl'}
+                            badgeName={_.first(story.categoryNames)}
+                            min={story.estimatedReadingTime}
+                            images={_.first(story.storyImages)}
+                            actionMenu
+                            optionButtons={{
+                              mute: () =>
+                                dispatch(
+                                  authActions.muteAuthorRequested(story.user)
+                                ),
+                              report: () =>
+                                dispatch(
+                                  reportActions.reportStoryRequest({
+                                    userId,
+                                    storyId: story._id,
+                                    reportedUserId: story.user,
+                                  })
+                                ),
+                            }}
+                          />
+                        ))}
+                      </ListObserver>
+                    )} 
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
