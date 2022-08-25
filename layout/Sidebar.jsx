@@ -15,7 +15,7 @@ export default function Sidebar({
   personalFullStatistic,
   topicMatch,
   peopleMatch,
-  whoTheFollow,
+  whoToFollow,
   storiesYouFollow,
   popularTopics,
   popularStories,
@@ -58,6 +58,7 @@ export default function Sidebar({
           </div>
         </div>
       </form>
+      {personalFullStatistic && <PersonalFullStatistic />}
       {publicationProfile && <PublicationProfile />}
 
       {topicMatch && <TopicMatch />}
@@ -67,13 +68,12 @@ export default function Sidebar({
       {following && <Followings />}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
-      {whoTheFollow && <WhoToFollow />}
-      {popularTopics && <PopularTopics />}
+      {whoToFollow && <WhoToFollow />}
+      {(popularTopics || relatedTopics) && <PopularTopics relatedTopics />}
       {popularStories && <PopularStories />}
 
       {peopleMatch && <PeopleMatch />}
 
-      {personalFullStatistic && <PersonalFullStatistic />}
       <Footer />
     </>
   );

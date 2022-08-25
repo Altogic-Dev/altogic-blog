@@ -4,6 +4,7 @@ import { Tab } from "@headlessui/react";
 import Layout from "@/layout/Layout";
 import PostCard from "../components/PostCard";
 import Sidebar from "@/layout/Sidebar";
+import YourTopics from "@/components/general/YourTopics";
 
 const posts = [
   {
@@ -148,31 +149,7 @@ export default function TagFollow() {
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               {/* Desktop */}
               <div className="hidden lg:block mb-[60px]">
-                <div className="flex items-center gap-4 mb-12">
-                  <span className="text-slate-500 text-sm tracking-sm uppercase">
-                    Your Topics
-                  </span>
-                  <div className="flex items-center gap-4">
-                    <a
-                      href="#"
-                      className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-slate-50"
-                    >
-                      Front end Development
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-slate-50"
-                    >
-                      Figma
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center px-2.5 py-1 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-slate-50"
-                    >
-                      Art
-                    </a>
-                  </div>
-                </div>
+               <YourTopics/>
                 <div className="flex items-center gap-2 mb-6">
                   <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-100">
                     <svg
@@ -320,7 +297,7 @@ export default function TagFollow() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar personalFullStatistic whoTheFollow relatedTopics />
+              <Sidebar personalFullStatistic whoToFollow relatedTopics />
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
@@ -328,65 +305,8 @@ export default function TagFollow() {
             </div>
             {/* Mobile */}
             <div className="lg:hidden mb-4">
-              <div className="flex items-center gap-4 mb-10">
-                <span className="text-slate-500 text-sm tracking-sm whitespace-nowrap uppercase">
-                  Your Topics
-                </span>
-                <div className="flex items-center gap-4 overflow-x-auto">
-                  <a
-                    href="#"
-                    className="inline-flex items-center flex-shrink-0 px-2.5 py-1 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-slate-50"
-                  >
-                    Front end Development
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center flex-shrink-0 px-2.5 py-1 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-slate-50"
-                  >
-                    Figma
-                  </a>
-                  <a
-                    href="#"
-                    className="inline-flex items-center flex-shrink-0 px-2.5 py-1 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-slate-50"
-                  >
-                    Art
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 mb-6">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-100">
-                  <svg
-                    className="w-3 h-3 text-gray-500"
-                    viewBox="0 0 12 12"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M4 4H4.005M1 2.6L1 4.83726C1 5.08185 1 5.20414 1.02763 5.31923C1.05213 5.42127 1.09253 5.51881 1.14736 5.60828C1.2092 5.7092 1.29568 5.79568 1.46863 5.96863L5.30294 9.80294C5.89697 10.397 6.19398 10.694 6.53647 10.8053C6.83774 10.9031 7.16226 10.9031 7.46352 10.8053C7.80602 10.694 8.10303 10.397 8.69706 9.80294L9.80294 8.69706C10.397 8.10303 10.694 7.80602 10.8053 7.46352C10.9031 7.16226 10.9031 6.83774 10.8053 6.53647C10.694 6.19398 10.397 5.89697 9.80294 5.30294L5.96863 1.46863C5.79568 1.29568 5.7092 1.2092 5.60828 1.14736C5.51881 1.09253 5.42127 1.05213 5.31923 1.02763C5.20414 1 5.08185 1 4.83726 1L2.6 1C2.03995 1 1.75992 1 1.54601 1.10899C1.35785 1.20487 1.20487 1.35785 1.10899 1.54601C1 1.75992 1 2.03995 1 2.6ZM4.25 4C4.25 4.13807 4.13807 4.25 4 4.25C3.86193 4.25 3.75 4.13807 3.75 4C3.75 3.86193 3.86193 3.75 4 3.75C4.13807 3.75 4.25 3.86193 4.25 4Z"
-                      stroke="currentColor"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </span>
-                <h1 className="text-slate-700 text-2xl md:text-3xl lg:text-5xl font-bold tracking-md">
-                  Front End Development
-                </h1>
-              </div>
-              <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                >
-                  Unfollow
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                >
-                  Start writing
-                </button>
+              
+              <YourTopics mobile />
               </div>
             </div>
           </div>
