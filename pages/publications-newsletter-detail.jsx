@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+simport React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Menu, Transition, Switch } from '@headlessui/react';
 import Layout from '@/layout/Layout';

@@ -6,6 +6,8 @@ import reportSaga from './report/reportSaga';
 import recommendationsSaga from './recommendations/recommendationsSaga';
 import subscribeConnectionSaga from './subscribeConnection/subscribeConnectionSaga';
 import storyLikesSaga from './storyLikes/storyLikesSaga';
+import subscribeSaga from './subscribe/subscribeSaga';
+import publicationSaga from './publication/publicationSaga';
 
 function* rootSaga() {
   yield all([
@@ -16,6 +18,8 @@ function* rootSaga() {
     fork(recommendationsSaga),
     fork(subscribeConnectionSaga),
     fork(storyLikesSaga),
+    fork(subscribeSaga),
+    fork(publicationSaga),
   ]);
 }
 

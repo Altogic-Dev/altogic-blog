@@ -1,13 +1,13 @@
-import { KeyIcon, ArrowLeftIcon } from '@heroicons/react/outline';
+import { KeyIcon } from '@heroicons/react/outline';
 import Input from '@/components/Input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import AuthSidebar from '@/components/AuthSidebar';
 import { authActions } from '@/redux/auth/authSlice';
+import BackToLogin from '@/components/BackToLogin';
 
 export default function Login() {
   const registerSchema = new yup.ObjectSchema({
@@ -16,7 +16,7 @@ export default function Login() {
   const dispatch = useDispatch();
 
   async function formSubmit(form) {
-    dispatch(authActions.forgotPasswordRequested({ ...form }));
+    dispatch(authActions.forgotPasswordRequest({ ...form }));
   }
   const error = useSelector((state) => state.auth.error);
   const {
@@ -73,14 +73,7 @@ export default function Login() {
                     </button>
                   </div>
                 </form>
-                <div className="text-center mt-8">
-                  <Link href="login">
-                    <a className="inline-flex items-center gap-2 text-sm font-medium tracking-sm text-slate-500">
-                      <ArrowLeftIcon className="w-5 h-5 text-slate-500" />
-                      Back to login
-                    </a>
-                  </Link>
-                </div>
+                <BackToLogin />
               </div>
             </div>
           </div>

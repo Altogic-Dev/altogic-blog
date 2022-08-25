@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './rootSaga';
-
 import { authSlice } from './auth/authSlice';
 import { followerConnectionSlice } from './followerConnection/followerConnectionSlice';
 import { storySlice } from './story/storySlice';
@@ -10,6 +9,9 @@ import { reportSlice } from './report/reportSlice';
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
 import { subscribeConnectionSlice } from './subscribeConnection/subscribeConnectionSlice';
 import { storyLikesSlice } from './storyLikes/storyLikesSlice';
+import { topicsSlice } from './topics/topicsSlice';
+import { subscribeSlice } from './subscribe/subscribeSlice';
+import { publicationSlice } from './publication/publicationSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -23,6 +25,9 @@ const makeStore = () => {
       [recommendationsSlice.name]: followerConnectionSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
       [storyLikesSlice.name]: storyLikesSlice.reducer,
+      [topicsSlice.name]: topicsSlice.reducer,
+      [subscribeSlice.name]: subscribeSlice.reducer,
+      [publicationSlice.name]: publicationSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
@@ -32,4 +37,5 @@ const makeStore = () => {
   return store;
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const wrapper = createWrapper(makeStore);

@@ -6,19 +6,18 @@ import { XIcon } from '@heroicons/react/outline';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
+import PostCard from '@/components/PostCard';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/SideBar';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
-import Layout from '../layout/Layout';
-import Sidebar from '../layout/Sidebar';
-import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
 const posts = [
   {
     id: 0,
