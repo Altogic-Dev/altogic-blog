@@ -4,6 +4,8 @@ import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
 const initialState = {
   followingStories: null,
+  followingStoriesLoading: false,
+  followingUsers: [],
   followingActionResult: null,
   isLoading: false,
 };
@@ -14,6 +16,13 @@ export const followerConnectionSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
+
+    getFollowingStoriesRequest(state) {
+      state.followingStoriesLoading = true;
+    },
+    getFollowingStoriesSuccess(state, action) {
+      state.followingStories = action.payload;
+    },
 
     unfollowRequest(state) {
       state.isLoading = true;
@@ -30,6 +39,17 @@ export const followerConnectionSlice = createSlice({
       state.followingActionResult = action.payload;
     },
     followUserFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    getFollowingUsersRequest(state) {
+      state.isLoading = true;
+    },
+    getFollowingUsersSuccess(state, action) {
+      state.isLoading = false;
+      state.followers = action.payload;
+    },
+    getFollowingUsersFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },

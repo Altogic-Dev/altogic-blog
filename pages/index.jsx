@@ -13,7 +13,10 @@ import ListObserver from '@/components/ListObserver';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '@/layout/SideBar';
-
+import Topic from '@/components/basic/topic';
+import Button from '@/components/basic/button';
+import { GlobeAltIcon } from '@heroicons/react/outline';
+import { authActions } from '@/redux/auth/authSlice';
 
 const posts = [
   {
@@ -144,13 +147,25 @@ function classNames(...classes) {
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const [listPage, setListPage] = useState(1);
+  const [selectedTopic, setSelectedTopic] = useState();
+  const [followingTopicsState, setFollowingTopicsState] = useState([]);
+
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
+
 
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo
   );
+
+  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
+  const followingTopics = useSelector((state) =>
+    _.get(state.auth.user, 'followingTopics')
+  );
+
   const recommendedStories = useSelector(
     (state) => state.story.recommendedStories
   );
@@ -159,11 +174,40 @@ export default function Home() {
   );
   const userId = useSelector((state) => _.get(state.auth.user, '_id'));
 
+
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
     dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
   };
+
+
+  const handleEndOfList = () => {
+    if (
+      _.isNil(followingStoriesInfo) ||
+      followingStoriesInfo.currentPage < followingStoriesInfo.totalPages
+    ) {
+      setListPage((prev) => prev + 1);
+    }
+  };
+
+  const unfollowTopic = () => {
+    // const topics = ['Front End','Back End'];
+    const topics = followingTopicsState.filter(
+      (topic) => topic !== selectedTopic
+    );
+    setFollowingTopicsState(topics);
+    setSelectedTopic();
+    dispatch(
+      authActions.unfollowTopicRequest({
+        topics,
+      })
+    );
+  };
+  useEffect(() => {
+    getFollowingStories(listPage);
+  }, [listPage]);
+
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
   };
@@ -204,6 +248,10 @@ export default function Home() {
     }
   }, [selectedIndex]);
 
+
+  useEffect(() => {
+    setFollowingTopicsState(followingTopics);
+  }, [followingTopics]);
   return (
     <div>
       <Head>
@@ -215,6 +263,40 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
+              {!_.isEmpty(followingTopicsState) && (
+                <div className="inline-flex mb-10">
+                  <span className="text-gray-500 font-lg font-light mr-5">
+                    YOUR TOPICS
+                  </span>
+                  <div className="flex gap-2">
+                  {followingTopicsState?.map((topic) => (
+                    <Topic
+                      onClick={() =>
+                        setSelectedTopic((state) =>
+                          state === topic ? null : topic
+                        )
+                      }
+                      key={topic}
+                      title={topic}
+                    />
+                  ))}
+                  </div>
+                </div>
+              )}
+              {selectedTopic && (
+                <div className="">
+                  <p className="text-5xl font-bold text-slate-700 mb-5 gap-2 flex">
+                    <GlobeAltIcon className="w-6" />
+                    {selectedTopic}
+                  </p>
+                  <div className="inline-flex gap-4 mb-12">
+                    <Button primaryColor onClick={unfollowTopic}>
+                      Unfollow
+                    </Button>
+                    <Button onClick={() => {}}>Start Writing</Button>
+                  </div>
+                </div>
+              )}
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
@@ -234,7 +316,7 @@ export default function Home() {
                     {/* <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
+                        selectedIndex === 0 ? 'bg-purple-50 text-purple-900' : ''
                       )}
                     >
                       8
@@ -257,6 +339,7 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
+
                         {_.map(followingStories, (story) => (
                           <PostCard
                             key={story._id}
@@ -281,7 +364,7 @@ export default function Home() {
                                 dispatch(
                                   followerConnectionActions.unfollowRequest({
                                     userId,
-                                    followingUserId: story.user,
+                          followingUserId: story.user,
                                   })
                                 ),
                               report: () =>
@@ -300,7 +383,6 @@ export default function Home() {
                   </Tab.Panel>
 
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {!_.isNil(recommendedStories) && (
                       <ListObserver onEnd={handleRecommendedEndOfList}>
                         {_.map(recommendedStories, (story) => (
                           <PostCard
@@ -338,7 +420,7 @@ export default function Home() {
                           />
                         ))}
                       </ListObserver>
-                    )}
+                    )} 
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>

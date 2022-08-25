@@ -4,6 +4,8 @@ import { Tab, Menu, Transition } from '@headlessui/react';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
 import PostCard from '../components/PostCard';
+import Button from '@/components/basic/button';
+
 
 const posts = [
   {
@@ -371,12 +373,7 @@ export default function MyStories() {
                     >
                       Write a story
                     </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    >
-                      Import a story
-                    </button>
+                    <Button>Import a story</Button>
                   </div>
                   <div className="hidden md:flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                     <Menu

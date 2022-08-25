@@ -7,6 +7,7 @@ const initialState = {
   error: null,
   user: AuthService.getUser(),
   isAuthenticated: false,
+  
 };
 
 export const authSlice = createSlice({
@@ -89,6 +90,18 @@ export const authSlice = createSlice({
       state.error = action.payload;
     },
 
+    unfollowTopicRequest(state) {
+      state.isLoading = true;
+    },
+    unfollowTopicSuccess(state) {
+      state.isLoading = false;
+    },
+    unfollowTopicFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+
+
     muteAuthorRequested() {},
     muteAuthorSuccess(state, action) {
       state.user = {
@@ -96,6 +109,7 @@ export const authSlice = createSlice({
         mutedUser: action.payload.newMutedUsers
       }
     },
+
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
