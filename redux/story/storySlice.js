@@ -6,7 +6,10 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   followingStories: null,
   followingStoriesInfo: null,
+  recommendedStories: null,
+  recommendedStoriesInfo: null,
   isLoading: false,
+
 };
 
 // Actual Slice
@@ -28,6 +31,17 @@ export const storySlice = createSlice({
         state.followingStories = action.payload.data;
       }
       state.followingStoriesInfo = action.payload.info;
+    },
+    // Action to set the authentication status
+    getRecommendedStoriesRequest(state, action) {
+    },
+    getRecommendedStoriesSuccess(state, action) {
+      if(_.isArray(state.recommendedStories)) {
+        state.recommendedStories = [...state.recommendedStories, ...action.payload.data]
+      } else {
+        state.recommendedStories = action.payload.data
+      }
+      state.recommendedStoriesInfo = action.payload.info
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

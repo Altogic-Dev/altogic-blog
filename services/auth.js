@@ -56,6 +56,12 @@ const AuthService = {
   async resendVerificationEmail(email) {
     return auth.resendVerificationEmail(email);
   },
+  setUserFromLocal(user) {
+    auth.setUser(user);
+  },
+  async updateUser(newUser) {
+    return db.model('users').object(auth.getUser()._id).update(newUser);
+
   async resetPassword({ accessToken, newPassword }) {
     return auth.resetPwdWithToken(accessToken, newPassword);
   },
