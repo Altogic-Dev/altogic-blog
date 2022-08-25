@@ -89,6 +89,14 @@ export const authSlice = createSlice({
       state.error = action.payload;
     },
 
+    muteAuthorRequested() {},
+    muteAuthorSuccess(state, action) {
+      state.user = {
+        ...state.user,
+        mutedUser: action.payload.newMutedUsers
+      }
+    },
+
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({
