@@ -6,6 +6,7 @@ const initialState = {
   isLoading: true,
   error: null,
   user: AuthService.getUser(),
+  isMuted: false,
   isAuthenticated: false,
   
 };
@@ -106,8 +107,14 @@ export const authSlice = createSlice({
     muteAuthorSuccess(state, action) {
       state.user = {
         ...state.user,
-        mutedUser: action.payload.newMutedUsers
-      }
+        mutedUser: action.payload.newMutedUsers,
+      };
+      state.isMuted = true;
+    },
+
+    isMutedRequest() {},
+    isMutedSuccess(state, action) {
+      state.isMuted = action.payload;
     },
 
 

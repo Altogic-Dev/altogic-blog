@@ -1,9 +1,12 @@
+import _ from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
   followingStories: null,
+  followingUser: null,
+  isFollowing: false,
   followingStoriesLoading: false,
   followingUsers: [],
   followingActionResult: null,
@@ -16,7 +19,21 @@ export const followerConnectionSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
+    unfollowRequest() {},
+    unfollowSuccess(state) {
+      state.isFollowing = false;
+    },
 
+    followRequest() {},
+    followSuccess(state) {
+      state.isFollowing = true;
+    },
+
+    getFollowingRequest() {},
+    getFollowingSuccess(state, action) {
+      state.followingUser = action.payload;
+      state.isFollowing = !_.isNull(action.payload);
+    },
     getFollowingStoriesRequest(state) {
       state.followingStoriesLoading = true;
     },

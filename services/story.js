@@ -8,9 +8,9 @@ const StoryService = {
         const mutedUserQuery = _.map(mutedUsers, (user, index) =>
           index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
         );
-        return `!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
+        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
       }
-      return '!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
+      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
     };
 
     return db
@@ -20,7 +20,7 @@ const StoryService = {
         name: 'followerConnection',
         query: `this.user == lookup.followingUser && lookup.followerUser == '${userId}'`,
       })
-      .filter(query)
+      .filter(query())
       .sort('createdAt', 'desc')
       .limit(limit)
       .page(page)
@@ -40,11 +40,19 @@ const StoryService = {
 
     return db
       .model('story')
-      .filter(query)
+      .filter(query())
       .sort('createdAt', 'desc')
       .limit(limit)
       .page(page)
       .get(true);
+  },
+
+  getStory(id) {
+    return db
+      .model('story')
+      .filter(`_id == '${id}' && isPublished && !isPrivate`)
+      .lookup({ field: 'user' })
+      .get();
   },
 };
 
