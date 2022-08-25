@@ -2,10 +2,11 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
-import Button from '@/components/Button';
+
 import BackToLogin from '@/components/BackToLogin';
 import AuthSidebar from '@/components/AuthSidebar';
 import { KeyIcon } from '@heroicons/react/outline';
+import Button from '@/components/basic/button';
 
 export default function Login() {
   const router = useRouter();
@@ -39,7 +40,7 @@ export default function Login() {
               </p>
               <p className="mb-8 text-center text-sm text-slate-500 tracking-sm">
                 Didn’t receive the email?{' '}
-                <Button onClick={resendEmail}>
+                <Button className="border-0" onClick={resendEmail}>
                   <a className="font-medium text-purple-700 tracking-sm hover:text-purple-500">
                     Click to resend
                   </a>

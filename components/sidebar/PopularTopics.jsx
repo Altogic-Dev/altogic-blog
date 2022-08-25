@@ -1,4 +1,4 @@
-import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
+import { topicsActions } from '@/redux/topics/topicsSlice';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
@@ -10,10 +10,9 @@ export default function PopularTopics() {
 
 
 
-
   const dispatch = useDispatch();
   const getPopularTopics = () => {
-    dispatch(recommendationsActions.getPopularTopicsRequest());
+    dispatch(topicsActions.getPopularTopicsRequest());
   };
 
   useEffect(() => {

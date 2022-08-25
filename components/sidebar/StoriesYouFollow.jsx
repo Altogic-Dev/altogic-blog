@@ -90,7 +90,7 @@ export default function StoriesYouFollow() {
   return (
     <div className="overflow-y-visible">
       <SidebarTitle title="Stories you follow" spacing="mb-4" />
-      <div className="flex items-center gap-3 overflow-x-auto overflow-y-visible">
+      <div className="flex items-center gap-3 overflow-x-auto">
         {storiesFollows.map((storiesFollow) => (
           <div
             key={storiesFollow.id}

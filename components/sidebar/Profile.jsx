@@ -1,4 +1,5 @@
 import { followerConnectionActions } from "@/redux/followerConnection/followerConnectionSlice";
+import { subscribeActions } from "@/redux/subscribe/subscribeSlice";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +12,10 @@ export default function Profile(followButton,editButton) {
 
   const handleFollow = () => {
     dispatch(followerConnectionActions.followUserRequest(sessionUser));
+  };
+  const handleSubscribe = () => {
+
+    dispatch(subscribeActions.subscribeUserRequest(sessionUser));
   };
 
   useEffect(() => {
@@ -60,6 +65,7 @@ export default function Profile(followButton,editButton) {
                 Follow
               </button>
               <button
+                onClick={handleSubscribe}
                 type="button"
                 className="inline-flex items-center justify-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
               >

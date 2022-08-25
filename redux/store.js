@@ -9,6 +9,9 @@ import { followerConnectionSlice } from "./followerConnection/followerConnection
 import { storySlice } from "./story/storySlice";
 import { reportSlice } from "./report/reportSlice";
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
+import { topicsSlice } from './topics/topicsSlice';
+import {subscribeSlice} from './subscribe/subscribeSlice';
+import {publicationSlice} from './publication/publicationSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -19,7 +22,10 @@ const makeStore = () => {
       [followerConnectionSlice.name]: followerConnectionSlice.reducer,
       [storySlice.name]: storySlice.reducer,
       [reportSlice.name]: reportSlice.reducer,
-      [recommendationsSlice.name]: followerConnectionSlice.reducer
+      [recommendationsSlice.name]: followerConnectionSlice.reducer,
+      [topicsSlice.name]: topicsSlice.reducer,
+      [subscribeSlice.name]: subscribeSlice.reducer,
+      [publicationSlice.name]: publicationSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
@@ -29,4 +35,5 @@ const makeStore = () => {
   return store;
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export const wrapper = createWrapper(makeStore);
