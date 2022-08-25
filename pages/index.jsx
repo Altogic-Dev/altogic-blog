@@ -265,13 +265,13 @@ export default function Home() {
                             authorUrl={`/other-profile?id=${story.user}`}
                             authorName={story.username}
                             authorImage={story.userProfilePicture}
-                            storyUrl={`/blog-detail?id=${story._id}`}
+                            storyUrl={`/story/${story._id}`}
                             timeAgo={DateTime.fromISO(
                               story.createdAt
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl={'badgeUrl'}
+                            badgeUrl={story.badgeUrl}
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}

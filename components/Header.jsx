@@ -18,7 +18,7 @@ export default function Header() {
                 <span className="sr-only">Altogic</span>
                 <img
                   className="w-[114px] h-[39px] sm:w-[135px] sm:h-[46px]"
-                  src="./logo.svg"
+                  src="/logo.svg"
                   alt=""
                 />
               </a>
