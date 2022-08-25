@@ -203,10 +203,10 @@ export default function Home() {
                             key={story._id}
                             noActiveBookmark
                             normalMenu
-                            authorUrl={`/other-profile?id=${story.user}`}
+                            authorUrl={`/profile/${story.username}`}
                             authorName={story.username}
                             authorImage={story.userProfilePicture}
-                            storyUrl={`/blog-detail?id=${story._id}`}
+                            storyUrl={`/story/${story.storySlug}`}
                             timeAgo={DateTime.fromISO(
                               story.createdAt
                             ).toRelative()}

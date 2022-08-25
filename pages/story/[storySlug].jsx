@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
-import Sidebar from '@/layout/SideBar';
-import Layout from '@/layout/Layout';
-
 import PostCard from '@/components/PostCard';
+import { XIcon } from '@heroicons/react/outline';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/SideBar';
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

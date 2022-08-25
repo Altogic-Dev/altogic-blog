@@ -10,7 +10,7 @@
       "@/styles/*": ["styles/*"],
       "@/utils/*": ["utils/*"],
       "@/redux/*": ["redux/*"],
-      "@/layout/*": ["layout/*"]
+
     }
   }
 }
