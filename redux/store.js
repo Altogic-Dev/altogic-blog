@@ -8,6 +8,7 @@ import { storySlice } from './story/storySlice';
 import { reportSlice } from './report/reportSlice';
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
 import { subscribeConnectionSlice } from './subscribeConnection/subscribeConnectionSlice';
+import { storyLikesSlice } from './storyLikes/storyLikesSlice';
 import { topicsSlice } from './topics/topicsSlice';
 import { subscribeSlice } from './subscribe/subscribeSlice';
 import { publicationSlice } from './publication/publicationSlice';
@@ -23,6 +24,7 @@ const makeStore = () => {
       [reportSlice.name]: reportSlice.reducer,
       [recommendationsSlice.name]: followerConnectionSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
+      [storyLikesSlice.name]: storyLikesSlice.reducer,
       [topicsSlice.name]: topicsSlice.reducer,
       [subscribeSlice.name]: subscribeSlice.reducer,
       [publicationSlice.name]: publicationSlice.reducer,
