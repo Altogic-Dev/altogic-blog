@@ -5,6 +5,7 @@ import storySaga from './story/storySaga';
 import reportSaga from './report/reportSaga';
 import recommendationsSaga from './recommendations/recommendationsSaga';
 import subscribeConnectionSaga from './subscribeConnection/subscribeConnectionSaga';
+import storyLikesSaga from './storyLikes/storyLikesSaga';
 
 function* rootSaga() {
   yield all([
@@ -14,6 +15,7 @@ function* rootSaga() {
     fork(reportSaga),
     fork(recommendationsSaga),
     fork(subscribeConnectionSaga),
+    fork(storyLikesSaga),
   ]);
 }
 

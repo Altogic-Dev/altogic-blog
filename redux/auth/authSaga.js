@@ -114,6 +114,12 @@ function* muteAuthorSaga({ payload: mutedUserId }) {
   }
 }
 
+function* isMutedSaga({ payload: authorId }) {
+  const user = yield select((state) => state.auth.user);
+  const isMuted = _.includes(user.mutedUser, authorId);
+  yield put(authActions.isMutedSuccess(isMuted));
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(authActions.registerRequested.type, registerSaga),
@@ -125,5 +131,6 @@ export default function* rootSaga() {
       resendVerificationEmail
     ),
     takeEvery(authActions.muteAuthorRequested.type, muteAuthorSaga),
+    takeEvery(authActions.isMutedRequest.type, isMutedSaga),
   ]);
 }
