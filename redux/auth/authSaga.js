@@ -96,33 +96,34 @@ function* resetPassword({ payload }) {
   }
 }
 
-function* authenticateWithProvider({payload:provider}) {
+function* authenticateWithProvider({ payload: provider }) {
   try {
-    const { errors } = yield call(AuthService.authenticateWithProvider,provider);
+    const { errors } = yield call(
+      AuthService.authenticateWithProvider,
+      provider
+    );
     if (errors) {
       throw errors.items;
-    } 
+    }
   } catch (e) {
     yield put(authActions.authenticateWithProviderFailure(e));
   }
 }
-function* unfollowTopicSaga({payload:{topics}}) {
+function* unfollowTopicSaga({ payload: { topics } }) {
   try {
-    const { data, errors } = yield call(AuthService.unfollowTopic,topics);
+    const { data, errors } = yield call(AuthService.unfollowTopic, topics);
     if (errors) {
       throw errors.items;
-    } 
+    }
 
     if (data) {
       yield call(AuthService.getUserFromDb);
       setUserFromLocalStorage();
-
     }
   } catch (e) {
     yield put(authActions.unfollowTopicFailure(e));
   }
 }
-
 
 function* muteAuthorSaga({ payload: mutedUserId }) {
   try {
@@ -154,7 +155,6 @@ function* muteAuthorSaga({ payload: mutedUserId }) {
   }
 }
 
-
 export default function* rootSaga() {
   yield all([
     takeEvery(authActions.registerRequested.type, registerSaga),
@@ -165,9 +165,16 @@ export default function* rootSaga() {
       authActions.resendVerificationEmailRequested.type,
       resendVerificationEmail
     ),
-      yield takeEvery(authActions.authenticateWithProviderRequest.type, authenticateWithProvider);
-  yield takeEvery(authActions.unfollowTopicRequest.type, unfollowTopicSaga);
+    yield takeEvery(
+      authActions.authenticateWithProviderRequest.type,
+      authenticateWithProvider
+    ),
+    yield takeEvery(authActions.unfollowTopicRequest.type, unfollowTopicSaga),
     takeEvery(authActions.muteAuthorRequested.type, muteAuthorSaga),
-    takeEvery(authActions.authenticateWithProviderRequest.type, authenticateWithProvider)
+    takeEvery(authActions.resetPasswordRequest.type, resetPassword),
+    takeEvery(
+      authActions.authenticateWithProviderRequest.type,
+      authenticateWithProvider
+    ),
   ]);
 }

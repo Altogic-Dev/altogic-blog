@@ -5,141 +5,20 @@ import { reportActions } from '@/redux/report/reportSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from 'luxon';
+import Topic from '@/components/basic/topic';
+import { GlobeAltIcon } from '@heroicons/react/outline';
+import Button from '@/components/basic/button';
 import _ from 'lodash';
-import { wrapper } from '@/redux/store';
 import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import ListObserver from '@/components/ListObserver';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '@/layout/SideBar';
-import Topic from '@/components/basic/topic';
-import Button from '@/components/basic/button';
-import { GlobeAltIcon } from '@heroicons/react/outline';
-import { authActions } from '@/redux/auth/authSlice';
 
-const posts = [
-  {
-    id: 0,
-    href: '/post/first-post',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/test',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 1,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Money',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 2,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'App',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 3,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Art',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 4,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Mindfulness',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 5,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-];
+
+
+
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -147,50 +26,36 @@ function classNames(...classes) {
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-
-  const [listPage, setListPage] = useState(1);
-  const [selectedTopic, setSelectedTopic] = useState();
-  const [followingTopicsState, setFollowingTopicsState] = useState([]);
-
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
-
+  const [selectedTopic, setSelectedTopic] = useState();
+  const [followingTopicsState, setFollowingTopicsState] = useState([]);
 
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo
   );
-
-  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
-  const followingTopics = useSelector((state) =>
-    _.get(state.auth.user, 'followingTopics')
-  );
-
   const recommendedStories = useSelector(
     (state) => state.story.recommendedStories
   );
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
-  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
 
+  const followingTopics = useSelector((state) =>
+    _.get(state.auth.user, 'followingTopics')
+  );
+  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
 
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
     dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
   };
-
-
-  const handleEndOfList = () => {
-    if (
-      _.isNil(followingStoriesInfo) ||
-      followingStoriesInfo.currentPage < followingStoriesInfo.totalPages
-    ) {
-      setListPage((prev) => prev + 1);
-    }
+  const getRecommendedStories = (page) => {
+    dispatch(storyActions.getRecommendedStoriesRequest({ page }));
   };
-
+  
   const unfollowTopic = () => {
     // const topics = ['Front End','Back End'];
     const topics = followingTopicsState.filter(
@@ -203,13 +68,6 @@ export default function Home() {
         topics,
       })
     );
-  };
-  useEffect(() => {
-    getFollowingStories(listPage);
-  }, [listPage]);
-
-  const getRecommendedStories = (page) => {
-    dispatch(storyActions.getRecommendedStoriesRequest({ page }));
   };
 
   const handleFollowingEndOfList = () => {
@@ -248,10 +106,11 @@ export default function Home() {
     }
   }, [selectedIndex]);
 
-
   useEffect(() => {
     setFollowingTopicsState(followingTopics);
   }, [followingTopics]);
+
+
   return (
     <div>
       <Head>
@@ -263,7 +122,7 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
-              {!_.isEmpty(followingTopicsState) && (
+            {!_.isEmpty(followingTopicsState) && (
                 <div className="inline-flex mb-10">
                   <span className="text-gray-500 font-lg font-light mr-5">
                     YOUR TOPICS
@@ -316,7 +175,7 @@ export default function Home() {
                     {/* <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex === 0 ? 'bg-purple-50 text-purple-900' : ''
+                        selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
                       )}
                     >
                       8
@@ -339,7 +198,6 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
-
                         {_.map(followingStories, (story) => (
                           <PostCard
                             key={story._id}
@@ -348,13 +206,13 @@ export default function Home() {
                             authorUrl={`/other-profile?id=${story.user}`}
                             authorName={story.username}
                             authorImage={story.userProfilePicture}
-                            storyUrl={`/story/${story._id}`}
+                            storyUrl={`/blog-detail?id=${story._id}`}
                             timeAgo={DateTime.fromISO(
                               story.createdAt
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl={story.badgeUrl}
+                            badgeUrl='badgeUrl'
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
@@ -364,7 +222,7 @@ export default function Home() {
                                 dispatch(
                                   followerConnectionActions.unfollowRequest({
                                     userId,
-                          followingUserId: story.user,
+                                    followingUserId: story.user,
                                   })
                                 ),
                               report: () =>
@@ -383,6 +241,7 @@ export default function Home() {
                   </Tab.Panel>
 
                   <Tab.Panel className="divide-y divide-gray-200">
+                    {!_.isNil(recommendedStories) && (
                       <ListObserver onEnd={handleRecommendedEndOfList}>
                         {_.map(recommendedStories, (story) => (
                           <PostCard
@@ -398,7 +257,7 @@ export default function Home() {
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl={'badgeUrl'}
+                            badgeUrl='badgeUrl'
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
@@ -420,7 +279,7 @@ export default function Home() {
                           />
                         ))}
                       </ListObserver>
-                    )} 
+                    )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
