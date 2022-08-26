@@ -7,6 +7,7 @@ import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
+import { useEffect } from 'react';
 
 const posts = [
   {
@@ -256,18 +257,22 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Profile() {
+export default function ProfilePage({ About, Home, List }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followersModal, setFollowersModal] = useState(false);
 
+  useEffect(() => {
+    if (Home) {
+      setSelectedIndex(0);
+    } else if (List) {
+      setSelectedIndex(1);
+    } else if (About) {
+      setSelectedIndex(2);
+    }
+  }, []);
 
-  const router = useRouter()
-
-  const userId = router.query.id
-
-  console.log(userId)
   return (
     <div>
       <Head>
