@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/SideBar';
+import Sidebar from '@/layout/Sidebar';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
@@ -131,7 +131,7 @@ const allResponses = [
 
 export default function BlogDetail() {
   const router = useRouter();
-  const { id } = router.query;
+  const { storySlug } = router.query;
 
   const dispatch = useDispatch();
 
@@ -172,7 +172,7 @@ export default function BlogDetail() {
           storyId: _.get(story, '_id'),
         })
       );
-      dispatch(authActions.isMutedRequest(_.get(story, '_id')));
+      dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
       dispatch(
         reportActions.getReportedStoryByUserRequest({
           userId: _.get(user, '_id'),
@@ -184,8 +184,8 @@ export default function BlogDetail() {
   }, [story]);
 
   useEffect(() => {
-    if (id) dispatch(storyActions.getStoryRequest(id));
-  }, [id]);
+    if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
+  }, [storySlug]);
 
   return (
     <div>
@@ -1336,52 +1336,15 @@ export default function BlogDetail() {
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
                 profile={{
-                  fullName: _.get(story, 'user.name'),
+                  id: _.get(story, 'user._id'),
+                  name: _.get(story, 'user.name'),
                   profilePicture: _.get(story, 'user.profilePicture'),
                   followerCount: _.get(story, 'user.followerCount'),
+                  username: _.get(story, 'user.username'),
                   about: _.get(story, 'user.about'),
-                  isFollowing,
-                  isSubscribed,
                 }}
-                followButton={() =>
-                  isFollowing
-                    ? dispatch(
-                        followerConnectionActions.unfollowRequest({
-                          userId: _.get(user, '_id'),
-                          followingUserId: _.get(story, 'user._id'),
-                        })
-                      )
-                    : dispatch(
-                        followerConnectionActions.followRequest({
-                          followerUser: user,
-                          followingUser: {
-                            followingUser: _.get(story, 'user._id'),
-                            followingName: _.get(story, 'user.name'),
-                            followingUserProfilePicture: _.get(
-                              story,
-                              'user.profilePicture'
-                            ),
-                            followingUsername: _.get(story, 'user.username'),
-                          },
-                        })
-                      )
-                }
-                subscribeButton={() =>
-                  isSubscribed
-                    ? dispatch(
-                        subscribeConnectionActions.unSubscribeRequest({
-                          userId: _.get(user, '_id'),
-                          subscribingUserId: _.get(story, 'user._id'),
-                        })
-                      )
-                    : dispatch(
-                        subscribeConnectionActions.subscribeRequest({
-                          userId: _.get(user, '_id'),
-                          userEmail: _.get(user, 'email'),
-                          subscribingUserId: _.get(story, 'user._id'),
-                        })
-                      )
-                }
+                isFollowing={isFollowing}
+                isSubscribed={isSubscribed}
                 whoToFollow
                 popularTopics
                 popularStories

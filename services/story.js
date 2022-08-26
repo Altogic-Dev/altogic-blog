@@ -1,5 +1,5 @@
-import { db } from '@/utils/altogic';
 import _ from 'lodash';
+import { db } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -51,6 +51,14 @@ const StoryService = {
     return db
       .model('story')
       .filter(`_id == '${id}' && isPublished && !isPrivate`)
+      .lookup({ field: 'user' })
+      .get();
+  },
+
+  getStoryBySlug(slug) {
+    return db
+      .model('story')
+      .filter(`storySlug == '${slug}' && isPublished && !isPrivate`)
       .lookup({ field: 'user' })
       .get();
   },

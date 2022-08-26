@@ -23,9 +23,9 @@ export default function Sidebar({
   profile,
   following,
   relatedTopics,
-  followButton,
-  editButton,
   publicationProfile,
+  isFollowing,
+  isSubscribed,
 }) {
   return (
     <>
@@ -60,12 +60,15 @@ export default function Sidebar({
       </form>
       {personalFullStatistic && <PersonalFullStatistic />}
       {publicationProfile && <PublicationProfile />}
-
       {topicMatch && <TopicMatch />}
       {profile && (
-        <Profile profile={profile} followButton={followButton} editButton={editButton} />
+        <Profile
+          profile={profile}
+          isFollowing={isFollowing}
+          isSubscribed={isSubscribed}
+        />
       )}
-      {following && <Following/>}
+      {following && <Following />}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
       {whoToFollow && <WhoToFollow />}

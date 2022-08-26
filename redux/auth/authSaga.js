@@ -155,6 +155,29 @@ function* muteAuthorSaga({ payload: mutedUserId }) {
   }
 }
 
+function* unmuteAuthorSaga({ payload: mutedUserId }) {
+  try {
+    const userFromLocal = yield select((state) => state.auth.user);
+
+    const newMutedUsers = _.reject(userFromLocal.mutedUsers, mutedUserId);
+
+    const { errors } = yield call(AuthService.updateUser, {
+      mutedUser: newMutedUsers,
+    });
+    if (!errors) {
+      yield put(
+        authActions.unmuteAuthorSuccess({ newMutedUsers, mutedUserId })
+      );
+      AuthService.setUserFromLocal({
+        ...userFromLocal,
+        mutedUser: newMutedUsers,
+      });
+    }
+  } catch (e) {
+    console.log({ e });
+  }
+}
+
 function* isMutedSaga({ payload: authorId }) {
   const user = yield select((state) => state.auth.user);
   const isMuted = _.includes(user.mutedUser, authorId);
@@ -173,6 +196,7 @@ export default function* rootSaga() {
     ),
     takeEvery(authActions.unfollowTopicRequest.type, unfollowTopicSaga),
     takeEvery(authActions.muteAuthorRequest.type, muteAuthorSaga),
+    takeEvery(authActions.unmuteAuthorRequest.type, unmuteAuthorSaga),
     takeEvery(authActions.isMutedRequest.type, isMutedSaga),
     takeEvery(authActions.resetPasswordRequest.type, resetPassword),
     takeEvery(

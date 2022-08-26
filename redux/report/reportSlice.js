@@ -13,7 +13,9 @@ export const reportSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     reportStoryRequest(state, action) {},
-    reportStorySuccess(state, action) {},
+    reportStorySuccess(state, action) {
+      state.isReported = true;
+    },
 
     getReportedStoryByUserRequest(state, action) {},
     getReportedStoryByUserSuccess(state, action) {
