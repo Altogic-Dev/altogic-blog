@@ -50,6 +50,11 @@ export const storySlice = createSlice({
       state.story = action.payload;
     },
 
+    getStoryBySlugRequest(state, action) {},
+    getStoryBySlugSuccess(state, action) {
+      state.story = action.payload;
+    },
+
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({
