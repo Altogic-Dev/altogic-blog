@@ -5,7 +5,7 @@ export default function Footer() {
 
     <footer>
        <ul
-        className="flex flex-wrap items-center text-xs mt-3 text-gray-500"
+        className="hidden lg:flex flex-wrap items-center text-xs mt-3 text-gray-500 "
         style={{ listStyle: 'none' }}
       >
         <li className="pr-2 pt-2">

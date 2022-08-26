@@ -135,11 +135,10 @@ function classNames(...classes) {
 }
 
 export default function TagFollow() {
-
   const router = useRouter();
   const { tag } = router.query;
 
-  console.log(tag)
+  console.log(tag);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -151,15 +150,16 @@ export default function TagFollow() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 py-4 lg:py-0">
-        <p className='mt-12 font-bold text-5xl text-slate-600'>{tag?.replaceAll("-"," ")}</p>
-
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
-            
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               {/* Desktop */}
               <YourTopics />
+
+              {/* Mobile Sidebar */}
+              <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
+                <Sidebar personalFullStatistic />
+              </div>
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
@@ -271,11 +271,7 @@ export default function TagFollow() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar personalFullStatistic whoTheFollow popularTopics />
-            </div>
-            {/* Mobile Sidebar */}
-            <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar personalFullStatistic />
+              <Sidebar personalFullStatistic whoToFollow popularTopics />
             </div>
             {/* Mobile */}
           </div>
