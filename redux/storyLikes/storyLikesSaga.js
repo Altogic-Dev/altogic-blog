@@ -1,13 +1,15 @@
 import _ from 'lodash';
-import { call, takeEvery, put, all } from 'redux-saga/effects';
+import { call, takeEvery, put, all, fork } from 'redux-saga/effects';
 import StoryLikesService from '@/services/storyLikes';
 import { storyLikesActions } from './storyLikesSlice';
+import { updateStoryLikeCountSaga } from '../story/storySaga';
 
 function* likeStorySaga({ payload: { userId, storyId } }) {
   try {
     const { errors } = yield call(StoryLikesService.like, userId, storyId);
     if (errors) throw errors;
     yield put(storyLikesActions.likeStorySuccess());
+    yield fork(updateStoryLikeCountSaga, true);
   } catch (e) {
     console.error({ e });
   }
@@ -18,6 +20,7 @@ function* unlikeStorySaga({ payload: { userId, storyId } }) {
     const { errors } = yield call(StoryLikesService.unlike, userId, storyId);
     if (errors) throw errors;
     yield put(storyLikesActions.unlikeStorySuccess());
+    yield fork(updateStoryLikeCountSaga, false);
   } catch (e) {
     console.error({ e });
   }

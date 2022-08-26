@@ -62,6 +62,18 @@ const StoryService = {
       .lookup({ field: 'user' })
       .get();
   },
+
+  getMoreUserStories(authorId, storyId, page = 1, limit = 5) {
+    return db
+      .model('story')
+      .filter(
+        `_id != '${storyId}' && user == '${authorId}' && isPublished && !isPrivate`
+      )
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
+  },
 };
 
 export default StoryService;

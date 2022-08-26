@@ -34,8 +34,6 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
-  const isLiked = useSelector((state) => state.storyLikes.isLiked);
-  const isReported = useSelector((state) => state.report.isReported);
 
   const userId = useSelector((state) => _.get(state.auth.user, '_id'));
 
