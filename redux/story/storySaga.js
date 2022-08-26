@@ -93,6 +93,41 @@ function* getStoryBySlugSaga({ payload: slug }) {
   }
 }
 
+function* getMoreUserStoriesSaga({ payload: { authorId, storyId, page } }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getMoreUserStories,
+      authorId,
+      storyId,
+      page
+    );
+    if (!_.isNil(data) && _.isNil(errors)) {
+      yield put(storyActions.getMoreUserStoriesSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+export function* updateStoryLikeCountSaga(isIncrease) {
+  const story = yield select((state) => state.story.story);
+  if (isIncrease) {
+    yield put(
+      storyActions.getStorySuccess({
+        ...story,
+        likeCount: story.likeCount + 1,
+      })
+    );
+  } else {
+    yield put(
+      storyActions.getStorySuccess({
+        ...story,
+        likeCount: story.likeCount - 1,
+      })
+    );
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeEvery(
@@ -107,6 +142,10 @@ export default function* rootSaga() {
     yield takeEvery(
       storyActions.getStoryBySlugRequest.type,
       getStoryBySlugSaga
+    ),
+    yield takeEvery(
+      storyActions.getMoreUserStoriesRequest.type,
+      getMoreUserStoriesSaga
     ),
   ]);
 }

@@ -9,6 +9,7 @@ const initialState = {
   recommendedStories: null,
   recommendedStoriesInfo: null,
   story: null,
+  moreUserStories: null,
   isLoading: false,
 };
 
@@ -32,7 +33,7 @@ export const storySlice = createSlice({
       }
       state.followingStoriesInfo = action.payload.info;
     },
-    getRecommendedStoriesRequest(state, action) {},
+    getRecommendedStoriesRequest() {},
     getRecommendedStoriesSuccess(state, action) {
       if (_.isArray(state.recommendedStories)) {
         state.recommendedStories = [
@@ -45,14 +46,23 @@ export const storySlice = createSlice({
       state.recommendedStoriesInfo = action.payload.info;
     },
 
-    getStoryRequest(state, action) {},
+    getStoryRequest() {},
     getStorySuccess(state, action) {
       state.story = action.payload;
     },
 
-    getStoryBySlugRequest(state, action) {},
+    getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {
       state.story = action.payload;
+    },
+
+    getMoreUserStoriesRequest() {},
+    getMoreUserStoriesSuccess(state, action) {
+      if (_.isArray(state.moreUserStories)) {
+        state.moreUserStories = [...state.moreUserStories, ...action.payload];
+      } else {
+        state.moreUserStories = action.payload;
+      }
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
