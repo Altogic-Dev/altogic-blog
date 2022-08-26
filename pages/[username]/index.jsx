@@ -1,4 +1,4 @@
-import ProfilePage from '@/components/general/Profile';
+import ProfilePage from '@/components/general/ProfilePage';
 import React from 'react';
 
 export default function UsernameIndex() {

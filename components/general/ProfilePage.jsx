@@ -8,6 +8,7 @@ import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const posts = [
   {
@@ -263,6 +264,9 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingModal, setFollowingModal] = useState(false);
   const [followersModal, setFollowersModal] = useState(false);
 
+  const router = useRouter();
+  const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     if (Home) {
       setSelectedIndex(0);
@@ -374,12 +378,10 @@ export default function ProfilePage({ About, Home, List }) {
                   </Menu>
                 </div>
               </div>
-              <Tab.Group
-                selectedIndex={selectedIndex}
-                onChange={setSelectedIndex}
-              >
+              <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
+                    onClick={() => router.push(`/${user.username}`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -392,6 +394,7 @@ export default function ProfilePage({ About, Home, List }) {
                     Home
                   </Tab>
                   <Tab
+                    onClick={() => router.push(`/${user.username}/lists`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -404,6 +407,7 @@ export default function ProfilePage({ About, Home, List }) {
                     Lists
                   </Tab>
                   <Tab
+                    onClick={() => router.push(`/${user.username}/about`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
