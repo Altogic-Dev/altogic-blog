@@ -271,7 +271,7 @@ export default function TagFollow() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar personalFullStatistic whoToFollow popularTopics />
+              <Sidebar personalFullStatistic topWriters relatedTopics />
             </div>
             {/* Mobile */}
           </div>

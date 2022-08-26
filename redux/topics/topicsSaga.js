@@ -5,10 +5,7 @@ import { topicsActions } from './topicsSlice';
 
 function* getLatestsOfTopicSaga({ payload: topic }) {
   try {
-    const { data, errors } = yield call(
-      TopicsService.getLatestsOfTopic,
-      topic
-    );
+    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
     if (data) {
       yield put(topicsActions.getLatestofTopicSuccess(data));
@@ -23,10 +20,7 @@ function* getLatestsOfTopicSaga({ payload: topic }) {
 
 function* getBestsOfTopicSaga({ payload: topic }) {
   try {
-    const { data, errors } = yield call(
-      TopicsService.getLatestsOfTopic,
-      topic
-    );
+    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
     if (data) {
       yield put(topicsActions.getLatestsOfTopicSuccess(data));
@@ -41,10 +35,7 @@ function* getBestsOfTopicSaga({ payload: topic }) {
 
 function* getTrendingsOfTopicsSaga({ payload: topic }) {
   try {
-    const { data, errors } = yield call(
-      TopicsService.getLatestsOfTopic,
-      topic
-    );
+    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
     if (data) {
       yield put(topicsActions.getLatestsOfTopicSuccess(data));
@@ -59,14 +50,32 @@ function* getTrendingsOfTopicsSaga({ payload: topic }) {
 
 function* getPopularTopicsSaga() {
   try {
-    const { data, errors } = yield call(
-      TopicsService.getPopularTopics
-    );
+    const { data, errors } = yield call(TopicsService.getPopularTopics);
 
     if (errors) throw errors.items;
-    // if (data) yield put(topicsActions.fetchDataSuccess(data));
+    if (data) yield put(topicsActions.getPopularTopicsSuccess(data));
   } catch (e) {
-    // yield put(topicsActions.fetchDataFailure(e));
+    yield put(topicsActions.getPopularTopicsFailure(e));
+  }
+}
+function* getRelatedTopicsSaga() {
+  try {
+    const { data, errors } = yield call(TopicsService.getRelatedTopics);
+
+    if (errors) throw errors.items;
+    if (data) yield put(topicsActions.getRelatedTopicsSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.getRelatedTopicsFailure(e));
+  }
+}
+function* getTopicTopWritersSaga() {
+  try {
+    const { data, errors } = yield call(TopicsService.getTopicTopWriters);
+
+    if (errors) throw errors.items;
+    if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.getTopicTopWritersFailure(e));
   }
 }
 
@@ -86,5 +95,13 @@ export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getPopularTopicsRequest.type,
     getPopularTopicsSaga
+  );
+  yield takeEvery(
+    topicsActions.getRelatedTopicsRequest.type,
+    getRelatedTopicsSaga
+  );
+  yield takeEvery(
+    topicsActions.getTopicTopWritersRequest.type,
+    getTopicTopWritersSaga
   );
 }
