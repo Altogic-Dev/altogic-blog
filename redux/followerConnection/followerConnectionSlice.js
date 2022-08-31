@@ -41,13 +41,6 @@ export const followerConnectionSlice = createSlice({
       state.followingStories = action.payload;
     },
 
-    unfollowRequest(state) {
-      state.isLoading = true;
-    },
-    unfollowSuccess(state) {
-      state.isLoading = false;
-    },
-
     followUserRequest(state) {
       state.isLoading = true;
     },

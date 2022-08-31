@@ -3,16 +3,16 @@ import { call, takeEvery, put, all, select } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 
-function* getFollowingStoriesSaga({payload: { userId, page }}) {
+function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const { data, error } = yield call(
+    const { data, errors } = yield call(
       StoryService.getFollowingStories,
       userId,
       _.get(user, 'mutedUser'),
       page
     );
-    if (!_.isNil(data) && _.isNil(error)) {
+    if (!_.isNil(data) && _.isNil(errors)) {
       yield put(
         storyActions.getFollowingStoriesSuccess({
           data: data.data,
@@ -28,12 +28,12 @@ function* getFollowingStoriesSaga({payload: { userId, page }}) {
 function* getRecommendedStoriesSaga({ payload: { page } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const { data, error } = yield call(
+    const { data, errors } = yield call(
       StoryService.getRecommendedStories,
       _.get(user, 'mutedUser'),
       page
     );
-    if (!_.isNil(data) && _.isNil(error)) {
+    if (!_.isNil(data) && _.isNil(errors)) {
       yield put(
         storyActions.getRecommendedStoriesSuccess({
           data: data.data,
@@ -48,8 +48,8 @@ function* getRecommendedStoriesSaga({ payload: { page } }) {
 
 function* getStorySaga({ payload: id }) {
   try {
-    const { data, error } = yield call(StoryService.getStory, id);
-    if (!_.isNil(data) && _.isNil(error)) {
+    const { data, errors } = yield call(StoryService.getStory, id);
+    if (!_.isNil(data) && _.isNil(errors)) {
       yield put(storyActions.getStorySuccess(_.first(data)));
     }
   } catch (e) {
@@ -82,6 +82,52 @@ export function* updateFollowerCountSaga(isIncrease) {
   }
 }
 
+function* getStoryBySlugSaga({ payload: slug }) {
+  try {
+    const { data, errors } = yield call(StoryService.getStoryBySlug, slug);
+    if (!_.isNil(data) && _.isNil(errors)) {
+      yield put(storyActions.getStoryBySlugSuccess(_.first(data)));
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* getMoreUserStoriesSaga({ payload: { authorId, storyId, page } }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getMoreUserStories,
+      authorId,
+      storyId,
+      page
+    );
+    if (!_.isNil(data) && _.isNil(errors)) {
+      yield put(storyActions.getMoreUserStoriesSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+export function* updateStoryLikeCountSaga(isIncrease) {
+  const story = yield select((state) => state.story.story);
+  if (isIncrease) {
+    yield put(
+      storyActions.getStorySuccess({
+        ...story,
+        likeCount: story.likeCount + 1,
+      })
+    );
+  } else {
+    yield put(
+      storyActions.getStorySuccess({
+        ...story,
+        likeCount: story.likeCount - 1,
+      })
+    );
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeEvery(
@@ -93,5 +139,13 @@ export default function* rootSaga() {
       getRecommendedStoriesSaga
     ),
     yield takeEvery(storyActions.getStoryRequest.type, getStorySaga),
+    yield takeEvery(
+      storyActions.getStoryBySlugRequest.type,
+      getStoryBySlugSaga
+    ),
+    yield takeEvery(
+      storyActions.getMoreUserStoriesRequest.type,
+      getMoreUserStoriesSaga
+    ),
   ]);
 }

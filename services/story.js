@@ -1,5 +1,5 @@
-import { db } from '@/utils/altogic';
 import _ from 'lodash';
+import { db } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -74,6 +74,7 @@ const StoryService = {
       .limit(limit)
       .get();
   },
+
   createStory(story) {
     return db.model('story').create(story);
   },

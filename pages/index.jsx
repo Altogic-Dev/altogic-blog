@@ -15,7 +15,6 @@ import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '@/layout/SideBar';
 
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -24,7 +23,6 @@ export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
-
 
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
@@ -37,7 +35,6 @@ export default function Home() {
     (state) => state.story.recommendedStoriesInfo
   );
 
-
   const userId = useSelector((state) => _.get(state.auth.user, '_id'));
 
   const dispatch = useDispatch();
@@ -48,7 +45,6 @@ export default function Home() {
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
   };
-
 
   const handleFollowingEndOfList = () => {
     if (
@@ -86,7 +82,6 @@ export default function Home() {
     }
   }, [selectedIndex]);
 
-  
   return (
     <div>
       <Head>
