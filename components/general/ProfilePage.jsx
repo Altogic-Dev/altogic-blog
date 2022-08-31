@@ -1,14 +1,13 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState,useEffect } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 import PostCard from '@/components/PostCard';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 
 const posts = [
   {
