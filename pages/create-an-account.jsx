@@ -65,6 +65,13 @@ export default function CreateAnAccount() {
       });
     }
   }, [error, setError]);
+  useEffect(
+    () => () => {
+      console.log(1);
+      dispatch(authActions.resetErrorsRequest());
+    },
+    []
+  );
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">

@@ -8,7 +8,6 @@ import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import SocialProviders from '@/components/login/SocialProviders';
 
-
 export default function Login() {
   const loginSchema = new yup.ObjectSchema({
     email: yup.string().email().required('Email is required'),
@@ -39,6 +38,12 @@ export default function Login() {
       });
     }
   }, [error, setError]);
+  useEffect(
+    () => () => {
+      dispatch(authActions.resetErrorsRequest());
+    },
+    []
+  );
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">

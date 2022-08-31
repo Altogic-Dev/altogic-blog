@@ -9,7 +9,6 @@ export default function Layout({ children }) {
     <div>
       <Header />
       <main>{children}</main>
-
       <Link href="https://www.altogic.com/" target="_blank">
         <button
           type="button"

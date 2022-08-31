@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@emotion/react": "^11.9.3",
+    "@fortawesome/fontawesome-svg-core": "^6.1.2",
+    "@fortawesome/free-regular-svg-icons": "^6.1.2",
+    "@fortawesome/free-solid-svg-icons": "^6.1.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@headlessui/react": "^1.6.4",
     "@heroicons/react": "^1.0.6",
     "@hookform/resolvers": "^2.9.1",
@@ -21,11 +25,12 @@
     "altogic": "^2.0.1",
     "cookies-next": "^2.1.1",
     "eslint-import-resolver-jsconfig": "^1.1.0",
+    "highlight.js": "^11.6.0",
     "lodash": "^4.17.21",
     "luxon": "^3.0.1",
     "next": "12.2.5",
     "next-redux-wrapper": "^7.0.5",
-    "quill": "^1.3.7",
+    "quill": "^1.2.6",
     "quill-blot-formatter": "^1.0.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -37,6 +42,7 @@
     "react-spinners": "^0.13.1",
     "recharts": "2.1.12",
     "redux-saga": "^1.2.0",
+    "twitter-widgets": "^2.0.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {

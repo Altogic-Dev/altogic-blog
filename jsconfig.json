@@ -9,8 +9,7 @@
       "@/services/*": ["services/*"],
       "@/styles/*": ["styles/*"],
       "@/utils/*": ["utils/*"],
-      "@/redux/*": ["redux/*"],
-
+      "@/redux/*": ["redux/*"]
     }
   }
 }

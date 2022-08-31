@@ -154,6 +154,9 @@ function* muteAuthorSaga({ payload: mutedUserId }) {
     console.log({ e });
   }
 }
+function* errorResetSaga() {
+  yield put(authActions.resetErrors());
+}
 
 function* isMutedSaga({ payload: authorId }) {
   const user = yield select((state) => state.auth.user);
@@ -179,5 +182,6 @@ export default function* rootSaga() {
       authActions.authenticateWithProviderRequest.type,
       authenticateWithProvider
     ),
+    takeEvery(authActions.resetErrorsRequest.type, errorResetSaga),
   ]);
 }
