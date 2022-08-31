@@ -13,6 +13,12 @@ const TopicsService = {
   getPopularTopics() {
     return db.model('topics').sort('storyCount', 'desc').limit(10).get();
   },
+  getRelatedTopics(topic) {
+    return db.model('related_topics').filter(`topicA == ${topic} || topicB == ${topic}`).sort('storyCount', 'desc').limit(10).get();
+  },
+  getTopicTopWriters(topic) {
+    return db.model('story').filter(`IN(this.categoryNames, ${topic}`).group('user').get();
+  },
 };
 
 export default TopicsService;

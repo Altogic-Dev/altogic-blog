@@ -6,6 +6,7 @@ import PostCard from '../../components/PostCard';
 import Sidebar from '@/layout/Sidebar';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 const posts = [
   {
@@ -134,14 +135,21 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function TagFollow() {
+export default function TagPage({ Home, Latest, Best }) {
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const { tag } = router.query;
 
-  console.log(tag);
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-
+  useEffect(() => {
+    if (Home) {
+      setSelectedIndex(0);
+    } else if (Latest) {
+      setSelectedIndex(1);
+    } else if (Best) {
+      setSelectedIndex(2);
+    }
+  }, []);
   return (
     <div>
       <Head>
@@ -154,7 +162,7 @@ export default function TagFollow() {
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               {/* Desktop */}
-              <YourTopics />
+              <YourTopics Tag={tag} />
 
               {/* Mobile Sidebar */}
               <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
@@ -162,10 +170,11 @@ export default function TagFollow() {
               </div>
               <Tab.Group
                 selectedIndex={selectedIndex}
-                onChange={setSelectedIndex}
               >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
+                    onClick={() => router.push(`/tag/${tag}`)}
+
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -178,6 +187,8 @@ export default function TagFollow() {
                     Trending
                   </Tab>
                   <Tab
+                    onClick={() => router.push(`/tag/${tag}/latest`)}
+
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -190,6 +201,7 @@ export default function TagFollow() {
                     Latest
                   </Tab>
                   <Tab
+                    onClick={() => router.push(`/tag/${tag}/best`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -271,7 +283,7 @@ export default function TagFollow() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar personalFullStatistic whoToFollow popularTopics />
+              <Sidebar personalFullStatistic topWriters relatedTopics />
             </div>
             {/* Mobile */}
           </div>

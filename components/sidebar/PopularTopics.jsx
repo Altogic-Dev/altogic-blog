@@ -3,25 +3,30 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
-export default function PopularTopics() {
+export default function PopularTopics({ relatedTopics }) {
   const popularTopics = useSelector(
     (state) => state.recommendations.popularTopics
   );
-
-
 
   const dispatch = useDispatch();
   const getPopularTopics = () => {
     dispatch(topicsActions.getPopularTopicsRequest());
   };
+  const getRelatedTopics = () => {
+    dispatch(topicsActions.getRelatedTopicsRequest());
+  };
 
   useEffect(() => {
-    getPopularTopics();
+    if (relatedTopics) getRelatedTopics();
+    else getPopularTopics();
   }, []);
 
   return (
     <div>
-      <SidebarTitle title="Popular Topics" spacing="mb-4" />
+      <SidebarTitle
+        title={relatedTopics ? 'Related Topics' : 'Popular Topics'}
+        spacing="mb-4"
+      />
       <div className="flex flex-wrap gap-x-2 gap-y-4">
         {popularTopics?.map((topic) => (
           <a

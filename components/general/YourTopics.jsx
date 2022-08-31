@@ -7,9 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../basic/button';
 import Topic from '../basic/topic';
 
-export default function YourTopics() {
+export default function YourTopics({Tag}) {
   const router = useRouter();
-  const { tag } = router.query;
 
   const [selected, setSelected] = useState(true);
   const [followingTopicsState, setFollowingTopicsState] = useState([]);
@@ -18,7 +17,7 @@ export default function YourTopics() {
     _.get(state.auth.user, 'followingTopics')
   );
   const unfollowTopic = () => {
-    const topics = followingTopicsState.filter((topic) => topic !== tag);
+    const topics = followingTopicsState.filter((topic) => topic !== Tag);
     setFollowingTopicsState(topics);
     setSelected();
     dispatch(
@@ -52,11 +51,11 @@ export default function YourTopics() {
             </div>
           </div>
         )}
-        {tag && (
+        {Tag && (
           <>
             <p className="text-5xl font-bold text-slate-700 mb-5 gap-2 flex">
               <GlobeAltIcon className="w-6" />
-              {tag}
+              {Tag}
             </p>
             <div className="inline-flex gap-4 mb-12">
               <Button primaryColor onClick={unfollowTopic}>
@@ -67,7 +66,7 @@ export default function YourTopics() {
           </>
         )}
       </div>
-      {tag && (
+      {Tag && (
         <div className="lg:hidden mb-4">
           <div className="flex items-center gap-4 mb-10">
             <span className="text-slate-500 text-sm tracking-sm whitespace-nowrap uppercase">
@@ -92,7 +91,7 @@ export default function YourTopics() {
                   <GlobeAltIcon className="w-6" />
                 </span>
                 <h1 className="text-slate-700 text-2xl md:text-3xl lg:text-5xl font-bold tracking-md">
-                  {tag}
+                  {Tag}
                 </h1>
               </div>
               <div className="flex items-center gap-4">

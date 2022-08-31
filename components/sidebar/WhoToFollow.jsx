@@ -1,32 +1,55 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { topicsActions } from '@/redux/topics/topicsSlice';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
 
-export default function WhoToFollow() {
+export default function WhoToFollow({ topWriters }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
+  const [people, setPeople] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
   const whoToFollowMinimized = useSelector(
     (state) => state.recommendations.whoToFollowMinimized
   );
-  const whoToFollow = useSelector((state) => state.recommendations.whoToFollow);
+  const whoToFollowData = useSelector(
+    (state) => state.recommendations.whoToFollow
+  );
+  const topWritersData = useSelector((state) => state.topics.topWriters);
 
   const dispatch = useDispatch();
 
-  useEffect(() => {
+  const getTopWriters = () => {
+    dispatch(topicsActions.getTopicTopWritersRequest());
+  };
+  const getWhoToFollowMinimized = () => {
     dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
-  }, []);
+  };
+  const getWhoToFollow = () => {
+    dispatch(recommendationsActions.getWhoToFollowRequest());
+  };
 
   const handleSeeMore = () => {
     setWhoToFollowModal(true);
-    dispatch(recommendationsActions.getWhoToFollowRequest());
+    getWhoToFollow();
   };
+
+  useEffect(() => {
+    if (topWriters) getTopWriters();
+    else getWhoToFollowMinimized();
+  }, []);
+
+  useEffect(() => {
+    if (topWriters) setPeople(topWritersData);
+    else setPeople(whoToFollowData);
+  }, [whoToFollowData, topWritersData]);
+
+  console.log(topWritersData);
 
   if (!isLoading)
     return (
       <div>
-        <SidebarTitle title="Who To Follow" />
+        <SidebarTitle title={topWriters ? 'Top Writers' : 'Who To Follow'} />
         <div>
           <ul className="divide-y divide-gray-200">
             {whoToFollowMinimized?.map((person) => (
@@ -113,7 +136,7 @@ export default function WhoToFollow() {
                       </Dialog.Title>
                       <div>
                         <ul className="mb-6">
-                          {whoToFollow?.map((person) => (
+                          {people?.map((person) => (
                             <li
                               key={person.id}
                               className="flex items-start justify-between gap-6 py-4"

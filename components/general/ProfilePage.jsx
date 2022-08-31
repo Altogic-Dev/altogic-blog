@@ -1,7 +1,8 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState,useEffect } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 import PostCard from '@/components/PostCard';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
@@ -256,18 +257,25 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function Profile() {
+export default function ProfilePage({ About, Home, List }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followersModal, setFollowersModal] = useState(false);
 
+  const router = useRouter();
+  const user = useSelector((state) => state.auth.user);
 
-  const router = useRouter()
+  useEffect(() => {
+    if (Home) {
+      setSelectedIndex(0);
+    } else if (List) {
+      setSelectedIndex(1);
+    } else if (About) {
+      setSelectedIndex(2);
+    }
+  }, []);
 
-  const userId = router.query.id
-
-  console.log(userId)
   return (
     <div>
       <Head>
@@ -369,12 +377,10 @@ export default function Profile() {
                   </Menu>
                 </div>
               </div>
-              <Tab.Group
-                selectedIndex={selectedIndex}
-                onChange={setSelectedIndex}
-              >
+              <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
+                    onClick={() => router.push(`/${user.username}`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -387,6 +393,7 @@ export default function Profile() {
                     Home
                   </Tab>
                   <Tab
+                    onClick={() => router.push(`/${user.username}/lists`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -399,6 +406,7 @@ export default function Profile() {
                     Lists
                   </Tab>
                   <Tab
+                    onClick={() => router.push(`/${user.username}/about`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',

@@ -3,10 +3,12 @@ import { Menu, Dialog, Popover, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 export default function Header() {
   const router = useRouter();
   const [mobileNotifications, setMobileNotifications] = useState(false);
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <Popover className="relative bg-white border-b border-gray-200">
@@ -45,7 +47,7 @@ export default function Header() {
               </a>
             </Link>
 
-            <Link href="list-detail">
+            <Link href="/list-detail">
               <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
                 <svg
                   className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
@@ -64,7 +66,7 @@ export default function Header() {
                 Lists
               </a>
             </Link>
-            <Link href="my-stories">
+            <Link href="/my-stories">
               <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
                 <svg
                   className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
@@ -471,26 +473,25 @@ export default function Header() {
                   <div className="divide-y divide-gray-200">
                     <div>
                       <Menu.Item>
-                        <a
-                          href="#"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                        >
-                          <svg
-                            className="w-4 h-4 text-slate-500"
-                            viewBox="0 0 16 16"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M13.3333 14C13.3333 13.0696 13.3333 12.6044 13.2185 12.2259C12.9599 11.3736 12.293 10.7067 11.4407 10.4482C11.0622 10.3333 10.597 10.3333 9.66662 10.3333H6.3333C5.40292 10.3333 4.93773 10.3333 4.5592 10.4482C3.70693 10.7067 3.03999 11.3736 2.78145 12.2259C2.66663 12.6044 2.66663 13.0696 2.66663 14M11 5C11 6.65685 9.65681 8 7.99996 8C6.3431 8 4.99996 6.65685 4.99996 5C4.99996 3.34315 6.3431 2 7.99996 2C9.65681 2 11 3.34315 11 5Z"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                          View profile
-                        </a>
+                        <Link href={`/${user?.username}/about`}>
+                          <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm">
+                            <svg
+                              className="w-4 h-4 text-slate-500"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M13.3333 14C13.3333 13.0696 13.3333 12.6044 13.2185 12.2259C12.9599 11.3736 12.293 10.7067 11.4407 10.4482C11.0622 10.3333 10.597 10.3333 9.66662 10.3333H6.3333C5.40292 10.3333 4.93773 10.3333 4.5592 10.4482C3.70693 10.7067 3.03999 11.3736 2.78145 12.2259C2.66663 12.6044 2.66663 13.0696 2.66663 14M11 5C11 6.65685 9.65681 8 7.99996 8C6.3431 8 4.99996 6.65685 4.99996 5C4.99996 3.34315 6.3431 2 7.99996 2C9.65681 2 11 3.34315 11 5Z"
+                                stroke="currentColor"
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                            View profile
+                          </a>
+                        </Link>
                       </Menu.Item>
                       <Menu.Item>
                         <a
