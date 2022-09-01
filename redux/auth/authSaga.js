@@ -187,6 +187,20 @@ function* isMutedSaga({ payload: authorId }) {
   yield put(authActions.isMutedSuccess(isMuted));
 }
 
+export function* updateUserSaga(newUser) {
+  const user = yield select((state) => state.auth.user);
+  AuthService.setUserFromLocal({
+    ...user,
+    ...newUser,
+  });
+  yield put(
+    authActions.updateUser({
+      ...user,
+      ...newUser,
+    })
+  );
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(authActions.registerRequest.type, registerSaga),
