@@ -1,8 +1,10 @@
-import { call, takeEvery, put, all, fork } from 'redux-saga/effects';
+import { call, takeEvery, put, all, fork, select } from 'redux-saga/effects';
 import _ from 'lodash';
 import FollowerConnectionService from '@/services/followerConnection';
+import AuthService from '@/services/auth';
 import { followerConnectionActions } from './followerConnectionSlice';
 import { updateFollowerCountSaga } from '../story/storySaga';
+import { updateUserSaga } from '../auth/authSaga';
 
 function* unfollowSaga({ payload: { userId, followingUserId } }) {
   try {
@@ -14,6 +16,10 @@ function* unfollowSaga({ payload: { userId, followingUserId } }) {
     if (errors) throw errors;
     yield put(followerConnectionActions.unfollowSuccess());
     yield fork(updateFollowerCountSaga, false);
+    const user = yield select((state) => state.auth.user);
+    yield fork(updateUserSaga, {
+      followingCount: user.followingCount - 1,
+    });
   } catch (e) {
     console.error({ e });
   }
@@ -29,6 +35,9 @@ function* followSaga({ payload: { followerUser, followingUser } }) {
     if (errors) throw errors;
     yield put(followerConnectionActions.followSuccess());
     yield fork(updateFollowerCountSaga, true);
+    yield fork(updateUserSaga, {
+      followingCount: followerUser.followingCount + 1,
+    });
   } catch (e) {
     console.error({ e });
   }

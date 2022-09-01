@@ -348,7 +348,7 @@ export default function ProfilePage({ About, Home, List }) {
                   </h1>
                 ) : (
                   <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    Olivia Rhye's About
+                    {_.get(user, 'name')}'s About
                   </h1>
                 )}
                 <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">

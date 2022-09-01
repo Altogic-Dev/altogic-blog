@@ -1,17 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
-
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
-import { useEffect,useState } from 'react';
-
 
 export default function Profile({ profile, isFollowing, isSubscribed }) {
-
   const sessionUser = useSelector((state) => state.auth.user);
   const isMyProfile = _.get(sessionUser, '_id') === _.get(profile, 'id');
   const dispatch = useDispatch();
-  const [isMyProfileState,setIsMyProfileState] = useState();
+  const [isMyProfileState, setIsMyProfileState] = useState();
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -54,8 +52,8 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
   };
 
   useEffect(() => {
-    setIsMyProfileState(isMyProfile)
-  },[isMyProfile])
+    setIsMyProfileState(isMyProfile);
+  }, [isMyProfile]);
   return (
     <div>
       <img
@@ -130,13 +128,14 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
           )}
 
           {isMyProfileState && (
-            <button
-              type="button"
-              className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              href="/settings"
-            >
-              Edit Profile
-            </button>
+            <Link href="/settings">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              >
+                Edit Profile
+              </button>
+            </Link>
           )}
         </div>
       </div>
