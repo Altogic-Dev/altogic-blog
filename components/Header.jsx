@@ -472,7 +472,7 @@ export default function Header() {
                     <div>
                       <Menu.Item>
                         <a
-                          href="#"
+                          href="/my-profile"
                           className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                         >
                           <svg
@@ -792,7 +792,7 @@ export default function Header() {
                 <div>
                   <Menu.Item>
                     <a
-                      href="#"
+                      href="/my-profile"
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg

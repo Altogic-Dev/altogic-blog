@@ -25,13 +25,6 @@ const FollowerConnectionService = {
       .get();
   },
 
-  getFollowingUsers(userId) {
-    return db
-      .model('follower_connection')
-      .filter(`followingUser == '${userId}'`)
-      .get();
-  },
-
   followUser(followerUser, followingUser) {
     return db.model('follower_connection').create({
       followerName: `${followerUser.name} ${followerUser.surname}`,
@@ -46,6 +39,26 @@ const FollowerConnectionService = {
       followingUserAbout: followingUser.about,
       unreadStories: 0,
     });
+  },
+
+  getFollowerUsers(userId, page = 1, limit = 5) {
+    return db
+      .model('follower_connection')
+      .filter(`followingUser == '${userId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
+  },
+
+  getFollowingUsers(userId, page = 1, limit = 5) {
+    return db
+      .model('follower_connection')
+      .filter(`followerUser == '${userId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
   },
 };
 export default FollowerConnectionService;

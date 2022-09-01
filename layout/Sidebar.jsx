@@ -68,7 +68,13 @@ export default function Sidebar({
           isSubscribed={isSubscribed}
         />
       )}
-      {following && <Following />}
+      {following && (
+        <Following
+          followings={following?.followings}
+          count={following?.count}
+          seeAllButton={following?.seeAllButton}
+        />
+      )}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
       {whoToFollow && <WhoToFollow />}
