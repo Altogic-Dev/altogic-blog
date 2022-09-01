@@ -94,7 +94,7 @@ export default function BlogDetail() {
   const [didMount, setDidMount] = useState(true);
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [morePage, setMorePage] = useState(1);
-
+  
   const toggleFollow = () => {
     if (isFollowing) {
       return dispatch(
