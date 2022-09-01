@@ -1,13 +1,17 @@
-import React, { Fragment, useState,useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
+import _ from 'lodash';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '@/components/PostCard';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import AboutComponent from '@/components/general/About';
 
 const posts = [
   {
@@ -258,13 +262,48 @@ function classNames(...classes) {
 }
 
 export default function ProfilePage({ About, Home, List }) {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { username } = router.query;
+
+  const user = useSelector((state) => state.auth.user);
+  const userFollowings = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
+  const isMyProfile = username === _.get(user, 'username');
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
-  const [followersModal, setFollowersModal] = useState(false);
+  const [followingPage, setFollowingPage] = useState(1);
+  const [isMyProfileState, setIsMyProfileState] = useState(isMyProfile);
 
-  const router = useRouter();
-  const user = useSelector((state) => state.auth.user);
+  const copyToClipboard = () => {
+    const basePath = window.location.origin;
+    const profileUrl = `${basePath}/${username}`;
+    navigator.clipboard.writeText(profileUrl);
+  };
+
+  const getFollowingUsers = useCallback(() => {
+    dispatch(
+      followerConnectionActions.getFollowingUsersRequest({
+        userId: _.get(user, '_id'),
+        page: followingPage,
+      })
+    );
+  }, [followingPage]);
+
+  const toggleFollowingsModal = () => {
+    if (!followingModal && _.isNil(userFollowings)) {
+      dispatch(
+        followerConnectionActions.getFollowingUsersRequest({
+          userId: _.get(user, '_id'),
+          page: followingPage,
+        })
+      );
+    }
+    setFollowingModal((prev) => !prev);
+  };
 
   useEffect(() => {
     if (Home) {
@@ -275,6 +314,14 @@ export default function ProfilePage({ About, Home, List }) {
       setSelectedIndex(2);
     }
   }, []);
+
+  useEffect(() => {
+    if (followingPage > 1 || _.isNil(userFollowings)) getFollowingUsers();
+  }, [followingPage]);
+
+  useEffect(() => {
+    setIsMyProfileState(isMyProfile);
+  }, [isMyProfile]);
 
   return (
     <div>
@@ -335,42 +382,17 @@ export default function ProfilePage({ About, Home, List }) {
                           <button
                             type="button"
                             className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                            onClick={copyToClipboard}
                           >
                             Copy link to profile
                           </button>
                         </Menu.Item>
                         <Menu.Item>
-                          <button
-                            type="button"
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          >
-                            Follow this author
-                          </button>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <button
-                            type="button"
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          >
-                            Mute this author
-                          </button>
-                        </Menu.Item>
-                        <div>
-                          <button
-                            type="button"
-                            onClick={() => setBlockModal(true)}
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          >
-                            Block this author
-                          </button>
-                        </div>
-                        <Menu.Item>
-                          <button
-                            type="button"
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          >
-                            Report this author
-                          </button>
+                          <Link href="/settings">
+                            <a className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
+                              Settings
+                            </a>
+                          </Link>
                         </Menu.Item>
                       </Menu.Items>
                     </Transition>
@@ -457,263 +479,60 @@ export default function ProfilePage({ About, Home, List }) {
                     ))}
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
-                    <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
-                      <p>
-                        Sit cursus habitant curabitur vitae eget amet
-                        ullamcorper netus massa. At enim fusce aenean hendrerit
-                        mauris dui metus, iaculis neque. Ut porttitor turpis
-                        amet et, ultrices nec sit in. Lacus, diam malesuada
-                        eleifend duis. Sed lacus, fermentum tristique mauris,
-                        ipsum est bibendum nunc. Ullamcorper tellus sit aliquet
-                        id dolor. Pulvinar nunc, condimentum laoreet congue
-                        convallis tortor. Facilisi nunc blandit lectus ut
-                        imperdiet orci. Laoreet feugiat vitae, lacus, accumsan
-                        turpis leo at. Egestas maecenas eros, pulvinar eu massa
-                        euismod lobortis leo.
-                      </p>
-                      <p>
-                        Praesent eget posuere nunc massa. Fringilla ut elementum
-                        metus, augue iaculis aenean libero, a maecenas. Ac
-                        lectus convallis nulla ac enim mauris, placerat. At amet
-                        sed imperdiet amet, cras. Feugiat ut proin ipsum in quis
-                        urna eget vulputate quis.
-                      </p>
-                    </div>
-                    <div className="flex flex-col lg:flex-row lg:items-center gap-4 text-slate-500 text-base tracking-sm py-10 mt-10 border-t border-b border-slate-200">
-                      <div className="flex items-center gap-2 md:gap-4">
-                        <span>Member since October 2018</span>
-                        <svg
-                          className="h-1 w-1 text-slate-500"
-                          fill="currentColor"
-                          viewBox="0 0 8 8"
-                        >
-                          <circle cx={4} cy={4} r={3} />
-                        </svg>
-                        <span>Top writer in</span>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-4">
-                        <a href="#">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                            Technology
-                          </span>
-                        </a>
-                        <a href="#">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                            Art
-                          </span>
-                        </a>
-                        <a href="#">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                            Crypto
-                          </span>
-                        </a>
-                        <a href="#">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                            App
-                          </span>
-                        </a>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
-                      <button
-                        type="button"
-                        onClick={() => setFollowersModal(!followersModal)}
-                      >
-                        19.6K Followers
-                      </button>
-                      <svg
-                        className="h-1 w-1 text-slate-500"
-                        fill="currentColor"
-                        viewBox="0 0 8 8"
-                      >
-                        <circle cx={4} cy={4} r={3} />
-                      </svg>
-                      <button
-                        type="button"
-                        onClick={() => setFollowingModal(!followingModal)}
-                      >
-                        702 Following
-                      </button>
-                      <Transition appear show={followingModal} as={Fragment}>
-                        <Dialog
-                          as="div"
-                          className="relative z-10"
-                          onClose={() => setFollowingModal(false)}
-                        >
-                          <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
-                            <div className="fixed inset-0 bg-black bg-opacity-50" />
-                          </Transition.Child>
-
-                          <div className="fixed inset-0 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4 text-center">
-                              <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                              >
-                                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                  <Dialog.Title
-                                    as="h3"
-                                    className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
-                                  >
-                                    702 Following
-                                  </Dialog.Title>
-                                  <div>
-                                    <ul className="mb-6">
-                                      {followings.map((following) => (
-                                        <li
-                                          key={following.id}
-                                          className="flex items-start justify-between gap-6 py-4"
-                                        >
-                                          <div className="flex gap-3">
-                                            <img
-                                              className="w-10 h-10 rounded-full"
-                                              src={following.image}
-                                              alt={following.name}
-                                            />
-                                            <div className="flex flex-col">
-                                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                                {following.name}
-                                              </span>
-                                              <span className="text-slate-500 text-xs tracking-sm">
-                                                {following.desc}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <a
-                                            href={following.href}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                          >
-                                            Follow
-                                          </a>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                    <div className="text-center">
-                                      <button
-                                        type="button"
-                                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                                      >
-                                        Show more
-                                      </button>
-                                    </div>
-                                  </div>
-                                </Dialog.Panel>
-                              </Transition.Child>
-                            </div>
-                          </div>
-                        </Dialog>
-                      </Transition>
-                      <Transition appear show={followersModal} as={Fragment}>
-                        <Dialog
-                          as="div"
-                          className="relative z-10"
-                          onClose={() => setFollowersModal(false)}
-                        >
-                          <Transition.Child
-                            as={Fragment}
-                            enter="ease-out duration-300"
-                            enterFrom="opacity-0"
-                            enterTo="opacity-100"
-                            leave="ease-in duration-200"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
-                            <div className="fixed inset-0 bg-black bg-opacity-50" />
-                          </Transition.Child>
-
-                          <div className="fixed inset-0 overflow-y-auto">
-                            <div className="flex min-h-full items-center justify-center p-4 text-center">
-                              <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 scale-95"
-                                enterTo="opacity-100 scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 scale-100"
-                                leaveTo="opacity-0 scale-95"
-                              >
-                                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                  <Dialog.Title
-                                    as="h3"
-                                    className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
-                                  >
-                                    702 Followers
-                                  </Dialog.Title>
-                                  <div>
-                                    <ul className="mb-6">
-                                      {followings.map((following) => (
-                                        <li
-                                          key={following.id}
-                                          className="flex items-start justify-between gap-6 py-4"
-                                        >
-                                          <div className="flex gap-3">
-                                            <img
-                                              className="w-10 h-10 rounded-full"
-                                              src={following.image}
-                                              alt={following.name}
-                                            />
-                                            <div className="flex flex-col">
-                                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                                {following.name}
-                                              </span>
-                                              <span className="text-slate-500 text-xs tracking-sm">
-                                                {following.desc}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <a
-                                            href={following.href}
-                                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                          >
-                                            Follow
-                                          </a>
-                                        </li>
-                                      ))}
-                                    </ul>
-                                    <div className="text-center">
-                                      <button
-                                        type="button"
-                                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                                      >
-                                        Show more
-                                      </button>
-                                    </div>
-                                  </div>
-                                </Dialog.Panel>
-                              </Transition.Child>
-                            </div>
-                          </div>
-                        </Dialog>
-                      </Transition>
-                    </div>
-                    <AboutSubscribeCard
-                      name="Olivia Rhye"
-                      mailAddress="oliviarhye@gmail.com"
+                    <AboutComponent
+                      userId={_.get(user, '_id')}
+                      about={_.get(user, 'about')}
+                      signUpAt={_.get(user, 'signUpAt')}
+                      topWriterTopics={_.get(user, 'topWriterTopics')}
+                      followerCount={_.get(user, 'followerCount')}
+                      followingCount={_.get(user, 'followingCount')}
+                      toggleFollowingsModal={toggleFollowingsModal}
                     />
+                    {!isMyProfileState && (
+                      <AboutSubscribeCard
+                        name="Olivia Rhye"
+                        mailAddress="oliviarhye@gmail.com"
+                      />
+                    )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar following profile followButton />
+              <Sidebar
+                following={{
+                  followings: _.take(userFollowings, 5),
+                  count: _.get(user, 'followingCount'),
+                  seeAllButton: toggleFollowingsModal,
+                }}
+                profile={{
+                  id: _.get(user, '_id'),
+                  name: _.get(user, 'name'),
+                  profilePicture: _.get(user, 'profilePicture'),
+                  followerCount: _.get(user, 'followerCount'),
+                  username: _.get(user, 'username'),
+                  about: _.get(user, 'about'),
+                }}
+              />
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar profile followButton />
+              <Sidebar
+                following={{
+                  followings: _.take(userFollowings, 5),
+                  count: _.get(user, 'followingCount'),
+                  seeAllButton: toggleFollowingsModal,
+                }}
+                profile={{
+                  id: _.get(user, '_id'),
+                  name: _.get(user, 'name'),
+                  profilePicture: _.get(user, 'profilePicture'),
+                  followerCount: _.get(user, 'followerCount'),
+                  username: _.get(user, 'username'),
+                  about: _.get(user, 'about'),
+                }}
+              />
             </div>
           </div>
         </div>
@@ -791,6 +610,89 @@ export default function ProfilePage({ About, Home, List }) {
           </div>
         )}
       </Layout>
+      <Transition appear show={followingModal} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={toggleFollowingsModal}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-50" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
+                  >
+                    {_.get(user, 'followingCount')} Following
+                  </Dialog.Title>
+                  <div>
+                    <ul className="mb-6">
+                      {_.map(userFollowings, (following) => (
+                        <li
+                          key={following._id}
+                          className="flex items-start justify-between gap-6 py-4"
+                        >
+                          <div className="flex gap-3">
+                            <img
+                              className="w-10 h-10 rounded-full"
+                              src={following.followingUserProfilePicture}
+                              alt={following.followingName}
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
+                                {following.followingName}
+                              </span>
+                              <span className="text-slate-500 text-xs tracking-sm">
+                                {following.followingAbout}
+                              </span>
+                            </div>
+                          </div>
+                          <a
+                            // href={following.href}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          >
+                            Follow
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                        onClick={() => setFollowingPage((prev) => prev + 1)}
+                      >
+                        Show more
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 }
