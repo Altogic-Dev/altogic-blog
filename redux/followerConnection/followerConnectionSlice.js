@@ -8,8 +8,9 @@ const initialState = {
   followingUser: null,
   isFollowing: false,
   followingStoriesLoading: false,
-  followingUsers: [],
   followingActionResult: null,
+  userFollowers: null,
+  userFollowings: null,
   isLoading: false,
 };
 
@@ -52,16 +53,30 @@ export const followerConnectionSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    getFollowingUsersRequest(state) {
-      state.isLoading = true;
-    },
-    getFollowingUsersSuccess(state, action) {
-      state.isLoading = false;
-      state.followers = action.payload;
-    },
     getFollowingUsersFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
+    },
+
+    getFollowerUsersRequest() {},
+    getFollowerUsersSuccess(state, action) {
+      if (action.payload.page <= 1 && _.isNil(state.userFollowers)) {
+        state.userFollowers = action.payload.data;
+      } else {
+        state.userFollowers = [...state.userFollowers, ...action.payload.data];
+      }
+    },
+
+    getFollowingUsersRequest() {},
+    getFollowingUsersSuccess(state, action) {
+      if (action.payload.page <= 1 && _.isNil(state.userFollowings)) {
+        state.userFollowings = action.payload.data;
+      } else {
+        state.userFollowings = [
+          ...state.userFollowings,
+          ...action.payload.data,
+        ];
+      }
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

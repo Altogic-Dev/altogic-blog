@@ -66,6 +66,42 @@ function* getFollowingSaga({ payload: { userId, followingUserId } }) {
   }
 }
 
+function* getFollowerUsersSaga({ payload: { userId, page } }) {
+  try {
+    const { data, errors } = yield call(
+      FollowerConnectionService.getFollowerUsers,
+      userId,
+      page
+    );
+    if (errors) throw errors;
+    if (_.isArray(data)) {
+      yield put(
+        followerConnectionActions.getFollowerUsersSuccess({ data, page })
+      );
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* getFollowingUsersSaga({ payload: { userId, page } }) {
+  try {
+    const { data, errors } = yield call(
+      FollowerConnectionService.getFollowingUsers,
+      userId,
+      page
+    );
+    if (errors) throw errors;
+    if (_.isArray(data)) {
+      yield put(
+        followerConnectionActions.getFollowingUsersSuccess({ data, page })
+      );
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(followerConnectionActions.unfollowRequest.type, unfollowSaga),
@@ -75,5 +111,13 @@ export default function* rootSaga() {
       getFollowingSaga
     ),
     takeEvery(followerConnectionActions.followUserRequest.type, followUserSaga),
+    takeEvery(
+      followerConnectionActions.getFollowerUsersRequest.type,
+      getFollowerUsersSaga
+    ),
+    takeEvery(
+      followerConnectionActions.getFollowingUsersRequest.type,
+      getFollowingUsersSaga
+    ),
   ]);
 }
