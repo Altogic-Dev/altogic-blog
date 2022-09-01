@@ -51,7 +51,6 @@ function* getTrendingsOfTopicsSaga({ payload: topic }) {
 function* getPopularTopicsSaga() {
   try {
     const { data, errors } = yield call(TopicsService.getPopularTopics);
-
     if (errors) throw errors.items;
     if (data) yield put(topicsActions.getPopularTopicsSuccess(data));
   } catch (e) {
@@ -80,28 +79,28 @@ function* getTopicTopWritersSaga() {
 }
 
 export default function* rootSaga() {
-  yield takeEvery(
-    topicsActions.getLatestsOfTopicRequest.type,
-    getLatestsOfTopicSaga
-  );
-  yield takeEvery(
-    topicsActions.getBestsOfTopicRequest.type,
-    getBestsOfTopicSaga
-  );
-  yield takeEvery(
-    topicsActions.getTrendingsOfTopicsRequest.type,
-    getTrendingsOfTopicsSaga
-  );
+  // yield takeEvery(
+  //   topicsActions.getLatestsOfTopicRequest.type,
+  //   getLatestsOfTopicSaga
+  // );
+  // yield takeEvery(
+  //   topicsActions.getBestsOfTopicRequest.type,
+  //   getBestsOfTopicSaga
+  // );
+  // yield takeEvery(
+  //   topicsActions.getTrendingsOfTopicsRequest.type,
+  //   getTrendingsOfTopicsSaga
+  // );
   yield takeEvery(
     topicsActions.getPopularTopicsRequest.type,
     getPopularTopicsSaga
   );
-  yield takeEvery(
-    topicsActions.getRelatedTopicsRequest.type,
-    getRelatedTopicsSaga
-  );
-  yield takeEvery(
-    topicsActions.getTopicTopWritersRequest.type,
-    getTopicTopWritersSaga
-  );
+  // yield takeEvery(
+  //   topicsActions.getRelatedTopicsRequest.type,
+  //   getRelatedTopicsSaga
+  // );
+  // yield takeEvery(
+  //   topicsActions.getTopicTopWritersRequest.type,
+  //   getTopicTopWritersSaga
+  // );
 }

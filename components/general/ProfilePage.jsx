@@ -245,7 +245,6 @@ export default function ProfilePage({ About, Home, List }) {
   };
 
   const getFollowingUsers = useCallback(() => {
-    console.log(sessionUser)
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(sessionUser, '_id'),
