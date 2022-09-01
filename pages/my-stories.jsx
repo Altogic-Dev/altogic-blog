@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition } from '@headlessui/react';
+import Button from '@/components/basic/button';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
 import PostCard from '../components/PostCard';
-import Button from '@/components/basic/button';
 
 
 const posts = [

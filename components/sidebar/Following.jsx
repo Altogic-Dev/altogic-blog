@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import Link from 'next/link';
 import SidebarTitle from '../SidebarTitle';
 
 export default function Following({ followings, count, seeAllButton }) {
@@ -21,28 +19,28 @@ export default function Following({ followings, count, seeAllButton }) {
             <span>{person.followingName}</span>
           </a>
         ))}
-        <Link href="#">
-          <button
-            className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
-            onClick={seeAllButton}
+
+        <button
+          type="button"
+          className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
+          onClick={seeAllButton}
+        >
+          See all ({count})
+          <svg
+            className="w-5 h-5 text-purple-700"
+            viewBox="0 0 20 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            See all ({count})
-            <svg
-              className="w-5 h-5 text-purple-700"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16676M15.8333 10.0001L9.99996 15.8334"
-                stroke="currentColor"
-                strokeWidth="1.66667"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </Link>
+            <path
+              d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16676M15.8333 10.0001L9.99996 15.8334"
+              stroke="currentColor"
+              strokeWidth="1.66667"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   );

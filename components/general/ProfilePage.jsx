@@ -6,12 +6,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import PostCard from '@/components/PostCard';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import AboutComponent from '@/components/general/About';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
 import Sidebar from '@/layout/SideBar';
-import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
-import AboutComponent from '@/components/general/About';
+import Button from '../basic/button';
 
 const posts = [
   {
@@ -214,49 +215,6 @@ const lists = [
   },
 ];
 
-const followings = [
-  {
-    id: 0,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 4,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-];
-
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
@@ -266,17 +224,19 @@ export default function ProfilePage({ About, Home, List }) {
   const dispatch = useDispatch();
   const { username } = router.query;
 
-  const user = useSelector((state) => state.auth.user);
+  const sessionUser = useSelector((state) => state.auth.user);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
-  const isMyProfile = username === _.get(user, 'username');
+  const isMyProfile = username === _.get(sessionUser, 'username');
 
+  const [userState, setUserState] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [isMyProfileState, setIsMyProfileState] = useState(isMyProfile);
+  const [unfollowed, setUnfollowed] = useState([]);
 
   const copyToClipboard = () => {
     const basePath = window.location.origin;
@@ -287,7 +247,7 @@ export default function ProfilePage({ About, Home, List }) {
   const getFollowingUsers = useCallback(() => {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
-        userId: _.get(user, '_id'),
+        userId: _.get(sessionUser, '_id'),
         page: followingPage,
       })
     );
@@ -297,12 +257,42 @@ export default function ProfilePage({ About, Home, List }) {
     if (!followingModal && _.isNil(userFollowings)) {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
-          userId: _.get(user, '_id'),
+          userId: _.get(sessionUser, '_id'),
           page: followingPage,
         })
       );
     }
     setFollowingModal((prev) => !prev);
+  };
+
+  const handleFollow = (user, index) => {
+    console.log(user)
+    debugger
+    if (unfollowed[index] === false)
+      dispatch(
+        followerConnectionActions.unfollowRequest({
+          userId: _.get(sessionUser, '_id'),
+          followingUserId: _.get(user, '_id'),
+        })
+      );
+    else {
+      dispatch(
+        followerConnectionActions.followRequest({
+          followerUser: sessionUser,
+          followingUser: {
+            followingUser: _.get(user, '_id'),
+            followingName: _.get(user, '_name'),
+            followingUserProfilePicture: _.get(user, '_profilePicture'),
+            followingUsername: _.get(user, '_username'),
+          },
+        })
+      );
+    }
+    setUnfollowed((state) => {
+      const newState = [...state];
+      newState[index] = !newState[index];
+      return newState;
+    });
   };
 
   useEffect(() => {
@@ -322,6 +312,9 @@ export default function ProfilePage({ About, Home, List }) {
   useEffect(() => {
     setIsMyProfileState(isMyProfile);
   }, [isMyProfile]);
+  useEffect(() => {
+    setUserState(sessionUser);
+  }, [sessionUser]);
 
   return (
     <div>
@@ -402,7 +395,7 @@ export default function ProfilePage({ About, Home, List }) {
               <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
-                    onClick={() => router.push(`/${user.username}`)}
+                    onClick={() => router.push(`/${userState.username}`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -415,7 +408,7 @@ export default function ProfilePage({ About, Home, List }) {
                     Home
                   </Tab>
                   <Tab
-                    onClick={() => router.push(`/${user.username}/lists`)}
+                    onClick={() => router.push(`/${userState.username}/lists`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -428,7 +421,7 @@ export default function ProfilePage({ About, Home, List }) {
                     Lists
                   </Tab>
                   <Tab
-                    onClick={() => router.push(`/${user.username}/about`)}
+                    onClick={() => router.push(`/${userState.username}/about`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -446,8 +439,8 @@ export default function ProfilePage({ About, Home, List }) {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}
@@ -480,12 +473,12 @@ export default function ProfilePage({ About, Home, List }) {
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
-                      userId={_.get(user, '_id')}
-                      about={_.get(user, 'about')}
-                      signUpAt={_.get(user, 'signUpAt')}
-                      topWriterTopics={_.get(user, 'topWriterTopics')}
-                      followerCount={_.get(user, 'followerCount')}
-                      followingCount={_.get(user, 'followingCount')}
+                      userId={_.get(userState, '_id')}
+                      about={_.get(userState, 'about')}
+                      signUpAt={_.get(userState, 'signUpAt')}
+                      topWriterTopics={_.get(userState, 'topWriterTopics')}
+                      followerCount={_.get(userState, 'followerCount')}
+                      followingCount={_.get(userState, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
                     {!isMyProfileState && (
@@ -503,16 +496,16 @@ export default function ProfilePage({ About, Home, List }) {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(user, 'followingCount'),
+                  count: _.get(userState, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
                 profile={{
-                  id: _.get(user, '_id'),
-                  name: _.get(user, 'name'),
-                  profilePicture: _.get(user, 'profilePicture'),
-                  followerCount: _.get(user, 'followerCount'),
-                  username: _.get(user, 'username'),
-                  about: _.get(user, 'about'),
+                  id: _.get(userState, '_id'),
+                  name: _.get(userState, 'name'),
+                  profilePicture: _.get(userState, 'profilePicture'),
+                  followerCount: _.get(userState, 'followerCount'),
+                  username: _.get(userState, 'username'),
+                  about: _.get(userState, 'about'),
                 }}
               />
             </div>
@@ -521,16 +514,16 @@ export default function ProfilePage({ About, Home, List }) {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(user, 'followingCount'),
+                  count: _.get(userState, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
                 profile={{
-                  id: _.get(user, '_id'),
-                  name: _.get(user, 'name'),
-                  profilePicture: _.get(user, 'profilePicture'),
-                  followerCount: _.get(user, 'followerCount'),
-                  username: _.get(user, 'username'),
-                  about: _.get(user, 'about'),
+                  id: _.get(userState, '_id'),
+                  name: _.get(userState, 'name'),
+                  profilePicture: _.get(userState, 'profilePicture'),
+                  followerCount: _.get(userState, 'followerCount'),
+                  username: _.get(userState, 'username'),
+                  about: _.get(userState, 'about'),
                 }}
               />
             </div>
@@ -644,11 +637,11 @@ export default function ProfilePage({ About, Home, List }) {
                     as="h3"
                     className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                   >
-                    {_.get(user, 'followingCount')} Following
+                    {_.get(userState, 'followingCount')} Following
                   </Dialog.Title>
                   <div>
                     <ul className="mb-6">
-                      {_.map(userFollowings, (following) => (
+                      {_.map(userFollowings, (following, index) => (
                         <li
                           key={following._id}
                           className="flex items-start justify-between gap-6 py-4"
@@ -668,12 +661,11 @@ export default function ProfilePage({ About, Home, List }) {
                               </span>
                             </div>
                           </div>
-                          <a
-                            // href={following.href}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          <Button
+                            onClick={() => handleFollow(following, index)}
                           >
-                            Follow
-                          </a>
+                            {unfollowed[index] === true ? 'Follow' : 'Unfollow'}
+                          </Button>
                         </li>
                       ))}
                     </ul>

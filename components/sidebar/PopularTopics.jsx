@@ -4,12 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
 export default function PopularTopics({ relatedTopics }) {
-  const popularTopics = useSelector(
-    (state) => state.recommendations.popularTopics
-  );
+  const popularTopics = useSelector((state) => state.topics.popularTopics);
 
   const dispatch = useDispatch();
   const getPopularTopics = () => {
+    console.log('sa');
     dispatch(topicsActions.getPopularTopicsRequest());
   };
   const getRelatedTopics = () => {
@@ -31,7 +30,7 @@ export default function PopularTopics({ relatedTopics }) {
         {popularTopics?.map((topic) => (
           <a
             key={topic.id}
-            href={topic.href}
+            href={`tag/${topic.name}`}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
           >
             {topic.name}
