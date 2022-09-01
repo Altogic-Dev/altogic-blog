@@ -6,6 +6,9 @@ const initialState = {
   latestTopics: [],
   bestTopics: [],
   trendingTopics: [],
+  relatedTopics: [],
+  popularTopics: [],
+  topWriters: [],
   isLoading: false,
   error: null,
 };
@@ -57,6 +60,28 @@ export const topicsSlice = createSlice({
       state.popularTopics = action.payload;
     },
     getPopularTopicsFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
+    getRelatedTopicsRequest(state) {
+      state.isLoading = true;
+    },
+    getRelatedTopicsSuccess(state, action) {
+      state.isLoading = false;
+      state.relatedTopics = action.payload;
+    },
+    getRelatedTopicsFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
+    getTopicTopWritersRequest(state) {
+      state.isLoading = true;
+    },
+    getTopicTopWritersSuccess(state, action) {
+      state.isLoading = false;
+      state.topWriters = action.payload;
+    },
+    getTopicTopWritersFailure(state, action) {
       state.isLoading = false;
       state.errors = action.payload;
     },
