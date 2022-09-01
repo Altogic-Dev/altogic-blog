@@ -13,6 +13,7 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
   const dispatch = useDispatch();
   const [isMyProfileState,setIsMyProfileState] = useState();
 
+  console.log(profile)
   const toggleFollow = () => {
     if (isFollowing) {
       return dispatch(
