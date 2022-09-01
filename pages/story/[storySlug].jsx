@@ -14,6 +14,7 @@ import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscrib
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
+import Button from '@/components/basic/button';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -151,6 +152,7 @@ export default function BlogDetail() {
   const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
   const [didMount, setDidMount] = useState(true);
+  const [commentBoxes, setCommentBoxes] = useState([]);
 
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
@@ -1533,7 +1535,7 @@ export default function BlogDetail() {
                               All Responses (3)
                             </h2>
                             <ul className="divide-y divide-gray-200">
-                              {allResponses.map((allResponse) => (
+                              {allResponses.map((allResponse,index) => (
                                 <li
                                   key={allResponse.id}
                                   className="py-6 space-y-4"
@@ -1578,11 +1580,28 @@ export default function BlogDetail() {
                                     </button>
                                     <button
                                       type="button"
+                                      onClick={() => setCommentBoxes((prev) => {
+                                        const temp =  prev
+                                        temp[index] = true
+                                        return temp
+                                      })}
                                       className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                     >
                                       Reply
                                     </button>
                                   </div>
+                                  {commentBoxes[index] === true && (
+                                    <div className="flex flex-col items-end">
+                                      <textarea
+                                        className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
+                                        placeholder="Write a comment..."
+                                      />
+
+                                      <Button type="button" extraClasses="mt-5">
+                                        Comment
+                                      </Button>
+                                    </div>
+                                  )}
                                 </li>
                               ))}
                             </ul>
