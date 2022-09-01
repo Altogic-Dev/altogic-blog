@@ -1,7 +1,10 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Head from 'next/head';
+import { useSelector } from 'react-redux';
 import { RadioGroup } from '@headlessui/react';
+import Avatar from '@/components/profile/Avatar';
 import Layout from '../layout/Layout';
+import constants from '../constants';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -56,7 +59,8 @@ export default function Settings() {
   const [checked, setChecked] = useState(false);
   const [indeterminate, setIndeterminate] = useState(false);
   const [selectedPeople, setSelectedPeople] = useState([]);
-
+  const _user = useSelector((state) => state.auth.user);
+  const [user, setUser] = useState();
   useLayoutEffect(() => {
     const isIndeterminate =
       selectedPeople.length > 0 && selectedPeople.length < people.length;
@@ -70,6 +74,11 @@ export default function Settings() {
     setChecked(!checked && !indeterminate);
     setIndeterminate(false);
   }
+  useEffect(() => {
+    if (_user) {
+      setUser(_user);
+    }
+  }, [_user]);
 
   return (
     <div>
@@ -84,77 +93,28 @@ export default function Settings() {
             <h1 className="text-slate-800 mb-4 text-3xl font-medium tracking-md">
               Settings
             </h1>
-            <form action="">
-              <div className="relative max-w-xs w-full rounded-md shadow-sm">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg
-                    className="w-5 h-5 text-gray-500"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M17.5 17.5L14.5834 14.5833M16.6667 9.58333C16.6667 13.4954 13.4954 16.6667 9.58333 16.6667C5.67132 16.6667 2.5 13.4954 2.5 9.58333C2.5 5.67132 5.67132 2.5 9.58333 2.5C13.4954 2.5 16.6667 5.67132 16.6667 9.58333Z"
-                      stroke="currentColor"
-                      strokeWidth="1.66667"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  className="block w-full pl-10 sm:text-sm text-gray-500 border-gray-300 rounded-md placeholder:text-gray-500 focus:ring-purple-500 focus:border-purple-500"
-                  placeholder="Search"
-                />
-              </div>
-            </form>
           </div>
           <div className="xl:grid xl:grid-cols-[125px,1fr] gap-24">
             <ul className="hidden xl:block sticky bottom-0">
-              <li>
-                <a
-                  href="#my-details"
-                  className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
-                >
-                  My Details
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#password"
-                  className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
-                >
-                  Password
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#my-sessions"
-                  className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
-                >
-                  My Session
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#my-plans"
-                  className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
-                >
-                  My Plans
-                </a>
-              </li>
+              {constants.SETTINGS_MENU.map((setting) => (
+                <li key={setting.id}>
+                  <a
+                    href={setting.href}
+                    className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
+                  >
+                    {setting.name}
+                  </a>
+                </li>
+              ))}
             </ul>
             <div>
               {/* My Details */}
               <div id="my-details" className="mb-16">
                 <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
-                  <img
+                  <Avatar
                     className="hidden md:block w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
-                    src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
+                    src={user?.profilePicture}
+                    alt={user?.name}
                   />
                   <div>
                     <h3 className="text-slate-700 text-3xl font-medium tracking-md">

@@ -123,6 +123,12 @@ export const authSlice = createSlice({
     isMutedSuccess(state, action) {
       state.isMuted = action.payload;
     },
+    resetErrorsRequest() {},
+
+    resetErrors(state) {
+      state.isLoading = false;
+      state.error = null;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

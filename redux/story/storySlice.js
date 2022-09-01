@@ -50,6 +50,31 @@ export const storySlice = createSlice({
     getStorySuccess(state, action) {
       state.story = action.payload;
     },
+    createStoryRequest(state, action) {
+      state.isLoading = true;
+    },
+    createStorySuccess(state, action) {
+      state.story = action.payload;
+      state.error = null;
+      state.isLoading = false;
+    },
+    createStoryFailure(state, action) {
+      state.story = null;
+      state.error = action.payload;
+    },
+    updateStoryRequest(state) {
+      state.isLoading = true;
+    },
+    updateStorySuccess(state, action) {
+      state.story = action.payload;
+      state.error = null;
+      state.isLoading = false;
+    },
+    updateStoryFailure(state, action) {
+      state.story = null;
+      state.error = action.payload;
+      state.isLoading = false;
+    },
 
     getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {

@@ -74,6 +74,13 @@ const StoryService = {
       .limit(limit)
       .get();
   },
+
+  createStory(story) {
+    return db.model('story').create(story);
+  },
+  updateStory(story) {
+    return db.model('story').object(story._id).update(story);
+  },
 };
 
 export default StoryService;
