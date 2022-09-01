@@ -141,7 +141,7 @@ export default function Home() {
                             key={story._id}
                             noActiveBookmark
                             normalMenu
-                            authorUrl={`/profile/${story.username}`}
+                            authorUrl={`/${story.username}`}
                             authorName={story.username}
                             authorImage={story.userProfilePicture}
                             storyUrl={`/story/${story.storySlug}`}
@@ -186,7 +186,7 @@ export default function Home() {
                             key={story._id}
                             noActiveBookmark
                             normalMenu
-                            authorUrl={`/profile/${story.username}`}
+                            authorUrl={`/${story.username}`}
                             authorName={story.username}
                             authorImage={story.userProfilePicture}
                             storyUrl={`/story/${story.storySlug}`}

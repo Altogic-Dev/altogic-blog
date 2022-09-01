@@ -3,11 +3,15 @@ import _ from 'lodash';
 
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
+import { useEffect,useState } from 'react';
+
 
 export default function Profile({ profile, isFollowing, isSubscribed }) {
+
   const sessionUser = useSelector((state) => state.auth.user);
   const isMyProfile = _.get(sessionUser, '_id') === _.get(profile, 'id');
   const dispatch = useDispatch();
+  const [isMyProfileState,setIsMyProfileState] = useState();
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -49,6 +53,9 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
     );
   };
 
+  useEffect(() => {
+    setIsMyProfileState(isMyProfile)
+  },[isMyProfile])
   return (
     <div>
       <img
@@ -65,7 +72,7 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
         </span>
         <p className="text-slate-500 text-xs mb-8">{_.get(profile, 'about')}</p>
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
-          {!isMyProfile && (
+          {!isMyProfileState && (
             <button
               type="button"
               className="inline-flex items-center justify-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
@@ -86,7 +93,7 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
               {isFollowing ? 'Unfollow' : 'Follow'}
             </button>
           )}
-          {!isMyProfile && (
+          {!isMyProfileState && (
             <button
               type="button"
               className="inline-flex items-center justify-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
@@ -122,14 +129,14 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
             </button>
           )}
 
-          {isMyProfile && (
-            <a
+          {isMyProfileState && (
+            <button
               type="button"
               className="inline-flex items-center justify-center gap-2 col-span-2 w-full lg:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
               href="/settings"
             >
               Edit Profile
-            </a>
+            </button>
           )}
         </div>
       </div>

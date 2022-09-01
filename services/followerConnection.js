@@ -10,7 +10,7 @@ const FollowerConnectionService = {
       ...followingUser,
       followerUser: followerUser._id,
       followerName: followerUser.name,
-      followerUserProfilePicture: followerUser.profilePicture,
+      followerUserProfilePicture: followerUser.profilePicture ?? null,
       followerUsername: followerUser.username,
       followerType: 'user',
     });
