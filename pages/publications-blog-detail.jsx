@@ -502,7 +502,7 @@ export default function PublicationsBlogDetail() {
                     leo, consequat, at diam amet in pharetra. Eget facilisis
                     vitae magna ullamcorper netus sed maecenas.
                   </p>
-                  <ol role="list">
+                  <ol>
                     <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
                     <li>Nunc sagittis quam vitae fringilla efficitur.</li>
                     <li>
@@ -547,7 +547,7 @@ export default function PublicationsBlogDetail() {
                     urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
                     tellus tincidunt. At feugiat sapien varius id.
                   </p>
-                  <ul role="list">
+                  <ul>
                     <li>Cras scelerisque leo quis molestie consectetur.</li>
                     <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
                     <li>
@@ -1301,11 +1301,14 @@ export default function PublicationsBlogDetail() {
                                     </button>
                                     <button
                                       type="button"
+
                                       className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                     >
                                       Reply
                                     </button>
+                                    
                                   </div>
+                                  
                                 </li>
                               ))}
                             </ul>
