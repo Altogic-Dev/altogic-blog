@@ -58,9 +58,9 @@ function* getPopularTopicsSaga() {
   }
 }
 function* getRelatedTopicsSaga({ payload: topic }) {
-  console.log(topic)
+  console.log(topic);
   try {
-    const { data, errors } = yield call(TopicsService.getRelatedTopics,topic);
+    const { data, errors } = yield call(TopicsService.getRelatedTopics, topic);
 
     if (errors) throw errors.items;
     if (data) yield put(topicsActions.getRelatedTopicsSuccess(data));
@@ -68,16 +68,16 @@ function* getRelatedTopicsSaga({ payload: topic }) {
     yield put(topicsActions.getRelatedTopicsFailure(e));
   }
 }
-// function* getTopicTopWritersSaga() {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getTopicTopWriters);
+function* getTopicTopWritersSaga({ payload: topic }) {
+  try {
+    const { data, errors } = yield call(TopicsService.getTopicTopWriters,topic);
 
-//     if (errors) throw errors.items;
-//     if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
-//   } catch (e) {
-//     yield put(topicsActions.getTopicTopWritersFailure(e));
-//   }
-// }
+    if (errors) throw errors.items;
+    if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.getTopicTopWritersFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   // yield takeEvery(
@@ -100,8 +100,8 @@ export default function* rootSaga() {
     topicsActions.getRelatedTopicsRequest.type,
     getRelatedTopicsSaga
   );
-  // yield takeEvery(
-  //   topicsActions.getTopicTopWritersRequest.type,
-  //   getTopicTopWritersSaga
-  // );
+  yield takeEvery(
+    topicsActions.getTopicTopWritersRequest.type,
+    getTopicTopWritersSaga
+  );
 }

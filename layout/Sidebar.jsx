@@ -78,7 +78,7 @@ export default function Sidebar({
       )}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
-      {(whoToFollow || topWriters) && <WhoToFollow topWriters={topWriters} />}
+      {(whoToFollow || topWriters) && <WhoToFollow isTopWriters={topWriters} />}
       {(popularTopics || relatedTopics) && <PopularTopics isRelatedTopics={relatedTopics} />}
       {popularStories && <PopularStories />}
 
