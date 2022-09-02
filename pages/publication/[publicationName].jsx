@@ -7,7 +7,7 @@ import { isNil } from 'lodash';
 import Head from 'next/head';
 import Layout from '@/layout/Layout';
 import SocialIcons from '@/components/publication/SocialIcons';
-import Sidebar from '../layout/SideBar';
+import Sidebar from '../../layout/Sidebar';
 import PublicationPostCard from '../../components/PublicationsPostCard';
 
 const posts = [
