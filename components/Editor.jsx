@@ -369,7 +369,6 @@ export default function Editor({ onChange, setImages }) {
       const range = quill.getSelection(true);
       const lineBounds = quill.getBounds(range);
       input.current.style.display = 'block';
-      debugger;
       input.current.style.left = `${lineBounds.left - 15}px`;
       input.current.style.top = `${lineBounds.top - 3}px`;
       sidebar.current.style.display = 'none';
