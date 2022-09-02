@@ -1,19 +1,28 @@
-import { Fragment, useState } from "react";
-import { Menu, Transition, Switch } from "@headlessui/react";
+import { Fragment, useState } from 'react';
+import { Menu, Transition, Switch } from '@headlessui/react';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
-export default function PublicationPostCard(props) {
+export default function PublicationPostCard({
+  firstPadding,
+  personName,
+  date,
+  storiesCount,
+  bigImage,
+  image,
+  title,
+  description,
+  readMoreUrl,
+  bookmark,
+}) {
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
   return (
     <>
-      <div
-        className={classNames(props.firstPadding ? "py-8 first:pt-0" : "py-8")}
-      >
+      <div className={classNames(firstPadding ? 'py-8 first:pt-0' : 'py-8')}>
         <a href="#" className="inline-flex items-center gap-3 mb-4">
           <img
             className="w-[50px] h-[50px] rounded-full object-cover"
@@ -22,10 +31,10 @@ export default function PublicationPostCard(props) {
           />
           <div>
             <span className="text-slate-700  text-base font-medium tracking-sm">
-              {props.personName}
+              {personName}
             </span>
             <div className="flex items-center gap-2 text-slate-500 tracking-sm">
-              <span>{props.date}</span>
+              <span>{date}</span>
               <svg
                 className="h-1 w-1 text-slate-500"
                 fill="currentColor"
@@ -33,32 +42,30 @@ export default function PublicationPostCard(props) {
               >
                 <circle cx={4} cy={4} r={3} />
               </svg>
-              <span>{props.storiesCount} stories</span>
+              <span>{storiesCount} stories</span>
             </div>
           </div>
         </a>
         <a href="#" className="group inline-block mb-4 md:mb-8">
           <img
             className={classNames(
-              props.bigImage
-                ? "w-full h-[250px] object-cover mb-8 rounded-md"
-                : "w-full h-[220px] object-cover mb-8 rounded-md"
+              bigImage
+                ? 'w-full h-[250px] object-cover mb-8 rounded-md'
+                : 'w-full h-[220px] object-cover mb-8 rounded-md'
             )}
-            src={props.image}
-            alt={props.title}
+            src={image}
+            alt={title}
           />
           <div className="flex items-center gap-2">
             <h2 className="text-slate-900 text-3xl mb-2 font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
-              {props.title}
+              {title}
             </h2>
           </div>
-          <p className="text-slate-500 text-sm tracking-sm">
-            {props.description}
-          </p>
+          <p className="text-slate-500 text-sm tracking-sm">{description}</p>
         </a>
         <div className="flex items-center justify-between gap-4">
           <a
-            href={props.readMoreUrl}
+            href={readMoreUrl}
             className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
           >
             Read more
@@ -77,7 +84,7 @@ export default function PublicationPostCard(props) {
               />
             </svg>
           </a>
-          {props.bookmark && (
+          {bookmark && (
             <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
               <Menu as="div" className="relative inline-block text-left ml-4">
                 <div>
@@ -235,8 +242,8 @@ export default function PublicationPostCard(props) {
                         htmlFor="list-name"
                         className="block text-slate-700 text-sm font-medium tracking-sm mb-1.5"
                       >
-                        {" "}
-                        List name{" "}
+                        {' '}
+                        List name{' '}
                       </label>
                       <div className="mt-1">
                         <input
@@ -253,15 +260,15 @@ export default function PublicationPostCard(props) {
                         checked={enabled}
                         onChange={setEnabled}
                         className={classNames(
-                          enabled ? "bg-purple-600" : "bg-gray-200",
-                          "relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          enabled ? 'bg-purple-600' : 'bg-gray-200',
+                          'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
                         )}
                       >
                         <span
                           aria-hidden="true"
                           className={classNames(
-                            enabled ? "translate-x-4" : "translate-x-0",
-                            "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                            enabled ? 'translate-x-4' : 'translate-x-0',
+                            'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                           )}
                         />
                       </Switch>

@@ -1,26 +1,22 @@
-import { Fragment, useState } from "react";
-import { Listbox, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { Fragment, useState } from 'react';
+import { Listbox, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/solid';
 
 const stories = [
   {
     id: 1,
-    name: "Euismod scelerisque scelerisque quam feugiatar...",
-    info: "Olivia Rhye on Jully 28",
+    name: 'Euismod scelerisque scelerisque quam feugiatar...',
+    info: 'Olivia Rhye on Jully 28',
   },
   {
     id: 2,
-    name: "Rhoncus nisl mattis at orci eros morbi ut pretium.",
-    info: "Olivia Rhye on Jully 28",
+    name: 'Rhoncus nisl mattis at orci eros morbi ut pretium.',
+    info: 'Olivia Rhye on Jully 28',
   },
   {
     id: 3,
-    name: "Nascetur pulvinar ut vel risus, faucibus.",
-    info: "Olivia Rhye on Jully 28",
+    name: 'Nascetur pulvinar ut vel risus, faucibus.',
+    info: 'Olivia Rhye on Jully 28',
   },
 ];
 
@@ -29,7 +25,7 @@ export default function PublicationsFullNormalCard() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex w-full h-[250px] bg-black/20"></div>
+      <div className="flex w-full h-[250px] bg-black/20" />
       <div>
         <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-10 mb-4">
           <h2 className="text-slate-500 text-2xl font-semibold">
@@ -53,23 +49,23 @@ export default function PublicationsFullNormalCard() {
                 leaveTo="opacity-0"
               >
                 <Listbox.Options className="absolute mt-1 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
-                  {stories.map((storie, index) => (
+                  {stories.map((story) => (
                     <Listbox.Option
-                      key={index}
+                      key={story.id}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
                           active
-                            ? "bg-slate-50 text-slate-700"
-                            : "text-slate-700"
+                            ? 'bg-slate-50 text-slate-700'
+                            : 'text-slate-700'
                         }`
                       }
-                      value={storie}
+                      value={story}
                     >
                       <span className="flex text-slate-700 mb-2 text-base font-medium tracking-sm text-left truncate group-hover:text-slate-900">
-                        {storie.name}
+                        {story.name}
                       </span>
                       <span className="text-slate-700 text-xs tracking-sm">
-                        {storie.info}
+                        {story.info}
                       </span>
                     </Listbox.Option>
                   ))}
@@ -79,8 +75,8 @@ export default function PublicationsFullNormalCard() {
           </Listbox>
         </div>
         <div className="mt-4 space-y-1">
-          <span className="flex w-[267px] h-6 bg-slate-200"></span>
-          <span className="flex w-[145px] h-6 bg-slate-200"></span>
+          <span className="flex w-[267px] h-6 bg-slate-200" />
+          <span className="flex w-[145px] h-6 bg-slate-200" />
         </div>
       </div>
     </div>

@@ -1,8 +1,8 @@
-simport React, { Fragment, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Menu, Transition, Switch } from '@headlessui/react';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/SideBar';
+import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
@@ -459,7 +459,7 @@ export default function PublicationsNewsletterDetail() {
                     leo, consequat, at diam amet in pharetra. Eget facilisis
                     vitae magna ullamcorper netus sed maecenas.
                   </p>
-                  <ol role="list">
+                  <ol>
                     <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
                     <li>Nunc sagittis quam vitae fringilla efficitur.</li>
                     <li>
@@ -504,7 +504,7 @@ export default function PublicationsNewsletterDetail() {
                     urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
                     tellus tincidunt. At feugiat sapien varius id.
                   </p>
-                  <ul role="list">
+                  <ul>
                     <li>Cras scelerisque leo quis molestie consectetur.</li>
                     <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
                     <li>
@@ -826,8 +826,8 @@ export default function PublicationsNewsletterDetail() {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}

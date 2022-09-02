@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect, useState, useCallback } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
+import { Transition, Dialog } from '@headlessui/react';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 function About(props) {
@@ -50,7 +50,7 @@ function About(props) {
   return (
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
-        <p>{about}</p>
+        <p dangerouslySetInnerHTML={{ __html: about }} />
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 text-slate-500 text-base tracking-sm py-10 mt-10 border-t border-b border-slate-200">
         <div className="flex items-center gap-2 md:gap-4">

@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import Head from 'next/head';
-import Layout from '../layout/Layout';
-import PostCard from '../components/PostCard';
 import { XIcon } from '@heroicons/react/solid';
 import { DuplicateIcon } from '@heroicons/react/outline';
+import PostCard from '../components/PostCard';
+import Layout from '../layout/Layout';
 
 const posts = [
   {
@@ -115,8 +115,8 @@ export default function WriteAStorySettings() {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}

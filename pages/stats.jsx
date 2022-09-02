@@ -1,12 +1,13 @@
 import React from 'react';
 import Head from 'next/head';
-import Layout from '../layout/Layout';
-import StatsCard from '../components/StatsCard';
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
 import dynamic from 'next/dynamic';
+import Layout from '../layout/Layout';
+import StatsCard from '../components/StatsCard';
+
 const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,
 });
@@ -150,9 +151,9 @@ export default function Stats() {
             </form>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 xl:gap-6">
-            {statCards.map((statCard, index) => (
+            {statCards.map((statCard) => (
               <StatsCard
-                key={index}
+                key={statCard.title}
                 title={statCard.title}
                 number={statCard.number}
                 percentNumber={statCard.percentNumber}
@@ -363,8 +364,8 @@ export default function Stats() {
             {/* Mobile Statistics */}
             <div className="lg:hidden">
               <ul className="divide-y divide-gray-200">
-                {statistics.map((statistic, index) => (
-                  <li key={index} className="py-4">
+                {statistics.map((statistic) => (
+                  <li key={statistic.title} className="py-4">
                     <div className="p-4">
                       <p className="text-slate-800 text-base font-medium tracking-sm">
                         {statistic.title}

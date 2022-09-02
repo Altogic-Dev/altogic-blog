@@ -92,9 +92,9 @@ export default function PublicationsNewsletterSettings() {
                       Newsletter avatar*
                     </label>
                     <p className="text-slate-500 text-sm">
-                      Your avatar is an icon for your newsletter. Make sure it's
-                      a square of at least 1000px per side, under 25 mb, and
-                      either a .png, .jpg, or .gif.
+                      Your avatar is an icon for your newsletter. Make sure
+                      it&apos;s a square of at least 1000px per side, under 25
+                      mb, and either a .png, .jpg, or .gif.
                     </p>
                   </div>
                   <div className="flex flex-col items-center gap-4">
@@ -177,7 +177,7 @@ export default function PublicationsNewsletterSettings() {
                           htmlFor="publications-homepage"
                           className="text-slate-700 text-sm font-medium"
                         >
-                          Show newsletter stories on your publication's
+                          Show newsletter stories on your publication&apos;s
                           homepage.
                         </label>
                       </div>

@@ -1,86 +1,98 @@
-import React from "react";
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import React from 'react';
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
   {
-    name: "Jan",
+    name: 'Jan',
     month: 100,
   },
   {
-    name: "Feb",
+    name: 'Feb',
     month: 85,
   },
   {
-    name: "Mar",
+    name: 'Mar',
     month: 75,
   },
   {
-    name: "Apr",
+    name: 'Apr',
     month: 65,
   },
   {
-    name: "May",
+    name: 'May',
     month: 55,
   },
   {
-    name: "Jun",
+    name: 'Jun',
     month: 45,
   },
   {
-    name: "Jul",
+    name: 'Jul',
     month: 35,
   },
   {
-    name: "Aug",
+    name: 'Aug',
     month: 55,
   },
   {
-    name: "Sep",
+    name: 'Sep',
     month: 75,
   },
   {
-    name: "Oct",
+    name: 'Oct',
     month: 95,
   },
   {
-    name: "Nov",
+    name: 'Nov',
     month: 15,
   },
   {
-    name: "Dec",
+    name: 'Dec',
     month: 100,
   },
 ];
 
 const getIntroOfPage = (label) => {
-  if (label === "Jan") {
-    return "Bugün çok okumuşsun";
-  } else if (label === "Feb") {
-    return "Bugün az okumuşsun";
-  } else if (label === "Mar") {
-    return "Okunma sayısı";
-  } else if (label === "Apr") {
-    return "Okunma sayısı";
-  } else if (label === "May") {
-    return "Okunma sayısı";
-  } else if (label === "Jun") {
-    return "Okunma sayısı";
-  } else if (label === "Jul") {
-    return "Okunma sayısı";
-  } else if (label === "Aug") {
-    return "Okunma sayısı";
-  } else if (label === "Sep") {
-    return "Okunma sayısı";
-  } else if (label === "Oct") {
-    return "Okunma sayısı";
-  } else if (label === "Nov") {
-    return "Okunma sayısı";
-  } else if (label === "Dec") {
-    return "Okunma sayısı";
+  if (label === 'Jan') {
+    return 'Bugün çok okumuşsun';
   }
+  if (label === 'Feb') {
+    return 'Bugün az okumuşsun';
+  }
+  if (label === 'Mar') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Apr') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'May') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Jun') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Jul') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Aug') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Sep') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Oct') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Nov') {
+    return 'Okunma sayısı';
+  }
+  if (label === 'Dec') {
+    return 'Okunma sayısı';
+  }
+  return '';
 };
 
-const CustomTooltip = ({ active, payload, label }) => {
+function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
     return (
       <div className="bg-purple-50 border border-gray-200 rounded-lg p-4">
@@ -94,7 +106,7 @@ const CustomTooltip = ({ active, payload, label }) => {
   }
 
   return null;
-};
+}
 
 export default function ReadingBarChart() {
   return (

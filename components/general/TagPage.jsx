@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layout/Layout';
-import PostCard from '../../components/PostCard';
+import PostCard from '@/components/PostCard';
 import Sidebar from '@/layout/Sidebar';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 
 const posts = [
   {
@@ -140,7 +139,6 @@ export default function TagPage({ Home, Latest, Best }) {
   const router = useRouter();
   const { tag } = router.query;
 
-
   useEffect(() => {
     if (Home) {
       setSelectedIndex(0);
@@ -168,13 +166,10 @@ export default function TagPage({ Home, Latest, Best }) {
               <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
                 <Sidebar personalFullStatistic />
               </div>
-              <Tab.Group
-                selectedIndex={selectedIndex}
-              >
+              <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
                     onClick={() => router.push(`/tag/${tag}`)}
-
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -188,7 +183,6 @@ export default function TagPage({ Home, Latest, Best }) {
                   </Tab>
                   <Tab
                     onClick={() => router.push(`/tag/${tag}/latest`)}
-
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -219,8 +213,8 @@ export default function TagPage({ Home, Latest, Best }) {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}
@@ -240,8 +234,8 @@ export default function TagPage({ Home, Latest, Best }) {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}
@@ -261,8 +255,8 @@ export default function TagPage({ Home, Latest, Best }) {
                     {posts.map((post) => (
                       <PostCard
                         key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
+                        noActiveBookmark
+                        normalMenu
                         authorUrl={post.author.href}
                         authorName={post.author.name}
                         authorImage={post.author.image}

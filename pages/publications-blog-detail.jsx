@@ -3,7 +3,7 @@ import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/SideBar';
+import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
@@ -1301,14 +1301,11 @@ export default function PublicationsBlogDetail() {
                                     </button>
                                     <button
                                       type="button"
-
                                       className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                     >
                                       Reply
                                     </button>
-                                    
                                   </div>
-                                  
                                 </li>
                               ))}
                             </ul>

@@ -1,12 +1,13 @@
+/* eslint-disable no-nested-ternary */
 import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import _ from 'lodash';
-import { DateTime } from 'luxon';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import Layout from '@/layout/Layout';
+import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import PostCard from '../PostCard';
 import PostList from '../PostList';
@@ -286,11 +287,11 @@ export default function MyProfile({ homePage, listsPage, aboutPage }) {
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">
               <div className="flex items-center justify-between mb-14">
-                {selectedIndex == 0 ? (
+                {selectedIndex === 0 ? (
                   <h1 className="text-slate-700 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                     Your Stories
                   </h1>
-                ) : selectedIndex == 1 ? (
+                ) : selectedIndex === 1 ? (
                   <h1 className="text-slate-700 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                     Your Lists
                   </h1>
@@ -336,12 +337,11 @@ export default function MyProfile({ homePage, listsPage, aboutPage }) {
                           </button>
                         </Menu.Item>
                         <Menu.Item>
-                          <a
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            href="/settings"
-                          >
-                            Settings
-                          </a>
+                          <Link href="/settings">
+                            <a className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
+                              Settings
+                            </a>
+                          </Link>
                         </Menu.Item>
                       </Menu.Items>
                     </Transition>

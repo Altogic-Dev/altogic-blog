@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
-import Layout from '../layout/Layout';
 import { Listbox, Transition } from '@headlessui/react';
 import {
   CheckIcon,
@@ -8,6 +7,7 @@ import {
   XIcon,
   PlusIcon,
 } from '@heroicons/react/solid';
+import Layout from '../layout/Layout';
 
 const peoples = [
   {
@@ -201,7 +201,7 @@ export default function PublishSettings() {
                     leo, consequat, at diam amet in pharetra. Eget facilisis
                     vitae magna ullamcorper netus sed maecenas.
                   </p>
-                  <ol role="list">
+                  <ol>
                     <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
                     <li>Nunc sagittis quam vitae fringilla efficitur.</li>
                     <li>
@@ -246,7 +246,7 @@ export default function PublishSettings() {
                     urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
                     tellus tincidunt. At feugiat sapien varius id.
                   </p>
-                  <ul role="list">
+                  <ul>
                     <li>Cras scelerisque leo quis molestie consectetur.</li>
                     <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
                     <li>
@@ -269,9 +269,9 @@ export default function PublishSettings() {
                     <path
                       d="M17.5 15L16.6666 15.9117C16.2245 16.3951 15.6251 16.6667 15.0001 16.6667C14.3751 16.6667 13.7757 16.3951 13.3337 15.9117C12.891 15.4293 12.2916 15.1584 11.6668 15.1584C11.042 15.1584 10.4426 15.4293 9.99998 15.9117M2.5 16.6667H3.89545C4.3031 16.6667 4.50693 16.6667 4.69874 16.6206C4.8688 16.5798 5.03138 16.5125 5.1805 16.4211C5.34869 16.318 5.49282 16.1739 5.78107 15.8856L16.25 5.41669C16.9404 4.72634 16.9404 3.60705 16.25 2.91669C15.5597 2.22634 14.4404 2.22634 13.75 2.91669L3.28105 13.3856C2.9928 13.6739 2.84867 13.818 2.7456 13.9862C2.65422 14.1353 2.58688 14.2979 2.54605 14.468C2.5 14.6598 2.5 14.8636 2.5 15.2713V16.6667Z"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                   Edit Story

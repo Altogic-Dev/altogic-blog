@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
@@ -10,7 +11,7 @@ import AboutComponent from '@/components/general/About';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/Sidebar';
+import Sidebar from '../../layout/Sidebar';
 import Button from '../basic/button';
 import ProfilePageHome from './ProfilePageHome';
 
@@ -206,17 +207,17 @@ export default function ProfilePage({ About, Home, List }) {
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="lg:py-10 lg:px-8">
               <div className="flex items-center justify-between gap-4 mb-8 md:mb-14">
-                {selectedIndex == 0 ? (
+                {selectedIndex === 0 ? (
                   <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    {_.get(userState, 'name')}'s Stories
+                    {userState?.name}&apos;s Stories
                   </h1>
-                ) : selectedIndex == 1 ? (
+                ) : selectedIndex === 1 ? (
                   <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    {_.get(userState, 'name')}'s Lists
+                    {userState?.name}&apos;s Lists
                   </h1>
                 ) : (
                   <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    {_.get(userState, 'name')}'s About
+                    {userState?.name}&apos;s About
                   </h1>
                 )}
                 <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">

@@ -1,10 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Menu, Transition } from '@headlessui/react';
-import Layout from '../layout/Layout';
-import Sidebar from '../layout/Sidebar';
 import PostCard from '@/components/PostCard';
 import ShareButtons from '@/components/ShareButtons';
+import Layout from '../layout/Layout';
+import Sidebar from '../layout/Sidebar';
 
 const posts = [
   {
@@ -263,8 +263,8 @@ export default function ListDetail() {
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
-                    activeBookmark={true}
-                    listDetailMenu={true}
+                    activeBookmark
+                    listDetailMenu
                     authorUrl={post.author.href}
                     authorName={post.author.name}
                     authorImage={post.author.image}

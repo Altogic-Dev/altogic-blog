@@ -6,7 +6,26 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-export default function PostCard(props) {
+export default function PostCard({
+  authorUrl,
+  authorImage,
+  timeAgo,
+  authorName,
+  storyUrl,
+  draft,
+  title,
+  infoText,
+  badgeUrl,
+  badgeName,
+  min,
+  actionMenu,
+  noActiveBookmark,
+  activeBookmark,
+  normalMenu,
+  optionButtons,
+  listDetailMenu,
+  images,
+}) {
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [deleteListModal, setDeleteListModal] = useState(false);
@@ -15,21 +34,18 @@ export default function PostCard(props) {
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row items-center gap-4 md:gap-6 py-8 md:py-10">
         <div>
-          <a
-            href={props.authorUrl}
-            className="flex items-center gap-3 mb-4 md:mb-8"
-          >
+          <a href={authorUrl} className="flex items-center gap-3 mb-4 md:mb-8">
             <div className="flex-shrink-0">
-              <span className="sr-only">{props.authorName}</span>
+              <span className="sr-only">{authorName}</span>
               <img
                 className="h-6 w-6 rounded-full"
-                src={props.authorImage}
-                alt={props.authorName}
+                src={authorImage}
+                alt={authorName}
               />
             </div>
             <div className="flex items-center gap-2">
               <span className="text-slate-700 text-base font-medium tracking-sm">
-                {props.authorName}
+                {authorName}
               </span>
               <span
                 className="text-slate-500 text-xl tracking-sm"
@@ -38,34 +54,32 @@ export default function PostCard(props) {
                 &middot;
               </span>
               <span className="text-slate-500 text-sm tracking-sm">
-                {props.timeAgo}
+                {timeAgo}
               </span>
             </div>
           </a>
           <div>
             <a
-              href={props.storyUrl}
+              href={storyUrl}
               className="group inline-flex flex-col mb-4 md:mb-11 space-y-2"
             >
               <div className="flex items-center gap-2">
-                {props.draft && (
+                {draft && (
                   <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-50 text-purple-800">
                     Draft
                   </span>
                 )}
                 <h2 className="text-slate-900 text-3xl font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
-                  {props.title}
+                  {title}
                 </h2>
               </div>
-              <p className="text-slate-500 text-sm tracking-sm">
-                {props.infoText}
-              </p>
+              <p className="text-slate-500 text-sm tracking-sm">{infoText}</p>
             </a>
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <a href={props.badgeUrl}>
+                <a href={badgeUrl}>
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                    {props.badgeName}
+                    {badgeName}
                   </span>
                 </a>
                 <span
@@ -75,10 +89,10 @@ export default function PostCard(props) {
                   &middot;
                 </span>
                 <span className="text-slate-400 text-sm tracking-sm">
-                  {props.min} min read
+                  {min} min read
                 </span>
               </div>
-              {props.actionMenu && (
+              {actionMenu && (
                 <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                   <Menu
                     as="div"
@@ -86,7 +100,7 @@ export default function PostCard(props) {
                   >
                     <div>
                       <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                        {props.noActiveBookmark && (
+                        {noActiveBookmark && (
                           <svg
                             className="w-6 h-6 text-slate-400 group-hover:text-slate-600"
                             viewBox="0 0 24 24"
@@ -99,7 +113,7 @@ export default function PostCard(props) {
                             />
                           </svg>
                         )}
-                        {props.activeBookmark && (
+                        {activeBookmark && (
                           <svg
                             className="w-6 h-6 text-purple-700"
                             viewBox="0 0 24 24"
@@ -194,7 +208,7 @@ export default function PostCard(props) {
                       </Menu.Items>
                     </Transition>
                   </Menu>
-                  {props.normalMenu && (
+                  {normalMenu && (
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
                         <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
@@ -221,78 +235,78 @@ export default function PostCard(props) {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          {!_.isNil(props.optionButtons?.unfollow) && (
+                          {!_.isNil(optionButtons?.unfollow) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.unfollow}
+                                onClick={optionButtons?.unfollow}
                               >
                                 Unfollow this author
                               </button>
                             </Menu.Item>
                           )}
-                          {!_.isNil(props.optionButtons?.mute) && (
+                          {!_.isNil(optionButtons?.mute) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.mute}
+                                onClick={optionButtons?.mute}
                               >
                                 Mute this author
                               </button>
                             </Menu.Item>
                           )}
-                          {!_.isNil(props.optionButtons?.report) && (
+                          {!_.isNil(optionButtons?.report) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.report}
+                                onClick={optionButtons?.report}
                               >
                                 Report
                               </button>
                             </Menu.Item>
                           )}
-                          {!_.isNil(props.optionButtons?.editStory) && (
+                          {!_.isNil(optionButtons?.editStory) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.editStory}
+                                onClick={optionButtons?.editStory}
                               >
                                 Edit Story
                               </button>
                             </Menu.Item>
                           )}
-                          {!_.isNil(props.optionButtons?.storySettings) && (
+                          {!_.isNil(optionButtons?.storySettings) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.storySettings}
+                                onClick={optionButtons?.storySettings}
                               >
                                 Story Settings
                               </button>
                             </Menu.Item>
                           )}
-                          {!_.isNil(props.optionButtons?.storyStats) && (
+                          {!_.isNil(optionButtons?.storyStats) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.storyStats}
+                                onClick={optionButtons?.storyStats}
                               >
                                 Story Stats
                               </button>
                             </Menu.Item>
                           )}
-                          {!_.isNil(props.optionButtons?.deleteStory) && (
+                          {!_.isNil(optionButtons?.deleteStory) && (
                             <Menu.Item>
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                                onClick={props.optionButtons?.deleteStory}
+                                onClick={optionButtons?.deleteStory}
                               >
                                 Delete Story
                               </button>
@@ -302,7 +316,7 @@ export default function PostCard(props) {
                       </Transition>
                     </Menu>
                   )}
-                  {props.listDetailMenu && (
+                  {listDetailMenu && (
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
                         <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
@@ -364,7 +378,7 @@ export default function PostCard(props) {
           </div>
         </div>
         <img
-          src={props.images}
+          src={images}
           className="w-full md:w-[150px] h-[150px] object-cover rounded-md"
           alt=""
         />
