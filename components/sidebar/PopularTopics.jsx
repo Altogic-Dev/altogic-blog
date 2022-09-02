@@ -31,17 +31,17 @@ export default function PopularTopics({ isRelatedTopics }) {
 
   useEffect(() => {
     if (isRelatedTopics) {
-      relatedTopics.map((topic) => ({
-        name: topic.topicA === tag ? topic.topicB : topic.topicA,
-        test: 'test',
-        ...topic,
-      }));
-      setTopics(relatedTopics);
+      setTopics(
+        relatedTopics.map((topic) => ({
+          name: topic.topicA === tag ? topic.topicB : topic.topicA,
+
+          ...topic,
+        }))
+      );
     } else {
       setTopics(popularTopics);
     }
   }, [relatedTopics, popularTopics]);
-
 
   return (
     <div>

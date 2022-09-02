@@ -3,50 +3,50 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 
 import { topicsActions } from './topicsSlice';
 
-function* getLatestsOfTopicSaga({ payload: topic }) {
-  try {
-    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+// function* getLatestsOfTopicSaga({ payload: topic }) {
+//   try {
+//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
-    if (data) {
-      yield put(topicsActions.getLatestofTopicSuccess(data));
-    }
-    if (errors) {
-      throw errors.items;
-    }
-  } catch (e) {
-    yield put(topicsActions.getLatestofTopicFailure(e));
-  }
-}
+//     if (data) {
+//       yield put(topicsActions.getLatestofTopicSuccess(data));
+//     }
+//     if (errors) {
+//       throw errors.items;
+//     }
+//   } catch (e) {
+//     yield put(topicsActions.getLatestofTopicFailure(e));
+//   }
+// }
 
-function* getBestsOfTopicSaga({ payload: topic }) {
-  try {
-    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+// function* getBestsOfTopicSaga({ payload: topic }) {
+//   try {
+//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
-    if (data) {
-      yield put(topicsActions.getLatestsOfTopicSuccess(data));
-    }
-    if (errors) {
-      throw errors.items;
-    }
-  } catch (e) {
-    yield put(topicsActions.getLatestsOfTopicFailure(e));
-  }
-}
+//     if (data) {
+//       yield put(topicsActions.getLatestsOfTopicSuccess(data));
+//     }
+//     if (errors) {
+//       throw errors.items;
+//     }
+//   } catch (e) {
+//     yield put(topicsActions.getLatestsOfTopicFailure(e));
+//   }
+// }
 
-function* getTrendingsOfTopicsSaga({ payload: topic }) {
-  try {
-    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+// function* getTrendingsOfTopicsSaga({ payload: topic }) {
+//   try {
+//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
-    if (data) {
-      yield put(topicsActions.getLatestsOfTopicSuccess(data));
-    }
-    if (errors) {
-      throw errors.items;
-    }
-  } catch (e) {
-    yield put(topicsActions.getLatestsOfTopicFailure(e));
-  }
-}
+//     if (data) {
+//       yield put(topicsActions.getLatestsOfTopicSuccess(data));
+//     }
+//     if (errors) {
+//       throw errors.items;
+//     }
+//   } catch (e) {
+//     yield put(topicsActions.getLatestsOfTopicFailure(e));
+//   }
+// }
 
 function* getPopularTopicsSaga() {
   try {
@@ -68,16 +68,16 @@ function* getRelatedTopicsSaga({ payload: topic }) {
     yield put(topicsActions.getRelatedTopicsFailure(e));
   }
 }
-function* getTopicTopWritersSaga() {
-  try {
-    const { data, errors } = yield call(TopicsService.getTopicTopWriters);
+// function* getTopicTopWritersSaga() {
+//   try {
+//     const { data, errors } = yield call(TopicsService.getTopicTopWriters);
 
-    if (errors) throw errors.items;
-    if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
-  } catch (e) {
-    yield put(topicsActions.getTopicTopWritersFailure(e));
-  }
-}
+//     if (errors) throw errors.items;
+//     if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
+//   } catch (e) {
+//     yield put(topicsActions.getTopicTopWritersFailure(e));
+//   }
+// }
 
 export default function* rootSaga() {
   // yield takeEvery(
