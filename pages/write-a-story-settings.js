@@ -1,28 +1,28 @@
-import React, { useState, useRef } from "react";
-import Head from "next/head";
-import Layout from "../components/Layout";
-import PostCard from "../components/PostCard";
-import { XIcon } from "@heroicons/react/solid";
-import { DuplicateIcon } from "@heroicons/react/outline";
+import React, { useState, useRef } from 'react';
+import Head from 'next/head';
+import Layout from '../layout/Layout';
+import PostCard from '../components/PostCard';
+import { XIcon } from '@heroicons/react/solid';
+import { DuplicateIcon } from '@heroicons/react/outline';
 
 const posts = [
   {
     id: 0,
-    href: "#",
-    title: "Fermentum massa tincidunt placerat.",
+    href: '#',
+    title: 'Fermentum massa tincidunt placerat.',
     infoText:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.",
-    badgeName: "Technology",
-    badgeUrl: "/",
-    min: "9 min",
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
+    badgeName: 'Technology',
+    badgeUrl: '/',
+    min: '9 min',
     image:
-      "https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80",
+      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
     author: {
-      name: "Oliva Rhy",
-      href: "#",
+      name: 'Oliva Rhy',
+      href: '#',
       image:
-        "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      timeAgo: "2 Hours",
+        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
+      timeAgo: '2 Hours',
     },
     actionMenu: true,
   },
@@ -219,7 +219,7 @@ export default function WriteAStorySettings() {
                         </span>
                       </div>
                       <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
-                        Title preview:{" "}
+                        Title preview:{' '}
                         <span className="text-slate-700 text-base font-light">
                           Denemem. denememememem | by İsmail Erüstün | Medium
                         </span>
@@ -258,7 +258,7 @@ export default function WriteAStorySettings() {
                         </span>
                       </div>
                       <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
-                        Title preview:{" "}
+                        Title preview:{' '}
                         <span className="text-slate-700 text-base font-light">
                           Denemem. denememememem | by İsmail Erüstün | Medium
                         </span>
@@ -590,7 +590,7 @@ export default function WriteAStorySettings() {
                           After publishing, your link will be:
                         </span>
                         <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
-                          http://www.altogic.com/@erustun{" "}
+                          http://www.altogic.com/@erustun{' '}
                           <span className="text-slate-700 text-base font-light">
                             denemem-e9a4983262d1
                           </span>
