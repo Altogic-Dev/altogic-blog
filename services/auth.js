@@ -32,7 +32,6 @@ const AuthService = {
       )}${randomInt(1000, 99999)}`;
       req.username = username;
     }
-    debugger;
     return endpoint.post('/user/info', req);
   },
   async getUserFromDb() {

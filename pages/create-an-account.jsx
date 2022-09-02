@@ -59,7 +59,6 @@ export default function CreateAnAccount() {
   };
 
   useEffect(() => {
-    debugger;
     if (error && !loading) {
       error.forEach((err) => {
         if (err.message.includes('username')) {
