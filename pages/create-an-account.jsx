@@ -27,11 +27,31 @@ export default function CreateAnAccount() {
     register,
     formState: { errors },
     setError,
+    clearErrors,
   } = useForm({
     resolver: yupResolver(registerSchema),
   });
   const loading = useSelector((state) => state.auth.loading);
   const error = useSelector((state) => state.auth.registerError);
+  const usernameError = useSelector((state) => state.auth.updateProfileError);
+  const isUsernameAvailable = useSelector(
+    (state) => state.auth.isUsernameAvailable
+  );
+  useEffect(() => {
+    if (Symbol.iterator in Object(usernameError)) {
+      usernameError.forEach((err) => {
+        setError('username', {
+          type: 'manuel',
+          message: err.message,
+        });
+      });
+    }
+  }, [usernameError, setError]);
+  useEffect(() => {
+    if (isUsernameAvailable) {
+      clearErrors('username');
+    }
+  }, [isUsernameAvailable]);
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
@@ -39,9 +59,10 @@ export default function CreateAnAccount() {
   };
 
   useEffect(() => {
+    debugger;
     if (error && !loading) {
       error.forEach((err) => {
-        if (err.message?.includes('username')) {
+        if (err.message.includes('username')) {
           setError('username', {
             type: 'manuel',
             message: 'This username already exists',
@@ -64,13 +85,16 @@ export default function CreateAnAccount() {
         } else setError('email', { type: 'manuel', message: err?.message });
       });
     }
-  }, [error, setError]);
+  }, [error, setError, usernameError]);
   useEffect(
     () => () => {
       dispatch(authActions.resetErrorsRequest());
     },
     []
   );
+  const checkUsername = (e) => {
+    dispatch(authActions.checkUsernameRequest(e.target.value));
+  };
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">
@@ -94,7 +118,7 @@ export default function CreateAnAccount() {
               <div className="mt-6">
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                   <Input
-                    label="Name-Surname *"
+                    label="Name-Surname"
                     id="name"
                     name="name"
                     register={register('name')}
@@ -109,6 +133,7 @@ export default function CreateAnAccount() {
                     register={register('username')}
                     placeholder="johndoe"
                     error={errors.username}
+                    onBlur={checkUsername}
                   />
 
                   <Input

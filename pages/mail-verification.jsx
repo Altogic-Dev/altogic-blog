@@ -2,7 +2,7 @@ import { MailOpenIcon } from '@heroicons/react/outline';
 import AuthSidebar from '@/components/AuthSidebar';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import Button from '@/components/Button';
+import Button from '@/components/basic/button';
 import { useDispatch } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import BackToLogin from '@/components/BackToLogin';

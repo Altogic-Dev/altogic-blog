@@ -194,6 +194,16 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    logoutRequest(state) {
+      state.isLoading = true;
+    },
+    logoutSuccess(state) {
+      state.isLoading = false;
+      state.user = null;
+      state.isAuthenticated = false;
+      state.sessions = [];
+      window.location.href = '/login';
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
