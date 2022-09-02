@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '../layout/Layout';
-import Sidebar from '../layout/Sidebar';
+// import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
 
 const posts = [
@@ -473,9 +473,9 @@ export default function SearchResult() {
                 </Tab.Panels>
               </Tab.Group>
             </div>
-            <div className="hidden lg:block p-8 space-y-10">
+            {/* <div className="hidden lg:block p-8 space-y-10">
               <Sidebar topicMatch peopleMatch />
-            </div>
+            </div> */}
           </div>
         </div>
       </Layout>
