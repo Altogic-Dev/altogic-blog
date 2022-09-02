@@ -12,6 +12,7 @@ export default function Header() {
   const [mobileNotifications, setMobileNotifications] = useState(false);
   const sessionUser = useSelector((state) => state.auth.user);
   const [user, setUser] = useState();
+  const router = useRouter();
   useEffect(() => {
     if (sessionUser) {
       setUser(sessionUser);
@@ -501,7 +502,7 @@ export default function Header() {
                             />
                           </svg>
                           View profile
-                        </button>
+                        </a>
                       </Menu.Item>
                       <Menu.Item onClick={() => router.push('/settings')}>
                         <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
@@ -527,7 +528,7 @@ export default function Header() {
                             />
                           </svg>
                           Settings
-                        </button>
+                        </a>
                       </Menu.Item>
                       <Menu.Item>
                         <a
@@ -549,14 +550,16 @@ export default function Header() {
                             />
                           </svg>
                           Stats
-                        </button>
+                        </a>
                       </Menu.Item>
                     </div>
                     <div>
                       <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
                         Publications
                       </span>
-                      <Menu.Item onClick={() => router.push('/publication/Altogic')}>
+                      <Menu.Item
+                        onClick={() => router.push('/publication/Altogic')}
+                      >
                         <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                           <svg
                             width="16"
@@ -595,7 +598,7 @@ export default function Header() {
                             />
                           </svg>
                           Altogic
-                        </button>
+                        </a>
                       </Menu.Item>
                       <Menu.Item>
                         <a
@@ -614,7 +617,7 @@ export default function Header() {
                             />
                           </svg>
                           Manage Publications
-                        </button>
+                        </a>
                       </Menu.Item>
                     </div>
                     <div>
@@ -638,7 +641,7 @@ export default function Header() {
                             />
                           </svg>
                           Help
-                        </button>
+                        </a>
                       </Menu.Item>
                       <Menu.Item>
                         <Button
