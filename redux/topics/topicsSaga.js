@@ -57,9 +57,10 @@ function* getPopularTopicsSaga() {
     yield put(topicsActions.getPopularTopicsFailure(e));
   }
 }
-function* getRelatedTopicsSaga() {
+function* getRelatedTopicsSaga({ payload: topic }) {
+  console.log(topic)
   try {
-    const { data, errors } = yield call(TopicsService.getRelatedTopics);
+    const { data, errors } = yield call(TopicsService.getRelatedTopics,topic);
 
     if (errors) throw errors.items;
     if (data) yield put(topicsActions.getRelatedTopicsSuccess(data));
@@ -95,10 +96,10 @@ export default function* rootSaga() {
     topicsActions.getPopularTopicsRequest.type,
     getPopularTopicsSaga
   );
-  // yield takeEvery(
-  //   topicsActions.getRelatedTopicsRequest.type,
-  //   getRelatedTopicsSaga
-  // );
+  yield takeEvery(
+    topicsActions.getRelatedTopicsRequest.type,
+    getRelatedTopicsSaga
+  );
   // yield takeEvery(
   //   topicsActions.getTopicTopWritersRequest.type,
   //   getTopicTopWritersSaga
