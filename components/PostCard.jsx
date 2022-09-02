@@ -243,15 +243,61 @@ export default function PostCard(props) {
                               </button>
                             </Menu.Item>
                           )}
-                          <Menu.Item>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                              onClick={props.optionButtons?.report}
-                            >
-                              Report
-                            </button>
-                          </Menu.Item>
+                          {!_.isNil(props.optionButtons?.report) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.report}
+                              >
+                                Report
+                              </button>
+                            </Menu.Item>
+                          )}
+                          {!_.isNil(props.optionButtons?.editStory) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.editStory}
+                              >
+                                Edit Story
+                              </button>
+                            </Menu.Item>
+                          )}
+                          {!_.isNil(props.optionButtons?.storySettings) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.storySettings}
+                              >
+                                Story Settings
+                              </button>
+                            </Menu.Item>
+                          )}
+                          {!_.isNil(props.optionButtons?.storyStats) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.storyStats}
+                              >
+                                Story Stats
+                              </button>
+                            </Menu.Item>
+                          )}
+                          {!_.isNil(props.optionButtons?.deleteStory) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={props.optionButtons?.deleteStory}
+                              >
+                                Delete Story
+                              </button>
+                            </Menu.Item>
+                          )}
                         </Menu.Items>
                       </Transition>
                     </Menu>

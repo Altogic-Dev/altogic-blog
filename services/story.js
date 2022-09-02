@@ -75,11 +75,24 @@ const StoryService = {
       .get();
   },
 
+  getUserStories(userId, page = 1, limit = 6) {
+    return db
+      .model('story')
+      .filter(`user == '${userId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
+  },
+
   createStory(story) {
     return db.model('story').create(story);
   },
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
+  },
+  deleteStory(storyId) {
+    return db.model('story').object(storyId).delete();
   },
 };
 
