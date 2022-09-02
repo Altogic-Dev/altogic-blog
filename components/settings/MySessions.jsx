@@ -4,7 +4,7 @@ import { authActions } from '@/redux/auth/authSlice';
 import { formatDate } from '@/utils/utils';
 import {
   DesktopComputerIcon,
-  DevicePhoneMobileIcon,
+  DeviceMobileIcon,
 } from '@heroicons/react/outline';
 import Button from '../basic/button';
 
@@ -41,7 +41,7 @@ export default function MySessions() {
                     .toLowerCase()
                     .includes('android') ||
                   session.userAgent.os.family.toLowerCase().includes('ios') ? (
-                    <DevicePhoneMobileIcon className="w-6 h-6 text-gray-500" />
+                    <DeviceMobileIcon className="w-6 h-6 text-gray-500" />
                   ) : (
                     <DesktopComputerIcon className="w-6 h-6 text-gray-500" />
                   )}
