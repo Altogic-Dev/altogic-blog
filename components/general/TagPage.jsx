@@ -3,9 +3,9 @@ import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layout/Layout';
 import PostCard from '@/components/PostCard';
-import Sidebar from '@/layout/Sidebar';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
+import Sidebar from '../../layout/Sidebar';
 
 const posts = [
   {

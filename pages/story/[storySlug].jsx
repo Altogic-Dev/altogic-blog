@@ -9,13 +9,13 @@ import { DateTime } from 'luxon';
 import _ from 'lodash';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/Sidebar';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import Button from '@/components/basic/button';
+import Sidebar from '../../layout/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

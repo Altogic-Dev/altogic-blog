@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
+import Header from '@/components/Header';
 import Footer from './Footer';
-import Header from './Header';
 
 export default function Layout({ children }) {
   return (
