@@ -1,5 +1,6 @@
 import AuthService from '@/services/auth';
 import _ from 'lodash';
+import { toast } from 'react-toastify';
 import { takeEvery, put, call, all, select } from 'redux-saga/effects';
 import { authActions } from './authSlice';
 
@@ -25,12 +26,14 @@ function* setUserFromLocalStorage() {
 function* getAuthGrantSaga({ payload }) {
   try {
     yield call(AuthService.authStateChange, payload.session, payload.user);
-    if (!payload.user.username) {
-      const res = yield call(AuthService.setUsernameForProvider);
-      if (!res.errors) {
-        yield call(AuthService.getUserFromDb);
-        setUserFromLocalStorage();
-      }
+    const res = yield call(AuthService.setUsernameForProvider, {
+      userId: payload.user._id,
+      name: payload.user.name,
+      provider: payload.user.provider,
+    });
+    if (!res.errors) {
+      yield call(AuthService.getUserFromDb);
+      setUserFromLocalStorage();
     }
     if (payload.user && payload.session) {
       yield put(authActions.loginSuccess(payload.user));
@@ -187,6 +190,77 @@ function* isMutedSaga({ payload: authorId }) {
   yield put(authActions.isMutedSuccess(isMuted));
 }
 
+function* changePasswordSaga({ payload }) {
+  try {
+    const { errors } = yield call(AuthService.changePassword, payload);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.changePasswordSuccess());
+    }
+  } catch (e) {
+    yield put(authActions.changePasswordFailure(e));
+  }
+}
+function* updateUserProfileSaga({ payload }) {
+  try {
+    const { errors } = yield call(AuthService.updateUserProfile, payload);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield call(AuthService.getUserFromDb);
+      setUserFromLocalStorage();
+      yield put(authActions.updateUserSuccess());
+    }
+  } catch (e) {
+    yield put(authActions.updateUserFailure(e));
+  }
+}
+function* checkUsernameSaga({ payload: username }) {
+  try {
+    const { data, errors } = yield call(
+      AuthService.checkUsernameAvailability,
+      username
+    );
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.checkUsernameSuccess(data));
+    }
+  } catch (e) {
+    yield put(authActions.checkUsernameFailure(e));
+  }
+}
+function* getSessionsSaga() {
+  try {
+    const { sessions, errors } = yield call(AuthService.getAllSession);
+    const currentSession = yield call(AuthService.getCurrentSession);
+    if (errors) {
+      throw errors.items;
+    } else {
+      sessions.find(
+        (session) => session.token === currentSession.token
+      ).isCurrent = true;
+      yield put(authActions.getSessionsSuccess(sessions));
+    }
+  } catch (e) {
+    yield put(authActions.getSessionsFailure(e));
+  }
+}
+function* deleteSessionSaga({ payload: sessionToken }) {
+  try {
+    const { errors } = yield call(AuthService.deleteSession, sessionToken);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.deleteSessionSuccess(sessionToken));
+      toast.success('Session deleted successfully');
+    }
+  } catch (e) {
+    yield put(authActions.deleteSessionFailure(e));
+  }
+}
+
 export function* updateUserSaga(newUser) {
   const user = yield select((state) => state.auth.user);
   AuthService.setUserFromLocal({
@@ -199,6 +273,10 @@ export function* updateUserSaga(newUser) {
       ...newUser,
     })
   );
+}
+export function* logoutSaga() {
+  yield call(AuthService.logout);
+  yield put(authActions.logoutSuccess());
 }
 
 export default function* rootSaga() {
@@ -221,5 +299,12 @@ export default function* rootSaga() {
       authenticateWithProvider
     ),
     takeEvery(authActions.resetErrorsRequest.type, errorResetSaga),
+    takeEvery(authActions.changePasswordRequest.type, changePasswordSaga),
+    takeEvery(authActions.updateUserRequest.type, updateUserProfileSaga),
+    takeEvery(authActions.updateUserRequest.type, updateUserSaga),
+    takeEvery(authActions.checkUsernameRequest.type, checkUsernameSaga),
+    takeEvery(authActions.getSessionsRequest.type, getSessionsSaga),
+    takeEvery(authActions.deleteSessionRequest.type, deleteSessionSaga),
+    takeEvery(authActions.logoutRequest.type, logoutSaga),
   ]);
 }

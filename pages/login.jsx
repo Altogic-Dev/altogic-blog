@@ -14,7 +14,7 @@ export default function Login() {
     password: yup.string().required('Password is required'),
   });
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.auth.error);
+  const error = useSelector((state) => state.auth.loginError);
   const {
     handleSubmit,
     register,
