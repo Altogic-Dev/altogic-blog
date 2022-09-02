@@ -1,4 +1,4 @@
-import { auth, db } from '@/utils/altogic';
+import { auth, db, endpoint } from '@/utils/altogic';
 import {
   lowerCaseFirstLetter,
   randomInt,
@@ -71,8 +71,26 @@ const AuthService = {
   },
   unfollowTopic(followingTopicsUpdated) {
     return db.model('users').object(auth.getUser()._id).update({
-      followingTopics: followingTopicsUpdated
+      followingTopics: followingTopicsUpdated,
     });
+  },
+  changePassword({ currentPassword, newPassword }) {
+    return auth.changePassword(newPassword, currentPassword);
+  },
+  updateUserProfile(newUser) {
+    return endpoint.put('/user', newUser);
+  },
+  checkUsernameAvailability(username) {
+    return endpoint.post('/user/username', { username });
+  },
+  async getAllSession() {
+    return auth.getAllSessions();
+  },
+  deleteSession(session) {
+    return auth.deleteSession(session);
+  },
+  getCurrentSession() {
+    return auth.getSession();
   },
 };
 export default AuthService;

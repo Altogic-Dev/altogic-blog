@@ -1,13 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 import AuthService from '@/services/auth';
 import { HYDRATE } from 'next-redux-wrapper';
+import { toast } from 'react-toastify';
 // Initial state
 const initialState = {
   isLoading: true,
   error: null,
+  loginError: null,
+  registerError: null,
+  changePasswordError: null,
+  updateProfileError: null,
   user: AuthService.getUser(),
   isMuted: false,
   isAuthenticated: false,
+  sessions: [],
 };
 
 export const authSlice = createSlice({
@@ -24,7 +30,7 @@ export const authSlice = createSlice({
     },
     registerFailure(state, action) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.registerError = action.payload;
     },
     getAuthGrantRequest(state) {
       state.isLoading = true;
@@ -47,7 +53,7 @@ export const authSlice = createSlice({
     },
     loginFailure(state, action) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.loginError = action.payload;
     },
     forgotPasswordRequest(state) {
       state.isLoading = true;
@@ -129,9 +135,64 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = null;
     },
-
-    updateUser(state, action) {
+    changePasswordRequest(state) {
+      state.isLoading = true;
+    },
+    changePasswordSuccess(state) {
+      state.isLoading = false;
+      toast.success('Password changed successfully');
+    },
+    changePasswordFailure(state, action) {
+      state.isLoading = false;
+      state.changePasswordError = action.payload;
+    },
+    updateUserRequest(state) {
+      state.isLoading = true;
+    },
+    updateUserSuccess(state, action) {
+      state.isLoading = false;
       state.user = action.payload;
+      toast.success('Profile updated successfully');
+    },
+    updateUserFailure(state, action) {
+      state.isLoading = false;
+      state.updateProfileError = action.payload;
+    },
+    checkUsernameRequest(state) {
+      state.isLoading = true;
+    },
+    checkUsernameSuccess(state, action) {
+      state.isLoading = false;
+      state.isUsernameAvailable = action.payload;
+    },
+    checkUsernameFailure(state, action) {
+      state.isLoading = false;
+      state.isUsernameAvailable = false;
+      state.updateProfileError = action.payload;
+    },
+    getSessionsRequest(state) {
+      state.isLoading = true;
+    },
+    getSessionsSuccess(state, action) {
+      state.isLoading = false;
+      state.sessions = action.payload;
+    },
+    getSessionsFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    deleteSessionRequest(state) {
+      state.isLoading = true;
+    },
+    deleteSessionSuccess(state, action) {
+      state.isLoading = false;
+      state.sessions = state.sessions.filter(
+        (session) => session.token !== action.payload
+      );
+    },
+    deleteSessionFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

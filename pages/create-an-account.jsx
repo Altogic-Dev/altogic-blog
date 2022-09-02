@@ -31,7 +31,7 @@ export default function CreateAnAccount() {
     resolver: yupResolver(registerSchema),
   });
   const loading = useSelector((state) => state.auth.loading);
-  const error = useSelector((state) => state.auth.error);
+  const error = useSelector((state) => state.auth.registerError);
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
@@ -67,7 +67,6 @@ export default function CreateAnAccount() {
   }, [error, setError]);
   useEffect(
     () => () => {
-      console.log(1);
       dispatch(authActions.resetErrorsRequest());
     },
     []

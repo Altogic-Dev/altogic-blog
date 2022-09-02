@@ -5,6 +5,7 @@ export default function Button({
   primaryColor,
   children,
   loading,
+  type,
   ...props
 }) {
   const override = css`
@@ -19,13 +20,15 @@ export default function Button({
 
   return (
     <button
-      type="button"
       className={
         props.className
           ? props.className
-          : `${props.extraClasses} ${primaryColor ? whiteRounded : purpleRounded}`
+          : `${props.extraClasses} ${
+              primaryColor ? whiteRounded : purpleRounded
+            }`
       }
       {...props}
+      type={type ? 'submit' : 'button'}
     >
       {loading && (
         <ClipLoader color="#fff" loading={loading} size={20} css={override} />

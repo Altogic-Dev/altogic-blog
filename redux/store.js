@@ -12,6 +12,7 @@ import { storyLikesSlice } from './storyLikes/storyLikesSlice';
 import { topicsSlice } from './topics/topicsSlice';
 import { subscribeSlice } from './subscribe/subscribeSlice';
 import { publicationSlice } from './publication/publicationSlice';
+import { fileSlice } from './file/fileSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -28,10 +29,13 @@ const makeStore = () => {
       [topicsSlice.name]: topicsSlice.reducer,
       [subscribeSlice.name]: subscribeSlice.reducer,
       [publicationSlice.name]: publicationSlice.reducer,
+      [fileSlice.name]: fileSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ thunk: false }).prepend(sagaMiddleware),
+      getDefaultMiddleware({ thunk: false, serializableCheck: false }).prepend(
+        sagaMiddleware
+      ),
   });
   sagaMiddleware.run(rootSaga);
   return store;
