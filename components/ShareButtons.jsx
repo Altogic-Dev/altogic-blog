@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+
 import {
   FacebookShareButton,
   LinkedinShareButton,
@@ -8,6 +9,7 @@ import {
 
 function ShareButtons() {
   const router = useRouter();
+
   const [basePath, setBasePath] = useState();
   const shareUrl = basePath + router.asPath;
 
@@ -23,8 +25,7 @@ function ShareButtons() {
     <ul className="flex items-center">
       <li>
         <TwitterShareButton url={shareUrl}>
-          <button
-            type="button"
+          <a
             className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
           >
             <svg
@@ -40,13 +41,12 @@ function ShareButtons() {
                 fill="currentColor"
               />
             </svg>
-          </button>
+          </a>
         </TwitterShareButton>
       </li>
       <li>
         <FacebookShareButton url={shareUrl}>
-          <button
-            type="button"
+          <a
             className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
           >
             <svg
@@ -62,13 +62,12 @@ function ShareButtons() {
                 fill="currentColor"
               />
             </svg>
-          </button>
+          </a>
         </FacebookShareButton>
       </li>
       <li>
         <LinkedinShareButton url={shareUrl}>
-          <button
-            type="button"
+          <a
             className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
           >
             <svg
@@ -84,7 +83,7 @@ function ShareButtons() {
                 fill="currentColor"
               />
             </svg>
-          </button>
+          </a>
         </LinkedinShareButton>
       </li>
       <li>

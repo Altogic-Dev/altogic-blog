@@ -1,6 +1,6 @@
 import { useState, Fragment } from 'react';
 import Head from 'next/head';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 
@@ -103,9 +103,9 @@ export default function PublicationsNewsletter() {
                     leaveTo="opacity-0"
                   >
                     <Listbox.Options className="absolute w-full bg-white mt-2 border border-gray-100 rounded-lg shadow-lg overflow-hidden z-50 focus:outline-none">
-                      {options.map((option, index) => (
+                      {options.map((option) => (
                         <Listbox.Option
-                          key={index}
+                          key={option.id}
                           className={({ active }) =>
                             `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
                               active

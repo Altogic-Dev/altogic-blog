@@ -3,7 +3,7 @@ import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 
 const statistics = [
   {
@@ -141,8 +141,8 @@ export default function PublicationsNewsletterStats() {
                   Send Mails
                 </span>
                 <ul className="divide-y divide-gray-200">
-                  {statistics.map((statistic, index) => (
-                    <li key={index} className="py-4">
+                  {statistics.map((statistic) => (
+                    <li key={statistic.title} className="py-4">
                       <div className="p-4">
                         <p className="text-slate-800 text-base font-medium tracking-sm">
                           {statistic.title}

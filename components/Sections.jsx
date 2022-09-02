@@ -1,19 +1,19 @@
-import { useState, Fragment } from "react";
-import { Listbox, Transition, Tab, Switch } from "@headlessui/react";
-import PublicationsNormalCard from "./PublicationsNormalCard";
-import PublicationsFullImageVerticalCard from "./PublicationsFullImageVerticalCard";
-import PublicationsStreamCard from "./PublicationsStreamCard";
-import PublicationsListImageCard from "./PublicationsListImageCard";
-import Sidebar from "./Sidebar";
-import { CheckIcon, ChevronDownIcon } from "@heroicons/react/solid";
+import { useState, Fragment } from 'react';
+import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import { Listbox, Transition, Tab, Switch } from '@headlessui/react';
+import Sidebar from '../layout/Sidebar';
+import PublicationsNormalCard from './PublicationsNormalCard';
+import PublicationsFullImageVerticalCard from './PublicationsFullImageVerticalCard';
+import PublicationsStreamCard from './PublicationsStreamCard';
+import PublicationsListImageCard from './PublicationsListImageCard';
 
 const sections = [
-  { id: 1, tag: "Stories in a tag" },
-  { id: 2, tag: "Featured stories" },
+  { id: 1, tag: 'Stories in a tag' },
+  { id: 2, tag: 'Featured stories' },
 ];
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function Sections() {
@@ -25,7 +25,7 @@ export default function Sections() {
   const [enabled, setEnabled] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
   const [containerScreen, setContainerScreen] = useState(false);
-  const [tag, setTag] = useState(false);
+  const tag = useState(false);
 
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
@@ -36,7 +36,7 @@ export default function Sections() {
             <div className="relative">
               <Listbox.Button
                 className={`relative ${
-                  tag ? "max-w-[180px]" : "max-w-[240px] min-w-[240px]"
+                  tag ? 'max-w-[180px]' : 'max-w-[240px] min-w-[240px]'
                 } w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
               >
                 <span className="block truncate">{selectedSectionBar.tag}</span>
@@ -54,14 +54,14 @@ export default function Sections() {
                 leaveTo="opacity-0"
               >
                 <Listbox.Options className="absolute mt-1 min-w-[240px] max-w-[240px] w-full bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-50 focus:outline-none">
-                  {sections.map((section, index) => (
+                  {sections.map((section) => (
                     <Listbox.Option
-                      key={index}
+                      key={section.id}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
                           active
-                            ? "bg-slate-50 text-slate-700"
-                            : "text-slate-700"
+                            ? 'bg-slate-50 text-slate-700'
+                            : 'text-slate-700'
                         }`
                       }
                       value={section}
@@ -102,7 +102,7 @@ export default function Sections() {
             <button
               type="button"
               onClick={() => {
-                counter == 0 ? setCounter(0) : setCounter(counter - 1);
+                setCounter(counter === 0 ? 0 : counter - 1);
               }}
               className="relative inline-flex items-center p-1.5 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
             >
@@ -160,8 +160,8 @@ export default function Sections() {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "inline-flex items-center gap-2 h-full text-sm tracking-sm hover:text-purple-700 focus:outline-none",
-                    selected ? "text-purple-700 relative" : "text-slate-400"
+                    'inline-flex items-center gap-2 h-full text-sm tracking-sm hover:text-purple-700 focus:outline-none',
+                    selected ? 'text-purple-700 relative' : 'text-slate-400'
                   )
                 }
               >
@@ -184,8 +184,8 @@ export default function Sections() {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "inline-flex items-center gap-2 h-full text-sm tracking-sm hover:text-purple-700 focus:outline-none",
-                    selected ? "text-purple-700 relative" : "text-slate-400"
+                    'inline-flex items-center gap-2 h-full text-sm tracking-sm hover:text-purple-700 focus:outline-none',
+                    selected ? 'text-purple-700 relative' : 'text-slate-400'
                   )
                 }
               >
@@ -208,8 +208,8 @@ export default function Sections() {
               <Tab
                 className={({ selected }) =>
                   classNames(
-                    "inline-flex items-center gap-2 h-full text-sm tracking-sm hover:text-purple-700 focus:outline-none",
-                    selected ? "text-purple-700 relative" : "text-slate-400"
+                    'inline-flex items-center gap-2 h-full text-sm tracking-sm hover:text-purple-700 focus:outline-none',
+                    selected ? 'text-purple-700 relative' : 'text-slate-400'
                   )
                 }
               >
@@ -239,11 +239,9 @@ export default function Sections() {
                 setImageCard(false);
               }}
               className={classNames(
-                normalCard ? "text-purple-700" : "text-slate-400"
+                normalCard ? 'text-purple-700' : 'text-slate-400'
               )}
-              disabled={
-                selectedIndex == 1 ? true : selectedIndex == 2 ? true : false
-              }
+              disabled={selectedIndex === 1 ? true : selectedIndex === 2}
             >
               <svg
                 className="w-6 h-6"
@@ -267,11 +265,9 @@ export default function Sections() {
                 setNormalCard(false);
               }}
               className={classNames(
-                imageCard ? "text-purple-700" : "text-slate-400"
+                imageCard ? 'text-purple-700' : 'text-slate-400'
               )}
-              disabled={
-                selectedIndex == 1 ? true : selectedIndex == 2 ? true : false
-              }
+              disabled={selectedIndex === 1 ? true : selectedIndex === 2}
             >
               <svg
                 className="w-6 h-6"
@@ -297,11 +293,9 @@ export default function Sections() {
                 setContainerScreen(false);
               }}
               className={classNames(
-                fullScreen ? "text-purple-700" : "text-slate-400"
+                fullScreen ? 'text-purple-700' : 'text-slate-400'
               )}
-              disabled={
-                selectedIndex == 1 ? true : selectedIndex == 2 ? true : false
-              }
+              disabled={selectedIndex === 1 ? true : selectedIndex === 2}
             >
               <svg
                 className="w-6 h-6"
@@ -325,11 +319,9 @@ export default function Sections() {
                 setFullScreen(false);
               }}
               className={classNames(
-                containerScreen ? "text-purple-700" : "text-slate-400"
+                containerScreen ? 'text-purple-700' : 'text-slate-400'
               )}
-              disabled={
-                selectedIndex == 1 ? true : selectedIndex == 2 ? true : false
-              }
+              disabled={selectedIndex === 1 ? true : selectedIndex === 2}
             >
               <svg
                 className="w-6 h-6"
@@ -387,15 +379,15 @@ export default function Sections() {
                 checked={enabled}
                 onChange={setEnabled}
                 className={classNames(
-                  enabled ? "bg-purple-600" : "bg-gray-100",
-                  "relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  enabled ? 'bg-purple-600' : 'bg-gray-100',
+                  'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={classNames(
-                    enabled ? "translate-x-4" : "translate-x-0",
-                    "pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+                    enabled ? 'translate-x-4' : 'translate-x-0',
+                    'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
                   )}
                 />
               </Switch>
@@ -447,8 +439,8 @@ export default function Sections() {
       <div
         className={classNames(
           fullScreen
-            ? "max-w-full px-0"
-            : "max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8"
+            ? 'max-w-full px-0'
+            : 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8'
         )}
       >
         <Tab.Panels>

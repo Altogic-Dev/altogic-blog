@@ -1,8 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '../layouts/Layout';
-import Sidebar from '../layouts/SideBar';
+import Layout from '@/layout/Layout';
+import Sidebar from '../layout/Sidebar';
 
 const allNotifications = [
   {
@@ -212,7 +212,7 @@ export default function Notifications() {
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
                 storiesYouFollow
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
               />

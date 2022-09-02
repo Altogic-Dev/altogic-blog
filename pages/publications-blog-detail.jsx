@@ -2,8 +2,8 @@ import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
-import Layout from '../layouts/Layout';
-import Sidebar from '../layouts/SideBar';
+import Layout from '@/layout/Layout';
+import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
 
 function classNames(...classes) {
@@ -502,7 +502,7 @@ export default function PublicationsBlogDetail() {
                     leo, consequat, at diam amet in pharetra. Eget facilisis
                     vitae magna ullamcorper netus sed maecenas.
                   </p>
-                  <ol role="list">
+                  <ol>
                     <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
                     <li>Nunc sagittis quam vitae fringilla efficitur.</li>
                     <li>
@@ -547,7 +547,7 @@ export default function PublicationsBlogDetail() {
                     urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
                     tellus tincidunt. At feugiat sapien varius id.
                   </p>
-                  <ul role="list">
+                  <ul>
                     <li>Cras scelerisque leo quis molestie consectetur.</li>
                     <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
                     <li>
@@ -1104,7 +1104,7 @@ export default function PublicationsBlogDetail() {
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
                 profile
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
                 followButton

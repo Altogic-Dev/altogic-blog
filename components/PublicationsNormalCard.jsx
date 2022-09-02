@@ -1,26 +1,26 @@
-import { Fragment, useState } from "react";
-import { Listbox, Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
+import { Fragment, useState } from 'react';
+import { Listbox, Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon } from '@heroicons/react/solid';
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ');
 }
 
 const stories = [
   {
     id: 1,
-    name: "Euismod scelerisque scelerisque quam feugiatar...",
-    info: "Olivia Rhye on Jully 28",
+    name: 'Euismod scelerisque scelerisque quam feugiatar...',
+    info: 'Olivia Rhye on Jully 28',
   },
   {
     id: 2,
-    name: "Rhoncus nisl mattis at orci eros morbi ut pretium.",
-    info: "Olivia Rhye on Jully 28",
+    name: 'Rhoncus nisl mattis at orci eros morbi ut pretium.',
+    info: 'Olivia Rhye on Jully 28',
   },
   {
     id: 3,
-    name: "Nascetur pulvinar ut vel risus, faucibus.",
-    info: "Olivia Rhye on Jully 28",
+    name: 'Nascetur pulvinar ut vel risus, faucibus.',
+    info: 'Olivia Rhye on Jully 28',
   },
 ];
 
@@ -37,18 +37,18 @@ export default function PublicationsNormalCard({
   return (
     <div
       className={classNames(
-        singleBigCard ? "flex flex-col lg:flex-row lg:gap-8" : null
+        singleBigCard ? 'flex flex-col lg:flex-row lg:gap-8' : null
       )}
     >
       <div
         className={classNames(
-          "flex w-full bg-black/20 mb-4 rounded-lg",
-          smallSize ? "h-[217px]" : null,
-          mediumSize ? "h-[250px]" : null,
-          largeSize ? "h-[350px]" : null
+          'flex w-full bg-black/20 mb-4 rounded-lg',
+          smallSize ? 'h-[217px]' : null,
+          mediumSize ? 'h-[250px]' : null,
+          largeSize ? 'h-[350px]' : null
         )}
-      ></div>
-      <div className={classNames(singleBigCard ? "lg:mt-14" : null)}>
+      />
+      <div className={classNames(singleBigCard ? 'lg:mt-14' : null)}>
         <div>
           <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
             Next featured story
@@ -72,23 +72,23 @@ export default function PublicationsNormalCard({
                   leaveTo="opacity-0"
                 >
                   <Listbox.Options className="absolute mt-1 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
-                    {stories.map((storie, index) => (
+                    {stories.map((story) => (
                       <Listbox.Option
-                        key={index}
+                        key={story.id}
                         className={({ active }) =>
                           `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
                             active
-                              ? "bg-slate-50 text-slate-700"
-                              : "text-slate-700"
+                              ? 'bg-slate-50 text-slate-700'
+                              : 'text-slate-700'
                           }`
                         }
-                        value={storie}
+                        value={story}
                       >
                         <span className="flex text-slate-700 mb-2 text-base font-medium tracking-sm text-left truncate group-hover:text-slate-900">
-                          {storie.name}
+                          {story.name}
                         </span>
                         <span className="text-slate-700 text-xs tracking-sm">
-                          {storie.info}
+                          {story.info}
                         </span>
                       </Listbox.Option>
                     ))}
@@ -114,19 +114,20 @@ export default function PublicationsNormalCard({
                 leaveTo="transform opacity-0 scale-95"
               >
                 <Menu.Items className="absolute left-0 mt-2 w-96 origin-top-left rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  {stories.map((storie, index) => (
-                    <Menu.Item key={index}>
+                  {stories.map((story) => (
+                    <Menu.Item key={story.id}>
                       {({ active }) => (
                         <button
+                          type="button"
                           className={`${
-                            active ? "bg-slate-50 text-white" : "text-gray-900"
+                            active ? 'bg-slate-50 text-white' : 'text-gray-900'
                           } group flex flex-col w-full rounded-md p-3.5`}
                         >
                           <span className="flex text-slate-700 mb-2 text-base font-medium tracking-sm text-left truncate group-hover:text-slate-900">
-                            {storie.name}
+                            {story.name}
                           </span>
                           <span className="text-slate-700 text-xs tracking-sm">
-                            {storie.info}
+                            {story.info}
                           </span>
                         </button>
                       )}
@@ -138,8 +139,8 @@ export default function PublicationsNormalCard({
           )}
         </div>
         <div className="mt-4 space-y-1">
-          <span className="flex w-[267px] h-6 bg-slate-200"></span>
-          <span className="flex w-[145px] h-6 bg-slate-200"></span>
+          <span className="flex w-[267px] h-6 bg-slate-200" />
+          <span className="flex w-[145px] h-6 bg-slate-200" />
         </div>
       </div>
     </div>

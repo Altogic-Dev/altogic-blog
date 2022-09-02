@@ -1,10 +1,26 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Dialog, Popover, Transition } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useSelector, useDispatch } from 'react-redux';
+import Avatar from './profile/Avatar';
+import Button from './basic/button';
+import { authActions } from '../redux/auth/authSlice';
 
 export default function Header() {
   const [mobileNotifications, setMobileNotifications] = useState(false);
+  const sessionUser = useSelector((state) => state.auth.user);
+  const [user, setUser] = useState();
+  useEffect(() => {
+    if (sessionUser) {
+      setUser(sessionUser);
+    }
+  }, [sessionUser]);
+  const dispatch = useDispatch();
+  const logout = () => {
+    dispatch(authActions.logoutRequest());
+  };
 
   return (
     <Popover className="relative bg-white border-b border-gray-200">
@@ -12,74 +28,75 @@ export default function Header() {
         <div className="flex justify-between items-center lg:justify-start md:space-x-10">
           <div className="flex justify-start lg:w-0 lg:flex-1">
             <Link href="/">
-              <img
-                className="cursor-pointer w-[114px] h-[39px] sm:w-[135px] sm:h-[46px]"
-                src="./logo.svg"
-                alt=""
-              />
+              <a>
+                <span className="sr-only">Altogic</span>
+                <img
+                  className="w-[114px] h-[39px] sm:w-[135px] sm:h-[46px]"
+                  src="/logo.svg"
+                  alt=""
+                />
+              </a>
             </Link>
           </div>
           <Popover.Group as="nav" className="hidden lg:flex gap-1">
-            <button
-              type="button"
-              className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
-            >
-              <svg
-                className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
-                viewBox="0 0 21 21"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M6.86719 16H14.8672M9.88488 1.764L3.10258 7.03912C2.64921 7.39175 2.42252 7.56806 2.25921 7.78886C2.11455 7.98444 2.00679 8.20478 1.94121 8.43905C1.86719 8.70352 1.86719 8.9907 1.86719 9.56505V16.8C1.86719 17.9201 1.86719 18.4801 2.08517 18.908C2.27692 19.2843 2.58288 19.5903 2.95921 19.782C3.38703 20 3.94708 20 5.06719 20H16.6672C17.7873 20 18.3473 20 18.7752 19.782C19.1515 19.5903 19.4575 19.2843 19.6492 18.908C19.8672 18.4801 19.8672 17.9201 19.8672 16.8V9.56505C19.8672 8.9907 19.8672 8.70352 19.7932 8.43905C19.7276 8.20478 19.6198 7.98444 19.4752 7.78886C19.3119 7.56806 19.0852 7.39175 18.6318 7.03913L11.8495 1.764C11.4982 1.49075 11.3225 1.35412 11.1285 1.3016C10.9574 1.25526 10.777 1.25526 10.6058 1.3016C10.4119 1.35412 10.2362 1.49075 9.88488 1.764Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Home
-            </button>
-            <button
-              type="button"
-              className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
-            >
-              <svg
-                className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
-                viewBox="0 0 25 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M5.86719 7.8C5.86719 6.11984 5.86719 5.27976 6.19417 4.63803C6.48179 4.07354 6.94073 3.6146 7.50522 3.32698C8.14695 3 8.98703 3 10.6672 3H15.0672C16.7473 3 17.5874 3 18.2292 3.32698C18.7936 3.6146 19.2526 4.07354 19.5402 4.63803C19.8672 5.27976 19.8672 6.11984 19.8672 7.8V21L12.8672 17L5.86719 21V7.8Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Lists
-            </button>
-            <button
-              type="button"
-              className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
-            >
-              <svg
-                className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
-                viewBox="0 0 25 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M12.8672 21L12.7671 20.8499C12.0725 19.808 11.7252 19.287 11.2663 18.9098C10.86 18.5759 10.392 18.3254 9.88879 18.1726C9.32044 18 8.6943 18 7.44201 18H6.06719C4.94708 18 4.38703 18 3.95921 17.782C3.58288 17.5903 3.27692 17.2843 3.08517 16.908C2.86719 16.4802 2.86719 15.9201 2.86719 14.8V6.2C2.86719 5.07989 2.86719 4.51984 3.08517 4.09202C3.27692 3.71569 3.58288 3.40973 3.95921 3.21799C4.38703 3 4.94708 3 6.06719 3H6.46719C8.7074 3 9.8275 3 10.6831 3.43597C11.4358 3.81947 12.0477 4.43139 12.4312 5.18404C12.8672 6.03968 12.8672 7.15979 12.8672 9.4M12.8672 21V9.4M12.8672 21L12.9672 20.8499C13.6619 19.808 14.0092 19.287 14.4681 18.9098C14.8743 18.5759 15.3424 18.3254 15.8456 18.1726C16.4139 18 17.0401 18 18.2924 18H19.6672C20.7873 18 21.3473 18 21.7752 17.782C22.1515 17.5903 22.4575 17.2843 22.6492 16.908C22.8672 16.4802 22.8672 15.9201 22.8672 14.8V6.2C22.8672 5.07989 22.8672 4.51984 22.6492 4.09202C22.4575 3.71569 22.1515 3.40973 21.7752 3.21799C21.3473 3 20.7873 3 19.6672 3H19.2672C17.027 3 15.9069 3 15.0512 3.43597C14.2986 3.81947 13.6867 4.43139 13.3032 5.18404C12.8672 6.03968 12.8672 7.15979 12.8672 9.4"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Stories
-            </button>
+            <Link href="/">
+              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                <svg
+                  className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+                  viewBox="0 0 21 21"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.86719 16H14.8672M9.88488 1.764L3.10258 7.03912C2.64921 7.39175 2.42252 7.56806 2.25921 7.78886C2.11455 7.98444 2.00679 8.20478 1.94121 8.43905C1.86719 8.70352 1.86719 8.9907 1.86719 9.56505V16.8C1.86719 17.9201 1.86719 18.4801 2.08517 18.908C2.27692 19.2843 2.58288 19.5903 2.95921 19.782C3.38703 20 3.94708 20 5.06719 20H16.6672C17.7873 20 18.3473 20 18.7752 19.782C19.1515 19.5903 19.4575 19.2843 19.6492 18.908C19.8672 18.4801 19.8672 17.9201 19.8672 16.8V9.56505C19.8672 8.9907 19.8672 8.70352 19.7932 8.43905C19.7276 8.20478 19.6198 7.98444 19.4752 7.78886C19.3119 7.56806 19.0852 7.39175 18.6318 7.03913L11.8495 1.764C11.4982 1.49075 11.3225 1.35412 11.1285 1.3016C10.9574 1.25526 10.777 1.25526 10.6058 1.3016C10.4119 1.35412 10.2362 1.49075 9.88488 1.764Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Home
+              </a>
+            </Link>
+
+            <Link href="/list-detail">
+              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                <svg
+                  className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5.86719 7.8C5.86719 6.11984 5.86719 5.27976 6.19417 4.63803C6.48179 4.07354 6.94073 3.6146 7.50522 3.32698C8.14695 3 8.98703 3 10.6672 3H15.0672C16.7473 3 17.5874 3 18.2292 3.32698C18.7936 3.6146 19.2526 4.07354 19.5402 4.63803C19.8672 5.27976 19.8672 6.11984 19.8672 7.8V21L12.8672 17L5.86719 21V7.8Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Lists
+              </a>
+            </Link>
+            <Link href="/my-stories">
+              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                <svg
+                  className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+                  viewBox="0 0 25 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12.8672 21L12.7671 20.8499C12.0725 19.808 11.7252 19.287 11.2663 18.9098C10.86 18.5759 10.392 18.3254 9.88879 18.1726C9.32044 18 8.6943 18 7.44201 18H6.06719C4.94708 18 4.38703 18 3.95921 17.782C3.58288 17.5903 3.27692 17.2843 3.08517 16.908C2.86719 16.4802 2.86719 15.9201 2.86719 14.8V6.2C2.86719 5.07989 2.86719 4.51984 3.08517 4.09202C3.27692 3.71569 3.58288 3.40973 3.95921 3.21799C4.38703 3 4.94708 3 6.06719 3H6.46719C8.7074 3 9.8275 3 10.6831 3.43597C11.4358 3.81947 12.0477 4.43139 12.4312 5.18404C12.8672 6.03968 12.8672 7.15979 12.8672 9.4M12.8672 21V9.4M12.8672 21L12.9672 20.8499C13.6619 19.808 14.0092 19.287 14.4681 18.9098C14.8743 18.5759 15.3424 18.3254 15.8456 18.1726C16.4139 18 17.0401 18 18.2924 18H19.6672C20.7873 18 21.3473 18 21.7752 17.782C22.1515 17.5903 22.4575 17.2843 22.6492 16.908C22.8672 16.4802 22.8672 15.9201 22.8672 14.8V6.2C22.8672 5.07989 22.8672 4.51984 22.6492 4.09202C22.4575 3.71569 22.1515 3.40973 21.7752 3.21799C21.3473 3 20.7873 3 19.6672 3H19.2672C17.027 3 15.9069 3 15.0512 3.43597C14.2986 3.81947 13.6867 4.43139 13.3032 5.18404C12.8672 6.03968 12.8672 7.15979 12.8672 9.4"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Stories
+              </a>
+            </Link>
           </Popover.Group>
           <div className="flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 lg:w-0 gap-4">
             <button
@@ -155,9 +172,9 @@ export default function Header() {
                           </div>
                           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                             <strong className="font-semibold">
-                              İsmail Erüstün
-                            </strong>
-                            liked your
+                              {user?.name}
+                            </strong>{' '}
+                            liked your{' '}
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
                             </strong>
@@ -400,42 +417,41 @@ export default function Header() {
                 />
               </svg>
             </button>
-            <button
-              type="button"
-              className="hidden lg:inline-flex items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            >
-              <svg
-                className="w-5 h-5"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M9.99996 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61931 11.3807 7.50002 9.99996 7.50002C8.61925 7.50002 7.49996 8.61931 7.49996 10C7.49996 11.3807 8.61925 12.5 9.99996 12.5Z"
-                  stroke="currentColor"
-                  strokeWidth="1.66667"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M15.606 12.2727C15.5052 12.5012 15.4751 12.7547 15.5197 13.0005C15.5642 13.2462 15.6814 13.473 15.856 13.6515L15.9015 13.697C16.0423 13.8377 16.1541 14.0048 16.2304 14.1887C16.3066 14.3727 16.3458 14.5698 16.3458 14.769C16.3458 14.9681 16.3066 15.1652 16.2304 15.3492C16.1541 15.5331 16.0423 15.7002 15.9015 15.8409C15.7608 15.9818 15.5937 16.0936 15.4097 16.1698C15.2258 16.2461 15.0286 16.2853 14.8295 16.2853C14.6304 16.2853 14.4332 16.2461 14.2493 16.1698C14.0654 16.0936 13.8983 15.9818 13.7575 15.8409L13.7121 15.7955C13.5335 15.6208 13.3068 15.5037 13.061 15.4591C12.8153 15.4145 12.5618 15.4446 12.3333 15.5455C12.1092 15.6415 11.9181 15.801 11.7835 16.0042C11.6489 16.2075 11.5767 16.4456 11.5757 16.6894V16.8182C11.5757 17.22 11.4161 17.6054 11.1319 17.8896C10.8478 18.1737 10.4624 18.3334 10.0606 18.3334C9.65872 18.3334 9.27334 18.1737 8.98919 17.8896C8.70505 17.6054 8.54541 17.22 8.54541 16.8182V16.75C8.53955 16.4993 8.45838 16.2561 8.31247 16.0521C8.16655 15.8481 7.96264 15.6927 7.72723 15.6061C7.49874 15.5052 7.24527 15.4752 6.99951 15.5197C6.75376 15.5643 6.52699 15.6814 6.34844 15.8561L6.30299 15.9015C6.16227 16.0424 5.99517 16.1542 5.81123 16.2304C5.6273 16.3067 5.43013 16.3459 5.23102 16.3459C5.03191 16.3459 4.83474 16.3067 4.65081 16.2304C4.46687 16.1542 4.29977 16.0424 4.15905 15.9015C4.01818 15.7608 3.90642 15.5937 3.83017 15.4098C3.75392 15.2258 3.71468 15.0287 3.71468 14.8296C3.71468 14.6305 3.75392 14.4333 3.83017 14.2494C3.90642 14.0654 4.01818 13.8983 4.15905 13.7576L4.2045 13.7121C4.37915 13.5336 4.49631 13.3068 4.54087 13.0611C4.58543 12.8153 4.55535 12.5619 4.4545 12.3334C4.35847 12.1093 4.19902 11.9182 3.99577 11.7836C3.79252 11.649 3.55434 11.5768 3.31057 11.5758H3.18178C2.77993 11.5758 2.39455 11.4161 2.1104 11.132C1.82626 10.8479 1.66663 10.4625 1.66663 10.0606C1.66663 9.65878 1.82626 9.2734 2.1104 8.98925C2.39455 8.70511 2.77993 8.54548 3.18178 8.54548H3.24996C3.50071 8.53961 3.7439 8.45844 3.94791 8.31253C4.15192 8.16661 4.30732 7.9627 4.3939 7.72729C4.49474 7.4988 4.52483 7.24533 4.48027 6.99957C4.43571 6.75382 4.31855 6.52705 4.1439 6.34851L4.09844 6.30305C3.95757 6.16233 3.84581 5.99523 3.76957 5.81129C3.69332 5.62736 3.65407 5.4302 3.65407 5.23108C3.65407 5.03197 3.69332 4.83481 3.76957 4.65087C3.84581 4.46693 3.95757 4.29983 4.09844 4.15911C4.23916 4.01824 4.40627 3.90648 4.5902 3.83023C4.77414 3.75398 4.9713 3.71474 5.17041 3.71474C5.36953 3.71474 5.56669 3.75398 5.75063 3.83023C5.93456 3.90648 6.10167 4.01824 6.24238 4.15911L6.28784 4.20457C6.46638 4.37922 6.69315 4.49637 6.93891 4.54093C7.18466 4.58549 7.43813 4.55541 7.66663 4.45457H7.72723C7.9513 4.35853 8.1424 4.19908 8.277 3.99583C8.4116 3.79258 8.48384 3.5544 8.48481 3.31063V3.18184C8.48481 2.78 8.64444 2.39461 8.92859 2.11046C9.21273 1.82632 9.59812 1.66669 9.99996 1.66669C10.4018 1.66669 10.7872 1.82632 11.0713 2.11046C11.3555 2.39461 11.5151 2.78 11.5151 3.18184V3.25002C11.5161 3.4938 11.5883 3.73197 11.7229 3.93522C11.8575 4.13847 12.0486 4.29793 12.2727 4.39396C12.5012 4.4948 12.7547 4.52489 13.0004 4.48033C13.2462 4.43577 13.4729 4.31861 13.6515 4.14396L13.6969 4.09851C13.8376 3.95763 14.0048 3.84588 14.1887 3.76963C14.3726 3.69338 14.5698 3.65413 14.7689 3.65413C14.968 3.65413 15.1652 3.69338 15.3491 3.76963C15.533 3.84588 15.7002 3.95763 15.8409 4.09851C15.9817 4.23922 16.0935 4.40633 16.1697 4.59026C16.246 4.7742 16.2852 4.97136 16.2852 5.17048C16.2852 5.36959 16.246 5.56675 16.1697 5.75069C16.0935 5.93462 15.9817 6.10173 15.8409 6.24244L15.7954 6.2879C15.6208 6.46644 15.5036 6.69321 15.459 6.93897C15.4145 7.18472 15.4446 7.43819 15.5454 7.66669V7.72729C15.6414 7.95136 15.8009 8.14246 16.0042 8.27706C16.2074 8.41166 16.4456 8.4839 16.6894 8.48487H16.8181C17.22 8.48487 17.6054 8.6445 17.8895 8.92865C18.1737 9.21279 18.3333 9.59818 18.3333 10C18.3333 10.4019 18.1737 10.7872 17.8895 11.0714C17.6054 11.3555 17.22 11.5152 16.8181 11.5152H16.75C16.5062 11.5161 16.268 11.5884 16.0648 11.723C15.8615 11.8576 15.7021 12.0487 15.606 12.2727Z"
-                  stroke="currentColor"
-                  strokeWidth="1.66667"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            <Link href="/settings">
+              <a className="hidden lg:inline-flex items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                <svg
+                  className="w-5 h-5"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.99996 12.5C11.3807 12.5 12.5 11.3807 12.5 10C12.5 8.61931 11.3807 7.50002 9.99996 7.50002C8.61925 7.50002 7.49996 8.61931 7.49996 10C7.49996 11.3807 8.61925 12.5 9.99996 12.5Z"
+                    stroke="currentColor"
+                    strokeWidth="1.66667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M15.606 12.2727C15.5052 12.5012 15.4751 12.7547 15.5197 13.0005C15.5642 13.2462 15.6814 13.473 15.856 13.6515L15.9015 13.697C16.0423 13.8377 16.1541 14.0048 16.2304 14.1887C16.3066 14.3727 16.3458 14.5698 16.3458 14.769C16.3458 14.9681 16.3066 15.1652 16.2304 15.3492C16.1541 15.5331 16.0423 15.7002 15.9015 15.8409C15.7608 15.9818 15.5937 16.0936 15.4097 16.1698C15.2258 16.2461 15.0286 16.2853 14.8295 16.2853C14.6304 16.2853 14.4332 16.2461 14.2493 16.1698C14.0654 16.0936 13.8983 15.9818 13.7575 15.8409L13.7121 15.7955C13.5335 15.6208 13.3068 15.5037 13.061 15.4591C12.8153 15.4145 12.5618 15.4446 12.3333 15.5455C12.1092 15.6415 11.9181 15.801 11.7835 16.0042C11.6489 16.2075 11.5767 16.4456 11.5757 16.6894V16.8182C11.5757 17.22 11.4161 17.6054 11.1319 17.8896C10.8478 18.1737 10.4624 18.3334 10.0606 18.3334C9.65872 18.3334 9.27334 18.1737 8.98919 17.8896C8.70505 17.6054 8.54541 17.22 8.54541 16.8182V16.75C8.53955 16.4993 8.45838 16.2561 8.31247 16.0521C8.16655 15.8481 7.96264 15.6927 7.72723 15.6061C7.49874 15.5052 7.24527 15.4752 6.99951 15.5197C6.75376 15.5643 6.52699 15.6814 6.34844 15.8561L6.30299 15.9015C6.16227 16.0424 5.99517 16.1542 5.81123 16.2304C5.6273 16.3067 5.43013 16.3459 5.23102 16.3459C5.03191 16.3459 4.83474 16.3067 4.65081 16.2304C4.46687 16.1542 4.29977 16.0424 4.15905 15.9015C4.01818 15.7608 3.90642 15.5937 3.83017 15.4098C3.75392 15.2258 3.71468 15.0287 3.71468 14.8296C3.71468 14.6305 3.75392 14.4333 3.83017 14.2494C3.90642 14.0654 4.01818 13.8983 4.15905 13.7576L4.2045 13.7121C4.37915 13.5336 4.49631 13.3068 4.54087 13.0611C4.58543 12.8153 4.55535 12.5619 4.4545 12.3334C4.35847 12.1093 4.19902 11.9182 3.99577 11.7836C3.79252 11.649 3.55434 11.5768 3.31057 11.5758H3.18178C2.77993 11.5758 2.39455 11.4161 2.1104 11.132C1.82626 10.8479 1.66663 10.4625 1.66663 10.0606C1.66663 9.65878 1.82626 9.2734 2.1104 8.98925C2.39455 8.70511 2.77993 8.54548 3.18178 8.54548H3.24996C3.50071 8.53961 3.7439 8.45844 3.94791 8.31253C4.15192 8.16661 4.30732 7.9627 4.3939 7.72729C4.49474 7.4988 4.52483 7.24533 4.48027 6.99957C4.43571 6.75382 4.31855 6.52705 4.1439 6.34851L4.09844 6.30305C3.95757 6.16233 3.84581 5.99523 3.76957 5.81129C3.69332 5.62736 3.65407 5.4302 3.65407 5.23108C3.65407 5.03197 3.69332 4.83481 3.76957 4.65087C3.84581 4.46693 3.95757 4.29983 4.09844 4.15911C4.23916 4.01824 4.40627 3.90648 4.5902 3.83023C4.77414 3.75398 4.9713 3.71474 5.17041 3.71474C5.36953 3.71474 5.56669 3.75398 5.75063 3.83023C5.93456 3.90648 6.10167 4.01824 6.24238 4.15911L6.28784 4.20457C6.46638 4.37922 6.69315 4.49637 6.93891 4.54093C7.18466 4.58549 7.43813 4.55541 7.66663 4.45457H7.72723C7.9513 4.35853 8.1424 4.19908 8.277 3.99583C8.4116 3.79258 8.48384 3.5544 8.48481 3.31063V3.18184C8.48481 2.78 8.64444 2.39461 8.92859 2.11046C9.21273 1.82632 9.59812 1.66669 9.99996 1.66669C10.4018 1.66669 10.7872 1.82632 11.0713 2.11046C11.3555 2.39461 11.5151 2.78 11.5151 3.18184V3.25002C11.5161 3.4938 11.5883 3.73197 11.7229 3.93522C11.8575 4.13847 12.0486 4.29793 12.2727 4.39396C12.5012 4.4948 12.7547 4.52489 13.0004 4.48033C13.2462 4.43577 13.4729 4.31861 13.6515 4.14396L13.6969 4.09851C13.8376 3.95763 14.0048 3.84588 14.1887 3.76963C14.3726 3.69338 14.5698 3.65413 14.7689 3.65413C14.968 3.65413 15.1652 3.69338 15.3491 3.76963C15.533 3.84588 15.7002 3.95763 15.8409 4.09851C15.9817 4.23922 16.0935 4.40633 16.1697 4.59026C16.246 4.7742 16.2852 4.97136 16.2852 5.17048C16.2852 5.36959 16.246 5.56675 16.1697 5.75069C16.0935 5.93462 15.9817 6.10173 15.8409 6.24244L15.7954 6.2879C15.6208 6.46644 15.5036 6.69321 15.459 6.93897C15.4145 7.18472 15.4446 7.43819 15.5454 7.66669V7.72729C15.6414 7.95136 15.8009 8.14246 16.0042 8.27706C16.2074 8.41166 16.4456 8.4839 16.6894 8.48487H16.8181C17.22 8.48487 17.6054 8.6445 17.8895 8.92865C18.1737 9.21279 18.3333 9.59818 18.3333 10C18.3333 10.4019 18.1737 10.7872 17.8895 11.0714C17.6054 11.3555 17.22 11.5152 16.8181 11.5152H16.75C16.5062 11.5161 16.268 11.5884 16.0648 11.723C15.8615 11.8576 15.7021 12.0487 15.606 12.2727Z"
+                    stroke="currentColor"
+                    strokeWidth="1.66667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </a>
+            </Link>
             {/* Desktop Profile Button */}
             <Menu
               as="div"
               className="relative hidden lg:inline-flex items-center"
             >
               <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
-                <img
+                <Avatar
                   className="inline-block w-10 h-10 rounded-full"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt=""
+                  src={user?.profilePicture}
+                  alt={user?.name}
                 />
               </Menu.Button>
 
@@ -450,27 +466,26 @@ export default function Header() {
               >
                 <Menu.Items className="origin-top-right absolute top-10 right-0 mt-2 w-56 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50">
                   <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
-                    <img
+                    <Avatar
                       className="h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt="Olivia Rhye"
+                      src={user?.profilePicture}
+                      alt={user?.name}
                     />
                     <div>
                       <p className="text-slate-700 text-sm font-medium tracking-sm">
-                        Olivia Rhye
+                        {user?.name}
                       </p>
                       <p className="text-slate-500 text-sm tracking-sm">
-                        oliviarhye@rhye.com
+                        {user?.email}
                       </p>
                     </div>
                   </div>
                   <div className="divide-y divide-gray-200">
                     <div>
-                      <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                        >
+                      <Menu.Item
+                        onClick={() => router.push(`/${user?.username}/about`)}
+                      >
+                        <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                           <svg
                             className="w-4 h-4 text-slate-500"
                             viewBox="0 0 16 16"
@@ -488,11 +503,8 @@ export default function Header() {
                           View profile
                         </button>
                       </Menu.Item>
-                      <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                        >
+                      <Menu.Item onClick={() => router.push('/settings')}>
+                        <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                           <svg
                             className="w-4 h-4 text-slate-500"
                             viewBox="0 0 16 16"
@@ -518,9 +530,9 @@ export default function Header() {
                         </button>
                       </Menu.Item>
                       <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
+                        <a
+                          href="#"
+                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                         >
                           <svg
                             className="w-4 h-4 text-slate-500"
@@ -544,11 +556,8 @@ export default function Header() {
                       <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
                         Publications
                       </span>
-                      <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                        >
+                      <Menu.Item onClick={() => router.push('/publication/Altogic')}>
+                        <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                           <svg
                             width="16"
                             height="17"
@@ -589,9 +598,9 @@ export default function Header() {
                         </button>
                       </Menu.Item>
                       <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
+                        <a
+                          href="#"
+                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                         >
                           <svg
                             className="w-4 h-4 text-slate-500"
@@ -610,9 +619,9 @@ export default function Header() {
                     </div>
                     <div>
                       <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
+                        <a
+                          href="#"
+                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                         >
                           <svg
                             className="w-4 h-4 text-slate-500"
@@ -632,9 +641,9 @@ export default function Header() {
                         </button>
                       </Menu.Item>
                       <Menu.Item>
-                        <button
-                          type="button"
-                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
+                        <Button
+                          className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+                          onClick={logout}
                         >
                           <svg
                             className="w-4 h-4 text-slate-500"
@@ -651,7 +660,7 @@ export default function Header() {
                             />
                           </svg>
                           Logout
-                        </button>
+                        </Button>
                       </Menu.Item>
                     </div>
                   </div>
@@ -789,26 +798,25 @@ export default function Header() {
               <div className="divide-y divide-gray-200">
                 <div>
                   <Menu.Item>
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                    >
-                      <svg
-                        className="w-4 h-4 text-slate-500"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M13.3333 14C13.3333 13.0696 13.3333 12.6044 13.2185 12.2259C12.9599 11.3736 12.293 10.7067 11.4407 10.4482C11.0622 10.3333 10.597 10.3333 9.66662 10.3333H6.3333C5.40292 10.3333 4.93773 10.3333 4.5592 10.4482C3.70693 10.7067 3.03999 11.3736 2.78145 12.2259C2.66663 12.6044 2.66663 13.0696 2.66663 14M11 5C11 6.65685 9.65681 8 7.99996 8C6.3431 8 4.99996 6.65685 4.99996 5C4.99996 3.34315 6.3431 2 7.99996 2C9.65681 2 11 3.34315 11 5Z"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      View profile
-                    </button>
+                    <Link href={`/${user?.username}/about`}>
+                      <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                        <svg
+                          className="w-4 h-4 text-slate-500"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M13.3333 14C13.3333 13.0696 13.3333 12.6044 13.2185 12.2259C12.9599 11.3736 12.293 10.7067 11.4407 10.4482C11.0622 10.3333 10.597 10.3333 9.66662 10.3333H6.3333C5.40292 10.3333 4.93773 10.3333 4.5592 10.4482C3.70693 10.7067 3.03999 11.3736 2.78145 12.2259C2.66663 12.6044 2.66663 13.0696 2.66663 14M11 5C11 6.65685 9.65681 8 7.99996 8C6.3431 8 4.99996 6.65685 4.99996 5C4.99996 3.34315 6.3431 2 7.99996 2C9.65681 2 11 3.34315 11 5Z"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        View profile
+                      </a>
+                    </Link>
                   </Menu.Item>
                   <Menu.Item>
                     <button
@@ -867,48 +875,47 @@ export default function Header() {
                     Publications
                   </span>
                   <Menu.Item>
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                    >
-                      <svg
-                        width="16"
-                        height="17"
-                        viewBox="0 0 16 17"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M10.635 10.2404L9.29624 7.92152L9.22528 7.79865L9.03811 7.47424L8.85078 7.79865L8.77982 7.92152L6.38773 12.0647L6.36398 12.1057L6.30164 12.2138L6.36413 12.322L6.38773 12.3628L7.72654 14.6817L7.79735 14.8047L7.98467 15.1289L8.172 14.8047L8.24296 14.6817L10.635 10.5385L10.6587 10.4974L10.7211 10.3894L10.6587 10.2812L10.635 10.2404Z"
-                          fill="#84D5F7"
-                        />
-                        <path
-                          d="M8.54305 7.65092L8.73038 7.32666H8.35588H8.21395H3.4145H3.27257H2.89807L3.08539 7.65092L3.15636 7.77394L5.55601 11.9303L5.62698 12.0532L5.81415 12.3776L6.00147 12.0532L6.07244 11.9303L8.47209 7.77394L8.54305 7.65092Z"
-                          fill="#438CCB"
-                        />
-                        <path
-                          d="M3.44834 6.98637H5.84799H5.98992H6.36442L6.17709 6.66196L6.10613 6.53909L4.90638 4.46083L4.83541 4.33796L4.64809 4.01355L4.46092 4.33796L4.38995 4.46083L3.19005 6.53909L3.11909 6.66196L2.93176 6.98637H3.30641H3.44834Z"
-                          fill="#84D5F7"
-                        />
-                        <path
-                          d="M5.60966 4.99852L6.67126 6.83726L6.69501 6.87826L6.75735 6.98645H6.88219H6.92955H8.03715H8.08436H8.20919L8.27168 6.87826L8.29529 6.83741L9.62032 4.54232L9.64408 4.50131L9.70642 4.39327L9.64408 4.28509L9.62032 4.24408L8.00492 1.44618L7.93395 1.32316L7.74663 0.998901L7.55946 1.32316L7.48849 1.44618L5.60966 4.70029L5.5859 4.74129L5.52356 4.84948L5.5859 4.95752L5.60966 4.99852Z"
-                          fill="#55A6D7"
-                        />
-                        <path
-                          d="M12.8433 7.32666H12.7013H9.86228H9.72035H9.3457L9.53303 7.65092L9.60399 7.77394L11.0236 10.2326L11.0946 10.3555L11.2817 10.6799L11.4691 10.3555L11.54 10.2326L12.9595 7.77394L13.0304 7.65092L13.2178 7.32666H12.8433Z"
-                          fill="#55A6D7"
-                        />
-                        <path
-                          d="M8.78947 6.66199L8.60229 6.9864H8.97679H9.11872H12.6674H12.8094H13.184L12.9967 6.66199L12.9257 6.53912L11.1513 3.46568L11.0803 3.34282L10.8932 3.01855L10.7058 3.34282L10.6349 3.46568L8.86043 6.53912L8.78947 6.66199Z"
-                          fill="#62BFEC"
-                        />
-                        <path
-                          d="M10.893 2.01971L9.90302 3.73467L7.74667 0L5.44749 3.98237L5.32644 4.19088L4.64736 3.01488L2.23999 7.18639L5.81412 13.3766L6.10509 12.8725L7.98469 16.128L10.9177 11.0482L11.2819 11.679L13.8759 7.18639L10.893 2.01971ZM12.8217 7.69389L11.2818 10.3617L9.62143 7.48675H12.9421L12.8211 7.69525L12.8217 7.69389ZM3.20748 6.82733L3.32853 6.61882L4.64872 4.33205L6.08936 6.82733H3.20748ZM8.11739 6.82733H6.84924L5.70745 4.84954L7.74667 1.31732L9.52277 4.39333L8.11739 6.82733ZM8.45466 7.48599L5.81412 12.0594L3.17373 7.48599H8.45466ZM9.03812 7.7927L10.5373 10.3895L7.98469 14.8107L6.48549 12.214L9.03812 7.7927ZM10.7728 3.54538L10.8938 3.33687L12.9084 6.82733H8.87788L10.7728 3.54538Z"
-                          fill="#002C3B"
-                        />
-                      </svg>
-                      Altogic
-                    </button>
+                    <Link href="/publications">
+                      <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm">
+                        <svg
+                          width="16"
+                          height="17"
+                          viewBox="0 0 16 17"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M10.635 10.2404L9.29624 7.92152L9.22528 7.79865L9.03811 7.47424L8.85078 7.79865L8.77982 7.92152L6.38773 12.0647L6.36398 12.1057L6.30164 12.2138L6.36413 12.322L6.38773 12.3628L7.72654 14.6817L7.79735 14.8047L7.98467 15.1289L8.172 14.8047L8.24296 14.6817L10.635 10.5385L10.6587 10.4974L10.7211 10.3894L10.6587 10.2812L10.635 10.2404Z"
+                            fill="#84D5F7"
+                          />
+                          <path
+                            d="M8.54305 7.65092L8.73038 7.32666H8.35588H8.21395H3.4145H3.27257H2.89807L3.08539 7.65092L3.15636 7.77394L5.55601 11.9303L5.62698 12.0532L5.81415 12.3776L6.00147 12.0532L6.07244 11.9303L8.47209 7.77394L8.54305 7.65092Z"
+                            fill="#438CCB"
+                          />
+                          <path
+                            d="M3.44834 6.98637H5.84799H5.98992H6.36442L6.17709 6.66196L6.10613 6.53909L4.90638 4.46083L4.83541 4.33796L4.64809 4.01355L4.46092 4.33796L4.38995 4.46083L3.19005 6.53909L3.11909 6.66196L2.93176 6.98637H3.30641H3.44834Z"
+                            fill="#84D5F7"
+                          />
+                          <path
+                            d="M5.60966 4.99852L6.67126 6.83726L6.69501 6.87826L6.75735 6.98645H6.88219H6.92955H8.03715H8.08436H8.20919L8.27168 6.87826L8.29529 6.83741L9.62032 4.54232L9.64408 4.50131L9.70642 4.39327L9.64408 4.28509L9.62032 4.24408L8.00492 1.44618L7.93395 1.32316L7.74663 0.998901L7.55946 1.32316L7.48849 1.44618L5.60966 4.70029L5.5859 4.74129L5.52356 4.84948L5.5859 4.95752L5.60966 4.99852Z"
+                            fill="#55A6D7"
+                          />
+                          <path
+                            d="M12.8433 7.32666H12.7013H9.86228H9.72035H9.3457L9.53303 7.65092L9.60399 7.77394L11.0236 10.2326L11.0946 10.3555L11.2817 10.6799L11.4691 10.3555L11.54 10.2326L12.9595 7.77394L13.0304 7.65092L13.2178 7.32666H12.8433Z"
+                            fill="#55A6D7"
+                          />
+                          <path
+                            d="M8.78947 6.66199L8.60229 6.9864H8.97679H9.11872H12.6674H12.8094H13.184L12.9967 6.66199L12.9257 6.53912L11.1513 3.46568L11.0803 3.34282L10.8932 3.01855L10.7058 3.34282L10.6349 3.46568L8.86043 6.53912L8.78947 6.66199Z"
+                            fill="#62BFEC"
+                          />
+                          <path
+                            d="M10.893 2.01971L9.90302 3.73467L7.74667 0L5.44749 3.98237L5.32644 4.19088L4.64736 3.01488L2.23999 7.18639L5.81412 13.3766L6.10509 12.8725L7.98469 16.128L10.9177 11.0482L11.2819 11.679L13.8759 7.18639L10.893 2.01971ZM12.8217 7.69389L11.2818 10.3617L9.62143 7.48675H12.9421L12.8211 7.69525L12.8217 7.69389ZM3.20748 6.82733L3.32853 6.61882L4.64872 4.33205L6.08936 6.82733H3.20748ZM8.11739 6.82733H6.84924L5.70745 4.84954L7.74667 1.31732L9.52277 4.39333L8.11739 6.82733ZM8.45466 7.48599L5.81412 12.0594L3.17373 7.48599H8.45466ZM9.03812 7.7927L10.5373 10.3895L7.98469 14.8107L6.48549 12.214L9.03812 7.7927ZM10.7728 3.54538L10.8938 3.33687L12.9084 6.82733H8.87788L10.7728 3.54538Z"
+                            fill="#002C3B"
+                          />
+                        </svg>
+                        Altogic
+                      </a>
+                    </Link>
                   </Menu.Item>
                   <Menu.Item>
                     <button
@@ -932,48 +939,46 @@ export default function Header() {
                 </div>
                 <div>
                   <Menu.Item>
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                    >
-                      <svg
-                        className="w-4 h-4 text-slate-500"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6.06004 6.00004C6.21678 5.55449 6.52614 5.17878 6.93334 4.93946C7.34055 4.70015 7.8193 4.61267 8.28483 4.69252C8.75035 4.77236 9.17259 5.01439 9.47676 5.37573C9.78093 5.73706 9.94741 6.19439 9.94671 6.66671C9.94671 8.00004 7.94671 8.66671 7.94671 8.66671M8.00004 11.3334H8.00671M14.6667 8.00004C14.6667 11.6819 11.6819 14.6667 8.00004 14.6667C4.31814 14.6667 1.33337 11.6819 1.33337 8.00004C1.33337 4.31814 4.31814 1.33337 8.00004 1.33337C11.6819 1.33337 14.6667 4.31814 14.6667 8.00004Z"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      Help
-                    </button>
+                    <Link href="/write-a-story">
+                      <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm">
+                        <svg
+                          className="w-4 h-4 text-slate-500"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6.06004 6.00004C6.21678 5.55449 6.52614 5.17878 6.93334 4.93946C7.34055 4.70015 7.8193 4.61267 8.28483 4.69252C8.75035 4.77236 9.17259 5.01439 9.47676 5.37573C9.78093 5.73706 9.94741 6.19439 9.94671 6.66671C9.94671 8.00004 7.94671 8.66671 7.94671 8.66671M8.00004 11.3334H8.00671M14.6667 8.00004C14.6667 11.6819 11.6819 14.6667 8.00004 14.6667C4.31814 14.6667 1.33337 11.6819 1.33337 8.00004C1.33337 4.31814 4.31814 1.33337 8.00004 1.33337C11.6819 1.33337 14.6667 4.31814 14.6667 8.00004Z"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        Help
+                      </a>
+                    </Link>
                   </Menu.Item>
                   <Menu.Item>
-                    <button
-                      type="button"
-                      className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
-                    >
-                      <svg
-                        className="w-4 h-4 text-slate-500"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M10.6667 11.3333L14 8M14 8L10.6667 4.66667M14 8H6M6 2H5.2C4.0799 2 3.51984 2 3.09202 2.21799C2.7157 2.40973 2.40973 2.71569 2.21799 3.09202C2 3.51984 2 4.07989 2 5.2V10.8C2 11.9201 2 12.4802 2.21799 12.908C2.40973 13.2843 2.71569 13.5903 3.09202 13.782C3.51984 14 4.0799 14 5.2 14H6"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                      Logout
-                    </button>
+                    <Link href="/write-a-story">
+                      <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm">
+                        <svg
+                          className="w-4 h-4 text-slate-500"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M10.6667 11.3333L14 8M14 8L10.6667 4.66667M14 8H6M6 2H5.2C4.0799 2 3.51984 2 3.09202 2.21799C2.7157 2.40973 2.40973 2.71569 2.21799 3.09202C2 3.51984 2 4.07989 2 5.2V10.8C2 11.9201 2 12.4802 2.21799 12.908C2.40973 13.2843 2.71569 13.5903 3.09202 13.782C3.51984 14 4.0799 14 5.2 14H6"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        Logout
+                      </a>
+                    </Link>
                   </Menu.Item>
                 </div>
               </div>

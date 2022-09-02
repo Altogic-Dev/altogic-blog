@@ -1,7 +1,8 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 import PostCard from '../components/PostCard';
 import PublicationsPostCard from '../components/PublicationsDraftCard';
 
@@ -173,11 +174,11 @@ export default function PublicationsStoryPagePublished() {
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 my-8 md:my-[60px]">
-            {selectedIndex == 0 ? (
+            {selectedIndex === 0 ? (
               <h1 className="text-slate-700 mb-4 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                 HiThemes published
               </h1>
-            ) : selectedIndex == 1 ? (
+            ) : selectedIndex === 1 ? (
               <h1 className="text-slate-700 mb-4 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                 HiThemes draft
               </h1>
@@ -217,7 +218,7 @@ export default function PublicationsStoryPagePublished() {
                 <span
                   className={classNames(
                     'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                    selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
+                    selectedIndex === 0 ? 'bg-purple-50 text-purple-900' : ''
                   )}
                 >
                   45
@@ -237,7 +238,7 @@ export default function PublicationsStoryPagePublished() {
                 <span
                   className={classNames(
                     'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                    selectedIndex == 0 ? '' : 'bg-purple-50 text-purple-900'
+                    selectedIndex === 0 ? '' : 'bg-purple-50 text-purple-900'
                   )}
                 >
                   3
@@ -257,7 +258,7 @@ export default function PublicationsStoryPagePublished() {
                 <span
                   className={classNames(
                     'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                    selectedIndex == 0 ? '' : 'bg-purple-50 text-purple-900'
+                    selectedIndex === 0 ? '' : 'bg-purple-50 text-purple-900'
                   )}
                 >
                   3
@@ -269,8 +270,8 @@ export default function PublicationsStoryPagePublished() {
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
-                    noActiveBookmark={true}
-                    normalMenu={true}
+                    noActiveBookmark
+                    normalMenu
                     authorUrl={post.author.href}
                     authorName={post.author.name}
                     authorImage={post.author.image}
@@ -303,8 +304,8 @@ export default function PublicationsStoryPagePublished() {
                 {posts.map((post) => (
                   <PostCard
                     key={post.id}
-                    noActiveBookmark={true}
-                    normalMenu={true}
+                    noActiveBookmark
+                    normalMenu
                     authorUrl={post.author.href}
                     authorName={post.author.name}
                     authorImage={post.author.image}

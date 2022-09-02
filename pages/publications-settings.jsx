@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import { PlusIcon, XIcon } from '@heroicons/react/solid';
-import Layout from '../layouts/Layout';
+import Layout from '@/layout/Layout';
 import Sections from '../components/Sections';
 
 function classNames(...classes) {

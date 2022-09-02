@@ -1,5 +1,8 @@
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
+import Button from './basic/button';
+import 'react-quill/dist/quill.snow.css';
+// import { Quill } from "react-quill";
 
 // Custom Undo button icon component for Quill editor. You can import it directly
 // from 'quill/assets/icons/undo.svg' but I found that a number of loaders do not
@@ -63,8 +66,6 @@ export const formats = [
   'underline',
   'align',
   'strike',
-  'script',
-  'blockquote',
   'background',
   'list',
   'bullet',
@@ -72,53 +73,39 @@ export const formats = [
   'link',
   'image',
   'color',
-  'code-block',
 ];
 
 // Quill Toolbar component
 export function QuillToolbar() {
   return (
-    <div id="toolbar" className="bg-slate-50 mb-2">
+    <div id="toolbar" className="border-none mb-2">
       <span className="ql-formats">
-        <button className="ql-bold" type="button" />
-        <button className="ql-italic" type="button" />
-        <button className="ql-underline" type="button" />
-        <button className="ql-strike" type="button" />
+        <Button className="ql-bold" />
+        <Button className="ql-italic" />
+        <Button className="ql-underline" />
+        <Button className="ql-strike" />
       </span>
       <span className="ql-formats">
-        <button className="ql-list" value="ordered" type="button" />
-        <button className="ql-list" value="bullet" type="button" />
-        <button className="ql-indent" value="-1" type="button" />
-        <button className="ql-indent" value="+1" type="button" />
+        <Button className="ql-list" value="ordered" />
+        <Button className="ql-list" value="bullet" />
+        <Button className="ql-indent" value="-1" />
+        <Button className="ql-indent" value="+1" />
       </span>
       <span className="ql-formats">
-        <button className="ql-script" value="super" type="button" />
-        <button className="ql-script" value="sub" type="button" />
-        <button className="ql-blockquote" type="button" />
-        <button className="ql-direction" type="button" />
+        <select className="ql-align" />
+        <select className="ql-color" />
+        <select className="ql-background" />
       </span>
       <span className="ql-formats">
-        <select className="ql-align" type="button" />
-        <select className="ql-color" type="button" />
-        <select className="ql-background" type="button" />
+        <Button className="ql-link" />
       </span>
       <span className="ql-formats">
-        <button className="ql-link" type="button" />
-        <button className="ql-image" type="button" />
-        <button className="ql-video" type="button" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-formula" type="button" />
-        <button className="ql-code-block" type="button" />
-        <button className="ql-clean" type="button" />
-      </span>
-      <span className="ql-formats">
-        <button className="ql-undo" type="button">
+        <Button className="ql-undo">
           <CustomUndo />
-        </button>
-        <button className="ql-redo" type="button">
+        </Button>
+        <Button className="ql-redo">
           <CustomRedo />
-        </button>
+        </Button>
       </span>
     </div>
   );

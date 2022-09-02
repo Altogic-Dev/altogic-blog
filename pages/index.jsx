@@ -1,134 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
+<<<<<<< HEAD
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../layouts/Layout';
 import PostCard from '../components/PostCard';
 import Sidebar from '../layouts/Sidebar';
 import { authActions } from '../redux/auth/authSlice';
+=======
+import { reportActions } from '@/redux/report/reportSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { storyActions } from '@/redux/story/storySlice';
+import { DateTime } from 'luxon';
+>>>>>>> dev
 
-const posts = [
-  {
-    id: 0,
-    href: '/post/first-post',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/test',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 1,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Money',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 2,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'App',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 3,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Art',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 4,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Mindfulness',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 5,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-];
+import _ from 'lodash';
+import { authActions } from '@/redux/auth/authSlice';
+import YourTopics from '@/components/general/YourTopics';
+import { useDispatch, useSelector } from 'react-redux';
+import ListObserver from '@/components/ListObserver';
+import Layout from '../layout/Layout';
+import PostCard from '../components/PostCard';
+import Sidebar from '../layout/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -136,12 +29,66 @@ function classNames(...classes) {
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [followingListPage, setFollowingListPage] = useState(1);
+  const [recommendedListPage, setRecommendedListPage] = useState(1);
+
+  const followingStories = useSelector((state) => state.story.followingStories);
+  const followingStoriesInfo = useSelector(
+    (state) => state.story.followingStoriesInfo
+  );
+  const recommendedStories = useSelector(
+    (state) => state.story.recommendedStories
+  );
+  const recommendedStoriesInfo = useSelector(
+    (state) => state.story.recommendedStoriesInfo
+  );
+
+  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
+
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => state.auth.isLoading);
-  console.log({ isLoading });
+
+  const getFollowingStories = (page) => {
+    dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
+  };
+  const getRecommendedStories = (page) => {
+    dispatch(storyActions.getRecommendedStoriesRequest({ page }));
+  };
+
+  const handleFollowingEndOfList = () => {
+    if (
+      _.isNil(followingStoriesInfo) ||
+      followingStoriesInfo.currentPage < followingStoriesInfo.totalPages
+    ) {
+      setFollowingListPage((prev) => prev + 1);
+    }
+  };
+
+  const handleRecommendedEndOfList = () => {
+    if (
+      _.isNil(recommendedStoriesInfo) ||
+      recommendedStoriesInfo.currentPage < recommendedStoriesInfo.totalPages
+    ) {
+      setRecommendedListPage((prev) => prev + 1);
+    }
+  };
+
   useEffect(() => {
-    dispatch(authActions.fetchDataRequest());
-  }, []);
+    getFollowingStories(followingListPage);
+  }, [followingListPage]);
+
+  useEffect(() => {
+    if (selectedIndex !== 0) getRecommendedStories(recommendedListPage);
+  }, [recommendedListPage]);
+
+  useEffect(() => {
+    if (
+      selectedIndex === 1 &&
+      _.isNil(recommendedStories) &&
+      recommendedListPage === 1
+    ) {
+      getRecommendedStories(followingListPage);
+    }
+  }, [selectedIndex]);
 
   return (
     <div>
@@ -154,6 +101,7 @@ export default function Home() {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
+              <YourTopics />
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
@@ -170,7 +118,7 @@ export default function Home() {
                     }
                   >
                     Your Following
-                    <span
+                    {/* <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
                         selectedIndex === 0
@@ -179,7 +127,7 @@ export default function Home() {
                       )}
                     >
                       8
-                    </span>
+                    </span> */}
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -196,25 +144,90 @@ export default function Home() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))}
+                    {!_.isNil(followingStories) && (
+                      <ListObserver onEnd={handleFollowingEndOfList}>
+                        {_.map(followingStories, (story) => (
+                          <PostCard
+                            key={story._id}
+                            noActiveBookmark
+                            normalMenu
+                            authorUrl={`/${story.username}`}
+                            authorName={story.username}
+                            authorImage={story.userProfilePicture}
+                            storyUrl={`/story/${story.storySlug}`}
+                            timeAgo={DateTime.fromISO(
+                              story.createdAt
+                            ).toRelative()}
+                            title={story.title}
+                            infoText={story.excerpt}
+                            badgeUrl="badgeUrl"
+                            badgeName={_.first(story.categoryNames)}
+                            min={story.estimatedReadingTime}
+                            images={_.first(story.storyImages)}
+                            actionMenu
+                            optionButtons={{
+                              unfollow: () =>
+                                dispatch(
+                                  followerConnectionActions.unfollowRequest({
+                                    userId,
+                                    followingUserId: story.user,
+                                  })
+                                ),
+                              report: () =>
+                                dispatch(
+                                  reportActions.reportStoryRequest({
+                                    userId,
+                                    storyId: story._id,
+                                    reportedUserId: story.user,
+                                  })
+                                ),
+                            }}
+                          />
+                        ))}
+                      </ListObserver>
+                    )}
+                  </Tab.Panel>
+
+                  <Tab.Panel className="divide-y divide-gray-200">
+                    {!_.isNil(recommendedStories) && (
+                      <ListObserver onEnd={handleRecommendedEndOfList}>
+                        {_.map(recommendedStories, (story) => (
+                          <PostCard
+                            key={story._id}
+                            noActiveBookmark
+                            normalMenu
+                            authorUrl={`/${story.username}`}
+                            authorName={story.username}
+                            authorImage={story.userProfilePicture}
+                            storyUrl={`/story/${story.storySlug}`}
+                            timeAgo={DateTime.fromISO(
+                              story.createdAt
+                            ).toRelative()}
+                            title={story.title}
+                            infoText={story.excerpt}
+                            badgeUrl="badgeUrl"
+                            badgeName={_.first(story.categoryNames)}
+                            min={story.estimatedReadingTime}
+                            images={_.first(story.storyImages)}
+                            actionMenu
+                            optionButtons={{
+                              mute: () =>
+                                dispatch(
+                                  authActions.muteAuthorRequest(story.user)
+                                ),
+                              report: () =>
+                                dispatch(
+                                  reportActions.reportStoryRequest({
+                                    userId,
+                                    storyId: story._id,
+                                    reportedUserId: story.user,
+                                  })
+                                ),
+                            }}
+                          />
+                        ))}
+                      </ListObserver>
+                    )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
@@ -223,7 +236,7 @@ export default function Home() {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 storiesYouFollow
-                whoTheFollow
+                whoToFollow
                 popularTopics
                 popularStories
               />

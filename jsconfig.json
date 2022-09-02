@@ -3,9 +3,9 @@
     "baseUrl": ".",
     "paths": {
       "@/components/*": ["components/*"],
-      "@/constants/*": ["constants/*"],
+      "@/constants": ["constants"],
       "@/hooks/*": ["hooks/*"],
-      "@/layouts/*": ["layouts/*"],
+      "@/layout/*": ["layout/*"],
       "@/services/*": ["services/*"],
       "@/styles/*": ["styles/*"],
       "@/utils/*": ["utils/*"],

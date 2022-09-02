@@ -1,12 +1,9 @@
 import React from 'react';
 import Head from 'next/head';
-import Layout from '../layouts/Layout';
-import StatsCard from '../components/StatsCard';
-import {
-  ArrowNarrowLeftIcon,
-  ArrowNarrowRightIcon,
-} from '@heroicons/react/solid';
 import dynamic from 'next/dynamic';
+import Layout from '../layout/Layout';
+import StatsCard from '../components/StatsCard';
+
 const ViewAreaChart = dynamic(import('../components/ViewAreaChart'), {
   ssr: false,
 });
@@ -153,9 +150,9 @@ export default function StatsBlogPost() {
               </div>
             </div>
             <div className="grid sm:grid-cols-2 gap-3 lg:gap-4 xl:gap-6">
-              {statCards.map((statCard, index) => (
+              {statCards.map((statCard) => (
                 <StatsCard
-                  key={index}
+                  key={statCard.title}
                   title={statCard.title}
                   number={statCard.number}
                   percentNumber={statCard.percentNumber}
@@ -200,9 +197,9 @@ export default function StatsBlogPost() {
             </div>
             <div className="grid lg:grid-cols-[220px,1fr] xl:grid-cols-[280px,1fr] gap-8">
               <div className="flex flex-col gap-7">
-                {viewStatsCards.map((viewStatsCard, index) => (
+                {viewStatsCards.map((viewStatsCard) => (
                   <StatsCard
-                    key={index}
+                    key={viewStatsCard.title}
                     title={viewStatsCard.title}
                     number={viewStatsCard.number}
                     percentNumber={viewStatsCard.percentNumber}
@@ -249,9 +246,9 @@ export default function StatsBlogPost() {
             </div>
             <div className="grid lg:grid-cols-[220px,1fr] xl:grid-cols-[280px,1fr] gap-8">
               <div className="flex flex-col gap-7">
-                {memberStatsCards.map((memberStatsCard, index) => (
+                {memberStatsCards.map((memberStatsCard) => (
                   <StatsCard
-                    key={index}
+                    key={memberStatsCard.title}
                     title={memberStatsCard.title}
                     number={memberStatsCard.number}
                     percentNumber={memberStatsCard.percentNumber}

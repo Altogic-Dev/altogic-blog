@@ -1,77 +1,25 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
+import { useRouter } from 'next/router';
 import { XIcon } from '@heroicons/react/outline';
-import Layout from '../layouts/Layout';
-import Sidebar from '../layouts/SideBar';
-import PostCard from '../components/PostCard';
+import { storyActions } from '@/redux/story/storySlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { DateTime } from 'luxon';
+import _ from 'lodash';
+import PostCard from '@/components/PostCard';
+import Layout from '@/layout/Layout';
+import Sidebar from '@/layout/Sidebar';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
+import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
+import { authActions } from '@/redux/auth/authSlice';
+import { reportActions } from '@/redux/report/reportSlice';
+import Button from '@/components/basic/button';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
-const posts = [
-  {
-    id: 0,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 1,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Money',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 2,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'App',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-];
 
 const allResponses = [
   {
@@ -122,9 +70,99 @@ const allResponses = [
 ];
 
 export default function BlogDetail() {
+  const router = useRouter();
+  const { storySlug } = router.query;
+
+  const dispatch = useDispatch();
+
+  const story = useSelector((state) => state.story.story);
+  const moreUserStories = useSelector((state) => state.story.moreUserStories);
+  const user = useSelector((state) => state.auth.user);
+  const isMuted = useSelector((state) => state.auth.isMuted);
+  const isFollowing = useSelector(
+    (state) => state.followerConnection.isFollowing
+  );
+  const isSubscribed = useSelector(
+    (state) => state.subscribeConnection.isSubscribed
+  );
+  const isLiked = useSelector((state) => state.storyLikes.isLiked);
+  const isReported = useSelector((state) => state.report.isReported);
+
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
+  const [didMount, setDidMount] = useState(true);
+  const [commentBoxes, setCommentBoxes] = useState([]);
+  const [morePage, setMorePage] = useState(1);
+
+  const toggleFollow = () => {
+    if (isFollowing) {
+      return dispatch(
+        followerConnectionActions.unfollowRequest({
+          userId: _.get(user, '_id'),
+          followingUserId: _.get(story, 'user._id'),
+        })
+      );
+    }
+    return dispatch(
+      followerConnectionActions.followRequest({
+        followerUser: user,
+        followingUser: {
+          followingUser: _.get(story, 'user._id'),
+          followingName: _.get(story, 'user.name'),
+          followingUserProfilePicture: _.get(story, 'user.profilePicture'),
+          followingUsername: _.get(story, 'user.username'),
+        },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (!_.isNil(story) && didMount) {
+      dispatch(
+        followerConnectionActions.getFollowingRequest({
+          userId: _.get(user, '_id'),
+          followingUserId: _.get(story, 'user._id'),
+        })
+      );
+      dispatch(
+        subscribeConnectionActions.getSubscribeRequest({
+          userId: _.get(user, '_id'),
+          subscribingUserId: _.get(story, 'user._id'),
+        })
+      );
+      dispatch(
+        storyLikesActions.isLikedStoryRequest({
+          userId: _.get(user, '_id'),
+          storyId: _.get(story, '_id'),
+        })
+      );
+      dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
+      dispatch(
+        reportActions.getReportedStoryByUserRequest({
+          userId: _.get(user, '_id'),
+          storyId: _.get(story, '_id'),
+        })
+      );
+      setDidMount(false);
+    }
+  }, [story]);
+
+  useEffect(() => {
+    if (!_.isNil(story)) {
+      dispatch(
+        storyActions.getMoreUserStoriesRequest({
+          authorId: _.get(story, 'user._id'),
+          storyId: _.get(story, '_id'),
+          page: morePage,
+        })
+      );
+    }
+  }, [story, morePage]);
+
+  useEffect(() => {
+    if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
+  }, [storySlug]);
 
   return (
     <div>
@@ -141,15 +179,22 @@ export default function BlogDetail() {
                 <div className="flex items-center gap-3">
                   <img
                     className="w-[50px] h-[50px] rounded-full object-cover"
-                    src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    src={_.get(story, 'user.profilePicture')}
                     alt=""
                   />
                   <div>
                     <span className="text-slate-700  text-base font-medium tracking-sm">
-                      Olivia Rhye
+                      {_.get(story, 'user.name')}
                     </span>
                     <div className="flex items-center gap-2 text-slate-500 tracking-sm">
-                      <span>June 29</span>
+                      <span>
+                        {DateTime.fromISO(
+                          _.get(story, 'createdAt')
+                        ).toLocaleString({
+                          month: 'long',
+                          day: 'numeric',
+                        })}{' '}
+                      </span>
                       <svg
                         className="h-1 w-1 text-slate-500"
                         fill="currentColor"
@@ -369,33 +414,46 @@ export default function BlogDetail() {
                             <button
                               type="button"
                               className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={toggleFollow}
                             >
-                              Show less like this
+                              {isFollowing ? 'Unfollow' : 'Follow'} this author
                             </button>
                           </div>
                           <div>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            >
-                              Unfollow this author
-                            </button>
+                            {!isMuted && (
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                onClick={() =>
+                                  dispatch(
+                                    authActions.muteAuthorRequest(
+                                      _.get(story, 'user._id')
+                                    )
+                                  )
+                                }
+                              >
+                                Mute this author
+                              </button>
+                            )}
                           </div>
                           <div>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            >
-                              Mute this publication
-                            </button>
-                          </div>
-                          <div>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            >
-                              Report
-                            </button>
+                            {!isReported && (
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                onClick={() =>
+                                  dispatch(
+                                    reportActions.reportStoryRequest({
+                                      userId: _.get(user, '_id'),
+                                      storyId: _.get(story, '_id'),
+                                      reportedUserId: _.get(story, 'user._id'),
+                                    })
+                                  )
+                                }
+                              >
+                                Report
+                              </button>
+                            )}
                           </div>
                         </Menu.Items>
                       </Transition>
@@ -495,7 +553,7 @@ export default function BlogDetail() {
                     leo, consequat, at diam amet in pharetra. Eget facilisis
                     vitae magna ullamcorper netus sed maecenas.
                   </p>
-                  <ol role="list">
+                  <ol>
                     <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
                     <li>Nunc sagittis quam vitae fringilla efficitur.</li>
                     <li>
@@ -540,7 +598,7 @@ export default function BlogDetail() {
                     urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
                     tellus tincidunt. At feugiat sapien varius id.
                   </p>
-                  <ul role="list">
+                  <ul>
                     <li>Cras scelerisque leo quis molestie consectetur.</li>
                     <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
                     <li>
@@ -555,6 +613,21 @@ export default function BlogDetail() {
                     <button
                       type="button"
                       className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
+                      onClick={() =>
+                        isLiked
+                          ? dispatch(
+                              storyLikesActions.unlikeStoryRequest({
+                                userId: _.get(user, '_id'),
+                                storyId: _.get(story, '_id'),
+                              })
+                            )
+                          : dispatch(
+                              storyLikesActions.likeStoryRequest({
+                                userId: _.get(user, '_id'),
+                                storyId: _.get(story, '_id'),
+                              })
+                            )
+                      }
                     >
                       <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
                         <svg
@@ -562,6 +635,7 @@ export default function BlogDetail() {
                           viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
+                          style={isLiked ? { color: 'red' } : {}}
                         >
                           <path
                             d="M11.9932 5.13581L11.2332 5.78583C11.4232 6.00794 11.7009 6.13581 11.9932 6.13581C12.2854 6.13581 12.5631 6.00794 12.7531 5.78583L11.9932 5.13581ZM3.2642 12.5604L4.0538 11.9468L3.2642 12.5604ZM20.7221 12.5604L19.9325 11.9468L20.7221 12.5604ZM11.4721 20.5408L12.1351 19.7922L11.4721 20.5408ZM11.8502 20.8135L11.5643 21.7718L11.8502 20.8135ZM12.5142 20.5408L11.8512 19.7922L12.5142 20.5408ZM12.1361 20.8135L12.422 21.7718L12.1361 20.8135ZM12.7531 4.4858C10.4594 1.80434 6.50161 0.989451 3.5051 3.54974L4.80429 5.07029C6.81788 3.34983 9.52816 3.79246 11.2332 5.78583L12.7531 4.4858ZM3.5051 3.54974C0.598307 6.03336 0.175977 10.2162 2.4746 13.174L4.0538 11.9468C2.41796 9.84179 2.70098 6.86741 4.80429 5.07029L3.5051 3.54974ZM21.5117 13.174C23.8015 10.2275 23.4444 6.01246 20.4708 3.54097L19.1924 5.07906C21.315 6.84328 21.5772 9.83042 19.9325 11.9468L21.5117 13.174ZM20.4708 3.54097C17.4415 1.02319 13.5344 1.79553 11.2332 4.4858L12.7531 5.78583C14.4506 3.80127 17.1255 3.36113 19.1924 5.07906L20.4708 3.54097ZM2.4746 13.174C3.34712 14.2968 5.05011 15.9836 6.68673 17.5283C8.3425 19.0912 9.99445 20.568 10.8091 21.2895L12.1351 19.7922C11.3274 19.0769 9.69323 17.6159 8.05954 16.0739C6.40669 14.5138 4.81689 12.9287 4.0538 11.9468L2.4746 13.174ZM13.1772 21.2895C13.9919 20.568 15.6438 19.0912 17.2996 17.5283C18.9362 15.9836 20.6392 14.2968 21.5117 13.174L19.9325 11.9468C19.1694 12.9287 17.5796 14.5138 15.9268 16.0739C14.2931 17.6159 12.6589 19.0769 11.8512 19.7922L13.1772 21.2895ZM10.8091 21.2895C10.8881 21.3594 10.9903 21.4509 11.088 21.5245C11.1974 21.6069 11.3545 21.7092 11.5643 21.7718L12.1361 19.8553C12.1859 19.8701 12.2264 19.8888 12.2555 19.9048C12.2821 19.9195 12.2954 19.93 12.2911 19.9268C12.2862 19.9231 12.2727 19.9125 12.2442 19.888C12.2156 19.8634 12.1821 19.8339 12.1351 19.7922L10.8091 21.2895ZM11.8512 19.7922C11.8042 19.8339 11.7707 19.8634 11.7421 19.888C11.7136 19.9125 11.7001 19.9231 11.6952 19.9268C11.6909 19.93 11.7042 19.9195 11.7308 19.9048C11.7599 19.8888 11.8004 19.8701 11.8502 19.8553L12.422 21.7718C12.6318 21.7092 12.7889 21.6069 12.8983 21.5245C12.996 21.4509 13.0982 21.3594 13.1772 21.2895L11.8512 19.7922ZM11.5643 21.7718C11.8433 21.855 12.1431 21.855 12.422 21.7718L11.8502 19.8553C11.9443 19.8272 12.042 19.8272 12.1361 19.8553L11.5643 21.7718Z"
@@ -569,7 +643,7 @@ export default function BlogDetail() {
                           />
                         </svg>
                       </span>
-                      378
+                      {_.get(story, 'likeCount')}
                     </button>
                     <button
                       type="button"
@@ -802,33 +876,50 @@ export default function BlogDetail() {
                               <button
                                 type="button"
                                 className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                onClick={toggleFollow}
                               >
-                                Show less like this
+                                {isFollowing ? 'Unfollow' : 'Follow'} this
+                                author
                               </button>
                             </div>
                             <div>
-                              <button
-                                type="button"
-                                className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              >
-                                Unfollow this author
-                              </button>
+                              {!isMuted && (
+                                <button
+                                  type="button"
+                                  className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                  onClick={() =>
+                                    dispatch(
+                                      authActions.muteAuthorRequest(
+                                        _.get(story, 'user._id')
+                                      )
+                                    )
+                                  }
+                                >
+                                  Mute this author
+                                </button>
+                              )}
                             </div>
                             <div>
-                              <button
-                                type="button"
-                                className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              >
-                                Mute this publication
-                              </button>
-                            </div>
-                            <div>
-                              <button
-                                type="button"
-                                className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              >
-                                Report
-                              </button>
+                              {!isReported && (
+                                <button
+                                  type="button"
+                                  className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                  onClick={() =>
+                                    dispatch(
+                                      reportActions.reportStoryRequest({
+                                        userId: _.get(user, '_id'),
+                                        storyId: _.get(story, '_id'),
+                                        reportedUserId: _.get(
+                                          story,
+                                          'user._id'
+                                        ),
+                                      })
+                                    )
+                                  }
+                                >
+                                  Report
+                                </button>
+                              )}
                             </div>
                           </Menu.Items>
                         </Transition>
@@ -842,40 +933,58 @@ export default function BlogDetail() {
                       <p className="text-slate-600 mb-1 text-xl tracking-md">
                         More from{' '}
                         <span className="text-slate-700 font-semibold">
-                          Olivia Rhye
+                          {_.get(story, 'user.name')}
                         </span>
                       </p>
                       <p className="max-w-xl text-slate-600 text-xs tracking-sm">
-                        Faucibus consequat, massa risus, dignissim interdum
-                        feugiat sollicitudin tortor. Volutpat, elementum diam id
-                        nunc pellentesque suspendisse sagittis.{' '}
+                        {_.get(story, 'user.about')}
                       </p>
                     </div>
                     <button
                       type="button"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                      onClick={toggleFollow}
                     >
-                      Follow
+                      {isFollowing ? 'Unfollow' : 'Follow'}
                     </button>
                   </div>
                   <div className="divide-y divide-gray-200">
-                    {posts.map((post) => (
+                    {_.map(moreUserStories, (moreStory) => (
                       <PostCard
-                        key={post.id}
+                        key={moreStory._id}
                         noActiveBookmark
                         normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
+                        authorUrl={`/profile/${moreStory.username}`}
+                        authorName={moreStory.username}
+                        authorImage={moreStory.userProfilePicture}
+                        storyUrl={`/story/${moreStory.storySlug}`}
+                        timeAgo={DateTime.fromISO(
+                          moreStory.createdAt
+                        ).toRelative()}
+                        title={moreStory.title}
+                        infoText={moreStory.excerpt}
+                        badgeUrl="badgeUrl"
+                        badgeName={_.first(moreStory.categoryNames)}
+                        min={moreStory.estimatedReadingTime}
+                        images={_.first(moreStory.storyImages)}
+                        actionMenu
+                        optionButtons={{
+                          unfollow: () =>
+                            dispatch(
+                              followerConnectionActions.unfollowRequest({
+                                userId: _.get(user, '_id'),
+                                followingUserId: _.get(moreStory, 'user'),
+                              })
+                            ),
+                          report: () =>
+                            dispatch(
+                              reportActions.reportStoryRequest({
+                                userId: _.get(user, '_id'),
+                                storyId: _.get(moreStory, '_id'),
+                                reportedUserId: _.get(moreStory, 'user'),
+                              })
+                            ),
+                        }}
                       />
                     ))}
                   </div>
@@ -883,8 +992,9 @@ export default function BlogDetail() {
                     <button
                       type="button"
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                      onClick={() => setMorePage((prev) => prev + 1)}
                     >
-                      Read more from Olivia Rhye
+                      Read more from {_.get(story, 'user.name')}
                     </button>
                   </div>
                 </div>
@@ -895,12 +1005,28 @@ export default function BlogDetail() {
                       <button
                         type="button"
                         className="flex items-center gap-3 text-slate-400 text-sm tracking-sm hover transition ease-in-out duration-200 hover:text-slate-700"
+                        onClick={() =>
+                          isLiked
+                            ? dispatch(
+                                storyLikesActions.unlikeStoryRequest({
+                                  userId: _.get(user, '_id'),
+                                  storyId: _.get(story, '_id'),
+                                })
+                              )
+                            : dispatch(
+                                storyLikesActions.likeStoryRequest({
+                                  userId: _.get(user, '_id'),
+                                  storyId: _.get(story, '_id'),
+                                })
+                              )
+                        }
                       >
                         <svg
                           className="w-6 h-6"
                           viewBox="0 0 24 24"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
+                          style={isLiked ? { color: 'red' } : {}}
                         >
                           <path
                             d="M11.9932 5.13581L11.2332 5.78583C11.4232 6.00794 11.7009 6.13581 11.9932 6.13581C12.2854 6.13581 12.5631 6.00794 12.7531 5.78583L11.9932 5.13581ZM3.2642 12.5604L4.0538 11.9468L3.2642 12.5604ZM20.7221 12.5604L19.9325 11.9468L20.7221 12.5604ZM11.4721 20.5408L12.1351 19.7922L11.4721 20.5408ZM11.8502 20.8135L11.5643 21.7718L11.8502 20.8135ZM12.5142 20.5408L11.8512 19.7922L12.5142 20.5408ZM12.1361 20.8135L12.422 21.7718L12.1361 20.8135ZM12.7531 4.4858C10.4594 1.80434 6.50161 0.989451 3.5051 3.54974L4.80429 5.07029C6.81788 3.34983 9.52816 3.79246 11.2332 5.78583L12.7531 4.4858ZM3.5051 3.54974C0.598307 6.03336 0.175977 10.2162 2.4746 13.174L4.0538 11.9468C2.41796 9.84179 2.70098 6.86741 4.80429 5.07029L3.5051 3.54974ZM21.5117 13.174C23.8015 10.2275 23.4444 6.01246 20.4708 3.54097L19.1924 5.07906C21.315 6.84328 21.5772 9.83042 19.9325 11.9468L21.5117 13.174ZM20.4708 3.54097C17.4415 1.02319 13.5344 1.79553 11.2332 4.4858L12.7531 5.78583C14.4506 3.80127 17.1255 3.36113 19.1924 5.07906L20.4708 3.54097ZM2.4746 13.174C3.34712 14.2968 5.05011 15.9836 6.68673 17.5283C8.3425 19.0912 9.99445 20.568 10.8091 21.2895L12.1351 19.7922C11.3274 19.0769 9.69323 17.6159 8.05954 16.0739C6.40669 14.5138 4.81689 12.9287 4.0538 11.9468L2.4746 13.174ZM13.1772 21.2895C13.9919 20.568 15.6438 19.0912 17.2996 17.5283C18.9362 15.9836 20.6392 14.2968 21.5117 13.174L19.9325 11.9468C19.1694 12.9287 17.5796 14.5138 15.9268 16.0739C14.2931 17.6159 12.6589 19.0769 11.8512 19.7922L13.1772 21.2895ZM10.8091 21.2895C10.8881 21.3594 10.9903 21.4509 11.088 21.5245C11.1974 21.6069 11.3545 21.7092 11.5643 21.7718L12.1361 19.8553C12.1859 19.8701 12.2264 19.8888 12.2555 19.9048C12.2821 19.9195 12.2954 19.93 12.2911 19.9268C12.2862 19.9231 12.2727 19.9125 12.2442 19.888C12.2156 19.8634 12.1821 19.8339 12.1351 19.7922L10.8091 21.2895ZM11.8512 19.7922C11.8042 19.8339 11.7707 19.8634 11.7421 19.888C11.7136 19.9125 11.7001 19.9231 11.6952 19.9268C11.6909 19.93 11.7042 19.9195 11.7308 19.9048C11.7599 19.8888 11.8004 19.8701 11.8502 19.8553L12.422 21.7718C12.6318 21.7092 12.7889 21.6069 12.8983 21.5245C12.996 21.4509 13.0982 21.3594 13.1772 21.2895L11.8512 19.7922ZM11.5643 21.7718C11.8433 21.855 12.1431 21.855 12.422 21.7718L11.8502 19.8553C11.9443 19.8272 12.042 19.8272 12.1361 19.8553L11.5643 21.7718Z"
@@ -1057,33 +1183,50 @@ export default function BlogDetail() {
                                 <button
                                   type="button"
                                   className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                  onClick={toggleFollow}
                                 >
-                                  Show less like this
+                                  {isFollowing ? 'Unfollow' : 'Follow'} this
+                                  author
                                 </button>
                               </div>
                               <div>
-                                <button
-                                  type="button"
-                                  className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                                >
-                                  Unfollow this author
-                                </button>
+                                {!isMuted && (
+                                  <button
+                                    type="button"
+                                    className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                    onClick={() =>
+                                      dispatch(
+                                        authActions.muteAuthorRequest(
+                                          _.get(story, 'user._id')
+                                        )
+                                      )
+                                    }
+                                  >
+                                    Mute this author
+                                  </button>
+                                )}
                               </div>
                               <div>
-                                <button
-                                  type="button"
-                                  className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                                >
-                                  Mute this publication
-                                </button>
-                              </div>
-                              <div>
-                                <button
-                                  type="button"
-                                  className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                                >
-                                  Report
-                                </button>
+                                {!isReported && (
+                                  <button
+                                    type="button"
+                                    className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                    onClick={() =>
+                                      dispatch(
+                                        reportActions.reportStoryRequest({
+                                          userId: _.get(user, '_id'),
+                                          storyId: _.get(story, '_id'),
+                                          reportedUserId: _.get(
+                                            story,
+                                            'user._id'
+                                          ),
+                                        })
+                                      )
+                                    }
+                                  >
+                                    Report
+                                  </button>
+                                )}
                               </div>
                             </Menu.Items>
                           </Transition>
@@ -1096,11 +1239,19 @@ export default function BlogDetail() {
             </div>
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
-                profile
-                whoTheFollow
+                profile={{
+                  id: _.get(story, 'user._id'),
+                  name: _.get(story, 'user.name'),
+                  profilePicture: _.get(story, 'user.profilePicture'),
+                  followerCount: _.get(story, 'user.followerCount'),
+                  username: _.get(story, 'user.username'),
+                  about: _.get(story, 'user.about'),
+                }}
+                isFollowing={isFollowing}
+                isSubscribed={isSubscribed}
+                whoToFollow
                 popularTopics
                 popularStories
-                followButton
               />
             </div>
           </div>
@@ -1161,7 +1312,7 @@ export default function BlogDetail() {
                                   alt=""
                                 />
                                 <span className="text-slate-700 text-sm font-medium tracking-sm">
-                                  Olivia Rhye
+                                  {_.get(story, 'user.name')}
                                 </span>
                               </div>
                               <div className="mb-4">
@@ -1249,7 +1400,7 @@ export default function BlogDetail() {
                               All Responses (3)
                             </h2>
                             <ul className="divide-y divide-gray-200">
-                              {allResponses.map((allResponse) => (
+                              {allResponses.map((allResponse, index) => (
                                 <li
                                   key={allResponse.id}
                                   className="py-6 space-y-4"
@@ -1294,11 +1445,30 @@ export default function BlogDetail() {
                                     </button>
                                     <button
                                       type="button"
+                                      onClick={() =>
+                                        setCommentBoxes((prev) => {
+                                          const temp = prev;
+                                          temp[index] = true;
+                                          return temp;
+                                        })
+                                      }
                                       className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                     >
                                       Reply
                                     </button>
                                   </div>
+                                  {commentBoxes[index] === true && (
+                                    <div className="flex flex-col items-end">
+                                      <textarea
+                                        className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
+                                        placeholder="Write a comment..."
+                                      />
+
+                                      <Button type="button" extraClasses="mt-5">
+                                        Comment
+                                      </Button>
+                                    </div>
+                                  )}
                                 </li>
                               ))}
                             </ul>
