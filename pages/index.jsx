@@ -1,27 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-<<<<<<< HEAD
 import { useDispatch, useSelector } from 'react-redux';
-import Layout from '../layouts/Layout';
-import PostCard from '../components/PostCard';
-import Sidebar from '../layouts/Sidebar';
-import { authActions } from '../redux/auth/authSlice';
-=======
 import { reportActions } from '@/redux/report/reportSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from 'luxon';
->>>>>>> dev
-
 import _ from 'lodash';
-import { authActions } from '@/redux/auth/authSlice';
 import YourTopics from '@/components/general/YourTopics';
-import { useDispatch, useSelector } from 'react-redux';
 import ListObserver from '@/components/ListObserver';
-import Layout from '../layout/Layout';
+import { authActions } from '../redux/auth/authSlice';
+import Sidebar from '../layouts/Sidebar';
 import PostCard from '../components/PostCard';
-import Sidebar from '../layout/Sidebar';
+import Layout from '../layouts/Layout';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
