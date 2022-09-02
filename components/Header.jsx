@@ -558,7 +558,7 @@ export default function Header() {
                       <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
                         Publications
                       </span>
-                      <Menu.Item onClick={() => router.push('/publications')}>
+                      <Menu.Item onClick={() => router.push('/publication/Altogic')}>
                         <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                           <svg
                             width="16"
