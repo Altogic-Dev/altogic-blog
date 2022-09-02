@@ -5,6 +5,7 @@
 /* eslint-disable max-classes-per-file */
 import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import dynamic from 'next/dynamic';
 import hljs from 'highlight.js';
 import {
   faBold,
@@ -20,10 +21,13 @@ import {
   faCode,
 } from '@fortawesome/free-solid-svg-icons';
 import FileService from '@/services/file';
-import TwitterWidgetsLoader from 'twitter-widgets';
 import _ from 'lodash';
 
 const Quill = require('@/utils/quill');
+
+const TwitterWidgetsLoader = dynamic(import('twitter-widgets'), {
+  ssr: false,
+});
 
 export default function Editor({ onChange, setImages }) {
   const uploadImage = async (file) => {

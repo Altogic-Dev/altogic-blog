@@ -3,8 +3,12 @@ import Link from 'next/link';
 import { CheckCircleIcon } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
+import dynamic from 'next/dynamic';
 import Layout from '../layout/Layout';
-import Editor from '../components/Editor';
+
+const Editor = dynamic(() => import('../components/Editor'), {
+  ssr: false,
+});
 
 export default function WriteAStory() {
   const [content, setContent] = useState('');
@@ -62,7 +66,7 @@ export default function WriteAStory() {
             </Link>
           )}
         </div>
-        <form action="" className="w-full">
+        <form className="w-full">
           <input
             type="text"
             name="story-title"
