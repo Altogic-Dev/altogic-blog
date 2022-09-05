@@ -112,19 +112,20 @@ function* authenticateWithProvider({ payload: provider }) {
     yield put(authActions.authenticateWithProviderFailure(e));
   }
 }
-function* unfollowTopicSaga({ payload: { topics } }) {
+function* updateFollowingTopicsSaga({ payload: { topics } }) {
+  console.log(topics)
+
   try {
-    const { data, errors } = yield call(AuthService.unfollowTopic, topics);
+    const { data, errors } = yield call(AuthService.updateFollowingTopics, topics);
     if (errors) {
       throw errors.items;
     }
 
     if (data) {
-      yield call(AuthService.getUserFromDb);
-      setUserFromLocalStorage();
+      localStorage.setItem('user', JSON.stringify(data));
     }
   } catch (e) {
-    yield put(authActions.unfollowTopicFailure(e));
+    yield put(authActions.updateFollowingTopicsFailure(e));
   }
 }
 
@@ -289,7 +290,7 @@ export default function* rootSaga() {
       authActions.resendVerificationEmailRequest.type,
       resendVerificationEmail
     ),
-    takeEvery(authActions.unfollowTopicRequest.type, unfollowTopicSaga),
+    takeEvery(authActions.updateFollowingTopicsRequest.type, updateFollowingTopicsSaga),
     takeEvery(authActions.muteAuthorRequest.type, muteAuthorSaga),
     takeEvery(authActions.unmuteAuthorRequest.type, unmuteAuthorSaga),
     takeEvery(authActions.isMutedRequest.type, isMutedSaga),
