@@ -10,12 +10,12 @@ import Button from '../basic/button';
 export default function WhoToFollow({ isTopWriters, Tag }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
   const [people, setPeople] = useState([]);
+  const [peopleMinimized, setPeopleMinimized] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
-  // const whoToFollowMinimized = useSelector(
-  //   (state) => state.recommendations.whoToFollowMinimized
-  // );
-  const whoToFollowData = useSelector(
-    (state) => state.recommendations.whoToFollow
+  let page = 0;
+  const whoToFollow = useSelector((state) => state.recommendations.whoToFollow);
+  const whoToFollowMinimized = useSelector(
+    (state) => state.recommendations.whoToFollowMinimized
   );
   const topWritersIdList = useSelector(
     (state) => state.topics.topWritersIdList
@@ -24,40 +24,66 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
 
   const dispatch = useDispatch();
 
-  const getTopWritersIdList = () => {
-    dispatch(topicsActions.getTopicTopWritersIdListRequest(Tag,10));
+  const getTopWritersIdList = (Tag, size) => {
+    dispatch(topicsActions.getTopicTopWritersIdListRequest(Tag, size));
   };
   const getTopWriters = (idList) => {
     dispatch(topicsActions.getTopicTopWritersRequest(idList));
   };
+
+  const getWhoToFollow = (page, size) => {
+    dispatch(recommendationsActions.getWhoToFollowRequest({ page, size }));
+  };
   const getWhoToFollowMinimized = () => {
     dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
   };
-  // const getWhoToFollow = () => {
-  //   dispatch(recommendationsActions.getWhoToFollowRequest());
-  // };
 
   const handleSeeMoreSuggestions = () => {
-    const idList = topWritersIdList?.map((person) => person.groupby.group);
-    getTopWriters(idList.slice(0, 20));
+    if (isTopWriters) {
+      const idList = topWritersIdList?.map((person) => person.groupby.group);
+      getTopWriters(idList.slice(0, 20));
+    } else {
+      getWhoToFollow(1, 20);
+    }
     setWhoToFollowModal(true);
-    
-   // getWhoToFollow();
   };
-  
 
+  const handleShowMore = () => {
+    page += 1;
+    if (isTopWriters) {
+      const idList = topWritersIdList?.map((person) => person.groupby.group);
+      getTopWriters(idList.slice(20 * (page - 1), 20 * page));
+    } else {
+      getWhoToFollow(page, 20);
+    }
+  };
   useEffect(() => {
     if (isTopWriters && Tag) {
-      getTopWritersIdList();
-    } else if (!isTopWriters) {
-      getWhoToFollowMinimized();
+      getTopWritersIdList(Tag, 10);
     }
   }, [Tag]);
 
   useEffect(() => {
-    if (isTopWriters) setPeople(topWriters);
-    else if (!isTopWriters) setPeople(whoToFollowData);
-  }, [whoToFollowData, topWriters]);
+    if (!isTopWriters) {
+      getWhoToFollowMinimized();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isTopWriters) {
+      if (whoToFollowModal) {
+        setPeople(topWriters);
+      } else {
+        setPeopleMinimized(topWriters);
+      }
+    } else {
+      setPeople((state) => [...state, ...whoToFollow]);
+    }
+  }, [whoToFollow, topWriters]);
+
+  useEffect(() => {
+    if (!isTopWriters) setPeopleMinimized(whoToFollowMinimized);
+  }, [whoToFollowMinimized]);
 
   useEffect(() => {
     const idList = topWritersIdList?.map((person) => person.groupby.group);
@@ -68,13 +94,14 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
     return html?.replace(/<\s*[^>]*>/gi, '');
   }
 
+
   if (!isLoading)
     return (
       <div>
         <SidebarTitle title={isTopWriters ? 'Top Writers' : 'Who To Follow'} />
         <div>
           <ul className="divide-y divide-gray-200">
-            {people?.slice(0,5).map((person) => (
+            {peopleMinimized?.map((person) => (
               <li
                 key={person._id}
                 className="flex items-start justify-between gap-3 py-4"
@@ -124,7 +151,11 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
             </svg>
           </Button>
           <Transition appear show={whoToFollowModal} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={handleSeeMoreSuggestions}>
+            <Dialog
+              as="div"
+              className="relative z-10"
+              onClose={handleSeeMoreSuggestions}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -186,12 +217,13 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                           ))}
                         </ul>
                         <div className="text-center">
-                          <button
+                          <Button
+                            onClick={handleShowMore}
                             type="button"
                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                           >
                             Show more
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </Dialog.Panel>
