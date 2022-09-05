@@ -1,155 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layout/Layout';
-import PostCard from '../../components/PostCard';
+import PostCard from '@/components/PostCard';
 import Sidebar from '@/layout/Sidebar';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-
-const posts = [
-  {
-    id: 0,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 1,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Money',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 2,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'App',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 3,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Art',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 4,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Mindfulness',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 5,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-];
+import { useDispatch, useSelector } from 'react-redux';
+import { topicsActions } from '@/redux/topics/topicsSlice';
+import { DateTime } from 'luxon';
+import { authActions } from '@/redux/auth/authSlice';
+import { reportActions } from '@/redux/report/reportSlice';
+import _ from 'lodash';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
 export default function TagPage({ Home, Latest, Best }) {
+  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const { tag } = router.query;
+  const dispatch = useDispatch();
+  const latestTopics = useSelector((state) => state.topics.latestTopics);
+  const bestTopics = useSelector((state) => state.topics.bestTopics);
 
+  const [posts, setPosts] = useState([]);
+
+  const getLatests = (page) => {
+    dispatch(
+      topicsActions.getLatestsOfTopicRequest({
+        topic: tag,
+        page,
+        limit: 10,
+      })
+    );
+  };
+  const getBests = (page) => {
+    dispatch(
+      topicsActions.getBestsOfTopicRequest({
+        topic: tag,
+        page,
+        limit: 10,
+      })
+    );
+  };
 
   useEffect(() => {
-    if (Home) {
-      setSelectedIndex(0);
-    } else if (Latest) {
-      setSelectedIndex(1);
-    } else if (Best) {
-      setSelectedIndex(2);
+    if (tag) {
+      if (Home) {
+        setSelectedIndex(0);
+      } else if (Latest) {
+        getLatests(1);
+        setSelectedIndex(1);
+      } else if (Best) {
+        getBests(1);
+
+        setSelectedIndex(2);
+      }
     }
-  }, []);
+  }, [tag]);
+
+  useEffect(() => {
+
+    if (Home) {
+      console.log("s")
+    } else if (Latest) {
+      setPosts(latestTopics);
+    } else if (Best) {
+      setPosts(bestTopics);
+
+    }
+  }, [latestTopics,bestTopics]);
+
+  console.log(bestTopics)
   return (
     <div>
       <Head>
@@ -168,13 +93,10 @@ export default function TagPage({ Home, Latest, Best }) {
               <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
                 <Sidebar personalFullStatistic />
               </div>
-              <Tab.Group
-                selectedIndex={selectedIndex}
-              >
+              <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
                     onClick={() => router.push(`/tag/${tag}`)}
-
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -188,7 +110,6 @@ export default function TagPage({ Home, Latest, Best }) {
                   </Tab>
                   <Tab
                     onClick={() => router.push(`/tag/${tag}/latest`)}
-
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -218,63 +139,105 @@ export default function TagPage({ Home, Latest, Best }) {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
-                        key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
+                        key={post._id}
+                        noActiveBookmark
+                        normalMenu
+                        authorUrl={`/${post.username}`}
+                        authorName={post.username}
+                        authorImage={post.userProfilePicture}
+                        storyUrl={`/story/${post.storySlug}`}
+                        timeAgo={DateTime.fromISO(
+                          post.createdAt
+                        ).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
+                        badgeName={_.first(post.categoryNames)}
+                        min={post.estimatedReadingTime}
+                        images={_.first(post.storyImages)}
+                        actionMenu
+                        optionButtons={{
+                          mute: () =>
+                            dispatch(authActions.muteAuthorRequest(post.user)),
+                          report: () =>
+                            dispatch(
+                              reportActions.reportStoryRequest({
+                                userId,
+                                storyId: post._id,
+                                reportedUserId: post.user,
+                              })
+                            ),
+                        }}
                       />
                     ))}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
-                        key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
+                        key={post._id}
+                        noActiveBookmark
+                        normalMenu
+                        authorUrl={`/${post.username}`}
+                        authorName={post.username}
+                        authorImage={post.userProfilePicture}
+                        storyUrl={`/story/${post.storySlug}`}
+                        timeAgo={DateTime.fromISO(
+                          post.createdAt
+                        ).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
+                        badgeName={_.first(post.categoryNames)}
+                        min={post.estimatedReadingTime}
+                        images={_.first(post.storyImages)}
+                        actionMenu
+                        optionButtons={{
+                          mute: () =>
+                            dispatch(authActions.muteAuthorRequest(post.user)),
+                          report: () =>
+                            dispatch(
+                              reportActions.reportStoryRequest({
+                                userId,
+                                storyId: post._id,
+                                reportedUserId: post.user,
+                              })
+                            ),
+                        }}
                       />
                     ))}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
-                        key={post.id}
-                        noActiveBookmark={true}
-                        normalMenu={true}
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
+                        key={post._id}
+                        noActiveBookmark
+                        normalMenu
+                        authorUrl={`/${post.username}`}
+                        authorName={post.username}
+                        authorImage={post.userProfilePicture}
+                        storyUrl={`/story/${post.storySlug}`}
+                        timeAgo={DateTime.fromISO(
+                          post.createdAt
+                        ).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
+                        badgeName={_.first(post.categoryNames)}
+                        min={post.estimatedReadingTime}
+                        images={_.first(post.storyImages)}
+                        actionMenu
+                        optionButtons={{
+                          mute: () =>
+                            dispatch(authActions.muteAuthorRequest(post.user)),
+                          report: () =>
+                            dispatch(
+                              reportActions.reportStoryRequest({
+                                userId,
+                                storyId: post._id,
+                                reportedUserId: post.user,
+                              })
+                            ),
+                        }}
                       />
                     ))}
                   </Tab.Panel>
@@ -283,7 +246,12 @@ export default function TagPage({ Home, Latest, Best }) {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar personalFullStatistic topWriters relatedTopics />
+              <Sidebar
+                personalFullStatistic
+                topWriters
+                relatedTopics
+                Tag={tag}
+              />
             </div>
             {/* Mobile */}
           </div>

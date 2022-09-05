@@ -7,8 +7,8 @@ import { isNil } from 'lodash';
 import Head from 'next/head';
 import Sidebar from '@/layout/SideBar';
 import Layout from '@/layout/Layout';
-import PublicationPostCard from '../../components/PublicationsPostCard';
 import SocialIcons from '@/components/publication/SocialIcons';
+import PublicationPostCard from '../../components/PublicationsPostCard';
 
 const posts = [
   {
@@ -199,7 +199,7 @@ const latests = [
 export default function Publications() {
   const router = useRouter();
   const { publicationName } = router.query;
-  const { publication, error } = useSelector((state) => state.publication);
+  const { publication } = useSelector((state) => state.publication);
   const dispatch = useDispatch();
 
   const getPublication = () => {
@@ -214,7 +214,6 @@ export default function Publications() {
       getPublicationStories();
     }
   }, [publicationName]);
-
 
   return (
     <div>
@@ -262,9 +261,9 @@ export default function Publications() {
             </div>
             <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8 mb-[60px]">
               <div className="lg:pl-8 lg:pr-8 divide-y divide-gray-200">
-                {posts.map((post, index) => (
+                {posts.map((post) => (
                   <PublicationPostCard
-                    key={index}
+                    key={post.id}
                     image={post.image}
                     title={post.title}
                     description={post.description}
@@ -287,9 +286,9 @@ export default function Publications() {
                 Latest
               </h2>
               <div className="flex items-center gap-8">
-                {latests.map((latest, index) => (
+                {latests.map((latest) => (
                   <PublicationPostCard
-                    key={index}
+                    key={latest.id}
                     image={latest.image}
                     title={latest.title}
                     description={latest.description}

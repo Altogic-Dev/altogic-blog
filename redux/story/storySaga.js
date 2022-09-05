@@ -128,6 +128,33 @@ export function* updateStoryLikeCountSaga(isIncrease) {
   }
 }
 
+function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getUserStories,
+      userId,
+      page,
+      limit
+    );
+    if (errors) throw errors;
+    if (_.isArray(data)) {
+      yield put(storyActions.getUserStoriesSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* deleteStorySaga({ payload: storyId }) {
+  try {
+    const { errors } = yield call(StoryService.deleteStory, storyId);
+    if (errors) throw errors;
+    yield put(storyActions.deleteStorySuccess(storyId));
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeEvery(
@@ -147,5 +174,10 @@ export default function* rootSaga() {
       storyActions.getMoreUserStoriesRequest.type,
       getMoreUserStoriesSaga
     ),
+    yield takeEvery(
+      storyActions.getUserStoriesRequest.type,
+      getUserStoriesSaga
+    ),
+    yield takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
   ]);
 }

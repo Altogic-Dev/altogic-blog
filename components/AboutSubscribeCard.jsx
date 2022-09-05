@@ -1,19 +1,19 @@
-export default function AboutSubscribeCard(props) {
+export default function AboutSubscribeCard({ name, mailAddress }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 p-6 sm:p-8 rounded-2xl bg-purple-700">
       <div className="flex flex-col gap-4">
         <h2 className="text-white text-2xl md:text-3xl font-medium tracking-md">
-          Get an email whenever <br />{" "}
-          <span className="font-bold">{props.name}</span> publishes.
+          Get an email whenever <br /> <span className="font-bold">{name}</span>{' '}
+          publishes.
         </h2>
         <span className="text-purple-200 text-base md:text-lg tracking-sm">
           Emails will be sent to
           <br />
           <a
-            href={`mailto:${props.mailAddress}`}
+            href={`mailto:${mailAddress}`}
             className="text-purple-50 hover:underline hover:underline-offset-2"
           >
-            {props.mailAddress}
+            {mailAddress}
           </a>
         </span>
       </div>

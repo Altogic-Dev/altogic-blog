@@ -3,9 +3,8 @@ import Head from 'next/head';
 import { Tab, Menu, Transition } from '@headlessui/react';
 import Button from '@/components/basic/button';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/SideBar';
+import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
-
 
 const posts = [
   {
@@ -280,7 +279,7 @@ export default function MyStories() {
             <div className="lg:py-10 lg:px-8">
               <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 lg:mb-14">
                 <div className="flex items-center justify-between mb-8 md:mb-0">
-                  {selectedIndex == 0 ? (
+                  {selectedIndex === 0 ? (
                     <h1 className="text-slate-700 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                       Your Stories
                     </h1>
@@ -471,7 +470,9 @@ export default function MyStories() {
                     <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
+                        selectedIndex === 0
+                          ? 'bg-purple-50 text-purple-900'
+                          : ''
                       )}
                     >
                       45
@@ -491,7 +492,9 @@ export default function MyStories() {
                     <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex == 0 ? '' : 'bg-purple-50 text-purple-900'
+                        selectedIndex === 0
+                          ? ''
+                          : 'bg-purple-50 text-purple-900'
                       )}
                     >
                       2

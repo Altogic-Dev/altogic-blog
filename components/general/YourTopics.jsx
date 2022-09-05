@@ -7,28 +7,52 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../basic/button';
 import Topic from '../basic/topic';
 
-export default function YourTopics({Tag}) {
+export default function YourTopics({ Tag }) {
   const router = useRouter();
-
-  const [selected, setSelected] = useState(true);
-  const [followingTopicsState, setFollowingTopicsState] = useState([]);
-  const dispatch = useDispatch();
   const followingTopics = useSelector((state) =>
     _.get(state.auth.user, 'followingTopics')
   );
+
+  const [followingTopicsState, setFollowingTopicsState] = useState([]);
+  const [followed, setFollowed] = useState(false);
+  const dispatch = useDispatch();
+
   const unfollowTopic = () => {
-    const topics = followingTopicsState.filter((topic) => topic !== Tag);
+    const topics = followingTopicsState.filter(
+      (topic) => topic !== Tag.replace('-', ' ')
+    );
+    
     setFollowingTopicsState(topics);
-    setSelected();
     dispatch(
-      authActions.unfollowTopicRequest({
+      authActions.updateFollowingTopicsRequest({
         topics,
       })
     );
   };
+  const followTopic = () => {
+    dispatch(
+      authActions.updateFollowingTopicsRequest({
+        topics: [...followingTopicsState, Tag.replace('-', ' ')],
+      })
+    );
+    setFollowingTopicsState((state) => [...state, Tag.replace('-', ' ')]);
+  };
+
+  const handleClick = (followed) => {
+    if (followed) unfollowTopic();
+    else followTopic();
+
+    setFollowed((state) => !state);
+  };
   useEffect(() => {
-    setFollowingTopicsState(followingTopics);
-  }, [followingTopics]);
+    if (Tag) {
+      setFollowingTopicsState(followingTopics);
+      setFollowed(
+        followingTopics.length > 0 &&
+          followingTopics.includes(Tag.replace('-', ' '))
+      );
+    }
+  }, [followingTopics, Tag]);
 
   return (
     <>
@@ -58,8 +82,8 @@ export default function YourTopics({Tag}) {
               {Tag}
             </p>
             <div className="inline-flex gap-4 mb-12">
-              <Button primaryColor onClick={unfollowTopic}>
-                Unfollow
+              <Button primaryColor onClick={() => handleClick(followed)}>
+                {followed ? 'Unfollow' : 'Follow'}
               </Button>
               <Button onClick={() => {}}>Start Writing</Button>
             </div>
@@ -84,27 +108,26 @@ export default function YourTopics({Tag}) {
               ))}
             </div>
           </div>
-          {selected && (
-            <>
-              <div className="flex items-center gap-2 mb-6">
-                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-100">
-                  <GlobeAltIcon className="w-6" />
-                </span>
-                <h1 className="text-slate-700 text-2xl md:text-3xl lg:text-5xl font-bold tracking-md">
-                  {Tag}
-                </h1>
-              </div>
-              <div className="flex items-center gap-4">
-                <Button className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                  Unfollow
-                </Button>
-                <Button className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                  Start writing
-                </Button>
-              </div>
-            </>
-          )}
-          
+
+          <div className="flex items-center gap-2 mb-6">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gray-100">
+              <GlobeAltIcon className="w-6" />
+            </span>
+            <h1 className="text-slate-700 text-2xl md:text-3xl lg:text-5xl font-bold tracking-md">
+              {Tag}
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <Button
+              onClick={() => handleClick(followed)}
+              className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            >
+              {followed ? 'Unfollow' : 'Follow'}
+            </Button>
+            <Button className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+              Start writing
+            </Button>
+          </div>
         </div>
       )}
     </>

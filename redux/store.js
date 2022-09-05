@@ -24,7 +24,7 @@ const makeStore = () => {
       [followerConnectionSlice.name]: followerConnectionSlice.reducer,
       [storySlice.name]: storySlice.reducer,
       [reportSlice.name]: reportSlice.reducer,
-      [recommendationsSlice.name]: followerConnectionSlice.reducer,
+      [recommendationsSlice.name]: recommendationsSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
       [storyLikesSlice.name]: storyLikesSlice.reducer,
       [topicsSlice.name]: topicsSlice.reducer,

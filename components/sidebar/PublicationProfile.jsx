@@ -1,17 +1,12 @@
-import { useSelector } from "react-redux";
-import SocialIcons from "../publication/SocialIcons";
+import { useSelector } from 'react-redux';
+import SocialIcons from '../publication/SocialIcons';
 
 export default function PublicationProfile() {
-
-  const { publication, error } = useSelector((state) => state.publication);
+  const { publication } = useSelector((state) => state.publication);
 
   return (
     <div className="space-y-6">
-      <img
-        className="w-[200px]"
-        src={publication?.logo}
-        alt="HiThemes"
-      />
+      <img className="w-[200px]" src={publication?.logo} alt="HiThemes" />
       <p className="text-slate-500 text-sm tracking-sm">
         Faucibus consequat, massa risus, dignissim interdum feugiat sollicitudin
         tortor. Volutpat, elementum diam id nunc pellentesque suspendisse
@@ -39,11 +34,13 @@ export default function PublicationProfile() {
       </button>
       <div>
         <h2 className="text-slate-600 mb-2 text-base tracking-sm">Followers</h2>
-        <span className="text-slate-500 text-sm tracking-sm">{publication?.followerCount}</span>
+        <span className="text-slate-500 text-sm tracking-sm">
+          {publication?.followerCount}
+        </span>
       </div>
       <div>
         <h2 className="text-slate-600 mb-2 text-base tracking-sm">Elsewhere</h2>
-       <SocialIcons/>
+        <SocialIcons />
       </div>
     </div>
   );

@@ -8,16 +8,20 @@ function* getWhoToFollowMinimizedSaga() {
       RecommendationsService.getWhoToFollowMinimized
     );
     if (errors) throw errors.items;
-    // if (data) yield put(recommendationsActions.fetchDataSuccess());
+    if (data) yield put(recommendationsActions.getWhoToFollowMinimizedSuccess(data));
   } catch (e) {
-    // yield put(recommendationsActions.fetchDataFailure(e));
+    yield put(recommendationsActions.getWhoToFollowMinimizedFailure(e));
     console.error({ e });
   }
 }
 
-function* getWhoToFollowSaga() {
+function* getWhoToFollowSaga({ payload: { page, limit } }) {
   try {
-    const { data, errors } = yield call(RecommendationsService.getWhoToFollow);
+    const { data, errors } = yield call(
+      RecommendationsService.getWhoToFollow,
+      page,
+      limit
+    );
 
     if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.getWhoToFollowSuccess(data));
@@ -29,7 +33,7 @@ function* getWhoToFollowSaga() {
 
 export default function* rootSaga() {
   yield takeEvery(
-    recommendationsActions.getWhoToFollowMinimizedRequest.type,
+    recommendationsActions.getWhoToFollowRequest.type,
     getWhoToFollowSaga
   );
   yield takeEvery(
@@ -40,5 +44,4 @@ export default function* rootSaga() {
     recommendationsActions.getWhoToFollowMinimizedRequest.type,
     getWhoToFollowMinimizedSaga
   );
- 
 }

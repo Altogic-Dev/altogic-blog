@@ -3,35 +3,35 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 
 import { topicsActions } from './topicsSlice';
 
-// function* getLatestsOfTopicSaga({ payload: topic }) {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+function* getLatestsOfTopicSaga({ payload: {topic,page,limit} }) {
+  try {
+    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic,page,limit);
 
-//     if (data) {
-//       yield put(topicsActions.getLatestofTopicSuccess(data));
-//     }
-//     if (errors) {
-//       throw errors.items;
-//     }
-//   } catch (e) {
-//     yield put(topicsActions.getLatestofTopicFailure(e));
-//   }
-// }
+    if (data) {
+      yield put(topicsActions.getLatestsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getLatestsOfTopicFailure(e));
+  }
+}
 
-// function* getBestsOfTopicSaga({ payload: topic }) {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+function* getBestsOfTopicSaga({ payload: {topic,page,limit} }) {
+  try {
+    const { data, errors } = yield call(TopicsService.getBestsOfTopic, topic,page,limit);
 
-//     if (data) {
-//       yield put(topicsActions.getLatestsOfTopicSuccess(data));
-//     }
-//     if (errors) {
-//       throw errors.items;
-//     }
-//   } catch (e) {
-//     yield put(topicsActions.getLatestsOfTopicFailure(e));
-//   }
-// }
+    if (data) {
+      yield put(topicsActions.getBestsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getBestsOfTopicFailure(e));
+  }
+}
 
 // function* getTrendingsOfTopicsSaga({ payload: topic }) {
 //   try {
@@ -58,7 +58,6 @@ function* getPopularTopicsSaga() {
   }
 }
 function* getRelatedTopicsSaga({ payload: topic }) {
-  console.log(topic);
   try {
     const { data, errors } = yield call(TopicsService.getRelatedTopics, topic);
 
@@ -68,9 +67,25 @@ function* getRelatedTopicsSaga({ payload: topic }) {
     yield put(topicsActions.getRelatedTopicsFailure(e));
   }
 }
-function* getTopicTopWritersSaga({ payload: topic }) {
+function* getTopicTopWritersIdListSaga({ payload: topic }) {
   try {
-    const { data, errors } = yield call(TopicsService.getTopicTopWriters,topic);
+    const { data, errors } = yield call(
+      TopicsService.getTopicTopWritersIdList,
+      topic
+    );
+
+    if (errors) throw errors.items;
+    if (data) yield put(topicsActions.getTopicTopWritersIdListSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.getTopicTopWritersIdListFailure(e));
+  }
+}
+function* getTopicTopWritersSaga({ payload: people }) {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getTopicTopWriters,
+      people
+    );
 
     if (errors) throw errors.items;
     if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
@@ -78,16 +93,15 @@ function* getTopicTopWritersSaga({ payload: topic }) {
     yield put(topicsActions.getTopicTopWritersFailure(e));
   }
 }
-
 export default function* rootSaga() {
-  // yield takeEvery(
-  //   topicsActions.getLatestsOfTopicRequest.type,
-  //   getLatestsOfTopicSaga
-  // );
-  // yield takeEvery(
-  //   topicsActions.getBestsOfTopicRequest.type,
-  //   getBestsOfTopicSaga
-  // );
+  yield takeEvery(
+    topicsActions.getLatestsOfTopicRequest.type,
+    getLatestsOfTopicSaga
+  );
+  yield takeEvery(
+    topicsActions.getBestsOfTopicRequest.type,
+    getBestsOfTopicSaga
+  );
   // yield takeEvery(
   //   topicsActions.getTrendingsOfTopicsRequest.type,
   //   getTrendingsOfTopicsSaga
@@ -103,5 +117,9 @@ export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getTopicTopWritersRequest.type,
     getTopicTopWritersSaga
+  );
+  yield takeEvery(
+    topicsActions.getTopicTopWritersIdListRequest.type,
+    getTopicTopWritersIdListSaga
   );
 }

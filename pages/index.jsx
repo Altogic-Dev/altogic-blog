@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import ListObserver from '@/components/ListObserver';
 import Layout from '../layout/Layout';
 import PostCard from '../components/PostCard';
-import Sidebar from '@/layout/SideBar';
+import Sidebar from '../layout/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');

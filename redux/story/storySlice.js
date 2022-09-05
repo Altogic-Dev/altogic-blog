@@ -10,6 +10,7 @@ const initialState = {
   recommendedStoriesInfo: null,
   story: null,
   moreUserStories: null,
+  userStories: null,
   isLoading: false,
 };
 
@@ -88,6 +89,19 @@ export const storySlice = createSlice({
       } else {
         state.moreUserStories = action.payload;
       }
+    },
+
+    getUserStoriesRequest() {},
+    getUserStoriesSuccess(state, action) {
+      state.userStories = action.payload;
+    },
+
+    deleteStoryRequest() {},
+    deleteStorySuccess(state, action) {
+      state.userStories = _.reject(
+        state.userStories,
+        (story) => story._id === action.payload
+      );
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

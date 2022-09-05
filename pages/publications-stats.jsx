@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layout/Layout';
 import dynamic from 'next/dynamic';
+
 const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,
 });
@@ -344,8 +345,8 @@ export default function PublicationsStats() {
                     June 2022
                   </span>
                   <ul className="divide-y divide-gray-200">
-                    {statistics.map((statistic, index) => (
-                      <li key={index} className="py-4">
+                    {statistics.map((statistic) => (
+                      <li key={statistic.title} className="py-4">
                         <div className="p-4">
                           <p className="text-slate-800 text-base font-medium tracking-sm">
                             {statistic.title}
@@ -498,8 +499,8 @@ export default function PublicationsStats() {
                     June 2022
                   </span>
                   <ul className="divide-y divide-gray-200">
-                    {statistics.map((statistic, index) => (
-                      <li key={index} className="py-4">
+                    {statistics.map((statistic) => (
+                      <li key={statistic.title} className="py-4">
                         <div className="p-4">
                           <p className="text-slate-800 text-base font-medium tracking-sm">
                             {statistic.title}
@@ -652,8 +653,8 @@ export default function PublicationsStats() {
                     June 2022
                   </span>
                   <ul className="divide-y divide-gray-200">
-                    {statistics.map((statistic, index) => (
-                      <li key={index} className="py-4">
+                    {statistics.map((statistic) => (
+                      <li key={statistic.title} className="py-4">
                         <div className="p-4">
                           <p className="text-slate-800 text-base font-medium tracking-sm">
                             {statistic.title}

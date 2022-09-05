@@ -1,72 +1,115 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
+import Button from '../basic/button';
 
-export default function WhoToFollow({ isTopWriters }) {
-
-  const router = useRouter();
-  const { tag } = router.query;
+export default function WhoToFollow({ isTopWriters, Tag }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
   const [people, setPeople] = useState([]);
+  const [peopleMinimized, setPeopleMinimized] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
+  let page = 0;
+  const whoToFollow = useSelector((state) => state.recommendations.whoToFollow);
   const whoToFollowMinimized = useSelector(
     (state) => state.recommendations.whoToFollowMinimized
   );
-  const whoToFollowData = useSelector(
-    (state) => state.recommendations.whoToFollow
+  const topWritersIdList = useSelector(
+    (state) => state.topics.topWritersIdList
   );
   const topWriters = useSelector((state) => state.topics.topWriters);
 
   const dispatch = useDispatch();
 
-  const getTopWriters = () => {
+  const getTopWritersIdList = (Tag, size) => {
+    dispatch(topicsActions.getTopicTopWritersIdListRequest(Tag, size));
+  };
+  const getTopWriters = (idList) => {
+    dispatch(topicsActions.getTopicTopWritersRequest(idList));
+  };
 
-    dispatch(topicsActions.getTopicTopWritersRequest(tag));
+  const getWhoToFollow = (page, size) => {
+    dispatch(recommendationsActions.getWhoToFollowRequest({ page, size }));
   };
   const getWhoToFollowMinimized = () => {
     dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
   };
-  const getWhoToFollow = () => {
-    dispatch(recommendationsActions.getWhoToFollowRequest());
-  };
 
-  const handleSeeMore = () => {
+  const handleSeeMoreSuggestions = () => {
+    if (isTopWriters) {
+      const idList = topWritersIdList?.map((person) => person.groupby.group);
+      getTopWriters(idList.slice(0, 20));
+    } else {
+      getWhoToFollow(1, 20);
+    }
     setWhoToFollowModal(true);
-    getWhoToFollow();
   };
 
+  const handleShowMore = () => {
+    page += 1;
+    if (isTopWriters) {
+      const idList = topWritersIdList?.map((person) => person.groupby.group);
+      getTopWriters(idList.slice(20 * (page - 1), 20 * page));
+    } else {
+      getWhoToFollow(page, 20);
+    }
+  };
   useEffect(() => {
-    if (isTopWriters && tag) getTopWriters();
-    else getWhoToFollowMinimized();
-  }, [tag]);
+    if (isTopWriters && Tag) {
+      getTopWritersIdList(Tag, 10);
+    }
+  }, [Tag]);
 
   useEffect(() => {
-    if (isTopWriters) setPeople(topWriters);
-    else setPeople(whoToFollowData);
-  }, [whoToFollowData, topWriters]);
+    if (!isTopWriters) {
+      getWhoToFollowMinimized();
+    }
+  }, []);
 
-  console.log(topWriters);
-  console.log(isTopWriters);
+  useEffect(() => {
+    if (isTopWriters) {
+      if (whoToFollowModal) {
+        setPeople(topWriters);
+      } else {
+        setPeopleMinimized(topWriters);
+      }
+    } else {
+      setPeople((state) => [...state, ...whoToFollow]);
+    }
+  }, [whoToFollow, topWriters]);
+
+  useEffect(() => {
+    if (!isTopWriters) setPeopleMinimized(whoToFollowMinimized);
+  }, [whoToFollowMinimized]);
+
+  useEffect(() => {
+    const idList = topWritersIdList?.map((person) => person.groupby.group);
+    getTopWriters(idList.slice(0, 5));
+  }, [topWritersIdList]);
+
+  function strip(html) {
+    return html?.replace(/<\s*[^>]*>/gi, '');
+  }
+
 
   if (!isLoading)
     return (
       <div>
-        <SidebarTitle title={topWriters ? 'Top Writers' : 'Who To Follow'} />
+        <SidebarTitle title={isTopWriters ? 'Top Writers' : 'Who To Follow'} />
         <div>
           <ul className="divide-y divide-gray-200">
-            {whoToFollowMinimized?.map((person) => (
+            {peopleMinimized?.map((person) => (
               <li
-                key={person.id}
+                key={person._id}
                 className="flex items-start justify-between gap-3 py-4"
               >
                 <div className="flex gap-3">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src={person.image}
+                    src={person.profilePicture}
                     alt={person.name}
                   />
                   <div className="flex flex-col">
@@ -74,21 +117,20 @@ export default function WhoToFollow({ isTopWriters }) {
                       {person.name}
                     </span>
                     <span className="text-slate-500 text-xs tracking-sm">
-                      {person.desc}
+                      {strip(person.about)}
                     </span>
                   </div>
                 </div>
-                <a
-                  href={person.href}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                >
-                  Follow
-                </a>
+                <Link href={`/${person.username}`}>
+                  <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                    Follow
+                  </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <button
-            onClick={() => setWhoToFollowModal(!whoToFollowModal)}
+          <Button
+            onClick={handleSeeMoreSuggestions}
             className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             type="button"
           >
@@ -107,9 +149,13 @@ export default function WhoToFollow({ isTopWriters }) {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </Button>
           <Transition appear show={whoToFollowModal} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={handleSeeMore}>
+            <Dialog
+              as="div"
+              className="relative z-10"
+              onClose={handleSeeMoreSuggestions}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -144,13 +190,13 @@ export default function WhoToFollow({ isTopWriters }) {
                         <ul className="mb-6">
                           {people?.map((person) => (
                             <li
-                              key={person.id}
+                              key={person._id}
                               className="flex items-start justify-between gap-6 py-4"
                             >
                               <div className="flex gap-3">
                                 <img
                                   className="w-10 h-10 rounded-full"
-                                  src={person.image}
+                                  src={person.profilePicture}
                                   alt={person.name}
                                 />
                                 <div className="flex flex-col">
@@ -158,26 +204,26 @@ export default function WhoToFollow({ isTopWriters }) {
                                     {person.name}
                                   </span>
                                   <span className="text-slate-500 text-xs tracking-sm">
-                                    {person.desc}
+                                    {strip(person.about)}
                                   </span>
                                 </div>
                               </div>
-                              <a
-                                href={person.href}
-                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                              >
-                                Follow
-                              </a>
+                              <Link href={`/${person.username}`}>
+                                <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                  Follow
+                                </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
                         <div className="text-center">
-                          <button
+                          <Button
+                            onClick={handleShowMore}
                             type="button"
                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                           >
                             Show more
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </Dialog.Panel>
