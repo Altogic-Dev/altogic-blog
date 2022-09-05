@@ -24,6 +24,10 @@ export const recommendationsSlice = createSlice({
       state.whoToFollowMinimizedLoading = false;
       state.whoToFollowMinimized = action.payload;
     },
+    getWhoToFollowMinimizedFailure(state, action) {
+      state.isLoading = false;
+      state.errors = action.payload;
+    },
     getWhoToFollowRequest(state) {
       state.whoToFollowLoading = true;
     },
@@ -35,7 +39,7 @@ export const recommendationsSlice = createSlice({
       state.isLoading = false;
       state.errors = action.payload;
     },
-   
+
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
 
     extraReducers: {
