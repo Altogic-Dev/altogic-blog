@@ -126,31 +126,7 @@ export default function BlogDetail() {
           authorId: _.get(story, 'user._id'),
         })
       );
-      // dispatch(
-      //   followerConnectionActions.getFollowingRequest({
-      //     userId: _.get(user, '_id'),
-      //     followingUserId: _.get(story, 'user._id'),
-      //   })
-      // );
-      // dispatch(
-      //   subscribeConnectionActions.getSubscribeRequest({
-      //     userId: _.get(user, '_id'),
-      //     subscribingUserId: _.get(story, 'user._id'),
-      //   })
-      // );
-      // dispatch(
-      //   storyLikesActions.isLikedStoryRequest({
-      //     userId: _.get(user, '_id'),
-      //     storyId: _.get(story, '_id'),
-      //   })
-      // );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
-      // dispatch(
-      //   reportActions.getReportedStoryByUserRequest({
-      //     userId: _.get(user, '_id'),
-      //     storyId: _.get(story, '_id'),
-      //   })
-      // );
       setDidMount(false);
     }
   }, [story]);

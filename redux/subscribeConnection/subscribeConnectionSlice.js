@@ -31,6 +31,10 @@ export const subscribeConnectionSlice = createSlice({
       state.isSubscribed = !_.isNull(action.payload);
     },
 
+    setIsSubscribed(state, action) {
+      state.isSubscribed = action.payload;
+    },
+
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({
