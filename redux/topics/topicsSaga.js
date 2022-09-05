@@ -3,20 +3,21 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 
 import { topicsActions } from './topicsSlice';
 
-// function* getLatestsOfTopicSaga({ payload: topic }) {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+function* getLatestsOfTopicSaga({ payload: {topic,page,limit} }) {
+  console.log("sa")
+  try {
+    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic,page,limit);
 
-//     if (data) {
-//       yield put(topicsActions.getLatestofTopicSuccess(data));
-//     }
-//     if (errors) {
-//       throw errors.items;
-//     }
-//   } catch (e) {
-//     yield put(topicsActions.getLatestofTopicFailure(e));
-//   }
-// }
+    if (data) {
+      yield put(topicsActions.getLatestsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getLatestsOfTopicFailure(e));
+  }
+}
 
 // function* getBestsOfTopicSaga({ payload: topic }) {
 //   try {
@@ -94,10 +95,10 @@ function* getTopicTopWritersSaga({ payload: people }) {
   }
 }
 export default function* rootSaga() {
-  // yield takeEvery(
-  //   topicsActions.getLatestsOfTopicRequest.type,
-  //   getLatestsOfTopicSaga
-  // );
+  yield takeEvery(
+    topicsActions.getLatestsOfTopicRequest.type,
+    getLatestsOfTopicSaga
+  );
   // yield takeEvery(
   //   topicsActions.getBestsOfTopicRequest.type,
   //   getBestsOfTopicSaga

@@ -1,8 +1,9 @@
 import { db } from '@/utils/altogic';
 
 const TopicsService = {
-  getLatestsOfTopic() {
-    return db.model('users').sort('storyCount', 'desc').limit(10).getRandom(10);
+  getLatestsOfTopic(topic,page,limit) {
+    console.log(topic,page,limit);
+    return db.model('story').filter(`IN(this.categoryNames, '${topic}')`).sort('createdAt', 'desc').page(page).limit(limit).get()
   },
   getBestsOfTopic() {
     return db.model('users').sort('storyCount', 'desc').limit(100);
