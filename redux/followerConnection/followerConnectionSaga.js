@@ -1,7 +1,6 @@
 import { call, takeEvery, put, all, fork, select } from 'redux-saga/effects';
 import _ from 'lodash';
 import FollowerConnectionService from '@/services/followerConnection';
-import AuthService from '@/services/auth';
 import { followerConnectionActions } from './followerConnectionSlice';
 import { updateFollowerCountSaga } from '../story/storySaga';
 import { updateUserSaga } from '../auth/authSaga';

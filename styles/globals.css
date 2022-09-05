@@ -170,6 +170,18 @@
   .tooltip span {
     background-color: #262625;
   }
+  .quill {
+    height: 8rem;
+  }
+  .quill > .ql-container {
+    box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+      var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+    border-radius: 0.375rem;
+  }
+
+  #toolbar {
+    border: none;
+  }
 
   .search-bar .wrapper ul li svg {
     @apply hidden;

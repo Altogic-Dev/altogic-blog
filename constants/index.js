@@ -1,3 +1,5 @@
+import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+
 const constants = {
   SETTINGS_MENU: [
     {
@@ -19,6 +21,35 @@ const constants = {
       id: 3,
       name: 'My Plans',
       href: '#my-plans',
+    },
+  ],
+  USER_SETTINGS_FIELDS: [
+    {
+      name: 'username',
+      label: 'Username',
+      type: 'text',
+      placeholder: 'Enter your username',
+      prefix: 'altogic.com/',
+    },
+    {
+      name: 'name',
+      label: 'Name',
+      type: 'text',
+      placeholder: 'Enter your name',
+    },
+    {
+      name: 'website',
+      label: 'Website',
+      type: 'text',
+      placeholder: 'Enter your website',
+      prefix: 'https://',
+    },
+    {
+      name: 'email',
+      label: ' Contact email',
+      placeholder: 'Enter your email',
+      icon: faEnvelope,
+      className: 'pl-10 text-base',
     },
   ],
 };

@@ -1,11 +1,15 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
 
-export default function WhoToFollow({ topWriters }) {
+export default function WhoToFollow({ isTopWriters }) {
+
+  const router = useRouter();
+  const { tag } = router.query;
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
   const [people, setPeople] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
@@ -15,12 +19,13 @@ export default function WhoToFollow({ topWriters }) {
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
-  const topWritersData = useSelector((state) => state.topics.topWriters);
+  const topWriters = useSelector((state) => state.topics.topWriters);
 
   const dispatch = useDispatch();
 
   const getTopWriters = () => {
-    dispatch(topicsActions.getTopicTopWritersRequest());
+
+    dispatch(topicsActions.getTopicTopWritersRequest(tag));
   };
   const getWhoToFollowMinimized = () => {
     dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
@@ -35,16 +40,17 @@ export default function WhoToFollow({ topWriters }) {
   };
 
   useEffect(() => {
-    if (topWriters) getTopWriters();
+    if (isTopWriters && tag) getTopWriters();
     else getWhoToFollowMinimized();
-  }, []);
+  }, [tag]);
 
   useEffect(() => {
-    if (topWriters) setPeople(topWritersData);
+    if (isTopWriters) setPeople(topWriters);
     else setPeople(whoToFollowData);
-  }, [whoToFollowData, topWritersData]);
+  }, [whoToFollowData, topWriters]);
 
-  console.log(topWritersData);
+  console.log(topWriters);
+  console.log(isTopWriters);
 
   if (!isLoading)
     return (
