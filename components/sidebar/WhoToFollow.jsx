@@ -1,6 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { topicsActions } from '@/redux/topics/topicsSlice';
@@ -12,9 +11,9 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
   const [people, setPeople] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
-  const whoToFollowMinimized = useSelector(
-    (state) => state.recommendations.whoToFollowMinimized
-  );
+  // const whoToFollowMinimized = useSelector(
+  //   (state) => state.recommendations.whoToFollowMinimized
+  // );
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
@@ -34,9 +33,9 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
   const getWhoToFollowMinimized = () => {
     dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
   };
-  const getWhoToFollow = () => {
-    dispatch(recommendationsActions.getWhoToFollowRequest());
-  };
+  // const getWhoToFollow = () => {
+  //   dispatch(recommendationsActions.getWhoToFollowRequest());
+  // };
 
   const handleSeeMoreSuggestions = () => {
     const idList = topWritersIdList?.map((person) => person.groupby.group);
