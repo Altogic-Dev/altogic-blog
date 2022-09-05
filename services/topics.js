@@ -2,11 +2,10 @@ import { db } from '@/utils/altogic';
 
 const TopicsService = {
   getLatestsOfTopic(topic,page,limit) {
-    console.log(topic,page,limit);
     return db.model('story').filter(`IN(this.categoryNames, '${topic}')`).sort('createdAt', 'desc').page(page).limit(limit).get()
   },
-  getBestsOfTopic() {
-    return db.model('users').sort('storyCount', 'desc').limit(100);
+  getBestsOfTopic(topic,page,limit) {
+    return db.model('story').filter(`IN(this.categoryNames, '${topic}')`).sort('likeCount', 'desc').page(page).limit(limit).get()
   },
   getTrendingsOfTopic() {
     return db.model('users').sort('storyCount', 'desc').limit(100);

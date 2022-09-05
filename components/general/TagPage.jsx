@@ -24,12 +24,22 @@ export default function TagPage({ Home, Latest, Best }) {
   const { tag } = router.query;
   const dispatch = useDispatch();
   const latestTopics = useSelector((state) => state.topics.latestTopics);
+  const bestTopics = useSelector((state) => state.topics.bestTopics);
 
   const [posts, setPosts] = useState([]);
 
-  const getLatest = (page) => {
+  const getLatests = (page) => {
     dispatch(
       topicsActions.getLatestsOfTopicRequest({
+        topic: tag,
+        page,
+        limit: 10,
+      })
+    );
+  };
+  const getBests = (page) => {
+    dispatch(
+      topicsActions.getBestsOfTopicRequest({
         topic: tag,
         page,
         limit: 10,
@@ -42,20 +52,29 @@ export default function TagPage({ Home, Latest, Best }) {
       if (Home) {
         setSelectedIndex(0);
       } else if (Latest) {
-        getLatest(1);
+        getLatests(1);
         setSelectedIndex(1);
       } else if (Best) {
+        getBests(1);
+
         setSelectedIndex(2);
       }
     }
   }, [tag]);
 
   useEffect(() => {
-    if (Latest) {
-      setPosts(latestTopics);
-    }
-  }, [latestTopics]);
 
+    if (Home) {
+      console.log("s")
+    } else if (Latest) {
+      setPosts(latestTopics);
+    } else if (Best) {
+      setPosts(bestTopics);
+
+    }
+  }, [latestTopics,bestTopics]);
+
+  console.log(bestTopics)
   return (
     <div>
       <Head>

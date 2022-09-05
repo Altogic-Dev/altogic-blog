@@ -4,7 +4,6 @@ import { call, put, takeEvery } from 'redux-saga/effects';
 import { topicsActions } from './topicsSlice';
 
 function* getLatestsOfTopicSaga({ payload: {topic,page,limit} }) {
-  console.log("sa")
   try {
     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic,page,limit);
 
@@ -19,20 +18,20 @@ function* getLatestsOfTopicSaga({ payload: {topic,page,limit} }) {
   }
 }
 
-// function* getBestsOfTopicSaga({ payload: topic }) {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+function* getBestsOfTopicSaga({ payload: {topic,page,limit} }) {
+  try {
+    const { data, errors } = yield call(TopicsService.getBestsOfTopic, topic,page,limit);
 
-//     if (data) {
-//       yield put(topicsActions.getLatestsOfTopicSuccess(data));
-//     }
-//     if (errors) {
-//       throw errors.items;
-//     }
-//   } catch (e) {
-//     yield put(topicsActions.getLatestsOfTopicFailure(e));
-//   }
-// }
+    if (data) {
+      yield put(topicsActions.getBestsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getBestsOfTopicFailure(e));
+  }
+}
 
 // function* getTrendingsOfTopicsSaga({ payload: topic }) {
 //   try {
@@ -99,10 +98,10 @@ export default function* rootSaga() {
     topicsActions.getLatestsOfTopicRequest.type,
     getLatestsOfTopicSaga
   );
-  // yield takeEvery(
-  //   topicsActions.getBestsOfTopicRequest.type,
-  //   getBestsOfTopicSaga
-  // );
+  yield takeEvery(
+    topicsActions.getBestsOfTopicRequest.type,
+    getBestsOfTopicSaga
+  );
   // yield takeEvery(
   //   topicsActions.getTrendingsOfTopicsRequest.type,
   //   getTrendingsOfTopicsSaga
