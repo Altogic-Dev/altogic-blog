@@ -3,10 +3,10 @@ import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { topicsActions } from '@/redux/topics/topicsSlice';
+import { parseHtml } from '@/utils/utils';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
-import { parseHtml } from '@/utils/utils';
 
 export default function WhoToFollow({ isTopWriters, Tag }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
