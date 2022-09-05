@@ -277,7 +277,7 @@ export default function TagPage({ Home, Latest, Best }) {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar personalFullStatistic topWriters relatedTopics />
+              <Sidebar personalFullStatistic topWriters relatedTopics Tag={tag} />
             </div>
             {/* Mobile */}
           </div>

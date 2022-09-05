@@ -1,11 +1,14 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
+import Button from '../basic/button';
 
-export default function WhoToFollow({ topWriters }) {
+export default function WhoToFollow({ isTopWriters, Tag }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
   const [people, setPeople] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
@@ -15,12 +18,18 @@ export default function WhoToFollow({ topWriters }) {
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
-  const topWritersData = useSelector((state) => state.topics.topWriters);
+  const topWritersIdList = useSelector(
+    (state) => state.topics.topWritersIdList
+  );
+  const topWriters = useSelector((state) => state.topics.topWriters);
 
   const dispatch = useDispatch();
 
-  const getTopWriters = () => {
-    dispatch(topicsActions.getTopicTopWritersRequest());
+  const getTopWritersIdList = () => {
+    dispatch(topicsActions.getTopicTopWritersIdListRequest(Tag,10));
+  };
+  const getTopWriters = (idList) => {
+    dispatch(topicsActions.getTopicTopWritersRequest(idList));
   };
   const getWhoToFollowMinimized = () => {
     dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
@@ -29,36 +38,52 @@ export default function WhoToFollow({ topWriters }) {
     dispatch(recommendationsActions.getWhoToFollowRequest());
   };
 
-  const handleSeeMore = () => {
+  const handleSeeMoreSuggestions = () => {
+    const idList = topWritersIdList?.map((person) => person.groupby.group);
+    getTopWriters(idList.slice(0, 20));
     setWhoToFollowModal(true);
-    getWhoToFollow();
+    
+   // getWhoToFollow();
   };
+  
 
   useEffect(() => {
-    if (topWriters) getTopWriters();
-    else getWhoToFollowMinimized();
-  }, []);
+    if (isTopWriters && Tag) {
+      getTopWritersIdList();
+    } else if (!isTopWriters) {
+      getWhoToFollowMinimized();
+    }
+  }, [Tag]);
 
   useEffect(() => {
-    if (topWriters) setPeople(topWritersData);
-    else setPeople(whoToFollowData);
-  }, [whoToFollowData, topWritersData]);
+    if (isTopWriters) setPeople(topWriters);
+    else if (!isTopWriters) setPeople(whoToFollowData);
+  }, [whoToFollowData, topWriters]);
+
+  useEffect(() => {
+    const idList = topWritersIdList?.map((person) => person.groupby.group);
+    getTopWriters(idList.slice(0, 5));
+  }, [topWritersIdList]);
+
+  function strip(html) {
+    return html?.replace(/<\s*[^>]*>/gi, '');
+  }
 
   if (!isLoading)
     return (
       <div>
-        <SidebarTitle title={topWriters ? 'Top Writers' : 'Who To Follow'} />
+        <SidebarTitle title={isTopWriters ? 'Top Writers' : 'Who To Follow'} />
         <div>
           <ul className="divide-y divide-gray-200">
-            {whoToFollowMinimized?.map((person) => (
+            {people?.slice(0,5).map((person) => (
               <li
-                key={person.id}
+                key={person._id}
                 className="flex items-start justify-between gap-3 py-4"
               >
                 <div className="flex gap-3">
                   <img
                     className="w-10 h-10 rounded-full"
-                    src={person.image}
+                    src={person.profilePicture}
                     alt={person.name}
                   />
                   <div className="flex flex-col">
@@ -66,21 +91,20 @@ export default function WhoToFollow({ topWriters }) {
                       {person.name}
                     </span>
                     <span className="text-slate-500 text-xs tracking-sm">
-                      {person.desc}
+                      {strip(person.about)}
                     </span>
                   </div>
                 </div>
-                <a
-                  href={person.href}
-                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                >
-                  Follow
-                </a>
+                <Link href={`/${person.username}`}>
+                  <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                    Follow
+                  </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <button
-            onClick={() => setWhoToFollowModal(!whoToFollowModal)}
+          <Button
+            onClick={handleSeeMoreSuggestions}
             className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             type="button"
           >
@@ -99,9 +123,9 @@ export default function WhoToFollow({ topWriters }) {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+          </Button>
           <Transition appear show={whoToFollowModal} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={handleSeeMore}>
+            <Dialog as="div" className="relative z-10" onClose={handleSeeMoreSuggestions}>
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -136,13 +160,13 @@ export default function WhoToFollow({ topWriters }) {
                         <ul className="mb-6">
                           {people?.map((person) => (
                             <li
-                              key={person.id}
+                              key={person._id}
                               className="flex items-start justify-between gap-6 py-4"
                             >
                               <div className="flex gap-3">
                                 <img
                                   className="w-10 h-10 rounded-full"
-                                  src={person.image}
+                                  src={person.profilePicture}
                                   alt={person.name}
                                 />
                                 <div className="flex flex-col">
@@ -150,16 +174,15 @@ export default function WhoToFollow({ topWriters }) {
                                     {person.name}
                                   </span>
                                   <span className="text-slate-500 text-xs tracking-sm">
-                                    {person.desc}
+                                    {strip(person.about)}
                                   </span>
                                 </div>
                               </div>
-                              <a
-                                href={person.href}
-                                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                              >
-                                Follow
-                              </a>
+                              <Link href={`/${person.username}`}>
+                                <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                  Follow
+                                </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>

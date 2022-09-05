@@ -96,13 +96,13 @@ export const authSlice = createSlice({
       state.error = action.payload;
     },
 
-    unfollowTopicRequest(state) {
+    updateFollowingTopicsRequest(state) {
       state.isLoading = true;
     },
-    unfollowTopicSuccess(state) {
+    updateFollowingTopicsSuccess(state) {
       state.isLoading = false;
     },
-    unfollowTopicFailure(state, action) {
+    updateFollowingTopicsFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },

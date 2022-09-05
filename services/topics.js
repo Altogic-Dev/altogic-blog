@@ -14,12 +14,29 @@ const TopicsService = {
     return db.model('topics').sort('storyCount', 'desc').limit(10).get();
   },
   getRelatedTopics(topic) {
-    return db.model('related_topics').filter(`topicA == '${topic}' || topicB == '${topic}'`).sort('storyCount', 'desc').limit(10).get();
+    return db
+      .model('related_topics')
+      .filter(`topicA == '${topic}' || topicB == '${topic}'`)
+      .sort('storyCount', 'desc')
+      .limit(10)
+      .get();
   },
-  getTopicTopWriters(topic) {
-    return db.model('story').filter(`IN(this.categoryNames, '${topic}')`).group('user').compute([
-      { name: "count", type: "count" },
-    ]);
+  getTopicTopWritersIdList(topic) {
+    return db
+      .model('story')
+      .filter(`IN(this.categoryNames, '${topic}')`)
+      .group('user')
+      .limit(1)
+      .compute([{ name: 'count', type: 'count' }])
+  },
+  getTopicTopWriters(people) {
+    let query = `_id == '`;
+    query+= people.join(`' || _id == '`);
+    query += `'`;
+    return db
+      .model('users')
+      .filter(query)
+      .get();
   },
 };
 
