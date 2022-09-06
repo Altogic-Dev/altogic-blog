@@ -3,9 +3,9 @@ import Head from 'next/head';
 import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
 import { XIcon } from '@heroicons/react/outline';
 import Layout from '@/layout/Layout';
+import ShareButtons from '@/components/ShareButtons';
 import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
-import ShareButtons from '@/components/ShareButtons';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
