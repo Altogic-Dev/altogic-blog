@@ -27,6 +27,7 @@ export default function Sidebar({
   publicationProfile,
   isFollowing,
   isSubscribed,
+  Tag,
 }) {
   return (
     <>
@@ -78,7 +79,7 @@ export default function Sidebar({
       )}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
-      {(whoToFollow || topWriters) && <WhoToFollow isTopWriters={topWriters} />}
+      {(whoToFollow || topWriters) && <WhoToFollow isTopWriters={topWriters} Tag={Tag} />}
       {(popularTopics || relatedTopics) && <PopularTopics isRelatedTopics={relatedTopics} />}
       {popularStories && <PopularStories />}
 

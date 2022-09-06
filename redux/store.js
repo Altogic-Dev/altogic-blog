@@ -12,6 +12,7 @@ import { storyLikesSlice } from './storyLikes/storyLikesSlice';
 import { topicsSlice } from './topics/topicsSlice';
 import { subscribeSlice } from './subscribe/subscribeSlice';
 import { publicationSlice } from './publication/publicationSlice';
+import { generalSlice } from './general/generalSlice';
 import { fileSlice } from './file/fileSlice';
 
 const sagaMiddleware = createSagaMiddleware();
@@ -23,12 +24,13 @@ const makeStore = () => {
       [followerConnectionSlice.name]: followerConnectionSlice.reducer,
       [storySlice.name]: storySlice.reducer,
       [reportSlice.name]: reportSlice.reducer,
-      [recommendationsSlice.name]: followerConnectionSlice.reducer,
+      [recommendationsSlice.name]: recommendationsSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
       [storyLikesSlice.name]: storyLikesSlice.reducer,
       [topicsSlice.name]: topicsSlice.reducer,
       [subscribeSlice.name]: subscribeSlice.reducer,
       [publicationSlice.name]: publicationSlice.reducer,
+      [generalSlice.name]: generalSlice.reducer,
       [fileSlice.name]: fileSlice.reducer,
     },
     devTools: true,

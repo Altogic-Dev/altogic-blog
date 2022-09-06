@@ -1,11 +1,12 @@
 import { db } from '@/utils/altogic';
 
 const RecommendationsService = {
-  getWhoToFollow() {
-    return db.model('users').sort('storyCount', 'desc').limit(10).getRandom(10);
+  getWhoToFollow(limit,page) {
+    return db.model('users').sort('storyCount', 'desc').limit(limit).page(page).getRandom(10);
   },
   getWhoToFollowMinimized() {
-    return db.model('users').sort('storyCount', 'desc').limit(100).get();
+
+    return db.model('users').sort('storyCount', 'desc').limit(100).getRandom(5);
   },
 
 };

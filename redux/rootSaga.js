@@ -9,6 +9,7 @@ import storyLikesSaga from './storyLikes/storyLikesSaga';
 import subscribeSaga from './subscribe/subscribeSaga';
 import publicationSaga from './publication/publicationSaga';
 import topicsSaga from './topics/topicsSaga';
+import generalSaga from './general/generalSaga';
 import fileSaga from './file/fileSaga';
 
 function* rootSaga() {
@@ -24,6 +25,7 @@ function* rootSaga() {
     fork(publicationSaga),
     fork(fileSaga),
     fork(topicsSaga),
+    fork(generalSaga),
   ]);
 }
 

@@ -79,6 +79,10 @@ export const followerConnectionSlice = createSlice({
       }
     },
 
+    setIsFollowing(state, action) {
+      state.isFollowing = action.payload;
+    },
+
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({

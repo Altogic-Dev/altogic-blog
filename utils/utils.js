@@ -22,3 +22,8 @@ export function classNames(...classes) {
 export function formatDate(date) {
   return DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_FULL);
 }
+
+
+export function parseHtml(html) {
+  return html?.replace(/<\s*[^>]*>/gi, '');
+}
