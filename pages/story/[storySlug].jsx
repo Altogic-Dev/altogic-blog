@@ -22,8 +22,6 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-
-
 export default function BlogDetail() {
   const router = useRouter();
   const { storySlug } = router.query;
@@ -54,7 +52,8 @@ export default function BlogDetail() {
   const [didMount, setDidMount] = useState(true);
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [morePage, setMorePage] = useState(1);
-  const [commentText, setCommentText] = useState();
+  const [commentText, setCommentText] = useState([]);
+  const [replyText, setReplyText] = useState();
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -88,16 +87,17 @@ export default function BlogDetail() {
     );
   };
 
-
   const getReplyComments = (replies) => {
-    dispatch(
-      storyActions.getReplyCommentsRequest(replies)
-    );
+    dispatch(storyActions.getReplyCommentsRequest(replies));
   };
 
   const createReply = (reply) => {
     dispatch(storyActions.createReplyRequest(reply));
-    setCommentText('');
+  };
+  const createComment = (comment) => {
+
+    dispatch(storyActions.createReplyCommentRequest(comment));
+   
   };
 
   const handleRespond = (e) => {
@@ -110,10 +110,34 @@ export default function BlogDetail() {
       type: 'story',
       userProfilePicture: user.profilePicture,
       username: user.username,
-      content: commentText,
+      content: replyText,
     };
     createReply(reply);
+    setCommentText('');
+
+    
   };
+  const handleComment = (e, reply, index) => {
+    e.preventDefault();
+
+    const comment = {
+      reply: reply._id,
+      name: user.name,
+      user: user._id,
+      userProfilePicture: user.profilePicture,
+      username: user.username,
+      content: commentText[index],
+    };
+
+    createComment(comment);
+
+    setCommentText((prev) => {
+      const temp = [...prev];
+      temp[index] = '';
+      return temp;
+    });
+  };
+  console.log(commentText)
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -146,11 +170,10 @@ export default function BlogDetail() {
   }, [storySlug]);
 
   useEffect(() => {
-   if(replies){
-    getReplyComments(replies.map(reply => reply._id))
-   }
+    if (replies) {
+      getReplyComments(replies.map((reply) => reply._id));
+    }
   }, [replies]);
-
 
   return (
     <div>
@@ -1236,9 +1259,9 @@ export default function BlogDetail() {
                                   className="block w-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
                                   placeholder="What are you thoughts?"
                                   onChange={(event) =>
-                                    setCommentText(event.target.value)
+                                    setReplyText(event.target.value)
                                   }
-                                  value={commentText}
+                                  value={replyText}
                                 />
                               </div>
                               <div className="flex items-center justify-between">
@@ -1337,29 +1360,42 @@ export default function BlogDetail() {
                                       3
                                     </button>
                                     <Button
-                                      type="button"
-                                      onClick={() =>
+                                      onClick={() => {
+                                        setCommentText('');
                                         setCommentBoxes((prev) => {
-                                          const temp = prev;
+                                          const temp = [...prev];
                                           temp[index] = true;
                                           return temp;
-                                        })
-                                      }
+                                        });
+                                      }}
                                     >
                                       Reply
                                     </Button>
                                   </div>
-                                  {commentBoxes[index] === true && (
-                                    <div className="flex flex-col items-end">
+                                  {commentBoxes[index] && (
+                                    <form
+                                      onSubmit={(e) =>
+                                        handleComment(e, reply, index)
+                                      }
+                                      className="flex flex-col items-end"
+                                    >
                                       <textarea
                                         className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
                                         placeholder="Write a comment..."
+                                        onChange={(event) =>
+                                          setCommentText((state) => {
+                                            const temp = [...state];
+                                            temp[index] = event.target.value;
+                                            return temp;
+                                          })
+                                        }
+                                        value={commentText[index]}
                                       />
 
-                                      <Button type="button" extraClasses="mt-5">
+                                      <Button type="submit" extraClasses="mt-5">
                                         Comment
                                       </Button>
-                                    </div>
+                                    </form>
                                   )}
                                 </li>
                               ))}

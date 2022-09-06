@@ -6,6 +6,7 @@ export default function Button({
   children,
   loading,
   type,
+  extraClasses,
   ...props
 }) {
   const override = css`
@@ -23,7 +24,7 @@ export default function Button({
       className={
         props.className
           ? props.className
-          : `${props.extraClasses} ${
+          : `${extraClasses} ${
               primaryColor ? whiteRounded : purpleRounded
             }`
       }
