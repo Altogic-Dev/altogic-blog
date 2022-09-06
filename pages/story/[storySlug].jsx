@@ -15,6 +15,7 @@ import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import Button from '@/components/basic/button';
+import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
 import Sidebar from '../../layout/Sidebar';
 
@@ -121,30 +122,12 @@ export default function BlogDetail() {
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
-        followerConnectionActions.getFollowingRequest({
-          userId: _.get(user, '_id'),
-          followingUserId: _.get(story, 'user._id'),
-        })
-      );
-      dispatch(
-        subscribeConnectionActions.getSubscribeRequest({
-          userId: _.get(user, '_id'),
-          subscribingUserId: _.get(story, 'user._id'),
-        })
-      );
-      dispatch(
-        storyLikesActions.isLikedStoryRequest({
-          userId: _.get(user, '_id'),
+        generalActions.getConnectInformationStoryRequest({
           storyId: _.get(story, '_id'),
+          authorId: _.get(story, 'user._id'),
         })
       );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
-      dispatch(
-        reportActions.getReportedStoryByUserRequest({
-          userId: _.get(user, '_id'),
-          storyId: _.get(story, '_id'),
-        })
-      );
       setDidMount(false);
     }
   }, [story]);
