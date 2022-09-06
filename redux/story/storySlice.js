@@ -65,7 +65,6 @@ export const storySlice = createSlice({
       state.story = null;
       state.error = action.payload;
       state.isLoading = false;
-
     },
     getStoryRepliesRequest(state) {
       state.isLoading = true;
@@ -77,7 +76,6 @@ export const storySlice = createSlice({
     getStoryRepliesFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
-
     },
     createReplyRequest(state) {
       state.isLoading = true;
@@ -89,7 +87,6 @@ export const storySlice = createSlice({
     createReplyFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
-
     },
     createReplyCommentRequest(state) {
       state.isLoading = true;
@@ -102,19 +99,28 @@ export const storySlice = createSlice({
       state.story = null;
       state.error = action.payload;
       state.isLoading = false;
-
     },
     getReplyCommentsRequest(state) {
       state.isLoading = true;
     },
     getReplyCommentsSuccess(state, action) {
-      state.comments = action.payload;
+      console.log(action.payload)
+      state.replies = state.replies.map((reply) => {
+        if (reply._id === action.payload[0].reply) {
+          console.log({here: action.payload})
+          return {
+            ...reply,
+            comments: action.payload,
+          };
+        }
+        return reply
+      });
+      console.log(state.replies)
       state.isLoading = false;
     },
     getReplyCommentsFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
-
     },
     updateStoryRequest(state) {
       state.isLoading = true;
@@ -133,7 +139,6 @@ export const storySlice = createSlice({
     getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {
       state.story = action.payload;
-      
     },
 
     getMoreUserStoriesRequest() {},

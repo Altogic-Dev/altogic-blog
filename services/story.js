@@ -85,7 +85,6 @@ const StoryService = {
       .get();
   },
   getStoryReplies(storyId, page, limit) {
-    console.log( storyId,page,limit);
     return db
       .model('replies')
       .filter(`story == '${storyId}'`)
@@ -94,13 +93,11 @@ const StoryService = {
       .limit(limit)
       .get();
   },
-  getReplyComments(replies) {
-    let query = `reply == '`;
-    query+= replies.join(`' || reply == '`);
-    query += `'`;
+  getReplyComments(reply) {
+ 
     return db
       .model('reply_comments')
-      .filter(query)
+      .filter(`reply == '${reply}'`)
       .sort('createdAt', 'desc')
       .get();
   },

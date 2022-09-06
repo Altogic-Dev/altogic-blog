@@ -14,6 +14,7 @@ import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import Button from '@/components/basic/button';
+import { ChevronDownIcon } from '@heroicons/react/solid';
 import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
 import Sidebar from '../../layout/Sidebar';
@@ -87,17 +88,17 @@ export default function BlogDetail() {
     );
   };
 
-  const getReplyComments = (replies) => {
-    dispatch(storyActions.getReplyCommentsRequest(replies));
+  const getReplyComments = (reply) => {
+
+    console.log("sa")
+    dispatch(storyActions.getReplyCommentsRequest(reply));
   };
 
   const createReply = (reply) => {
     dispatch(storyActions.createReplyRequest(reply));
   };
   const createComment = (comment) => {
-
     dispatch(storyActions.createReplyCommentRequest(comment));
-   
   };
 
   const handleRespond = (e) => {
@@ -114,8 +115,6 @@ export default function BlogDetail() {
     };
     createReply(reply);
     setCommentText('');
-
-    
   };
   const handleComment = (e, reply, index) => {
     e.preventDefault();
@@ -137,7 +136,11 @@ export default function BlogDetail() {
       return temp;
     });
   };
-  console.log(commentText)
+
+  const getComments = (reply) => {
+    getReplyComments(reply._id);
+  };
+
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -169,11 +172,7 @@ export default function BlogDetail() {
     if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
   }, [storySlug]);
 
-  useEffect(() => {
-    if (replies) {
-      getReplyComments(replies.map((reply) => reply._id));
-    }
-  }, [replies]);
+
 
   return (
     <div>
@@ -1364,14 +1363,46 @@ export default function BlogDetail() {
                                         setCommentText('');
                                         setCommentBoxes((prev) => {
                                           const temp = [...prev];
-                                          temp[index] = true;
+                                          temp[index] = !temp[index];
                                           return temp;
                                         });
                                       }}
                                     >
-                                      Reply
+                                      {commentBoxes[index] ? 'Hide' : 'Reply'}
                                     </Button>
                                   </div>
+                                  <Button
+                                    onClick={() => getComments(reply, index)}
+                                    className="flex justify-center text-sm text-blue-500 cursor-pointer"
+                                  >
+                                    Show Comments{' '}
+                                    <ChevronDownIcon className="w-5" />
+                                  </Button>
+                                  {reply.comments &&
+                                    reply.comments.map((comment) => (
+                                      <div key={comment._id} className="flex flex-col ml-4">
+                                        <div className="flex items-center">
+                                          <img
+                                            src={comment.userProfilePicture}
+                                            alt="profile"
+                                            className="w-10 h-10 rounded-full"
+                                          />
+                                          <div className="flex flex-col ml-2">
+                                            <div className="flex items-center">
+                                              <h1 className="font-semibold text-sm">
+                                                {comment.name}
+                                              </h1>
+                                              <span className="ml-1 text-xs text-gray-400">
+                                                {comment.username}
+                                              </span>
+                                            </div>
+                                            <p className="text-xs text-gray-400">
+                                              {comment.content}
+                                            </p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
                                   {commentBoxes[index] && (
                                     <form
                                       onSubmit={(e) =>
