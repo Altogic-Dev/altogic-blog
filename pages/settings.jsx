@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import MyDetails from '@/components/settings/MyDetails';
-import Password from '@/components/settings/ChangePassword';
+import ChangePassword from '@/components/settings/ChangePassword';
 import MySessions from '@/components/settings/MySessions';
 import MyPlans from '@/components/settings/MyPlans';
 import ChangeEmail from '@/components/settings/ChangeEmail';
@@ -51,7 +51,7 @@ export default function Settings() {
               <MyDetails user={user} id="my-details" className="mb-16" />
               {/* Password */}
               {user?.provider === 'altogic' && (
-                <Password id="password" className="mb-16" />
+                <ChangePassword id="password" className="mb-16" />
               )}
               {user?.provider === 'altogic' && (
                 <ChangeEmail id="change-email" className="mb-16" />

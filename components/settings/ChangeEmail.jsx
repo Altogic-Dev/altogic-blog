@@ -62,7 +62,7 @@ export default function ChangeEmail() {
     []
   );
   return (
-    <div id="password" className="mb-16">
+    <div id="change-email" className="mb-16">
       <form onSubmit={handleSubmit(formSubmit)}>
         <div className="space-y-8 divide-y divide-gray-200">
           <div>
