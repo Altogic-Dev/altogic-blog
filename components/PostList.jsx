@@ -9,7 +9,7 @@ export default function PostList({
   badges,
 }) {
   return (
-    <div className="bg-slate-50 rounded-[10px] p-6">
+    <div className="bg-slate-50 rounded-[10px] p-6 mb-4">
       <div className="flex justify-between gap-8 sm:gap-4">
         <div className="flex flex-col items-start justify-between">
           <div className="flex flex-col items-start gap-2">

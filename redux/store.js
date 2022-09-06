@@ -14,6 +14,7 @@ import { subscribeSlice } from './subscribe/subscribeSlice';
 import { publicationSlice } from './publication/publicationSlice';
 import { generalSlice } from './general/generalSlice';
 import { fileSlice } from './file/fileSlice';
+import { bookmarkSlice } from './bookmarks/bookmarkSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -32,6 +33,7 @@ const makeStore = () => {
       [publicationSlice.name]: publicationSlice.reducer,
       [generalSlice.name]: generalSlice.reducer,
       [fileSlice.name]: fileSlice.reducer,
+      [bookmarkSlice.name]: bookmarkSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>

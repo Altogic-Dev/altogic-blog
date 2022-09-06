@@ -11,91 +11,12 @@ import AboutComponent from '@/components/general/About';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import Layout from '@/layout/Layout';
+import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
+import { classNames } from '@/utils/utils';
 import Sidebar from '../../layout/Sidebar';
 import Button from '../basic/button';
 import ProfilePageHome from './ProfilePageHome';
-
-const lists = [
-  {
-    id: 0,
-    href: '#',
-    title: 'Nunc ullamcorper nullam.',
-    badges: true,
-    number: '4',
-    image1:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image2:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image3:
-      'https://images.unsplash.com/photo-1547586696-ea22b4d4235d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image4:
-      'https://images.unsplash.com/photo-1492724441997-5dc865305da7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-  },
-  {
-    id: 1,
-    href: '#',
-    title: 'Nunc ullamcorper nullam.',
-    badges: false,
-    number: '5',
-    image1:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image2:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image3:
-      'https://images.unsplash.com/photo-1547586696-ea22b4d4235d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image4:
-      'https://images.unsplash.com/photo-1492724441997-5dc865305da7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-  },
-  {
-    id: 2,
-    href: '#',
-    title: 'Nunc ullamcorper nullam.',
-    badges: false,
-    number: '6',
-    image1:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image2:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image3:
-      'https://images.unsplash.com/photo-1547586696-ea22b4d4235d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image4:
-      'https://images.unsplash.com/photo-1492724441997-5dc865305da7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-  },
-  {
-    id: 3,
-    href: '#',
-    title: 'Nunc ullamcorper nullam.',
-    badges: false,
-    number: '7',
-    image1:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image2:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image3:
-      'https://images.unsplash.com/photo-1547586696-ea22b4d4235d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image4:
-      'https://images.unsplash.com/photo-1492724441997-5dc865305da7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-  },
-  {
-    id: 4,
-    href: '#',
-    title: 'Nunc ullamcorper nullam.',
-    badges: true,
-    number: '8',
-    image1:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image2:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image3:
-      'https://images.unsplash.com/photo-1547586696-ea22b4d4235d?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    image4:
-      'https://images.unsplash.com/photo-1492724441997-5dc865305da7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-  },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import ListObserver from '../ListObserver';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
@@ -106,14 +27,17 @@ export default function ProfilePage({ About, Home, List }) {
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const isMyProfile = username === _.get(sessionUser, 'username');
 
   const [userState, setUserState] = useState();
+  const [urlUsername, setUrlUsername] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [isMyProfileState, setIsMyProfileState] = useState(isMyProfile);
+  const [bookmarkListLimit, setBookmarkListLimit] = useState(3);
   const [unfollowed, setUnfollowed] = useState([]);
 
   const copyToClipboard = () => {
@@ -192,6 +116,34 @@ export default function ProfilePage({ About, Home, List }) {
     setUserState(sessionUser);
   }, [sessionUser]);
 
+  useEffect(() => {
+    if (username) {
+      dispatch(
+        getBookmarkListsRequest({
+          username,
+          includePrivates: username === sessionUser?.username,
+          limit: bookmarkListLimit,
+        })
+      );
+    }
+  }, [username]);
+  useEffect(() => {
+    if (username) {
+      setUrlUsername(username);
+    }
+  }, [username]);
+  const handleBookmarkListEnd = useCallback(() => {
+    if (urlUsername) {
+      setBookmarkListLimit((prev) => prev + 3);
+      dispatch(
+        getBookmarkListsRequest({
+          username: urlUsername,
+          limit: bookmarkListLimit,
+          includePrivates: username === sessionUser?.username,
+        })
+      );
+    }
+  }, [username]);
   return (
     <div>
       <Head>
@@ -315,19 +267,21 @@ export default function ProfilePage({ About, Home, List }) {
                     <ProfilePageHome userId={_.get(sessionUser, '_id')} />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
-                    {lists.map((list) => (
-                      <PostList
-                        key={list.id}
-                        title={list.title}
-                        storiesNumber={list.number}
-                        url={list.href}
-                        badges={list.badges}
-                        image1={list.image1}
-                        image2={list.image2}
-                        image3={list.image3}
-                        image4={list.image4}
-                      />
-                    ))}
+                    <ListObserver onEnd={handleBookmarkListEnd}>
+                      {bookmarkLists?.map((list) => (
+                        <PostList
+                          key={list.id}
+                          title={list.name}
+                          storiesNumber={list.storyCount}
+                          url={list.href}
+                          badges={list.isPrivate}
+                          image1={list.image1}
+                          image2={list.image2}
+                          image3={list.image3}
+                          image4={list.image4}
+                        />
+                      ))}
+                    </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
