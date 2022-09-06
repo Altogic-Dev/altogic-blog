@@ -7,22 +7,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';
 import Button from '../basic/button';
 
-export default function ChangePassword() {
-  const changePasswordSchema = new yup.ObjectSchema({
-    currentPassword: yup
+export default function ChangeEmail() {
+  const changeEmailSchema = new yup.ObjectSchema({
+    newEmail: yup
       .string()
       .required('Password is required')
-      .min(8, 'Old Password must be at least 6 characters'),
-    newPassword: yup
+      .email('Please enter a valid email')
+      .min(8, 'Old Password must be at least 8 characters'),
+    password: yup
       .string()
       .required('Password is required')
-      .min(8, 'Old Password must be at least 6 characters'),
-    confirmNewPassword: yup
-      .string()
-      .oneOf([yup.ref('newPassword'), null], 'Passwords must match'),
+      .min(8, 'Old Password must be at least 8 characters'),
   });
   const dispatch = useDispatch();
-  const error = useSelector((state) => state.auth.changePasswordError);
+  const error = useSelector((state) => state.auth.changeEmailError);
   const loading = useSelector((state) => state.auth.loading);
   const {
     register,
@@ -31,34 +29,31 @@ export default function ChangePassword() {
     reset,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(changePasswordSchema),
+    resolver: yupResolver(changeEmailSchema),
   });
 
   useEffect(() => {
     if (Symbol.iterator in Object(error)) {
       error?.forEach((err) => {
         if (err.message?.includes('current password')) {
-          setError('currentPassword', {
-            type: 'manuel',
-            message: 'Current password is wrong!',
-          });
-        } else if (err.message?.includes('at least')) {
-          setError('newPassword', {
+          setError('password', {
             type: 'manuel',
             message: err.message,
           });
         }
       });
     }
+    if (!error) {
+      reset();
+    }
   }, [error, setError]);
   const formSubmit = async (form) => {
     dispatch(
-      authActions.changePasswordRequest({
-        newPassword: form.newPassword,
-        currentPassword: form.currentPassword,
+      authActions.changeEmailRequest({
+        password: form.password,
+        email: form.newEmail,
       })
     );
-    reset();
   };
   useEffect(
     () => () => {
@@ -67,33 +62,34 @@ export default function ChangePassword() {
     []
   );
   return (
-    <div id="change-email" className="mb-16">
+    <div id="password" className="mb-16">
       <form onSubmit={handleSubmit(formSubmit)}>
         <div className="space-y-8 divide-y divide-gray-200">
           <div>
             <div className="border-b border-gray-200 pb-6">
               <h3 className="text-3xl font-medium text-slate-800 tracking-[-0.8px]">
-                Password
+                Change Email
               </h3>
               <p className="mt-1 text-sm text-slate-500 tracking-[-0.4px]">
-                Please enter your current password to change your password.
+                Please enter your current password and new email to change your
+                email.
               </p>
             </div>
             <div className="divide-y divide-gray-200">
               <div>
                 <div className="grid md:grid-cols-[280px,1fr] gap-1 md:gap-8 max-w-[824px] w-full py-6 md:pb-6">
                   <label
-                    htmlFor="currentPassword"
+                    htmlFor="newEmail"
                     className="block text-sm font-medium text-gray-700 tracking-sm"
                   >
-                    Current Password
+                    New Email
                   </label>
                   <Input
-                    type="password"
-                    name="currentPassword"
-                    id="currentPassword"
-                    register={register('currentPassword')}
-                    error={errors.currentPassword}
+                    type="email"
+                    name="newEmail"
+                    id="newEmail"
+                    register={register('newEmail')}
+                    error={errors.newEmail}
                     className="flex-1 min-w-0"
                   />
                 </div>
@@ -101,42 +97,21 @@ export default function ChangePassword() {
               <div>
                 <div className="grid md:grid-cols-[280px,1fr] gap-1 md:gap-8 max-w-[824px] w-full py-6 md:pb-6">
                   <label
-                    htmlFor="newPassword"
+                    htmlFor="password"
                     className="block text-sm font-medium text-gray-700 tracking-sm"
                   >
-                    New Password
+                    Password
                   </label>
                   <div>
                     <Input
                       type="password"
-                      name="newPassword"
-                      id="newPassword"
-                      register={register('newPassword')}
+                      name="password"
+                      id="password"
+                      register={register('password')}
                       className="flex-1 min-w-0"
-                      error={errors.newPassword}
+                      error={errors.password}
                     />
-                    <p className="mt-1.5 text-sm text-slate-500">
-                      Your new password must be more than 8 characters.
-                    </p>
                   </div>
-                </div>
-              </div>
-              <div>
-                <div className="grid md:grid-cols-[280px,1fr] gap-1 md:gap-8 max-w-[824px] w-full py-6 md:pb-6">
-                  <label
-                    htmlFor="confirmNewPassword"
-                    className="block text-sm font-medium text-gray-700 tracking-sm"
-                  >
-                    Confirm New Password
-                  </label>
-                  <Input
-                    type="password"
-                    name="confirmNewPassword"
-                    id="confirmNewPassword"
-                    register={register('confirmNewPassword')}
-                    className="flex-1 min-w-0"
-                    error={errors.confirmNewPassword}
-                  />
                 </div>
               </div>
             </div>
