@@ -1,7 +1,6 @@
-import Button from '@/components/basic/button';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { authActions } from '@/redux/auth/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import AuthSidebar from '@/components/AuthSidebar';
 import { MailOpenIcon, ArrowLeftIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
