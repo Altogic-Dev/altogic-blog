@@ -84,10 +84,34 @@ const StoryService = {
       .limit(limit)
       .get();
   },
-
-  createStory(story) {
-    return db.model('story').create(story);
+  getStoryReplies(storyId, page, limit) {
+    console.log( storyId,page,limit);
+    return db
+      .model('replies')
+      .filter(`story == '${storyId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
   },
+  getReplyComments(replies) {
+    let query = `reply == '`;
+    query+= replies.join(`' || reply == '`);
+    query += `'`;
+    return db
+      .model('reply_comments')
+      .filter(query)
+      .sort('createdAt', 'desc')
+      .get();
+  },
+  createReply(reply) {
+    return db.model('replies').create(reply);
+  },
+
+  createReplyComment(comment) {
+    return db.model('reply_comments').create(comment);
+  },
+
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },

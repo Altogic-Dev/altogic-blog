@@ -24,7 +24,60 @@ function* getFollowingStoriesSaga({ payload: { userId, page } }) {
     console.error({ e });
   }
 }
+function* getStoryReplies({ payload: {story,page,limit} }) {
+  try {
+    const { data, errors } = yield call(StoryService.getStoryReplies, story,page,limit);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.getStoryRepliesSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(storyActions.getStoryRepliesFailure(e));
+  }
+}
 
+function* createReply({ payload: reply }) {
+  try {
+    const { data, errors } = yield call(StoryService.createReply, reply);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.createReplySuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(storyActions.createReplyFailure(e));
+  }
+}
+
+function* getReplyComments({ payload: reply }) {
+  try {
+    const { data, errors } = yield call(StoryService.getReplyComments, reply);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.getReplyCommentsSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(storyActions.getReplyCommentsFailure(e));
+  }
+}
+
+function* createReplyComment({ payload: comment }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.createReplyComment,
+      comment
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.createReplyCommentSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(storyActions.createReplyCommentFailure(e));
+  }
+}
 function* getRecommendedStoriesSaga({ payload: { page } }) {
   try {
     const user = yield select((state) => state.auth.user);
@@ -179,5 +232,15 @@ export default function* rootSaga() {
       getUserStoriesSaga
     ),
     yield takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
+    yield takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
+    yield takeEvery(storyActions.createReplyRequest.type, createReply),
+    yield takeEvery(
+      storyActions.createReplyCommentRequest.type,
+      createReplyComment
+    ),
+    yield takeEvery(
+      storyActions.getReplyCommentsRequest.type,
+      getReplyComments
+    ),
   ]);
 }

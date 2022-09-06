@@ -86,8 +86,12 @@ export default function BlogDetail() {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
+  const replies = useSelector((state) => state.story.replies);
+
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
+
+  const storyIsLoading = useSelector((state) => state.story.isLoading);
 
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
@@ -95,6 +99,7 @@ export default function BlogDetail() {
   const [didMount, setDidMount] = useState(true);
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [morePage, setMorePage] = useState(1);
+  const [commentText, setCommentText] = useState();
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -118,6 +123,35 @@ export default function BlogDetail() {
     );
   };
 
+  const getReplies = () => {
+    dispatch(
+      storyActions.getStoryRepliesRequest({
+        story: story._id,
+        limit: 10,
+        page: 1,
+      })
+    );
+  };
+
+  const createReply = (reply) => {
+    dispatch(storyActions.createReplyRequest(reply));
+    setCommentText('');
+  };
+
+  const handleRespond = (e) => {
+    e.preventDefault();
+
+    const reply = {
+      story: story._id,
+      name: user.name,
+      user: user._id,
+      type: 'story',
+      userProfilePicture: user.profilePicture,
+      username: user.username,
+      content: commentText,
+    };
+    createReply(reply);
+  };
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -128,6 +162,8 @@ export default function BlogDetail() {
       );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
       setDidMount(false);
+
+      getReplies();
     }
   }, [story]);
 
@@ -147,6 +183,7 @@ export default function BlogDetail() {
     if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
   }, [storySlug]);
 
+  console.log(replies);
   return (
     <div>
       <Head>
@@ -1207,7 +1244,11 @@ export default function BlogDetail() {
                         </div>
                         <div>
                           {/* Slide Over Form */}
-                          <form action="" className="mb-12">
+                          <form
+                            name="respond"
+                            onSubmit={(e) => handleRespond(e)}
+                            className="mb-12"
+                          >
                             <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
                               <div className="flex items-center gap-2 mb-4">
                                 <img
@@ -1226,6 +1267,10 @@ export default function BlogDetail() {
                                   rows={5}
                                   className="block w-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
                                   placeholder="What are you thoughts?"
+                                  onChange={(event) =>
+                                    setCommentText(event.target.value)
+                                  }
+                                  value={commentText}
                                 />
                               </div>
                               <div className="flex items-center justify-between">
@@ -1264,37 +1309,14 @@ export default function BlogDetail() {
                                   </button>
                                 </div>
                                 <div className="flex items-center gap-4">
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                                  <Button primaryColor>Cancel</Button>
+                                  <Button
+                                    loading={storyIsLoading}
+                                    type="Submit"
                                   >
                                     Respond
-                                  </button>
+                                  </Button>
                                 </div>
-                              </div>
-                            </div>
-                            <div className="relative flex items-start">
-                              <div className="flex items-center h-5">
-                                <input
-                                  id="comments"
-                                  name="comments"
-                                  type="checkbox"
-                                  className="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                                />
-                              </div>
-                              <div className="ml-3 text-sm">
-                                <label
-                                  htmlFor="comments"
-                                  className="text-slate-500 text-sm tracking-sm"
-                                >
-                                  Also publish to my profile
-                                </label>
                               </div>
                             </div>
                           </form>
@@ -1304,28 +1326,27 @@ export default function BlogDetail() {
                               All Responses (3)
                             </h2>
                             <ul className="divide-y divide-gray-200">
-                              {allResponses.map((allResponse, index) => (
-                                <li
-                                  key={allResponse.id}
-                                  className="py-6 space-y-4"
-                                >
+                              {replies?.map((reply, index) => (
+                                <li key={reply._id} className="py-6 space-y-4">
                                   <div className="flex items-center gap-3">
                                     <img
                                       className="w-10 h-10 rounded-full object-cover"
-                                      src={allResponse.avatarImage}
-                                      alt={allResponse.name}
+                                      src={reply.userProfilePicture}
+                                      alt={reply.name}
                                     />
                                     <div className="flex flex-col">
                                       <span className="text-slate-700 text-base font-medium tracking-sm">
-                                        {allResponse.name}
+                                        {reply.name}
                                       </span>
                                       <span className="text-slate-500 text-sm tracking-sm">
-                                        {allResponse.timeAgo}
+                                        {DateTime.fromISO(
+                                          reply.createdAt
+                                        ).toRelative()}
                                       </span>
                                     </div>
                                   </div>
                                   <p className="text-slate-700 text-sm tracking-sm">
-                                    {allResponse.description}
+                                    {reply.content}
                                   </p>
                                   <div className="flex items-center justify-between">
                                     <button

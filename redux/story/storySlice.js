@@ -51,7 +51,7 @@ export const storySlice = createSlice({
     getStorySuccess(state, action) {
       state.story = action.payload;
     },
-    createStoryRequest(state, action) {
+    createStoryRequest(state) {
       state.isLoading = true;
     },
     createStorySuccess(state, action) {
@@ -62,6 +62,57 @@ export const storySlice = createSlice({
     createStoryFailure(state, action) {
       state.story = null;
       state.error = action.payload;
+      state.isLoading = false;
+
+    },
+    getStoryRepliesRequest(state) {
+      state.isLoading = true;
+    },
+    getStoryRepliesSuccess(state, action) {
+      state.replies = action.payload;
+      state.isLoading = false;
+    },
+    getStoryRepliesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+
+    },
+    createReplyRequest(state) {
+      state.isLoading = true;
+    },
+    createReplySuccess(state, action) {
+      state.replies = [action.payload, ...state.replies];
+      state.isLoading = false;
+    },
+    createReplyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+
+    },
+    createReplyCommentRequest(state) {
+      state.isLoading = true;
+    },
+    createReplyCommentSuccess(state, action) {
+      state.story = action.payload;
+      state.isLoading = false;
+    },
+    createReplyCommentFailure(state, action) {
+      state.story = null;
+      state.error = action.payload;
+      state.isLoading = false;
+
+    },
+    getReplyCommentsRequest(state) {
+      state.isLoading = true;
+    },
+    getReplyCommentsSuccess(state, action) {
+      state.comments = action.payload;
+      state.isLoading = false;
+    },
+    getReplyCommentsFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+
     },
     updateStoryRequest(state) {
       state.isLoading = true;
@@ -80,6 +131,7 @@ export const storySlice = createSlice({
     getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {
       state.story = action.payload;
+      
     },
 
     getMoreUserStoriesRequest() {},
