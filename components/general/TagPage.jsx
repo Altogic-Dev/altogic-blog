@@ -46,6 +46,30 @@ export default function TagPage({ Home, Latest, Best }) {
       })
     );
   };
+  const dispatch = useDispatch();
+  const latestTopics = useSelector((state) => state.topics.latestTopics);
+  const bestTopics = useSelector((state) => state.topics.bestTopics);
+
+  const [posts, setPosts] = useState([]);
+
+  const getLatests = (page) => {
+    dispatch(
+      topicsActions.getLatestsOfTopicRequest({
+        topic: tag,
+        page,
+        limit: 10,
+      })
+    );
+  };
+  const getBests = (page) => {
+    dispatch(
+      topicsActions.getBestsOfTopicRequest({
+        topic: tag,
+        page,
+        limit: 10,
+      })
+    );
+  };
 
   useEffect(() => {
     if (tag) {
@@ -63,18 +87,16 @@ export default function TagPage({ Home, Latest, Best }) {
   }, [tag]);
 
   useEffect(() => {
-
     if (Home) {
-      console.log("s")
+      console.log('s');
     } else if (Latest) {
       setPosts(latestTopics);
     } else if (Best) {
       setPosts(bestTopics);
-
     }
-  }, [latestTopics,bestTopics]);
+  }, [latestTopics, bestTopics]);
 
-  console.log(bestTopics)
+  console.log(bestTopics);
   return (
     <div>
       <Head>
