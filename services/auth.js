@@ -93,5 +93,8 @@ const AuthService = {
   logout() {
     return auth.signOut();
   },
+  changeEmail({ email, password }) {
+    return auth.changeEmail(password, email);
+  },
 };
 export default AuthService;

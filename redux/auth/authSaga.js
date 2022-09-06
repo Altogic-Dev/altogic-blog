@@ -18,6 +18,7 @@ function* registerSaga({ payload: req }) {
   }
 }
 function* setUserFromLocalStorage() {
+  yield call(AuthService.getUserFromDb);
   const user = yield call(AuthService.getUser);
   if (user) {
     yield put(authActions.setUser(user));
@@ -32,7 +33,6 @@ function* getAuthGrantSaga({ payload }) {
       provider: payload.user.provider,
     });
     if (!res.errors) {
-      yield call(AuthService.getUserFromDb);
       setUserFromLocalStorage();
     }
     if (payload.user && payload.session) {
@@ -113,16 +113,19 @@ function* authenticateWithProvider({ payload: provider }) {
   }
 }
 function* updateFollowingTopicsSaga({ payload: { topics } }) {
-  console.log(topics)
+  console.log(topics);
 
   try {
-    const { data, errors } = yield call(AuthService.updateFollowingTopics, topics);
+    const { data, errors } = yield call(
+      AuthService.updateFollowingTopics,
+      topics
+    );
     if (errors) {
       throw errors.items;
     }
 
     if (data) {
-      localStorage.setItem('user', JSON.stringify(data));
+      setUserFromLocalStorage();
     }
   } catch (e) {
     yield put(authActions.updateFollowingTopicsFailure(e));
@@ -262,7 +265,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
   }
 }
 
-export function* updateUserSaga(newUser) {
+function* updateUserSaga(newUser) {
   const user = yield select((state) => state.auth.user);
   AuthService.setUserFromLocal({
     ...user,
@@ -275,9 +278,21 @@ export function* updateUserSaga(newUser) {
     })
   );
 }
-export function* logoutSaga() {
+function* logoutSaga() {
   yield call(AuthService.logout);
   yield put(authActions.logoutSuccess());
+}
+function* changeEmailSaga({ payload }) {
+  try {
+    const { errors } = yield call(AuthService.changeEmail, payload);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.changeEmailSuccess());
+    }
+  } catch (e) {
+    yield put(authActions.changeEmailFailure(e));
+  }
 }
 
 export default function* rootSaga() {
@@ -290,7 +305,10 @@ export default function* rootSaga() {
       authActions.resendVerificationEmailRequest.type,
       resendVerificationEmail
     ),
-    takeEvery(authActions.updateFollowingTopicsRequest.type, updateFollowingTopicsSaga),
+    takeEvery(
+      authActions.updateFollowingTopicsRequest.type,
+      updateFollowingTopicsSaga
+    ),
     takeEvery(authActions.muteAuthorRequest.type, muteAuthorSaga),
     takeEvery(authActions.unmuteAuthorRequest.type, unmuteAuthorSaga),
     takeEvery(authActions.isMutedRequest.type, isMutedSaga),
@@ -307,5 +325,7 @@ export default function* rootSaga() {
     takeEvery(authActions.getSessionsRequest.type, getSessionsSaga),
     takeEvery(authActions.deleteSessionRequest.type, deleteSessionSaga),
     takeEvery(authActions.logoutRequest.type, logoutSaga),
+    takeEvery(authActions.changeEmailRequest.type, changeEmailSaga),
+    takeEvery(authActions.updateUserSuccess.type, setUserFromLocalStorage),
   ]);
 }

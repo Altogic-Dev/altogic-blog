@@ -14,11 +14,16 @@ const constants = {
     },
     {
       id: 2,
+      name: 'Change Email',
+      href: '#change-email',
+    },
+    {
+      id: 3,
       name: 'My Sessions',
       href: '#my-sessions',
     },
     {
-      id: 3,
+      id: 4,
       name: 'My Plans',
       href: '#my-plans',
     },
