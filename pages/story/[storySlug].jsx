@@ -22,53 +22,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
-const allResponses = [
-  {
-    id: 0,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 1,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 2,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 3,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 4,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-];
+
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -87,6 +41,7 @@ export default function BlogDetail() {
     (state) => state.subscribeConnection.isSubscribed
   );
   const replies = useSelector((state) => state.story.replies);
+  const comments = useSelector((state) => state.story.comments);
 
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
@@ -130,6 +85,13 @@ export default function BlogDetail() {
         limit: 10,
         page: 1,
       })
+    );
+  };
+
+
+  const getReplyComments = (replies) => {
+    dispatch(
+      storyActions.getReplyCommentsRequest(replies)
     );
   };
 
@@ -183,7 +145,13 @@ export default function BlogDetail() {
     if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
   }, [storySlug]);
 
-  console.log(replies);
+  useEffect(() => {
+   if(replies){
+    getReplyComments(replies.map(reply => reply._id))
+   }
+  }, [replies]);
+
+
   return (
     <div>
       <Head>
@@ -1368,7 +1336,7 @@ export default function BlogDetail() {
                                       </span>
                                       3
                                     </button>
-                                    <button
+                                    <Button
                                       type="button"
                                       onClick={() =>
                                         setCommentBoxes((prev) => {
@@ -1377,10 +1345,9 @@ export default function BlogDetail() {
                                           return temp;
                                         })
                                       }
-                                      className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                                     >
                                       Reply
-                                    </button>
+                                    </Button>
                                   </div>
                                   {commentBoxes[index] === true && (
                                     <div className="flex flex-col items-end">

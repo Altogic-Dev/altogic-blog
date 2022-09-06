@@ -12,6 +12,8 @@ const initialState = {
   moreUserStories: null,
   userStories: null,
   isLoading: false,
+  replies: [],
+  comments: [],
 };
 
 // Actual Slice
