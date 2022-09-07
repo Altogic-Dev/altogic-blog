@@ -25,6 +25,10 @@ export default function TagPage({ Home, Latest, Best }) {
   const dispatch = useDispatch();
   const latestTopics = useSelector((state) => state.topics.latestTopics);
   const bestTopics = useSelector((state) => state.topics.bestTopics);
+  const trendingTopicsIdList = useSelector(
+    (state) => state.topics.trendingTopicsIdList
+  );
+  const trendingTopics = useSelector((state) => state.topics.trendingTopics);
 
   const [posts, setPosts] = useState([]);
 
@@ -46,17 +50,29 @@ export default function TagPage({ Home, Latest, Best }) {
       })
     );
   };
+  const getTrendings = (stories) => {
+
+    dispatch(topicsActions.getTrendingsOfTopicRequest(stories.map((person) => person.groupby.story)));
+  };
+  const getTopicTopWritersIdListRequest = () => {
+    dispatch(topicsActions.getIdListTrendingsOfTopicRequest({
+      topic: tag,
+      limit: 10,
+      page: 1,
+      date: DateTime.local().plus({weeks: -1}).toISODate(),
+    }));
+  };
 
   useEffect(() => {
     if (tag) {
       if (Home) {
+        getTopicTopWritersIdListRequest();
         setSelectedIndex(0);
       } else if (Latest) {
         getLatests(1);
         setSelectedIndex(1);
       } else if (Best) {
         getBests(1);
-
         setSelectedIndex(2);
       }
     }
@@ -64,15 +80,22 @@ export default function TagPage({ Home, Latest, Best }) {
 
   useEffect(() => {
     if (Home) {
-      console.log('s');
+      setPosts(trendingTopics);
     } else if (Latest) {
       setPosts(latestTopics);
     } else if (Best) {
       setPosts(bestTopics);
     }
-  }, [latestTopics, bestTopics]);
+  }, [latestTopics, bestTopics, trendingTopics]);
 
-  console.log(bestTopics);
+  useEffect(() => {
+    if (trendingTopicsIdList.length > 0) {
+      getTrendings(trendingTopicsIdList);
+    }
+  }, [trendingTopicsIdList]);
+
+  console.log(trendingTopics)
+
   return (
     <div>
       <Head>
