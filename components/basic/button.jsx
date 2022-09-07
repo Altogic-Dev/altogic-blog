@@ -5,7 +5,6 @@ export default function Button({
   primaryColor,
   children,
   loading,
-  type,
   extraClasses,
   ...props
 }) {
@@ -29,7 +28,7 @@ export default function Button({
             }`
       }
       {...props}
-      type={type ? 'submit' : 'button'}
+      type={props.type ? props.type : 'button'}
     >
       {loading && (
         <ClipLoader color="#fff" loading={loading} size={20} css={override} />

@@ -13,7 +13,7 @@ const initialState = {
   userStories: null,
   isLoading: false,
   replies: [],
-  comments: [],
+  replyCount: 0,
 };
 
 // Actual Slice
@@ -70,7 +70,8 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getStoryRepliesSuccess(state, action) {
-      state.replies = action.payload;
+      state.replies = action.payload.data;
+      state.replyCount = action.payload.info.count
       state.isLoading = false;
     },
     getStoryRepliesFailure(state, action) {
@@ -104,18 +105,15 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getReplyCommentsSuccess(state, action) {
-      console.log(action.payload)
       state.replies = state.replies.map((reply) => {
         if (reply._id === action.payload[0].reply) {
-          console.log({here: action.payload})
           return {
             ...reply,
             comments: action.payload,
           };
         }
-        return reply
+        return reply;
       });
-      console.log(state.replies)
       state.isLoading = false;
     },
     getReplyCommentsFailure(state, action) {
