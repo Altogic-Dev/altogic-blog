@@ -6,15 +6,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { storyActions } from '@/redux/story/storySlice';
 import Button from '../basic/button';
+import Avatar from '../profile/Avatar';
 
-export default function Replies({ story ,slideOvers, setSlideOvers}) {
+export default function Replies({ story, slideOvers, setSlideOvers }) {
   const dispatch = useDispatch();
 
   const replies = useSelector((state) => state.story.replies);
   const replyCount = useSelector((state) => state.story.replyCount);
   const storyIsLoading = useSelector((state) => state.story.isLoading);
   const user = useSelector((state) => state.auth.user);
-
 
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [commentText, setCommentText] = useState([]);
@@ -152,13 +152,13 @@ export default function Replies({ story ,slideOvers, setSlideOvers}) {
                       >
                         <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
                           <div className="flex items-center gap-2 mb-4">
-                            <img
+                            <Avatar
                               className="w-8 h-8 object-cover rounded-full"
-                              src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                              alt=""
+                              src={_.get(user, 'profilePicture')}
+                              alt={_.get(user, 'name')}
                             />
                             <span className="text-slate-700 text-sm font-medium tracking-sm">
-                              {_.get(story, 'user.name')}
+                              {_.get(user, 'name')}
                             </span>
                           </div>
                           <div className="mb-4">
@@ -227,7 +227,7 @@ export default function Replies({ story ,slideOvers, setSlideOvers}) {
                           {replies?.map((reply, index) => (
                             <li key={reply._id} className="py-6 space-y-4">
                               <div className="flex items-center gap-3">
-                                <img
+                                <Avatar
                                   className="w-10 h-10 rounded-full object-cover"
                                   src={reply.userProfilePicture}
                                   alt={reply.name}
