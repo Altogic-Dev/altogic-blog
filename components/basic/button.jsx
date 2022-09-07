@@ -23,12 +23,10 @@ export default function Button({
       className={
         props.className
           ? props.className
-          : `${extraClasses} ${
-              primaryColor ? whiteRounded : purpleRounded
-            }`
+          : `${extraClasses} ${primaryColor ? whiteRounded : purpleRounded}`
       }
       {...props}
-      type={props.type ? props.type : 'button'}
+      type={props.type ? 'submit' : 'button'}
     >
       {loading && (
         <ClipLoader color="#fff" loading={loading} size={20} css={override} />
