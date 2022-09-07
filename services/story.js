@@ -48,11 +48,7 @@ const StoryService = {
   },
 
   getStory(id) {
-    return db
-      .model('story')
-      .filter(`_id == '${id}' && isPublished && !isPrivate`)
-      .lookup({ field: 'user' })
-      .get();
+    return db.model('story').filter(`_id == '${id}'`).get();
   },
 
   getStoryBySlug(slug) {
@@ -93,6 +89,14 @@ const StoryService = {
   },
   deleteStory(storyId) {
     return db.model('story').object(storyId).delete();
+  },
+
+  updateCategory(storyId, newCategoryNames) {
+    return db.model('story').object(storyId).updateFields({
+      field: 'categoryNames',
+      updateType: 'set',
+      value: newCategoryNames,
+    });
   },
 };
 

@@ -145,11 +145,41 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
   }
 }
 
-function* deleteStorySaga({ payload: storyId }) {
+function* deleteStorySaga({ payload: { storyId, onSuccess } }) {
   try {
     const { errors } = yield call(StoryService.deleteStory, storyId);
     if (errors) throw errors;
     yield put(storyActions.deleteStorySuccess(storyId));
+    if (_.isFunction(onSuccess)) onSuccess();
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
+  try {
+    const { errors } = yield call(
+      StoryService.updateCategory,
+      storyId,
+      newCategoryNames
+    );
+    if (errors) throw errors;
+    yield put(storyActions.updateCategorySuccess(newCategoryNames));
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* updateStorySaga({ payload: { story, newStoryField } }) {
+  try {
+    const newStory = {
+      ...story,
+      ...newStoryField,
+    };
+
+    const { errors } = yield call(StoryService.updateStory, newStory);
+    if (errors) throw errors;
+    yield put(storyActions.updateStorySuccess(newStory));
   } catch (e) {
     console.error({ e });
   }
@@ -157,27 +187,26 @@ function* deleteStorySaga({ payload: storyId }) {
 
 export default function* rootSaga() {
   yield all([
-    yield takeEvery(
+    takeEvery(
       storyActions.getFollowingStoriesRequest.type,
       getFollowingStoriesSaga
     ),
-    yield takeEvery(
+    takeEvery(
       storyActions.getRecommendedStoriesRequest.type,
       getRecommendedStoriesSaga
     ),
-    yield takeEvery(storyActions.getStoryRequest.type, getStorySaga),
-    yield takeEvery(
-      storyActions.getStoryBySlugRequest.type,
-      getStoryBySlugSaga
-    ),
-    yield takeEvery(
+    takeEvery(storyActions.getStoryRequest.type, getStorySaga),
+    takeEvery(storyActions.getStoryBySlugRequest.type, getStoryBySlugSaga),
+    takeEvery(
       storyActions.getMoreUserStoriesRequest.type,
       getMoreUserStoriesSaga
     ),
-    yield takeEvery(
-      storyActions.getUserStoriesRequest.type,
-      getUserStoriesSaga
+    takeEvery(storyActions.getUserStoriesRequest.type, getUserStoriesSaga),
+    takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
+    takeEvery(
+      storyActions.updateCategoryNamesRequest.type,
+      updateCategoryNamesSaga
     ),
-    yield takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
+    takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
   ]);
 }

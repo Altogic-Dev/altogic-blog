@@ -51,7 +51,7 @@ export const storySlice = createSlice({
     getStorySuccess(state, action) {
       state.story = action.payload;
     },
-    createStoryRequest(state, action) {
+    createStoryRequest(state) {
       state.isLoading = true;
     },
     createStorySuccess(state, action) {
@@ -102,6 +102,14 @@ export const storySlice = createSlice({
         state.userStories,
         (story) => story._id === action.payload
       );
+    },
+
+    updateCategoryNamesRequest() {},
+    updateCategoryNamesSuccess(state, action) {
+      state.story = {
+        ...state.story,
+        categoryNames: action.payload,
+      };
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
