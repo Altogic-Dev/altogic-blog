@@ -33,20 +33,35 @@ function* getBestsOfTopicSaga({ payload: {topic,page,limit} }) {
   }
 }
 
-// function* getTrendingsOfTopicsSaga({ payload: topic }) {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+function* getIdListTrendingsOfTopicsSaga({ payload: {topic,page,limit,date} }) {
+  try {
+    const { data, errors } = yield call(TopicsService.getIdListTrendingsOfTopic, topic,page,limit,date);
 
-//     if (data) {
-//       yield put(topicsActions.getLatestsOfTopicSuccess(data));
-//     }
-//     if (errors) {
-//       throw errors.items;
-//     }
-//   } catch (e) {
-//     yield put(topicsActions.getLatestsOfTopicFailure(e));
-//   }
-// }
+    if (data) {
+      yield put(topicsActions.getIdListTrendingsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getIdListTrendingsOfTopicFailure(e));
+  }
+}
+function* getTrendingsOfTopicsSaga({ payload: stories }) {
+  try {
+    const { data, errors } = yield call(TopicsService.getTrendingsOfTopic, stories);
+
+    if (data) {
+      yield put(topicsActions.getTrendingsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getTrendingsOfTopicFailure(e));
+  }
+}
+
 
 function* getPopularTopicsSaga() {
   try {
@@ -102,10 +117,14 @@ export default function* rootSaga() {
     topicsActions.getBestsOfTopicRequest.type,
     getBestsOfTopicSaga
   );
-  // yield takeEvery(
-  //   topicsActions.getTrendingsOfTopicsRequest.type,
-  //   getTrendingsOfTopicsSaga
-  // );
+  yield takeEvery(
+    topicsActions.getTrendingsOfTopicRequest.type,
+    getTrendingsOfTopicsSaga
+  );
+  yield takeEvery(
+    topicsActions.getIdListTrendingsOfTopicRequest.type,
+    getIdListTrendingsOfTopicsSaga
+  );
   yield takeEvery(
     topicsActions.getPopularTopicsRequest.type,
     getPopularTopicsSaga
