@@ -12,6 +12,8 @@ const initialState = {
   moreUserStories: null,
   userStories: null,
   isLoading: false,
+  replies: [],
+  replyCount: 0,
 };
 
 // Actual Slice
@@ -51,7 +53,7 @@ export const storySlice = createSlice({
     getStorySuccess(state, action) {
       state.story = action.payload;
     },
-    createStoryRequest(state, action) {
+    createStoryRequest(state) {
       state.isLoading = true;
     },
     createStorySuccess(state, action) {
@@ -62,6 +64,61 @@ export const storySlice = createSlice({
     createStoryFailure(state, action) {
       state.story = null;
       state.error = action.payload;
+      state.isLoading = false;
+    },
+    getStoryRepliesRequest(state) {
+      state.isLoading = true;
+    },
+    getStoryRepliesSuccess(state, action) {
+      state.replies = action.payload.data;
+      state.replyCount = action.payload.info.count
+      state.isLoading = false;
+    },
+    getStoryRepliesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createReplyRequest(state) {
+      state.isLoading = true;
+    },
+    createReplySuccess(state, action) {
+      state.replies = [action.payload, ...state.replies];
+      state.isLoading = false;
+    },
+    createReplyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createReplyCommentRequest(state) {
+      state.isLoading = true;
+    },
+    createReplyCommentSuccess(state, action) {
+      state.story = action.payload;
+      state.isLoading = false;
+    },
+    createReplyCommentFailure(state, action) {
+      state.story = null;
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getReplyCommentsRequest(state) {
+      state.isLoading = true;
+    },
+    getReplyCommentsSuccess(state, action) {
+      state.replies = state.replies.map((reply) => {
+        if (reply._id === action.payload[0].reply) {
+          return {
+            ...reply,
+            comments: action.payload,
+          };
+        }
+        return reply;
+      });
+      state.isLoading = false;
+    },
+    getReplyCommentsFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
     },
     updateStoryRequest(state) {
       state.isLoading = true;

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { db } from '@/utils/altogic';
+import { db, endpoint } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -84,10 +84,33 @@ const StoryService = {
       .limit(limit)
       .get();
   },
-
-  createStory(story) {
-    return db.model('story').create(story);
+  getStoryReplies(storyId, page, limit) {
+    return db
+      .model('replies')
+      .filter(`story == '${storyId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get(true);
   },
+  getReplyComments(reply) {
+ 
+    return db
+      .model('reply_comments')
+      .filter(`reply == '${reply}'`)
+      .sort('createdAt', 'desc')
+      .get();
+  },
+  createReply(reply) {
+    return db.model('replies').create(reply);
+  },
+
+  createReplyComment(comment) {
+  
+      return endpoint.post(`/reply_comments`,comment);
+
+  },
+
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },

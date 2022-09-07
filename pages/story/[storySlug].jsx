@@ -1,8 +1,7 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
+import {  Menu, Transition, Switch } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import { XIcon } from '@heroicons/react/outline';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
@@ -12,8 +11,8 @@ import Layout from '@/layout/Layout';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
+import Replies from '@/components/story/Replies';
 import { reportActions } from '@/redux/report/reportSlice';
-import Button from '@/components/basic/button';
 import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
 import Sidebar from '../../layout/Sidebar';
@@ -21,54 +20,6 @@ import Sidebar from '../../layout/Sidebar';
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
-const allResponses = [
-  {
-    id: 0,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 1,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 2,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 3,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 4,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-];
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -86,15 +37,17 @@ export default function BlogDetail() {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
+
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
+
 
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
   const [didMount, setDidMount] = useState(true);
-  const [commentBoxes, setCommentBoxes] = useState([]);
   const [morePage, setMorePage] = useState(1);
+
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -118,6 +71,9 @@ export default function BlogDetail() {
     );
   };
 
+
+
+
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -128,6 +84,7 @@ export default function BlogDetail() {
       );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
       setDidMount(false);
+
     }
   }, [story]);
 
@@ -1160,232 +1117,7 @@ export default function BlogDetail() {
             </div>
           </div>
         </div>
-        <Transition.Root show={slideOvers} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-in-out duration-500"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in-out duration-500"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
-            <div className="fixed inset-0 overflow-hidden">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="transform transition ease-in-out duration-500 sm:duration-700"
-                    enterFrom="translate-x-full"
-                    enterTo="translate-x-0"
-                    leave="transform transition ease-in-out duration-500 sm:duration-700"
-                    leaveFrom="translate-x-0"
-                    leaveTo="translate-x-full"
-                  >
-                    <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                      <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll">
-                        <div>
-                          <div className="flex items-start justify-between pb-3">
-                            <Dialog.Title className="text-slate-800 text-lg font-medium tracking-sm">
-                              Write a responses
-                            </Dialog.Title>
-                            <div className="ml-3 flex h-7 items-center">
-                              <button
-                                type="button"
-                                className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
-                                onClick={() => setSlideOvers(!slideOvers)}
-                              >
-                                <span className="sr-only">Close panel</span>
-                                <XIcon className="h-6 w-6" aria-hidden="true" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          {/* Slide Over Form */}
-                          <form action="" className="mb-12">
-                            <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
-                              <div className="flex items-center gap-2 mb-4">
-                                <img
-                                  className="w-8 h-8 object-cover rounded-full"
-                                  src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                  alt=""
-                                />
-                                <span className="text-slate-700 text-sm font-medium tracking-sm">
-                                  {_.get(story, 'user.name')}
-                                </span>
-                              </div>
-                              <div className="mb-4">
-                                <textarea
-                                  id="about"
-                                  name="about"
-                                  rows={5}
-                                  className="block w-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
-                                  placeholder="What are you thoughts?"
-                                />
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <button
-                                    type="button"
-                                    className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                  >
-                                    <svg
-                                      className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                  >
-                                    <svg
-                                      className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Respond
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="relative flex items-start">
-                              <div className="flex items-center h-5">
-                                <input
-                                  id="comments"
-                                  name="comments"
-                                  type="checkbox"
-                                  className="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                                />
-                              </div>
-                              <div className="ml-3 text-sm">
-                                <label
-                                  htmlFor="comments"
-                                  className="text-slate-500 text-sm tracking-sm"
-                                >
-                                  Also publish to my profile
-                                </label>
-                              </div>
-                            </div>
-                          </form>
-                          {/* Slide Over All Responses Post */}
-                          <div>
-                            <h2 className="text-slate-800 pb-6 text-lg font-semibold tracking-sm border-b border-gray-200">
-                              All Responses (3)
-                            </h2>
-                            <ul className="divide-y divide-gray-200">
-                              {allResponses.map((allResponse, index) => (
-                                <li
-                                  key={allResponse.id}
-                                  className="py-6 space-y-4"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <img
-                                      className="w-10 h-10 rounded-full object-cover"
-                                      src={allResponse.avatarImage}
-                                      alt={allResponse.name}
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="text-slate-700 text-base font-medium tracking-sm">
-                                        {allResponse.name}
-                                      </span>
-                                      <span className="text-slate-500 text-sm tracking-sm">
-                                        {allResponse.timeAgo}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <p className="text-slate-700 text-sm tracking-sm">
-                                    {allResponse.description}
-                                  </p>
-                                  <div className="flex items-center justify-between">
-                                    <button
-                                      type="button"
-                                      className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-                                    >
-                                      <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
-                                        <svg
-                                          className="w-6 h-6 text-slate-400 group-hover:text-slate-700"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <path
-                                            d="M11.9932 5.13581L11.2332 5.78583C11.4232 6.00794 11.7009 6.13581 11.9932 6.13581C12.2854 6.13581 12.5631 6.00794 12.7531 5.78583L11.9932 5.13581ZM3.2642 12.5604L4.0538 11.9468L3.2642 12.5604ZM20.7221 12.5604L19.9325 11.9468L20.7221 12.5604ZM11.4721 20.5408L12.1351 19.7922L11.4721 20.5408ZM11.8502 20.8135L11.5643 21.7718L11.8502 20.8135ZM12.5142 20.5408L11.8512 19.7922L12.5142 20.5408ZM12.1361 20.8135L12.422 21.7718L12.1361 20.8135ZM12.7531 4.4858C10.4594 1.80434 6.50161 0.989451 3.5051 3.54974L4.80429 5.07029C6.81788 3.34983 9.52816 3.79246 11.2332 5.78583L12.7531 4.4858ZM3.5051 3.54974C0.598307 6.03336 0.175977 10.2162 2.4746 13.174L4.0538 11.9468C2.41796 9.84179 2.70098 6.86741 4.80429 5.07029L3.5051 3.54974ZM21.5117 13.174C23.8015 10.2275 23.4444 6.01246 20.4708 3.54097L19.1924 5.07906C21.315 6.84328 21.5772 9.83042 19.9325 11.9468L21.5117 13.174ZM20.4708 3.54097C17.4415 1.02319 13.5344 1.79553 11.2332 4.4858L12.7531 5.78583C14.4506 3.80127 17.1255 3.36113 19.1924 5.07906L20.4708 3.54097ZM2.4746 13.174C3.34712 14.2968 5.05011 15.9836 6.68673 17.5283C8.3425 19.0912 9.99445 20.568 10.8091 21.2895L12.1351 19.7922C11.3274 19.0769 9.69323 17.6159 8.05954 16.0739C6.40669 14.5138 4.81689 12.9287 4.0538 11.9468L2.4746 13.174ZM13.1772 21.2895C13.9919 20.568 15.6438 19.0912 17.2996 17.5283C18.9362 15.9836 20.6392 14.2968 21.5117 13.174L19.9325 11.9468C19.1694 12.9287 17.5796 14.5138 15.9268 16.0739C14.2931 17.6159 12.6589 19.0769 11.8512 19.7922L13.1772 21.2895ZM10.8091 21.2895C10.8881 21.3594 10.9903 21.4509 11.088 21.5245C11.1974 21.6069 11.3545 21.7092 11.5643 21.7718L12.1361 19.8553C12.1859 19.8701 12.2264 19.8888 12.2555 19.9048C12.2821 19.9195 12.2954 19.93 12.2911 19.9268C12.2862 19.9231 12.2727 19.9125 12.2442 19.888C12.2156 19.8634 12.1821 19.8339 12.1351 19.7922L10.8091 21.2895ZM11.8512 19.7922C11.8042 19.8339 11.7707 19.8634 11.7421 19.888C11.7136 19.9125 11.7001 19.9231 11.6952 19.9268C11.6909 19.93 11.7042 19.9195 11.7308 19.9048C11.7599 19.8888 11.8004 19.8701 11.8502 19.8553L12.422 21.7718C12.6318 21.7092 12.7889 21.6069 12.8983 21.5245C12.996 21.4509 13.0982 21.3594 13.1772 21.2895L11.8512 19.7922ZM11.5643 21.7718C11.8433 21.855 12.1431 21.855 12.422 21.7718L11.8502 19.8553C11.9443 19.8272 12.042 19.8272 12.1361 19.8553L11.5643 21.7718Z"
-                                            fill="currentColor"
-                                          />
-                                        </svg>
-                                      </span>
-                                      3
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setCommentBoxes((prev) => {
-                                          const temp = prev;
-                                          temp[index] = true;
-                                          return temp;
-                                        })
-                                      }
-                                      className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                    >
-                                      Reply
-                                    </button>
-                                  </div>
-                                  {commentBoxes[index] === true && (
-                                    <div className="flex flex-col items-end">
-                                      <textarea
-                                        className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
-                                        placeholder="Write a comment..."
-                                      />
-
-                                      <Button type="button" extraClasses="mt-5">
-                                        Comment
-                                      </Button>
-                                    </div>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </Dialog.Panel>
-                  </Transition.Child>
-                </div>
-              </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
+        <Replies slideOvers={slideOvers} setSlideOvers={setSlideOvers} story={story} />
         {createNewList && (
           <div className="relative z-30">
             <div className="fixed inset-0 bg-black bg-opacity-50" />
