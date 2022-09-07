@@ -208,6 +208,33 @@ function* deleteStorySaga({ payload: storyId }) {
   }
 }
 
+function* createStorySaga({ payload }) {
+  try {
+    const { data, errors } = yield call(StoryService.createStory, payload);
+    if (!_.isNil(data)) {
+      yield put(storyActions.createStorySuccess(data));
+    }
+    if (_.isNil(errors)) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(storyActions.createStoryFailure(e));
+  }
+}
+function* updateStorySaga({ payload }) {
+  try {
+    const { data, errors } = yield call(StoryService.updateStory, payload);
+    if (!_.isNil(data)) {
+      yield put(storyActions.updateStorySuccess(data));
+    }
+    if (_.isNil(errors)) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(storyActions.updateStoryFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     yield takeEvery(
@@ -241,6 +268,14 @@ export default function* rootSaga() {
     yield takeEvery(
       storyActions.getReplyCommentsRequest.type,
       getReplyComments
+    ),
+    yield takeEvery(
+      storyActions.createStoryRequest.type,
+      createStorySaga
+    ),
+    yield takeEvery(
+      storyActions.updateStoryRequest.type,
+      updateStorySaga
     ),
   ]);
 }
