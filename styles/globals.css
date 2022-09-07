@@ -22,7 +22,7 @@
     font-family: 'Open Sans', Helvetica, sans-serif;
     font-size: 1.2em;
     height: 100%;
-    width: 100vw;
+    width: 60vw;
     position: relative;
   }
   #editor-container [contenteditable='true'] {
