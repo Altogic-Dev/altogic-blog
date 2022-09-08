@@ -3,14 +3,19 @@ import Link from 'next/link';
 import { CheckCircleIcon } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
+import dynamic from 'next/dynamic';
 import Layout from '../layout/Layout';
-import Editor from '../components/Editor';
+
+const Editor = dynamic(() => import('../components/Editor'), {
+  ssr: false,
+});
 
 export default function WriteAStory() {
   const [content, setContent] = useState('');
   const [storyImages, setStoryImages] = useState([]);
   const [isCreated, setIsCreated] = useState(false);
   const [username, setUsername] = useState('');
+  const [minRead, setMinRead] = useState(0);
   const user = useSelector((state) => state.auth.user);
   const newStory = useSelector((state) => state.story.story);
   const dispatch = useDispatch();
@@ -31,6 +36,7 @@ export default function WriteAStory() {
         content,
         storyImages: storyImages.filter(Boolean),
         title: input.current.value,
+        estimatedReadingTime: minRead,
       };
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
@@ -44,6 +50,8 @@ export default function WriteAStory() {
         );
       }
     }
+
+    setMinRead(Math.ceil(content.split(' ').length / 200));
   }, [content]);
 
   return (
@@ -53,6 +61,8 @@ export default function WriteAStory() {
           <span className="text-slate-800 text-lg tracking-sm">
             Draft in <span className="font-semibold">{username}</span>
           </span>
+          <p className="text-slate-500">{minRead} min read</p>
+
           {isCreated && (
             <Link href="publish-settings">
               <a className="inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24">
@@ -62,7 +72,7 @@ export default function WriteAStory() {
             </Link>
           )}
         </div>
-        <form action="" className="w-full">
+        <form className="w-full">
           <input
             type="text"
             name="story-title"
@@ -72,7 +82,7 @@ export default function WriteAStory() {
             ref={input}
           />
           <div className="mt-4 w-2/3">
-            <Editor onChange={setContent} setImages={setStoryImages} />
+            <Editor setMinRead={setMinRead} onChange={setContent} setImages={setStoryImages} />
           </div>
         </form>
       </div>

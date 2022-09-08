@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
 import { topicsActions } from '@/redux/topics/topicsSlice';
+import { parseHtml } from '@/utils/utils';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
@@ -90,9 +91,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
     getTopWriters(idList.slice(0, 5));
   }, [topWritersIdList]);
 
-  function strip(html) {
-    return html?.replace(/<\s*[^>]*>/gi, '');
-  }
+
 
 
   if (!isLoading)
@@ -117,7 +116,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                       {person.name}
                     </span>
                     <span className="text-slate-500 text-xs tracking-sm">
-                      {strip(person.about)}
+                      {parseHtml(person.about)}
                     </span>
                   </div>
                 </div>
@@ -204,7 +203,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                                     {person.name}
                                   </span>
                                   <span className="text-slate-500 text-xs tracking-sm">
-                                    {strip(person.about)}
+                                    {parseHtml(person.about)}
                                   </span>
                                 </div>
                               </div>

@@ -3,7 +3,6 @@ import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layout/Layout';
 import PostCard from '@/components/PostCard';
-import Sidebar from '@/layout/Sidebar';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,6 +11,7 @@ import { DateTime } from 'luxon';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import _ from 'lodash';
+import Sidebar from '../../layout/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -25,6 +25,10 @@ export default function TagPage({ Home, Latest, Best }) {
   const dispatch = useDispatch();
   const latestTopics = useSelector((state) => state.topics.latestTopics);
   const bestTopics = useSelector((state) => state.topics.bestTopics);
+  const trendingTopicsIdList = useSelector(
+    (state) => state.topics.trendingTopicsIdList
+  );
+  const trendingTopics = useSelector((state) => state.topics.trendingTopics);
 
   const [posts, setPosts] = useState([]);
 
@@ -46,35 +50,52 @@ export default function TagPage({ Home, Latest, Best }) {
       })
     );
   };
+  const getTrendings = (stories) => {
+
+    dispatch(topicsActions.getTrendingsOfTopicRequest(stories.map((person) => person.groupby.story)));
+  };
+  const getTopicTopWritersIdListRequest = () => {
+    dispatch(topicsActions.getIdListTrendingsOfTopicRequest({
+      topic: tag,
+      limit: 10,
+      page: 1,
+      date: DateTime.local().plus({weeks: -1}).toISODate(),
+    }));
+  };
 
   useEffect(() => {
     if (tag) {
       if (Home) {
+        getTopicTopWritersIdListRequest();
         setSelectedIndex(0);
       } else if (Latest) {
         getLatests(1);
         setSelectedIndex(1);
       } else if (Best) {
         getBests(1);
-
         setSelectedIndex(2);
       }
     }
   }, [tag]);
 
   useEffect(() => {
-
     if (Home) {
-      console.log("s")
+      setPosts(trendingTopics);
     } else if (Latest) {
       setPosts(latestTopics);
     } else if (Best) {
       setPosts(bestTopics);
-
     }
-  }, [latestTopics,bestTopics]);
+  }, [latestTopics, bestTopics, trendingTopics]);
 
-  console.log(bestTopics)
+  useEffect(() => {
+    if (trendingTopicsIdList.length > 0) {
+      getTrendings(trendingTopicsIdList);
+    }
+  }, [trendingTopicsIdList]);
+
+  console.log(trendingTopics)
+
   return (
     <div>
       <Head>
@@ -146,9 +167,7 @@ export default function TagPage({ Home, Latest, Best }) {
                         authorName={post.username}
                         authorImage={post.userProfilePicture}
                         storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(
-                          post.createdAt
-                        ).toRelative()}
+                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}
@@ -181,9 +200,7 @@ export default function TagPage({ Home, Latest, Best }) {
                         authorName={post.username}
                         authorImage={post.userProfilePicture}
                         storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(
-                          post.createdAt
-                        ).toRelative()}
+                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}
@@ -216,9 +233,7 @@ export default function TagPage({ Home, Latest, Best }) {
                         authorName={post.username}
                         authorImage={post.userProfilePicture}
                         storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(
-                          post.createdAt
-                        ).toRelative()}
+                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
                         badgeUrl={post.badgeUrl}

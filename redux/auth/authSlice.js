@@ -10,6 +10,7 @@ const initialState = {
   registerError: null,
   changePasswordError: null,
   updateProfileError: null,
+  changeEmailError: null,
   user: AuthService.getUser(),
   isMuted: false,
   isAuthenticated: false,
@@ -203,6 +204,18 @@ export const authSlice = createSlice({
       state.isAuthenticated = false;
       state.sessions = [];
       window.location.href = '/login';
+    },
+    changeEmailRequest(state) {
+      state.isLoading = true;
+    },
+    changeEmailSuccess(state, action) {
+      state.isLoading = false;
+      state.user = action.payload;
+      // window.location.href = `/mail-verification?email=${state.user.email}`;
+    },
+    changeEmailFailure(state, action) {
+      state.isLoading = false;
+      state.changeEmailError = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

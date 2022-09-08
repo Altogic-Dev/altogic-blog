@@ -1,74 +1,25 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
+import {  Menu, Transition, Switch } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import { XIcon } from '@heroicons/react/outline';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/Sidebar';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
-import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
+import Replies from '@/components/story/Replies';
 import { reportActions } from '@/redux/report/reportSlice';
-import Button from '@/components/basic/button';
+import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
+import Sidebar from '../../layout/Sidebar';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
-
-const allResponses = [
-  {
-    id: 0,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 1,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 2,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 3,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 4,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-];
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -86,15 +37,17 @@ export default function BlogDetail() {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
+
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
+
 
   const [createNewList, setCreateNewList] = useState(false);
   const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
   const [didMount, setDidMount] = useState(true);
-  const [commentBoxes, setCommentBoxes] = useState([]);
   const [morePage, setMorePage] = useState(1);
+
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -118,34 +71,20 @@ export default function BlogDetail() {
     );
   };
 
+
+
+
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
-        followerConnectionActions.getFollowingRequest({
-          userId: _.get(user, '_id'),
-          followingUserId: _.get(story, 'user._id'),
-        })
-      );
-      dispatch(
-        subscribeConnectionActions.getSubscribeRequest({
-          userId: _.get(user, '_id'),
-          subscribingUserId: _.get(story, 'user._id'),
-        })
-      );
-      dispatch(
-        storyLikesActions.isLikedStoryRequest({
-          userId: _.get(user, '_id'),
+        generalActions.getConnectInformationStoryRequest({
           storyId: _.get(story, '_id'),
+          authorId: _.get(story, 'user._id'),
         })
       );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
-      dispatch(
-        reportActions.getReportedStoryByUserRequest({
-          userId: _.get(user, '_id'),
-          storyId: _.get(story, '_id'),
-        })
-      );
       setDidMount(false);
+
     }
   }, [story]);
 
@@ -208,7 +147,7 @@ export default function BlogDetail() {
                   </div>
                 </div>
                 <div className="flex items-center justify-center gap-6 border-y sm:border-0 border-gray-200">
-                 <ShareButtons/>
+                  <ShareButtons />
                   <div className="flex items-center relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                     <Menu
                       as="div"
@@ -588,8 +527,86 @@ export default function BlogDetail() {
                     </button>
                   </div>
                   <div className="flex items-center justify-center gap-6 bg-white sm:bg-transparent border-y sm:border-0 border-gray-200">
-                  <ShareButtons/>
-
+                    <ul className="flex items-center">
+                      <li>
+                        <a
+                          href="#"
+                          className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
+                        >
+                          <svg
+                            className="w-6 h-6 text-slate-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M20.8513 7.47974C20.8592 7.67764 20.8618 7.87546 20.8618 8.07336C20.8618 14.0734 16.5286 21 8.60453 21C6.1704 21 3.90702 20.2444 2 18.958C2.3371 18.994 2.67946 19.021 3.02706 19.021C5.04528 19.021 6.90415 18.2922 8.37863 17.0689C6.4935 17.0419 4.90169 15.7195 4.3527 13.9204C4.61625 13.9744 4.88767 14.0015 5.16523 14.0015C5.55661 14.0015 5.93661 13.9476 6.30085 13.8396C4.32817 13.4258 2.84232 11.5908 2.84232 9.38689C2.84232 9.3599 2.84232 9.35086 2.84232 9.33287C3.4237 9.6657 4.08914 9.87249 4.79573 9.89948C3.63821 9.08089 2.87732 7.68662 2.87732 6.11241C2.87732 5.28482 3.08921 4.50218 3.46221 3.82752C5.58637 6.58014 8.76214 8.38826 12.3424 8.57716C12.2689 8.24433 12.2312 7.89359 12.2312 7.54277C12.2312 5.03303 14.1601 3 16.5399 3C17.7789 3 18.8979 3.5488 19.6833 4.43036C20.6665 4.23246 21.5877 3.85468 22.4212 3.33294C22.0981 4.39441 21.416 5.28478 20.5247 5.8425C21.3968 5.73455 22.2286 5.49186 23 5.13204C22.4212 6.04058 21.6927 6.84106 20.8513 7.47974Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
+                        >
+                          <svg
+                            className="w-6 h-6 text-slate-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M0.888672 12.0118C0.888672 17.5059 4.90124 22.074 10.1484 23L10.2104 22.9505C10.1897 22.9465 10.1691 22.9424 10.1485 22.9383V15.0984H7.37054V12.0118H10.1485V9.5425C10.1485 6.76457 11.9387 5.22127 14.4697 5.22127C15.2722 5.22127 16.1365 5.34474 16.939 5.4682V8.30786H15.5191C14.161 8.30786 13.8524 8.98691 13.8524 9.85116V12.0118H16.8155L16.3217 15.0984H13.8524V22.9383C13.8317 22.9424 13.8111 22.9465 13.7904 22.9505L13.8524 23C19.0996 22.074 23.1121 17.5059 23.1121 12.0118C23.1121 5.9003 18.1119 0.900024 12.0004 0.900024C5.88895 0.900024 0.888672 5.9003 0.888672 12.0118Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
+                        >
+                          <svg
+                            className="w-6 h-6 text-slate-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M3.41961 2C2.63558 2 2 2.63558 2 3.41961V20.5804C2 21.3644 2.63558 22 3.41961 22H20.5804C21.3644 22 22 21.3644 22 20.5804V3.41961C22 2.63558 21.3644 2 20.5804 2H3.41961ZM6.48908 8.21103C7.44729 8.21103 8.22408 7.43424 8.22408 6.47603C8.22408 5.51781 7.44729 4.74102 6.48908 4.74102C5.53087 4.74102 4.75409 5.51781 4.75409 6.47603C4.75409 7.43424 5.53087 8.21103 6.48908 8.21103ZM9.81304 9.49324H12.6885V10.8105C12.6885 10.8105 13.4688 9.24991 15.5918 9.24991C17.4857 9.24991 19.0546 10.1829 19.0546 13.0266V19.0233H16.0748V13.7533C16.0748 12.0757 15.1792 11.8912 14.4967 11.8912C13.0804 11.8912 12.8379 13.1129 12.8379 13.9721V19.0233H9.81304V9.49324ZM8.00152 9.49325H4.97664V19.0233H8.00152V9.49325Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="#"
+                          className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
+                        >
+                          <svg
+                            className="w-6 h-6 text-slate-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.801 12.401C10.4702 11.9588 9.84347 11.8685 9.40122 12.1993C8.95897 12.5301 8.86863 13.1568 9.19943 13.599L10.801 12.401ZM17.5402 13.54L16.8331 12.8329L16.833 12.833L17.5402 13.54ZM20.5402 10.54L21.2473 11.2471C21.2514 11.243 21.2555 11.2389 21.2595 11.2347L20.5402 10.54ZM13.4702 3.47003L12.7755 2.75074C12.772 2.75409 12.7686 2.75746 12.7652 2.76086L13.4702 3.47003ZM11.0452 4.47086C10.6535 4.86024 10.6516 5.49341 11.041 5.88507C11.4304 6.27673 12.0636 6.27858 12.4552 5.88919L11.0452 4.47086ZM13.1994 11.599C13.5302 12.0413 14.1569 12.1316 14.5992 11.8008C15.0414 11.47 15.1318 10.8433 14.801 10.401L13.1994 11.599ZM6.4602 10.46L7.16731 11.1671L7.16743 11.167L6.4602 10.46ZM3.4602 13.46L2.75309 12.7529C2.749 12.757 2.74494 12.7611 2.74091 12.7653L3.4602 13.46ZM10.5302 20.53L11.2249 21.2493C11.2291 21.2453 11.2332 21.2412 11.2373 21.2371L10.5302 20.53ZM12.9473 19.5271C13.3378 19.1366 13.3378 18.5034 12.9473 18.1129C12.5568 17.7224 11.9236 17.7224 11.5331 18.1129L12.9473 19.5271ZM9.19943 13.599C9.71478 14.288 10.3723 14.858 11.1273 15.2705L12.0862 13.5154C11.5829 13.2404 11.1445 12.8604 10.801 12.401L9.19943 13.599ZM11.1273 15.2705C11.8823 15.683 12.7172 15.9283 13.5754 15.9898L13.7183 13.9949C13.1462 13.9539 12.5896 13.7904 12.0862 13.5154L11.1273 15.2705ZM13.5754 15.9898C14.4336 16.0513 15.2949 15.9274 16.101 15.6267L15.402 13.7529C14.8646 13.9533 14.2904 14.0359 13.7183 13.9949L13.5754 15.9898ZM16.101 15.6267C16.9072 15.326 17.6392 14.8555 18.2474 14.247L16.833 12.833C16.4275 13.2387 15.9394 13.5524 15.402 13.7529L16.101 15.6267ZM18.2473 14.2471L21.2473 11.2471L19.8331 9.83292L16.8331 12.8329L18.2473 14.2471ZM21.2595 11.2347C22.3524 10.1031 22.9572 8.58751 22.9435 7.01433L20.9436 7.03171C20.9527 8.0805 20.5495 9.09091 19.8209 9.84531L21.2595 11.2347ZM22.9435 7.01433C22.9299 5.44115 22.2988 3.93628 21.1864 2.82383L19.7722 4.23804C20.5138 4.97967 20.9345 5.98292 20.9436 7.03171L22.9435 7.01433ZM21.1864 2.82383C20.074 1.71138 18.5691 1.08036 16.9959 1.06669L16.9785 3.06662C18.0273 3.07573 19.0306 3.49641 19.7722 4.23804L21.1864 2.82383ZM16.9959 1.06669C15.4227 1.05302 13.9071 1.65779 12.7755 2.75074L14.1649 4.18931C14.9193 3.46068 15.9297 3.0575 16.9785 3.06662L16.9959 1.06669ZM12.7652 2.76086L11.0452 4.47086L12.4552 5.88919L14.1752 4.17919L12.7652 2.76086ZM14.801 10.401C14.2856 9.71209 13.6281 9.14203 12.8731 8.72952L11.9142 10.4847C12.4175 10.7597 12.8559 11.1397 13.1994 11.599L14.801 10.401ZM12.8731 8.72952C12.1181 8.31701 11.2832 8.07171 10.425 8.01025L10.2821 10.0051C10.8542 10.0461 11.4108 10.2096 11.9142 10.4847L12.8731 8.72952ZM10.425 8.01025C9.56681 7.94879 8.70546 8.07261 7.89935 8.37331L8.59836 10.2472C9.13577 10.0467 9.71 9.96416 10.2821 10.0051L10.425 8.01025ZM7.89935 8.37331C7.09324 8.67401 6.36123 9.14456 5.75296 9.75305L7.16743 11.167C7.57294 10.7613 8.06095 10.4476 8.59836 10.2472L7.89935 8.37331ZM5.75309 9.75292L2.75309 12.7529L4.16731 14.1671L7.16731 11.1671L5.75309 9.75292ZM2.74091 12.7653C1.64796 13.8969 1.0432 15.4125 1.05687 16.9857L3.05679 16.9683C3.04768 15.9196 3.45086 14.9091 4.17949 14.1547L2.74091 12.7653ZM1.05687 16.9857C1.07054 18.5589 1.70155 20.0638 2.814 21.1762L4.22821 19.762C3.48658 19.0204 3.06591 18.0171 3.05679 16.9683L1.05687 16.9857ZM2.814 21.1762C3.92645 22.2887 5.43132 22.9197 7.0045 22.9334L7.02188 20.9334C5.9731 20.9243 4.96985 20.5036 4.22821 19.762L2.814 21.1762ZM7.0045 22.9334C8.57768 22.947 10.0933 22.3423 11.2249 21.2493L9.83549 19.8107C9.08108 20.5394 8.07067 20.9425 7.02188 20.9334L7.0045 22.9334ZM11.2373 21.2371L12.9473 19.5271L11.5331 18.1129L9.82309 19.8229L11.2373 21.2371Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </a>
+                      </li>
+                    </ul>
                     <div className="flex items-center relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                       <Menu
                         as="div"
@@ -1100,232 +1117,7 @@ export default function BlogDetail() {
             </div>
           </div>
         </div>
-        <Transition.Root show={slideOvers} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-in-out duration-500"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in-out duration-500"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
-            <div className="fixed inset-0 overflow-hidden">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="transform transition ease-in-out duration-500 sm:duration-700"
-                    enterFrom="translate-x-full"
-                    enterTo="translate-x-0"
-                    leave="transform transition ease-in-out duration-500 sm:duration-700"
-                    leaveFrom="translate-x-0"
-                    leaveTo="translate-x-full"
-                  >
-                    <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                      <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll">
-                        <div>
-                          <div className="flex items-start justify-between pb-3">
-                            <Dialog.Title className="text-slate-800 text-lg font-medium tracking-sm">
-                              Write a responses
-                            </Dialog.Title>
-                            <div className="ml-3 flex h-7 items-center">
-                              <button
-                                type="button"
-                                className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
-                                onClick={() => setSlideOvers(!slideOvers)}
-                              >
-                                <span className="sr-only">Close panel</span>
-                                <XIcon className="h-6 w-6" aria-hidden="true" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          {/* Slide Over Form */}
-                          <form action="" className="mb-12">
-                            <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
-                              <div className="flex items-center gap-2 mb-4">
-                                <img
-                                  className="w-8 h-8 object-cover rounded-full"
-                                  src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                  alt=""
-                                />
-                                <span className="text-slate-700 text-sm font-medium tracking-sm">
-                                  {_.get(story, 'user.name')}
-                                </span>
-                              </div>
-                              <div className="mb-4">
-                                <textarea
-                                  id="about"
-                                  name="about"
-                                  rows={5}
-                                  className="block w-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
-                                  placeholder="What are you thoughts?"
-                                />
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <button
-                                    type="button"
-                                    className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                  >
-                                    <svg
-                                      className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                  >
-                                    <svg
-                                      className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Respond
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="relative flex items-start">
-                              <div className="flex items-center h-5">
-                                <input
-                                  id="comments"
-                                  name="comments"
-                                  type="checkbox"
-                                  className="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                                />
-                              </div>
-                              <div className="ml-3 text-sm">
-                                <label
-                                  htmlFor="comments"
-                                  className="text-slate-500 text-sm tracking-sm"
-                                >
-                                  Also publish to my profile
-                                </label>
-                              </div>
-                            </div>
-                          </form>
-                          {/* Slide Over All Responses Post */}
-                          <div>
-                            <h2 className="text-slate-800 pb-6 text-lg font-semibold tracking-sm border-b border-gray-200">
-                              All Responses (3)
-                            </h2>
-                            <ul className="divide-y divide-gray-200">
-                              {allResponses.map((allResponse, index) => (
-                                <li
-                                  key={allResponse.id}
-                                  className="py-6 space-y-4"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <img
-                                      className="w-10 h-10 rounded-full object-cover"
-                                      src={allResponse.avatarImage}
-                                      alt={allResponse.name}
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="text-slate-700 text-base font-medium tracking-sm">
-                                        {allResponse.name}
-                                      </span>
-                                      <span className="text-slate-500 text-sm tracking-sm">
-                                        {allResponse.timeAgo}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <p className="text-slate-700 text-sm tracking-sm">
-                                    {allResponse.description}
-                                  </p>
-                                  <div className="flex items-center justify-between">
-                                    <button
-                                      type="button"
-                                      className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-                                    >
-                                      <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
-                                        <svg
-                                          className="w-6 h-6 text-slate-400 group-hover:text-slate-700"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <path
-                                            d="M11.9932 5.13581L11.2332 5.78583C11.4232 6.00794 11.7009 6.13581 11.9932 6.13581C12.2854 6.13581 12.5631 6.00794 12.7531 5.78583L11.9932 5.13581ZM3.2642 12.5604L4.0538 11.9468L3.2642 12.5604ZM20.7221 12.5604L19.9325 11.9468L20.7221 12.5604ZM11.4721 20.5408L12.1351 19.7922L11.4721 20.5408ZM11.8502 20.8135L11.5643 21.7718L11.8502 20.8135ZM12.5142 20.5408L11.8512 19.7922L12.5142 20.5408ZM12.1361 20.8135L12.422 21.7718L12.1361 20.8135ZM12.7531 4.4858C10.4594 1.80434 6.50161 0.989451 3.5051 3.54974L4.80429 5.07029C6.81788 3.34983 9.52816 3.79246 11.2332 5.78583L12.7531 4.4858ZM3.5051 3.54974C0.598307 6.03336 0.175977 10.2162 2.4746 13.174L4.0538 11.9468C2.41796 9.84179 2.70098 6.86741 4.80429 5.07029L3.5051 3.54974ZM21.5117 13.174C23.8015 10.2275 23.4444 6.01246 20.4708 3.54097L19.1924 5.07906C21.315 6.84328 21.5772 9.83042 19.9325 11.9468L21.5117 13.174ZM20.4708 3.54097C17.4415 1.02319 13.5344 1.79553 11.2332 4.4858L12.7531 5.78583C14.4506 3.80127 17.1255 3.36113 19.1924 5.07906L20.4708 3.54097ZM2.4746 13.174C3.34712 14.2968 5.05011 15.9836 6.68673 17.5283C8.3425 19.0912 9.99445 20.568 10.8091 21.2895L12.1351 19.7922C11.3274 19.0769 9.69323 17.6159 8.05954 16.0739C6.40669 14.5138 4.81689 12.9287 4.0538 11.9468L2.4746 13.174ZM13.1772 21.2895C13.9919 20.568 15.6438 19.0912 17.2996 17.5283C18.9362 15.9836 20.6392 14.2968 21.5117 13.174L19.9325 11.9468C19.1694 12.9287 17.5796 14.5138 15.9268 16.0739C14.2931 17.6159 12.6589 19.0769 11.8512 19.7922L13.1772 21.2895ZM10.8091 21.2895C10.8881 21.3594 10.9903 21.4509 11.088 21.5245C11.1974 21.6069 11.3545 21.7092 11.5643 21.7718L12.1361 19.8553C12.1859 19.8701 12.2264 19.8888 12.2555 19.9048C12.2821 19.9195 12.2954 19.93 12.2911 19.9268C12.2862 19.9231 12.2727 19.9125 12.2442 19.888C12.2156 19.8634 12.1821 19.8339 12.1351 19.7922L10.8091 21.2895ZM11.8512 19.7922C11.8042 19.8339 11.7707 19.8634 11.7421 19.888C11.7136 19.9125 11.7001 19.9231 11.6952 19.9268C11.6909 19.93 11.7042 19.9195 11.7308 19.9048C11.7599 19.8888 11.8004 19.8701 11.8502 19.8553L12.422 21.7718C12.6318 21.7092 12.7889 21.6069 12.8983 21.5245C12.996 21.4509 13.0982 21.3594 13.1772 21.2895L11.8512 19.7922ZM11.5643 21.7718C11.8433 21.855 12.1431 21.855 12.422 21.7718L11.8502 19.8553C11.9443 19.8272 12.042 19.8272 12.1361 19.8553L11.5643 21.7718Z"
-                                            fill="currentColor"
-                                          />
-                                        </svg>
-                                      </span>
-                                      3
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setCommentBoxes((prev) => {
-                                          const temp = prev;
-                                          temp[index] = true;
-                                          return temp;
-                                        })
-                                      }
-                                      className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                    >
-                                      Reply
-                                    </button>
-                                  </div>
-                                  {commentBoxes[index] === true && (
-                                    <div className="flex flex-col items-end">
-                                      <textarea
-                                        className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
-                                        placeholder="Write a comment..."
-                                      />
-
-                                      <Button type="button" extraClasses="mt-5">
-                                        Comment
-                                      </Button>
-                                    </div>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </Dialog.Panel>
-                  </Transition.Child>
-                </div>
-              </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
+        <Replies slideOvers={slideOvers} setSlideOvers={setSlideOvers} story={story} />
         {createNewList && (
           <div className="relative z-30">
             <div className="fixed inset-0 bg-black bg-opacity-50" />

@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { reportActions } from '@/redux/report/reportSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from 'luxon';
-
 import _ from 'lodash';
-import { authActions } from '@/redux/auth/authSlice';
 import YourTopics from '@/components/general/YourTopics';
-import { useDispatch, useSelector } from 'react-redux';
 import ListObserver from '@/components/ListObserver';
-import Layout from '../layout/Layout';
+import { authActions } from '../redux/auth/authSlice';
+import Sidebar from '../layouts/Sidebar';
 import PostCard from '../components/PostCard';
-import Sidebar from '../layout/Sidebar';
+import Layout from '../layouts/Layout';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -113,7 +112,9 @@ export default function Home() {
                     {/* <span
                       className={classNames(
                         'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex == 0 ? 'bg-purple-50 text-purple-900' : ''
+                        selectedIndex === 0
+                          ? 'bg-purple-50 text-purple-900'
+                          : ''
                       )}
                     >
                       8

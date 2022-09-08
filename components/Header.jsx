@@ -9,10 +9,10 @@ import Button from './basic/button';
 import { authActions } from '../redux/auth/authSlice';
 
 export default function Header() {
-  const router = useRouter();
   const [mobileNotifications, setMobileNotifications] = useState(false);
   const sessionUser = useSelector((state) => state.auth.user);
   const [user, setUser] = useState();
+  const router = useRouter();
   useEffect(() => {
     if (sessionUser) {
       setUser(sessionUser);
@@ -100,9 +100,8 @@ export default function Header() {
             </Link>
           </Popover.Group>
           <div className="flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 lg:w-0 gap-4">
-            <button
-              type="button"
-              onClick={() => router.push('/write-a-story')}
+            <Button
+              onClick={() => {router.push('/write-a-story')}}
               className="inline-flex items-center justify-center w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
               <svg
@@ -119,7 +118,7 @@ export default function Header() {
                   strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </Button>
             {/* Desktop Notification */}
             <Menu
               as="div"
@@ -179,7 +178,7 @@ export default function Header() {
                             liked your{' '}
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
-                            </strong>{' '}
+                            </strong>
                             forum!
                           </div>
                         </div>
@@ -216,11 +215,11 @@ export default function Header() {
                           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                             <strong className="font-semibold">
                               Emillia Gates
-                            </strong>{' '}
-                            liked your{' '}
+                            </strong>
+                            liked your
                             <strong className="font-semibold">
                               Lorem Ipsum Dolor Sit Amet
-                            </strong>{' '}
+                            </strong>
                             forum!
                           </div>
                         </div>
@@ -315,11 +314,11 @@ export default function Header() {
                               <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                                 <strong className="font-semibold">
                                   İsmail Erüstün
-                                </strong>{' '}
-                                liked your{' '}
+                                </strong>
+                                liked your
                                 <strong className="font-semibold">
                                   Lorem Ipsum Dolor Sit Amet
-                                </strong>{' '}
+                                </strong>
                                 forum!
                               </div>
                             </div>
@@ -356,11 +355,11 @@ export default function Header() {
                               <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
                                 <strong className="font-semibold">
                                   Emillia Gates
-                                </strong>{' '}
-                                liked your{' '}
+                                </strong>
+                                liked your
                                 <strong className="font-semibold">
                                   Lorem Ipsum Dolor Sit Amet
-                                </strong>{' '}
+                                </strong>
                                 forum!
                               </div>
                             </div>
@@ -558,7 +557,9 @@ export default function Header() {
                       <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
                         Publications
                       </span>
-                      <Menu.Item onClick={() => router.push('/publication/Altogic')}>
+                      <Menu.Item
+                        onClick={() => router.push('/publication/Altogic')}
+                      >
                         <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                           <svg
                             width="16"
@@ -706,8 +707,8 @@ export default function Header() {
 
       {/* Mobile Bottom Fixed Menu */}
       <div className="flex lg:hidden items-center justify-between fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
-        <a
-          href="#"
+        <button
+          type="button"
           className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
         >
           <svg
@@ -724,9 +725,9 @@ export default function Header() {
               strokeLinejoin="round"
             />
           </svg>
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
+          type="button"
           className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
         >
           <svg
@@ -743,9 +744,9 @@ export default function Header() {
               strokeLinejoin="round"
             />
           </svg>
-        </a>
-        <a
-          href="#"
+        </button>
+        <button
+          type="button"
           className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50"
         >
           <svg
@@ -762,7 +763,7 @@ export default function Header() {
               strokeLinejoin="round"
             />
           </svg>
-        </a>
+        </button>
         <Menu as="div" className="relative inline-flex lg:hidden items-center">
           <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
             <img
@@ -821,8 +822,8 @@ export default function Header() {
                     </Link>
                   </Menu.Item>
                   <Menu.Item>
-                    <a
-                      href="#"
+                    <button
+                      type="button"
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg
@@ -847,11 +848,11 @@ export default function Header() {
                         />
                       </svg>
                       Settings
-                    </a>
+                    </button>
                   </Menu.Item>
                   <Menu.Item>
-                    <a
-                      href="#"
+                    <button
+                      type="button"
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg
@@ -869,7 +870,7 @@ export default function Header() {
                         />
                       </svg>
                       Stats
-                    </a>
+                    </button>
                   </Menu.Item>
                 </div>
                 <div>
@@ -920,8 +921,8 @@ export default function Header() {
                     </Link>
                   </Menu.Item>
                   <Menu.Item>
-                    <a
-                      href="#"
+                    <button
+                      type="button"
                       className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm"
                     >
                       <svg
@@ -936,7 +937,7 @@ export default function Header() {
                         />
                       </svg>
                       Manage Publications
-                    </a>
+                    </button>
                   </Menu.Item>
                 </div>
                 <div>

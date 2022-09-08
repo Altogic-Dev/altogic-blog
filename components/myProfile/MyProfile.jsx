@@ -13,7 +13,7 @@ import PostCard from '../PostCard';
 import PostList from '../PostList';
 import About from '../general/About';
 
-const Sidebar = dynamic(() => import('@/layout/Sidebar'), {
+const Sidebar = dynamic(() => import('../../layout/Sidebar'), {
   ssr: false,
 });
 
