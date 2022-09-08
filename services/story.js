@@ -48,11 +48,7 @@ const StoryService = {
   },
 
   getStory(id) {
-    return db
-      .model('story')
-      .filter(`_id == '${id}' && isPublished && !isPrivate`)
-      .lookup({ field: 'user' })
-      .get();
+    return db.model('story').object(id).get();
   },
 
   getStoryBySlug(storySlug) {
@@ -90,15 +86,43 @@ const StoryService = {
       .limit(limit)
       .get(true);
   },
-
-  createStory(story) {
-    return db.model('story').create(story);
+  getStoryReplies(storyId, page, limit) {
+    return db
+      .model('replies')
+      .filter(`story == '${storyId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get(true);
   },
+  getReplyComments(reply) {
+    return db
+      .model('reply_comments')
+      .filter(`reply == '${reply}'`)
+      .sort('createdAt', 'desc')
+      .get();
+  },
+  createReply(reply) {
+    return db.model('replies').create(reply);
+  },
+
+  createReplyComment(comment) {
+    return endpoint.post(`/reply_comments`, comment);
+  },
+
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {
     return db.model('story').object(storyId).delete();
+  },
+
+  updateCategory(storyId, newCategoryNames) {
+    return db.model('story').object(storyId).updateFields({
+      field: 'categoryNames',
+      updateType: 'set',
+      value: newCategoryNames,
+    });
   },
 };
 

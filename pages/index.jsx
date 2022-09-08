@@ -9,14 +9,15 @@ import { DateTime } from 'luxon';
 import _ from 'lodash';
 import YourTopics from '@/components/general/YourTopics';
 import ListObserver from '@/components/ListObserver';
+import { classNames } from '@/utils/utils';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import { authActions } from '../redux/auth/authSlice';
 import Sidebar from '../layouts/Sidebar';
 import PostCard from '../components/PostCard';
 import Layout from '../layouts/Layout';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -34,12 +35,16 @@ export default function Home() {
     (state) => state.story.recommendedStoriesInfo
   );
 
-  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
+  const user = useSelector((state) => state.auth.user);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
-    dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
+    dispatch(
+      storyActions.getFollowingStoriesRequest({ userId: user._id, page })
+    );
   };
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
@@ -80,6 +85,22 @@ export default function Home() {
       getRecommendedStories(followingListPage);
     }
   }, [selectedIndex]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
 
   return (
     <div>
@@ -156,18 +177,21 @@ export default function Home() {
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
+                            bookmarkLists={bookmarkLists}
+                            story={story}
+                            bookmarks={bookmarks}
                             optionButtons={{
                               unfollow: () =>
                                 dispatch(
                                   followerConnectionActions.unfollowRequest({
-                                    userId,
+                                    userId: user._id,
                                     followingUserId: story.user,
                                   })
                                 ),
                               report: () =>
                                 dispatch(
                                   reportActions.reportStoryRequest({
-                                    userId,
+                                    userId: user._id,
                                     storyId: story._id,
                                     reportedUserId: story.user,
                                   })
@@ -201,6 +225,9 @@ export default function Home() {
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
+                            bookmarkList={bookmarkLists}
+                            story={story}
+                            bookmarks={bookmarks}
                             optionButtons={{
                               mute: () =>
                                 dispatch(
@@ -209,7 +236,7 @@ export default function Home() {
                               report: () =>
                                 dispatch(
                                   reportActions.reportStoryRequest({
-                                    userId,
+                                    userId: user._id,
                                     storyId: story._id,
                                     reportedUserId: story.user,
                                   })

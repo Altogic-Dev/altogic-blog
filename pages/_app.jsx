@@ -20,6 +20,9 @@ function MyApp({ Component, pageProps }) {
         rtl={false}
         pauseOnFocusLoss
         draggable
+        transition="slide"
+        theme="dark"
+        width="500px"
       />
       <Component {...pageProps} />
     </>

@@ -6,6 +6,7 @@ const initialState = {
   latestTopics: [],
   bestTopics: [],
   trendingTopics: [],
+  trendingTopicsIdList: [],
   relatedTopics: [],
   popularTopics: [],
   topWritersIdList: [],
@@ -31,6 +32,17 @@ export const topicsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    getIdListTrendingsOfTopicRequest(state) {
+      state.isLoading = true;
+    },
+    getIdListTrendingsOfTopicSuccess(state, action) {
+      state.trendingTopicsIdList = action.payload;
+      state.isLoading = false;
+    },
+    getIdListTrendingsOfTopicFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
     getLatestsOfTopicRequest(state) {
       state.isLoading = true;
     },
@@ -53,6 +65,7 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+   
     getPopularTopicsRequest(state) {
       state.isLoading = true;
     },

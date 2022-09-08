@@ -1,35 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
-import { XIcon } from '@heroicons/react/solid';
+import { DateTime } from 'luxon';
+import _ from 'lodash';
 import { DuplicateIcon } from '@heroicons/react/outline';
+import Category from '@/components/Category';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { storyActions } from '@/redux/story/storySlice';
 import PostCard from '../components/PostCard';
 import Layout from '../layout/Layout';
 
-const posts = [
-  {
-    id: 0,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-];
-
 export default function WriteAStorySettings() {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const story = useSelector((state) => state.story.story);
+  const user = useSelector((state) => state.auth.user);
+
+  const [userState, setUserState] = useState(null);
+  const [basePath, setBasePath] = useState();
+
+  const [inpSeoTitle, setInpSeoTitle] = useState(story?.seoTitle);
+  const [inpSeoDescription, setInpSeoDescription] = useState('');
+  const [inpStorySlug, setInpStorySlug] = useState('');
+  const [inpCategory, setInpCategory] = useState('');
+  const [inpCategoryNames, setInpCategoryNames] = useState([]);
+
+  const [radioCustomizeLink, setRadioCustomizeLink] = useState('automatic');
+  const [radiolicense, setRadioLicense] = useState('all');
+
+  const { id } = router.query;
+  const storyLink = `${basePath}/story/${_.get(story, 'storySlug')}`;
+
   const [deleteStoryModal, setDeleteStoryModal] = useState(false);
+
+  const handleInsert = (e) => {
+    if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
+      setInpCategoryNames((prev) => [inpCategory, ...prev]);
+      setInpCategory('');
+    }
+  };
+
+  const handleDelete = (categoryName) => {
+    const newCategoryNames = _.reject(
+      inpCategoryNames,
+      (category) => category === categoryName
+    );
+    setInpCategoryNames(newCategoryNames);
+  };
+
+  const handleChangeLicense = (e) => {
+    setRadioLicense(e.target.value);
+
+    dispatch(
+      storyActions.updateStoryFieldRequest({
+        story,
+        newStoryField: {
+          license: e.target.value,
+        },
+      })
+    );
+  };
+
+  const fillInputs = useCallback(() => {
+    if (!_.isNil(story)) {
+      setInpSeoTitle(story.seoTitle);
+      setInpSeoDescription(story.seoDescription);
+      setInpStorySlug(story.storySlug);
+      setInpCategoryNames(story.categoryNames);
+      setRadioLicense(story.license);
+    }
+  }, [story]);
+
+  useEffect(() => {
+    setBasePath(window.location.origin);
+  }, []);
+
+  useEffect(() => {
+    fillInputs();
+  }, [story]);
+
+  useEffect(() => {
+    if (id) {
+      dispatch(storyActions.getStoryRequest(id));
+      setUserState(user);
+    }
+  }, [id]);
 
   return (
     <div>
@@ -47,7 +103,7 @@ export default function WriteAStorySettings() {
             <ul className="hidden xl:block sticky bottom-0">
               <li>
                 <a
-                  href="#my-details"
+                  href="#story-preview"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
                   Story Preview
@@ -55,7 +111,7 @@ export default function WriteAStorySettings() {
               </li>
               <li>
                 <a
-                  href="#password"
+                  href="#author"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
                   Author
@@ -63,15 +119,15 @@ export default function WriteAStorySettings() {
               </li>
               <li>
                 <a
-                  href="#my-sessions"
+                  href="#reader-interest"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
-                  Reeder Interest
+                  Reader Interest
                 </a>
               </li>
               <li>
                 <a
-                  href="#my-plans"
+                  href="#seo-settings"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
                   SEO Settings
@@ -79,7 +135,7 @@ export default function WriteAStorySettings() {
               </li>
               <li>
                 <a
-                  href="#my-plans"
+                  href="#promotion"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
                   Promotion
@@ -87,7 +143,7 @@ export default function WriteAStorySettings() {
               </li>
               <li>
                 <a
-                  href="#my-plans"
+                  href="#content-licensing"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
                   Content Licensing
@@ -95,7 +151,7 @@ export default function WriteAStorySettings() {
               </li>
               <li>
                 <a
-                  href="#my-plans"
+                  href="#advanced-settings"
                   className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                 >
                   Advanced Settings
@@ -112,25 +168,23 @@ export default function WriteAStorySettings() {
                     Story Preview
                   </h2>
                   <div className="px-4 lg:px-8 border border-slate-50 shadow rounded-lg">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post.id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
-                      />
-                    ))}
+                    <PostCard
+                      noActiveBookmark
+                      normalMenu
+                      authorUrl={`/${_.get(userState, 'username')}`}
+                      authorName={_.get(userState, 'username')}
+                      authorImage={_.get(userState, 'profilePicture')}
+                      storyUrl={`/story/${_.get(userState, 'storySlug')}`}
+                      timeAgo={DateTime.fromISO(
+                        _.get(story, 'createdAt')
+                      ).toRelative()}
+                      title={_.get(story, 'title')}
+                      infoText={_.get(story, 'excerpt')}
+                      badgeUrl="badgeUrl"
+                      badgeName={_.first(_.get(story, 'categoryNames'))}
+                      min={_.get(story, 'estimatedReadingTime')}
+                      images={_.first(_.get(story, 'storyImages'))}
+                    />
                   </div>
                 </div>
                 <hr className="my-14" />
@@ -146,18 +200,13 @@ export default function WriteAStorySettings() {
                     />
                     <div className="tracking-sm">
                       <h2 className="text-slate-700 text-base font-medium">
-                        Olivia Rhye
+                        {_.get(userState, 'name')}
                       </h2>
                       <span className="inline-block mb-3 text-slate-500 text-sm">
-                        9.5k Followers
+                        {_.get(userState, 'followerCount')} Followers
                       </span>
                       <p className="text-slate-500 text-xs mb-8">
-                        Faucibus consequat, massa risus, dignissim interdum
-                        feugiat sollicitudin tortor. Volutpat, elementum diam id
-                        nunc pellentesque suspendisse sagittis. Pharetra,
-                        pulvinar augue nunc ut malesuada sed laoreet. Interdum
-                        pellentesque adipiscing sagittis, tincidunt. Varius nec
-                        egestas eget venenatis, risus adipiscing auctor.
+                        {_.get(userState, 'about')}
                       </p>
                     </div>
                   </div>
@@ -178,21 +227,38 @@ export default function WriteAStorySettings() {
                       </span>
                     </div>
                     <div className="flex flex-col md:flex-row items-center gap-4">
-                      <div className="flex flex-wrap items-center flex-1 w-full md:w-auto gap-2 px-2 py-1 border border-gray-300 rounded-md">
-                        <button
-                          type="button"
-                          className="inline-flex items-center px-2 py-1.5 sm:px-3 sm:py-2 border border-transparent shadow-sm text-xs sm:text-sm leading-5 rounded-md tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                        >
-                          <XIcon
-                            className="mr-2 h-4 w-4 sm:h-5 sm:w-5"
-                            aria-hidden="true"
+                      <div className="flex flex-wrap items-center flex-1 w-full md:w-auto">
+                        <div className="flex items-center">
+                          <input
+                            className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                            placeholder="Category Name"
+                            value={inpCategory}
+                            onChange={(e) => setInpCategory(e.target.value)}
+                            disabled={_.size(story?.categoryNames) >= 5}
+                            onKeyDown={handleInsert}
                           />
-                          Forum
-                        </button>
+
+                          {_.map(inpCategoryNames, (categoryName) => (
+                            <Category
+                              key={categoryName}
+                              tag={categoryName}
+                              onClick={() => handleDelete(categoryName)}
+                              className="ml-2 text-xs"
+                            />
+                          ))}
+                        </div>
                       </div>
                       <button
                         type="button"
                         className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[42px] md:h-[48px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                        onClick={() =>
+                          dispatch(
+                            storyActions.updateCategoryNamesRequest({
+                              storyId: _.get(story, '_id'),
+                              newCategoryNames: inpCategoryNames,
+                            })
+                          )
+                        }
                       >
                         Save
                       </button>
@@ -221,14 +287,10 @@ export default function WriteAStorySettings() {
                       <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
                         Title preview:{' '}
                         <span className="text-slate-700 text-base font-light">
-                          Denemem. denememememem | by İsmail Erüstün | Medium
+                          Title | by İsmail Erüstün | Medium
                         </span>
                       </span>
-                      <form
-                        action="#"
-                        method="POST"
-                        className="flex flex-col md:flex-row items-center gap-4"
-                      >
+                      <div className="flex flex-col md:flex-row items-center gap-4">
                         <input
                           id="title"
                           name="title"
@@ -236,14 +298,26 @@ export default function WriteAStorySettings() {
                           placeholder="Type title..."
                           required
                           className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                          onChange={(e) => setInpSeoTitle(e.target.value)}
+                          value={inpSeoTitle}
                         />
                         <button
                           type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          onClick={() =>
+                            dispatch(
+                              storyActions.updateStoryFieldRequest({
+                                story,
+                                newStoryField: {
+                                  seoTitle: inpSeoTitle,
+                                },
+                              })
+                            )
+                          }
                         >
                           Save
                         </button>
-                      </form>
+                      </div>
                     </div>
                     <div>
                       <div className="flex flex-col mb-4">
@@ -260,14 +334,10 @@ export default function WriteAStorySettings() {
                       <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
                         Title preview:{' '}
                         <span className="text-slate-700 text-base font-light">
-                          Denemem. denememememem | by İsmail Erüstün | Medium
+                          Desc. Description | by İsmail Erüstün | Medium
                         </span>
                       </span>
-                      <form
-                        action="#"
-                        method="POST"
-                        className="flex flex-col md:flex-row items-center gap-4"
-                      >
+                      <div className="flex flex-col md:flex-row items-center gap-4">
                         <input
                           id="description"
                           name="description"
@@ -275,19 +345,31 @@ export default function WriteAStorySettings() {
                           placeholder="Type description..."
                           required
                           className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                          onChange={(e) => setInpSeoDescription(e.target.value)}
+                          value={inpSeoDescription}
                         />
                         <button
                           type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          onClick={() =>
+                            dispatch(
+                              storyActions.updateStoryFieldRequest({
+                                story,
+                                newStoryField: {
+                                  seoDescription: inpSeoDescription,
+                                },
+                              })
+                            )
+                          }
                         >
                           Save
                         </button>
-                      </form>
+                      </div>
                     </div>
                   </div>
                 </div>
                 <hr className="my-14" />
-                <div id="seo-settings">
+                <div id="promotion">
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Promotion
                   </h2>
@@ -308,13 +390,24 @@ export default function WriteAStorySettings() {
                         name="type"
                         id="type"
                         className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-tl-md rounded-bl-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                        placeholder="https://altogic.com/@erustun/e9a4983262d1?source=friends_link&sk=51fd5sdsdea34c779dawd..."
+                        placeholder={`${storyLink}?friendCode=${_.get(
+                          story,
+                          'friendCode'
+                        )}`}
                         disabled
                       />
                     </div>
                     <button
                       type="button"
                       className="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-base font-medium rounded-r-md text-slate-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          `${storyLink}?friendCode=${_.get(
+                            story,
+                            'friendCode'
+                          )}`
+                        )
+                      }
                     >
                       <DuplicateIcon
                         className="h-5 w-5 text-slate-700"
@@ -329,13 +422,15 @@ export default function WriteAStorySettings() {
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Content Licensing
                   </h2>
-                  <div>
+                  <div onChange={handleChangeLicense}>
                     <div className="flex mb-6">
                       <input
                         id="all-rights-reserved"
                         name="all-rights-reserved"
                         type="radio"
                         className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                        value="all"
+                        checked={radiolicense === 'all'}
                       />
                       <label
                         htmlFor="all-rights-reserved"
@@ -353,10 +448,12 @@ export default function WriteAStorySettings() {
                     <div className="mb-6">
                       <div className="flex items-center mb-2.5">
                         <input
-                          id="some-rights-reserved"
-                          name="some-rights-reserved"
+                          // id="some-rights-reserved"
+                          // name="some-rights-reserved"
                           type="radio"
                           className="h-5 w-5 text-purple-600 border-gray-300 focus:ring-purple-500"
+                          disabled
+                          checked={_.split(radiolicense, '-')[0] === 'some'}
                         />
                         <label
                           htmlFor="some-rights-reserved"
@@ -372,6 +469,8 @@ export default function WriteAStorySettings() {
                             name="some-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="some-attribution"
+                            checked={radiolicense === 'some-attribution'}
                           />
                           <label htmlFor="attribution" className="ml-3 block">
                             <h2 className="text-base font-medium text-slate-700">
@@ -389,6 +488,10 @@ export default function WriteAStorySettings() {
                             name="some-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="some-attributionNoDerrivates"
+                            checked={
+                              radiolicense === 'some-attributionNoDerrivates'
+                            }
                           />
                           <label
                             htmlFor="attribution-no-derrivates"
@@ -409,6 +512,10 @@ export default function WriteAStorySettings() {
                             name="some-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="some-attributionShareALike"
+                            checked={
+                              radiolicense === 'some-attributionShareALike'
+                            }
                           />
                           <label
                             htmlFor="attribution-share-a-like"
@@ -429,6 +536,10 @@ export default function WriteAStorySettings() {
                             name="some-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="some-attributionNonCommercial"
+                            checked={
+                              radiolicense === 'some-attributionNonCommercial'
+                            }
                           />
                           <label
                             htmlFor="attribution-non-commercial"
@@ -449,6 +560,11 @@ export default function WriteAStorySettings() {
                             name="some-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="some-attributionNonCommercialNoDerrivates"
+                            checked={
+                              radiolicense ===
+                              'some-attributionNonCommercialNoDerrivates'
+                            }
                           />
                           <label
                             htmlFor="attribution-non-commercial-no-derrivates"
@@ -470,6 +586,11 @@ export default function WriteAStorySettings() {
                             name="some-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="some-attributionNonCommercialShareALike"
+                            checked={
+                              radiolicense ===
+                              'some-attributionNonCommercialShareALike'
+                            }
                           />
                           <label
                             htmlFor="attribution-non-commercial-share-a-like"
@@ -490,10 +611,12 @@ export default function WriteAStorySettings() {
                     <div className="mb-6">
                       <div className="flex items-center mb-2.5">
                         <input
-                          id="no-rights-reserved"
-                          name="no-rights-reserved"
+                          // id="some-rights-reserved"
+                          // name="some-rights-reserved"
                           type="radio"
                           className="h-5 w-5 text-purple-600 border-gray-300 focus:ring-purple-500"
+                          disabled
+                          checked={_.split(radiolicense, '-')[0] === 'no'}
                         />
                         <label
                           htmlFor="no-rights-reserved"
@@ -509,6 +632,11 @@ export default function WriteAStorySettings() {
                             name="no-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="no-creativeCommonsCopyrightWaiver"
+                            checked={
+                              radiolicense ===
+                              'no-creativeCommonsCopyrightWaiver'
+                            }
                           />
                           <label
                             htmlFor="creative-commons-copyright-waiver"
@@ -529,6 +657,8 @@ export default function WriteAStorySettings() {
                             name="no-rights-reserved"
                             type="radio"
                             className="h-5 w-5 text-purple-600 mt-1.5 border-gray-300 focus:ring-purple-500"
+                            value="no-publicDomain"
+                            checked={radiolicense === 'no-publicDomain'}
                           />
                           <label htmlFor="public-domain" className="ml-3 block">
                             <h2 className="text-base font-medium text-slate-700">
@@ -545,12 +675,15 @@ export default function WriteAStorySettings() {
                   </div>
                 </div>
                 <hr className="my-14" />
-                <div id="content-licensing">
+                <div id="advanced-settings">
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Advanced Settings
                   </h2>
                   <div>
-                    <div className="space-y-2.5 mb-6">
+                    <div
+                      onChange={(e) => setRadioCustomizeLink(e.target.value)}
+                      className="space-y-2.5 mb-6"
+                    >
                       <span className="inline-block text-slate-600 mb-6 text-base font-semibold tracking-sm">
                         Customize Story Link
                       </span>
@@ -560,6 +693,8 @@ export default function WriteAStorySettings() {
                           name="customize-story-link"
                           type="radio"
                           className="h-5 w-5 text-purple-600 border-gray-300 focus:ring-purple-500"
+                          value="automatic"
+                          checked={radioCustomizeLink === 'automatic'}
                         />
                         <label
                           htmlFor="automatic"
@@ -574,6 +709,8 @@ export default function WriteAStorySettings() {
                           name="customize-story-link"
                           type="radio"
                           className="h-5 w-5 text-purple-600 border-gray-300 focus:ring-purple-500"
+                          value="custom"
+                          checked={radioCustomizeLink === 'custom'}
                         />
                         <label
                           htmlFor="custom"
@@ -589,33 +726,41 @@ export default function WriteAStorySettings() {
                           You can customize the way your story link appears.
                           After publishing, your link will be:
                         </span>
+                        <br />
                         <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
-                          http://www.altogic.com/@erustun{' '}
-                          <span className="text-slate-700 text-base font-light">
-                            denemem-e9a4983262d1
-                          </span>
+                          {storyLink}
                         </span>
                       </div>
-                      <form
-                        action="#"
-                        method="POST"
-                        className="flex flex-col md:flex-row items-center gap-4"
-                      >
+                      <div className="flex flex-col md:flex-row items-center gap-4">
                         <input
                           id="title"
                           name="title"
                           type="text"
-                          placeholder="denemem-e9a4983262d1"
+                          placeholder={_.get(story, 'storySlug')}
                           required
+                          disabled={radioCustomizeLink === 'automatic'}
                           className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                          onChange={(e) => setInpStorySlug(e.target.value)}
+                          value={inpStorySlug}
                         />
                         <button
                           type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                          disabled={radioCustomizeLink === 'automatic'}
+                          onClick={() =>
+                            dispatch(
+                              storyActions.updateStoryFieldRequest({
+                                story,
+                                newStoryField: {
+                                  storySlug: inpStorySlug,
+                                },
+                              })
+                            )
+                          }
                         >
                           Save
                         </button>
-                      </form>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -700,6 +845,14 @@ export default function WriteAStorySettings() {
                   <button
                     type="button"
                     className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                    onClick={() => {
+                      dispatch(
+                        storyActions.deleteStoryRequest({
+                          storyId: _.get(story, '_id'),
+                          onSuccess: () => router.back(),
+                        })
+                      );
+                    }}
                   >
                     Delete
                   </button>
