@@ -36,7 +36,7 @@ export default function WriteAStorySettings() {
 
   const handleInsert = (e) => {
     if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
-      setInpCategoryNames((prev) => [...prev, inpCategory]);
+      setInpCategoryNames((prev) => [inpCategory, ...prev]);
       setInpCategory('');
     }
   };
@@ -53,7 +53,7 @@ export default function WriteAStorySettings() {
     setRadioLicense(e.target.value);
 
     dispatch(
-      storyActions.updateStoryRequest({
+      storyActions.updateStoryFieldRequest({
         story,
         newStoryField: {
           license: e.target.value,
@@ -306,7 +306,7 @@ export default function WriteAStorySettings() {
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                           onClick={() =>
                             dispatch(
-                              storyActions.updateStoryRequest({
+                              storyActions.updateStoryFieldRequest({
                                 story,
                                 newStoryField: {
                                   seoTitle: inpSeoTitle,
@@ -353,7 +353,7 @@ export default function WriteAStorySettings() {
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                           onClick={() =>
                             dispatch(
-                              storyActions.updateStoryRequest({
+                              storyActions.updateStoryFieldRequest({
                                 story,
                                 newStoryField: {
                                   seoDescription: inpSeoDescription,
@@ -749,7 +749,7 @@ export default function WriteAStorySettings() {
                           disabled={radioCustomizeLink === 'automatic'}
                           onClick={() =>
                             dispatch(
-                              storyActions.updateStoryRequest({
+                              storyActions.updateStoryFieldRequest({
                                 story,
                                 newStoryField: {
                                   storySlug: inpStorySlug,

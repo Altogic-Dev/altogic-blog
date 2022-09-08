@@ -71,7 +71,7 @@ export const storySlice = createSlice({
     },
     getStoryRepliesSuccess(state, action) {
       state.replies = action.payload.data;
-      state.replyCount = action.payload.info.count
+      state.replyCount = action.payload.info.count;
       state.isLoading = false;
     },
     getStoryRepliesFailure(state, action) {
@@ -167,6 +167,11 @@ export const storySlice = createSlice({
         ...state.story,
         categoryNames: action.payload,
       };
+    },
+
+    updateStoryFieldRequest() {},
+    updateStoryFieldSuccess(state, action) {
+      state.story = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
