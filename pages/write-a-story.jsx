@@ -82,7 +82,11 @@ export default function WriteAStory() {
             ref={input}
           />
           <div className="mt-4 w-2/3">
-            <Editor setMinRead={setMinRead} onChange={setContent} setImages={setStoryImages} />
+            <Editor
+              setMinRead={setMinRead}
+              onChange={setContent}
+              setImages={setStoryImages}
+            />
           </div>
         </form>
       </div>

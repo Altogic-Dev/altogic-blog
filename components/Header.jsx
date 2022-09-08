@@ -60,7 +60,7 @@ export default function Header() {
               </a>
             </Link>
 
-            <Link href="/list-detail">
+            <Link href={`/${user?.username}/lists`}>
               <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
                 <svg
                   className="w-6 h-6 text-slate-300 group-hover:text-purple-500"

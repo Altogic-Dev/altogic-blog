@@ -1,8 +1,14 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition } from '@headlessui/react';
 import Button from '@/components/basic/button';
+import { useSelector, useDispatch } from 'react-redux';
 import Layout from '@/layout/Layout';
+import { classNames } from '@/utils/utils';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import Sidebar from '../layout/Sidebar';
 import PostCard from '../components/PostCard';
 
@@ -258,14 +264,26 @@ const drafts = [
   },
 ];
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
 export default function MyStories() {
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const user = useSelector((state) => state.auth.user);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(getBookmarksRequest({ userId: user._id }));
+    }
+  }, [user]);
   return (
     <div>
       <Head>
@@ -520,6 +538,9 @@ export default function MyStories() {
                         min={post.min}
                         images={post.image}
                         actionMenu={post.actionMenu}
+                        bookmarkList={bookmarkLists}
+                        story={post}
+                        bookmarks={bookmarks}
                       />
                     ))}
                   </Tab.Panel>
@@ -542,6 +563,9 @@ export default function MyStories() {
                         min={draft.min}
                         images={draft.image}
                         actionMenu={draft.actionMenu}
+                        bookmarkList={bookmarkLists}
+                        storyId={draft.id}
+                        bookmarks={bookmarks}
                       />
                     ))}
                   </Tab.Panel>

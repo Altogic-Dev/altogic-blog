@@ -7,8 +7,7 @@ import { storyActions } from '@/redux/story/storySlice';
 import PostCard from '../PostCard';
 import ListObserver from '../ListObserver';
 
-function ProfilePageHome(props) {
-  const { userId } = props;
+function ProfilePageHome({ userId, bookmarkLists }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -55,6 +54,8 @@ function ProfilePageHome(props) {
           badgeName={_.first(story.categoryNames)}
           min={story.estimatedReadingTime}
           images={_.first(story.storyImages)}
+          bookmarkLists={bookmarkLists}
+          story={story}
           optionButtons={{
             editStory: () => {
               router.push(`/write-a-story?id=${story._id}`);

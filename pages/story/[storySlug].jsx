@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
-import {  Menu, Transition, Switch } from '@headlessui/react';
+import { Menu, Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,13 +13,15 @@ import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import Replies from '@/components/story/Replies';
 import { reportActions } from '@/redux/report/reportSlice';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
+import BookmarkLists from '@/components/bookmarks/BookmarkLists';
+import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import Sidebar from '../../layout/Sidebar';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -40,14 +42,13 @@ export default function BlogDetail() {
 
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
-
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
   const [createNewList, setCreateNewList] = useState(false);
-  const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
   const [didMount, setDidMount] = useState(true);
   const [morePage, setMorePage] = useState(1);
-
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -71,9 +72,6 @@ export default function BlogDetail() {
     );
   };
 
-
-
-
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -84,7 +82,6 @@ export default function BlogDetail() {
       );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
       setDidMount(false);
-
     }
   }, [story]);
 
@@ -103,7 +100,21 @@ export default function BlogDetail() {
   useEffect(() => {
     if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
   }, [storySlug]);
-
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: _.get(user, 'username'),
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
   return (
     <div>
       <Head>
@@ -142,7 +153,7 @@ export default function BlogDetail() {
                       >
                         <circle cx={4} cy={4} r={3} />
                       </svg>
-                      <span>2 stories</span>
+                      {/* <span>{_.get(user, 'storyCount')} stories</span> */}
                     </div>
                   </div>
                 </div>
@@ -168,82 +179,12 @@ export default function BlogDetail() {
                           </svg>
                         </Menu.Button>
                       </div>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          <div disabled>
-                            <div className="relative flex items-center justify-between w-full px-6 py-4">
-                              <div className="flex items-start">
-                                <div className="flex items-center h-5">
-                                  <input
-                                    id="private-list"
-                                    name="list"
-                                    type="checkbox"
-                                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                  />
-                                </div>
-                                <div className="ml-3 text-sm">
-                                  <label
-                                    htmlFor="private-list"
-                                    className="text-sm font-medium text-slate-800 tracking-sm"
-                                  >
-                                    Private List
-                                  </label>
-                                </div>
-                              </div>
-                              <div>
-                                <svg
-                                  className="w-6 h-6 text-slate-400"
-                                  viewBox="0 0 24 25"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M16 10.5C16 11.0523 16.4477 11.5 17 11.5C17.5523 11.5 18 11.0523 18 10.5H16ZM6 10.5C6 11.0523 6.44772 11.5 7 11.5C7.55228 11.5 8 11.0523 8 10.5H6ZM13 15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15H13ZM11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17H11ZM5.63803 21.173L5.18404 22.064L5.63803 21.173ZM4.32698 19.862L3.43597 20.316L4.32698 19.862ZM19.673 19.862L20.564 20.316L19.673 19.862ZM18.362 21.173L18.816 22.064L18.362 21.173ZM18.362 10.827L18.816 9.93597L18.362 10.827ZM19.673 12.138L20.564 11.684L19.673 12.138ZM5.63803 10.827L5.18404 9.93597L5.63803 10.827ZM4.32698 12.138L3.43597 11.684L4.32698 12.138ZM16 8.5V10.5H18V8.5H16ZM8 10.5V8.5H6V10.5H8ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H18C18 5.18629 15.3137 2.5 12 2.5V4.5ZM12 2.5C8.68629 2.5 6 5.18629 6 8.5H8C8 6.29086 9.79086 4.5 12 4.5V2.5ZM11 15V17H13V15H11ZM8.8 11.5H15.2V9.5H8.8V11.5ZM19 15.3V16.7H21V15.3H19ZM15.2 20.5H8.8V22.5H15.2V20.5ZM5 16.7V15.3H3V16.7H5ZM8.8 20.5C7.94342 20.5 7.36113 20.4992 6.91104 20.4624C6.47262 20.4266 6.24842 20.3617 6.09202 20.282L5.18404 22.064C5.66937 22.3113 6.18608 22.4099 6.74817 22.4558C7.2986 22.5008 7.97642 22.5 8.8 22.5V20.5ZM3 16.7C3 17.5236 2.99922 18.2014 3.04419 18.7518C3.09012 19.3139 3.18868 19.8306 3.43597 20.316L5.21799 19.408C5.1383 19.2516 5.07337 19.0274 5.03755 18.589C5.00078 18.1389 5 17.5566 5 16.7H3ZM6.09202 20.282C5.7157 20.0903 5.40973 19.7843 5.21799 19.408L3.43597 20.316C3.81947 21.0686 4.43139 21.6805 5.18404 22.064L6.09202 20.282ZM19 16.7C19 17.5566 18.9992 18.1389 18.9624 18.589C18.9266 19.0274 18.8617 19.2516 18.782 19.408L20.564 20.316C20.8113 19.8306 20.9099 19.3139 20.9558 18.7518C21.0008 18.2014 21 17.5236 21 16.7H19ZM15.2 22.5C16.0236 22.5 16.7014 22.5008 17.2518 22.4558C17.8139 22.4099 18.3306 22.3113 18.816 22.064L17.908 20.282C17.7516 20.3617 17.5274 20.4266 17.089 20.4624C16.6389 20.4992 16.0566 20.5 15.2 20.5V22.5ZM18.782 19.408C18.5903 19.7843 18.2843 20.0903 17.908 20.282L18.816 22.064C19.5686 21.6805 20.1805 21.0686 20.564 20.316L18.782 19.408ZM15.2 11.5C16.0566 11.5 16.6389 11.5008 17.089 11.5376C17.5274 11.5734 17.7516 11.6383 17.908 11.718L18.816 9.93597C18.3306 9.68868 17.8139 9.59012 17.2518 9.54419C16.7014 9.49922 16.0236 9.5 15.2 9.5V11.5ZM21 15.3C21 14.4764 21.0008 13.7986 20.9558 13.2482C20.9099 12.6861 20.8113 12.1694 20.564 11.684L18.782 12.592C18.8617 12.7484 18.9266 12.9726 18.9624 13.411C18.9992 13.8611 19 14.4434 19 15.3H21ZM17.908 11.718C18.2843 11.9097 18.5903 12.2157 18.782 12.592L20.564 11.684C20.1805 10.9314 19.5686 10.3195 18.816 9.93597L17.908 11.718ZM8.8 9.5C7.97642 9.5 7.2986 9.49922 6.74817 9.54419C6.18608 9.59012 5.66937 9.68868 5.18404 9.93597L6.09202 11.718C6.24842 11.6383 6.47262 11.5734 6.91104 11.5376C7.36113 11.5008 7.94342 11.5 8.8 11.5V9.5ZM5 15.3C5 14.4434 5.00078 13.8611 5.03755 13.411C5.07337 12.9726 5.1383 12.7484 5.21799 12.592L3.43597 11.684C3.18868 12.1694 3.09012 12.6861 3.04419 13.2482C2.99922 13.7986 3 14.4764 3 15.3H5ZM5.18404 9.93597C4.43139 10.3195 3.81947 10.9314 3.43597 11.684L5.21799 12.592C5.40973 12.2157 5.71569 11.9097 6.09202 11.718L5.18404 9.93597Z"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                          <div disabled>
-                            <div className="relative flex items-center w-full px-6 py-4">
-                              <div className="flex items-center h-5">
-                                <input
-                                  id="public-list"
-                                  name="list"
-                                  type="checkbox"
-                                  className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div className="ml-3 text-sm">
-                                <label
-                                  htmlFor="public-list"
-                                  className="text-sm font-medium text-slate-800 tracking-sm"
-                                >
-                                  Public List
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() => setCreateNewList(true)}
-                              className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
-                            >
-                              Create new list
-                            </button>
-                          </div>
-                        </Menu.Items>
-                      </Transition>
+                      <BookmarkLists
+                        bookmarkLists={bookmarkLists}
+                        setCreateNewList={setCreateNewList}
+                        story={story}
+                        bookmarks={bookmarks}
+                      />
                     </Menu>
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
@@ -628,82 +569,12 @@ export default function BlogDetail() {
                             </svg>
                           </Menu.Button>
                         </div>
-                        <Transition
-                          as={Fragment}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                            <div disabled>
-                              <div className="relative flex items-center justify-between w-full px-6 py-4">
-                                <div className="flex items-start">
-                                  <div className="flex items-center h-5">
-                                    <input
-                                      id="private-list"
-                                      name="list"
-                                      type="checkbox"
-                                      className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                    />
-                                  </div>
-                                  <div className="ml-3 text-sm">
-                                    <label
-                                      htmlFor="private-list"
-                                      className="text-sm font-medium text-slate-800 tracking-sm"
-                                    >
-                                      Private List
-                                    </label>
-                                  </div>
-                                </div>
-                                <div>
-                                  <svg
-                                    className="w-6 h-6 text-slate-400"
-                                    viewBox="0 0 24 25"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M16 10.5C16 11.0523 16.4477 11.5 17 11.5C17.5523 11.5 18 11.0523 18 10.5H16ZM6 10.5C6 11.0523 6.44772 11.5 7 11.5C7.55228 11.5 8 11.0523 8 10.5H6ZM13 15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15H13ZM11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17H11ZM5.63803 21.173L5.18404 22.064L5.63803 21.173ZM4.32698 19.862L3.43597 20.316L4.32698 19.862ZM19.673 19.862L20.564 20.316L19.673 19.862ZM18.362 21.173L18.816 22.064L18.362 21.173ZM18.362 10.827L18.816 9.93597L18.362 10.827ZM19.673 12.138L20.564 11.684L19.673 12.138ZM5.63803 10.827L5.18404 9.93597L5.63803 10.827ZM4.32698 12.138L3.43597 11.684L4.32698 12.138ZM16 8.5V10.5H18V8.5H16ZM8 10.5V8.5H6V10.5H8ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H18C18 5.18629 15.3137 2.5 12 2.5V4.5ZM12 2.5C8.68629 2.5 6 5.18629 6 8.5H8C8 6.29086 9.79086 4.5 12 4.5V2.5ZM11 15V17H13V15H11ZM8.8 11.5H15.2V9.5H8.8V11.5ZM19 15.3V16.7H21V15.3H19ZM15.2 20.5H8.8V22.5H15.2V20.5ZM5 16.7V15.3H3V16.7H5ZM8.8 20.5C7.94342 20.5 7.36113 20.4992 6.91104 20.4624C6.47262 20.4266 6.24842 20.3617 6.09202 20.282L5.18404 22.064C5.66937 22.3113 6.18608 22.4099 6.74817 22.4558C7.2986 22.5008 7.97642 22.5 8.8 22.5V20.5ZM3 16.7C3 17.5236 2.99922 18.2014 3.04419 18.7518C3.09012 19.3139 3.18868 19.8306 3.43597 20.316L5.21799 19.408C5.1383 19.2516 5.07337 19.0274 5.03755 18.589C5.00078 18.1389 5 17.5566 5 16.7H3ZM6.09202 20.282C5.7157 20.0903 5.40973 19.7843 5.21799 19.408L3.43597 20.316C3.81947 21.0686 4.43139 21.6805 5.18404 22.064L6.09202 20.282ZM19 16.7C19 17.5566 18.9992 18.1389 18.9624 18.589C18.9266 19.0274 18.8617 19.2516 18.782 19.408L20.564 20.316C20.8113 19.8306 20.9099 19.3139 20.9558 18.7518C21.0008 18.2014 21 17.5236 21 16.7H19ZM15.2 22.5C16.0236 22.5 16.7014 22.5008 17.2518 22.4558C17.8139 22.4099 18.3306 22.3113 18.816 22.064L17.908 20.282C17.7516 20.3617 17.5274 20.4266 17.089 20.4624C16.6389 20.4992 16.0566 20.5 15.2 20.5V22.5ZM18.782 19.408C18.5903 19.7843 18.2843 20.0903 17.908 20.282L18.816 22.064C19.5686 21.6805 20.1805 21.0686 20.564 20.316L18.782 19.408ZM15.2 11.5C16.0566 11.5 16.6389 11.5008 17.089 11.5376C17.5274 11.5734 17.7516 11.6383 17.908 11.718L18.816 9.93597C18.3306 9.68868 17.8139 9.59012 17.2518 9.54419C16.7014 9.49922 16.0236 9.5 15.2 9.5V11.5ZM21 15.3C21 14.4764 21.0008 13.7986 20.9558 13.2482C20.9099 12.6861 20.8113 12.1694 20.564 11.684L18.782 12.592C18.8617 12.7484 18.9266 12.9726 18.9624 13.411C18.9992 13.8611 19 14.4434 19 15.3H21ZM17.908 11.718C18.2843 11.9097 18.5903 12.2157 18.782 12.592L20.564 11.684C20.1805 10.9314 19.5686 10.3195 18.816 9.93597L17.908 11.718ZM8.8 9.5C7.97642 9.5 7.2986 9.49922 6.74817 9.54419C6.18608 9.59012 5.66937 9.68868 5.18404 9.93597L6.09202 11.718C6.24842 11.6383 6.47262 11.5734 6.91104 11.5376C7.36113 11.5008 7.94342 11.5 8.8 11.5V9.5ZM5 15.3C5 14.4434 5.00078 13.8611 5.03755 13.411C5.07337 12.9726 5.1383 12.7484 5.21799 12.592L3.43597 11.684C3.18868 12.1694 3.09012 12.6861 3.04419 13.2482C2.99922 13.7986 3 14.4764 3 15.3H5ZM5.18404 9.93597C4.43139 10.3195 3.81947 10.9314 3.43597 11.684L5.21799 12.592C5.40973 12.2157 5.71569 11.9097 6.09202 11.718L5.18404 9.93597Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
-                                </div>
-                              </div>
-                            </div>
-                            <div disabled>
-                              <div className="relative flex items-center w-full px-6 py-4">
-                                <div className="flex items-center h-5">
-                                  <input
-                                    id="public-list"
-                                    name="list"
-                                    type="checkbox"
-                                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                  />
-                                </div>
-                                <div className="ml-3 text-sm">
-                                  <label
-                                    htmlFor="public-list"
-                                    className="text-sm font-medium text-slate-800 tracking-sm"
-                                  >
-                                    Public List
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() => setCreateNewList(true)}
-                                className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
-                              >
-                                Create new list
-                              </button>
-                            </div>
-                          </Menu.Items>
-                        </Transition>
+                        <BookmarkLists
+                          bookmarkLists={bookmarkLists}
+                          setCreateNewList={setCreateNewList}
+                          story={story}
+                          bookmarks={bookmarks}
+                        />
                       </Menu>
                       <Menu
                         as="div"
@@ -830,6 +701,7 @@ export default function BlogDetail() {
                         min={moreStory.estimatedReadingTime}
                         images={_.first(moreStory.storyImages)}
                         actionMenu
+                        storyId={moreStory._id}
                         optionButtons={{
                           unfollow: () =>
                             dispatch(
@@ -936,82 +808,13 @@ export default function BlogDetail() {
                               </svg>
                             </Menu.Button>
                           </div>
-                          <Transition
-                            as={Fragment}
-                            enter="transition ease-out duration-100"
-                            enterFrom="transform opacity-0 scale-95"
-                            enterTo="transform opacity-100 scale-100"
-                            leave="transition ease-in duration-75"
-                            leaveFrom="transform opacity-100 scale-100"
-                            leaveTo="transform opacity-0 scale-95"
-                          >
-                            <Menu.Items className="absolute -top-48 right-0 mt-2 w-56 origin-top divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                              <div disabled>
-                                <div className="relative flex items-center justify-between w-full px-6 py-4">
-                                  <div className="flex items-start">
-                                    <div className="flex items-center h-5">
-                                      <input
-                                        id="private-list"
-                                        name="list"
-                                        type="checkbox"
-                                        className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                      />
-                                    </div>
-                                    <div className="ml-3 text-sm">
-                                      <label
-                                        htmlFor="private-list"
-                                        className="text-sm font-medium text-slate-800 tracking-sm"
-                                      >
-                                        Private List
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <svg
-                                      className="w-6 h-6 text-slate-400"
-                                      viewBox="0 0 24 25"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M16 10.5C16 11.0523 16.4477 11.5 17 11.5C17.5523 11.5 18 11.0523 18 10.5H16ZM6 10.5C6 11.0523 6.44772 11.5 7 11.5C7.55228 11.5 8 11.0523 8 10.5H6ZM13 15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15H13ZM11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17H11ZM5.63803 21.173L5.18404 22.064L5.63803 21.173ZM4.32698 19.862L3.43597 20.316L4.32698 19.862ZM19.673 19.862L20.564 20.316L19.673 19.862ZM18.362 21.173L18.816 22.064L18.362 21.173ZM18.362 10.827L18.816 9.93597L18.362 10.827ZM19.673 12.138L20.564 11.684L19.673 12.138ZM5.63803 10.827L5.18404 9.93597L5.63803 10.827ZM4.32698 12.138L3.43597 11.684L4.32698 12.138ZM16 8.5V10.5H18V8.5H16ZM8 10.5V8.5H6V10.5H8ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H18C18 5.18629 15.3137 2.5 12 2.5V4.5ZM12 2.5C8.68629 2.5 6 5.18629 6 8.5H8C8 6.29086 9.79086 4.5 12 4.5V2.5ZM11 15V17H13V15H11ZM8.8 11.5H15.2V9.5H8.8V11.5ZM19 15.3V16.7H21V15.3H19ZM15.2 20.5H8.8V22.5H15.2V20.5ZM5 16.7V15.3H3V16.7H5ZM8.8 20.5C7.94342 20.5 7.36113 20.4992 6.91104 20.4624C6.47262 20.4266 6.24842 20.3617 6.09202 20.282L5.18404 22.064C5.66937 22.3113 6.18608 22.4099 6.74817 22.4558C7.2986 22.5008 7.97642 22.5 8.8 22.5V20.5ZM3 16.7C3 17.5236 2.99922 18.2014 3.04419 18.7518C3.09012 19.3139 3.18868 19.8306 3.43597 20.316L5.21799 19.408C5.1383 19.2516 5.07337 19.0274 5.03755 18.589C5.00078 18.1389 5 17.5566 5 16.7H3ZM6.09202 20.282C5.7157 20.0903 5.40973 19.7843 5.21799 19.408L3.43597 20.316C3.81947 21.0686 4.43139 21.6805 5.18404 22.064L6.09202 20.282ZM19 16.7C19 17.5566 18.9992 18.1389 18.9624 18.589C18.9266 19.0274 18.8617 19.2516 18.782 19.408L20.564 20.316C20.8113 19.8306 20.9099 19.3139 20.9558 18.7518C21.0008 18.2014 21 17.5236 21 16.7H19ZM15.2 22.5C16.0236 22.5 16.7014 22.5008 17.2518 22.4558C17.8139 22.4099 18.3306 22.3113 18.816 22.064L17.908 20.282C17.7516 20.3617 17.5274 20.4266 17.089 20.4624C16.6389 20.4992 16.0566 20.5 15.2 20.5V22.5ZM18.782 19.408C18.5903 19.7843 18.2843 20.0903 17.908 20.282L18.816 22.064C19.5686 21.6805 20.1805 21.0686 20.564 20.316L18.782 19.408ZM15.2 11.5C16.0566 11.5 16.6389 11.5008 17.089 11.5376C17.5274 11.5734 17.7516 11.6383 17.908 11.718L18.816 9.93597C18.3306 9.68868 17.8139 9.59012 17.2518 9.54419C16.7014 9.49922 16.0236 9.5 15.2 9.5V11.5ZM21 15.3C21 14.4764 21.0008 13.7986 20.9558 13.2482C20.9099 12.6861 20.8113 12.1694 20.564 11.684L18.782 12.592C18.8617 12.7484 18.9266 12.9726 18.9624 13.411C18.9992 13.8611 19 14.4434 19 15.3H21ZM17.908 11.718C18.2843 11.9097 18.5903 12.2157 18.782 12.592L20.564 11.684C20.1805 10.9314 19.5686 10.3195 18.816 9.93597L17.908 11.718ZM8.8 9.5C7.97642 9.5 7.2986 9.49922 6.74817 9.54419C6.18608 9.59012 5.66937 9.68868 5.18404 9.93597L6.09202 11.718C6.24842 11.6383 6.47262 11.5734 6.91104 11.5376C7.36113 11.5008 7.94342 11.5 8.8 11.5V9.5ZM5 15.3C5 14.4434 5.00078 13.8611 5.03755 13.411C5.07337 12.9726 5.1383 12.7484 5.21799 12.592L3.43597 11.684C3.18868 12.1694 3.09012 12.6861 3.04419 13.2482C2.99922 13.7986 3 14.4764 3 15.3H5ZM5.18404 9.93597C4.43139 10.3195 3.81947 10.9314 3.43597 11.684L5.21799 12.592C5.40973 12.2157 5.71569 11.9097 6.09202 11.718L5.18404 9.93597Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
-                              </div>
-                              <div disabled>
-                                <div className="relative flex items-center w-full px-6 py-4">
-                                  <div className="flex items-center h-5">
-                                    <input
-                                      id="public-list"
-                                      name="list"
-                                      type="checkbox"
-                                      className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                    />
-                                  </div>
-                                  <div className="ml-3 text-sm">
-                                    <label
-                                      htmlFor="public-list"
-                                      className="text-sm font-medium text-slate-800 tracking-sm"
-                                    >
-                                      Public List
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                              <div>
-                                <button
-                                  type="button"
-                                  onClick={() => setCreateNewList(true)}
-                                  className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
-                                >
-                                  Create new list
-                                </button>
-                              </div>
-                            </Menu.Items>
-                          </Transition>
+                          <BookmarkLists
+                            bookmarkLists={bookmarkLists}
+                            setCreateNewList={setCreateNewList}
+                            className="-top-48"
+                            story={story}
+                            bookmarks={bookmarks}
+                          />
                         </Menu>
                         <Menu
                           as="div"
@@ -1119,123 +922,13 @@ export default function BlogDetail() {
             </div>
           </div>
         </div>
-        <Replies slideOvers={slideOvers} setSlideOvers={setSlideOvers} story={story} />
+        <Replies
+          slideOvers={slideOvers}
+          setSlideOvers={setSlideOvers}
+          story={story}
+        />
         {createNewList && (
-          <div className="relative z-30">
-            <div className="fixed inset-0 bg-black bg-opacity-50" />
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4 text-center">
-                <div className="relative max-w-[400px] w-full bg-white p-6 rounded-xl shadow-lg">
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 ring-8 ring-purple-50">
-                      <svg
-                        className="w-5 h-5"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
-                          stroke="#7C3AED"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setCreateNewList(false)}
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M13 1L1 13M1 1L13 13"
-                          stroke="#667085"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="text-left mb-8">
-                    <div className="mb-5">
-                      <h3 className="text-slate-800 mb-2 text-lg font-medium tracking-sm">
-                        Create List
-                      </h3>
-                      <span className="text-slate-500 text-sm tracking-sm">
-                        Please enter a name for this list.
-                      </span>
-                    </div>
-                    <form action="">
-                      <div className="mb-6">
-                        <label
-                          htmlFor="list-name"
-                          className="block text-slate-700 text-sm font-medium tracking-sm mb-1.5"
-                        >
-                          {' '}
-                          List name{' '}
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            type="text"
-                            name="list-name"
-                            id="list-name"
-                            placeholder="e.g. App"
-                            className="block w-full min-h-[44px] text-slate-500 border-slate-300 rounded-md shadow-sm tracking-sm placeholder:text-slate-500 focus:ring-purple-500 focus:border-purple-500"
-                          />
-                        </div>
-                      </div>
-                      <Switch.Group as="div" className="flex items-center">
-                        <Switch
-                          checked={enabled}
-                          onChange={setEnabled}
-                          className={classNames(
-                            enabled ? 'bg-purple-600' : 'bg-gray-200',
-                            'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
-                          )}
-                        >
-                          <span
-                            aria-hidden="true"
-                            className={classNames(
-                              enabled ? 'translate-x-4' : 'translate-x-0',
-                              'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                            )}
-                          />
-                        </Switch>
-                        <Switch.Label as="span" className="ml-3">
-                          <span className="text-base font-medium tracking-sm text-slate-700">
-                            Private
-                          </span>
-                        </Switch.Label>
-                      </Switch.Group>
-                    </form>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCreateNewList(false)}
-                      className="inline-flex items-center justify-center px-[14px] py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    >
-                      Create
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CreateBookmarkList setCreateNewList={setCreateNewList} />
         )}
       </Layout>
     </div>
