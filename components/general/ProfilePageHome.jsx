@@ -66,7 +66,7 @@ function ProfilePageHome(props) {
               router.push(`stats-blog-post?id=${story._id}`);
             },
             deleteStory: () => {
-              dispatch(storyActions.deleteStoryRequest(story._id));
+              dispatch(storyActions.deleteStoryRequest({ storyId: story._id }));
             },
           }}
           actionMenu

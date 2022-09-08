@@ -24,9 +24,14 @@ function* getFollowingStoriesSaga({ payload: { userId, page } }) {
     console.error({ e });
   }
 }
-function* getStoryReplies({ payload: {story,page,limit} }) {
+function* getStoryReplies({ payload: { story, page, limit } }) {
   try {
-    const { data, errors } = yield call(StoryService.getStoryReplies, story,page,limit);
+    const { data, errors } = yield call(
+      StoryService.getStoryReplies,
+      story,
+      page,
+      limit
+    );
     if (errors) throw errors;
     if (data) {
       yield put(storyActions.getStoryRepliesSuccess(data));
@@ -103,7 +108,7 @@ function* getStorySaga({ payload: id }) {
   try {
     const { data, errors } = yield call(StoryService.getStory, id);
     if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(storyActions.getStorySuccess(_.first(data)));
+      yield put(storyActions.getStorySuccess(data));
     }
   } catch (e) {
     console.error({ e });
@@ -198,11 +203,41 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
   }
 }
 
-function* deleteStorySaga({ payload: storyId }) {
+function* deleteStorySaga({ payload: { storyId, onSuccess } }) {
   try {
     const { errors } = yield call(StoryService.deleteStory, storyId);
     if (errors) throw errors;
     yield put(storyActions.deleteStorySuccess(storyId));
+    if (_.isFunction(onSuccess)) onSuccess();
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
+  try {
+    const { errors } = yield call(
+      StoryService.updateCategory,
+      storyId,
+      newCategoryNames
+    );
+    if (errors) throw errors;
+    yield put(storyActions.updateCategorySuccess(newCategoryNames));
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* updateStoryFieldSaga({ payload: { story, newStoryField } }) {
+  try {
+    const newStory = {
+      ...story,
+      ...newStoryField,
+    };
+
+    const { errors } = yield call(StoryService.updateStory, newStory);
+    if (errors) throw errors;
+    yield put(storyActions.updateStoryFieldSuccess(newStory));
   } catch (e) {
     console.error({ e });
   }
@@ -237,45 +272,32 @@ function* updateStorySaga({ payload }) {
 
 export default function* rootSaga() {
   yield all([
-    yield takeEvery(
+    takeEvery(
       storyActions.getFollowingStoriesRequest.type,
       getFollowingStoriesSaga
     ),
-    yield takeEvery(
+    takeEvery(
       storyActions.getRecommendedStoriesRequest.type,
       getRecommendedStoriesSaga
     ),
-    yield takeEvery(storyActions.getStoryRequest.type, getStorySaga),
-    yield takeEvery(
-      storyActions.getStoryBySlugRequest.type,
-      getStoryBySlugSaga
-    ),
-    yield takeEvery(
+    takeEvery(storyActions.getStoryRequest.type, getStorySaga),
+    takeEvery(storyActions.getStoryBySlugRequest.type, getStoryBySlugSaga),
+    takeEvery(
       storyActions.getMoreUserStoriesRequest.type,
       getMoreUserStoriesSaga
     ),
-    yield takeEvery(
-      storyActions.getUserStoriesRequest.type,
-      getUserStoriesSaga
+    takeEvery(storyActions.getUserStoriesRequest.type, getUserStoriesSaga),
+    takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
+    takeEvery(
+      storyActions.updateCategoryNamesRequest.type,
+      updateCategoryNamesSaga
     ),
-    yield takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
-    yield takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
-    yield takeEvery(storyActions.createReplyRequest.type, createReply),
-    yield takeEvery(
-      storyActions.createReplyCommentRequest.type,
-      createReplyComment
-    ),
-    yield takeEvery(
-      storyActions.getReplyCommentsRequest.type,
-      getReplyComments
-    ),
-    yield takeEvery(
-      storyActions.createStoryRequest.type,
-      createStorySaga
-    ),
-    yield takeEvery(
-      storyActions.updateStoryRequest.type,
-      updateStorySaga
-    ),
+    takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
+    takeEvery(storyActions.createReplyRequest.type, createReply),
+    takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),
+    takeEvery(storyActions.getReplyCommentsRequest.type, getReplyComments),
+    takeEvery(storyActions.createStoryRequest.type, createStorySaga),
+    takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
+    takeEvery(storyActions.updateStoryFieldRequest.type, updateStoryFieldSaga),
   ]);
 }
