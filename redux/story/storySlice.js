@@ -11,6 +11,9 @@ const initialState = {
   story: null,
   moreUserStories: null,
   userStories: null,
+  userStoriesInfo: null,
+  userDraftStories: null,
+  userDraftStoriesInfo: null,
   isLoading: false,
 };
 
@@ -93,7 +96,14 @@ export const storySlice = createSlice({
 
     getUserStoriesRequest() {},
     getUserStoriesSuccess(state, action) {
-      state.userStories = action.payload;
+      state.userStories = action.payload.data;
+      state.userStoriesInfo = action.payload.info;
+    },
+
+    getUserDraftStoriesRequest() {},
+    getUserDraftStoriesSuccess(state, action) {
+      state.userDraftStories = action.payload.data;
+      state.userDraftStoriesInfo = action.payload.info;
     },
 
     deleteStoryRequest() {},

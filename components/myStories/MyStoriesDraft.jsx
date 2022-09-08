@@ -1,28 +1,25 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
+import ListObserver from '@/components/ListObserver';
+import { storyActions } from '@/redux/story/storySlice';
+import PostCard from '@/components/PostCard';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
-import _ from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
-import { storyActions } from '@/redux/story/storySlice';
-import PostCard from '../PostCard';
-import ListObserver from '../ListObserver';
 
-function ProfilePageHome(props) {
-  const { userId } = props;
-  const dispatch = useDispatch();
+function MyStoriesDraft() {
   const router = useRouter();
-
-  const userStories = useSelector((state) => state.story.userStories);
-
+  const dispatch = useDispatch();
   const [page, setPage] = useState(1);
+  const userStories = useSelector((state) => state.story.userDraftStories);
   const PAGE_LIMIT = 6;
 
   const getUserStories = useCallback(() => {
     dispatch(
-      storyActions.getUserStoriesRequest({
-        userId,
+      storyActions.getUserDraftStoriesRequest({
         page,
         limit: PAGE_LIMIT,
+        isPublishedFilter: false,
       })
     );
   }, [page]);
@@ -70,10 +67,11 @@ function ProfilePageHome(props) {
             },
           }}
           actionMenu
+          draft
         />
       ))}
     </ListObserver>
   );
 }
 
-export default ProfilePageHome;
+export default MyStoriesDraft;
