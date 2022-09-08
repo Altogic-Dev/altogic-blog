@@ -529,6 +529,7 @@ export default function BlogDetail() {
                               storyLikesActions.likeStoryRequest({
                                 userId: _.get(user, '_id'),
                                 storyId: _.get(story, '_id'),
+                                categoryNames: _.get(story, 'categoryNames'),
                               })
                             )
                       }
@@ -921,6 +922,7 @@ export default function BlogDetail() {
                                 storyLikesActions.likeStoryRequest({
                                   userId: _.get(user, '_id'),
                                   storyId: _.get(story, '_id'),
+                                  categoryNames: _.get(story, 'categoryNames'),
                                 })
                               )
                         }
