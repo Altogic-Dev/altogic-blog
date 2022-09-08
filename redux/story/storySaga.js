@@ -142,12 +142,37 @@ export function* updateFollowerCountSaga(isIncrease) {
 
 function* getStoryBySlugSaga({ payload: slug }) {
   try {
-    const { data, errors } = yield call(StoryService.getStoryBySlug, slug);
-    if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(storyActions.getStoryBySlugSuccess(_.first(data)));
+    const sessionUser = yield select((state) => state.auth.user);
+
+    if (!_.isNil(sessionUser)) {
+      const { data: story, errors } = yield call(
+        StoryService.getStoryBySlug,
+        slug
+      );
+      if (errors) throw errors;
+      if (story) {
+        if (sessionUser._id === story.user._id) {
+          yield put(storyActions.getStoryBySlugSuccess(story));
+        } else if (story.isPublished && !story.isPrivate && !story.isDeleted) {
+          yield put(storyActions.getStoryBySlugSuccess(story));
+        } else {
+          throw new Error('This user cannot see the story');
+        }
+      }
+    } else {
+      const { data: story, errors } = yield call(
+        StoryService.getStoryBySlug,
+        slug
+      );
+      if (errors) throw errors;
+      if (story && story.isPublished && !story.isPrivate && !story.isDeleted) {
+        yield put(storyActions.getStoryBySlugSuccess(story));
+      } else {
+        throw new Error('This user cannot see the story');
+      }
     }
   } catch (e) {
-    console.error({ e });
+    console.error(e);
   }
 }
 

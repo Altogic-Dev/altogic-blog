@@ -51,12 +51,8 @@ const StoryService = {
     return db.model('story').object(id).get();
   },
 
-  getStoryBySlug(slug) {
-    return db
-      .model('story')
-      .filter(`storySlug == '${slug}' && isPublished && !isPrivate`)
-      .lookup({ field: 'user' })
-      .get();
+  getStoryBySlug(storySlug) {
+    return endpoint.get(`/story/bySlug`, { storySlug });
   },
 
   getMoreUserStories(authorId, storyId, page = 1, limit = 5) {

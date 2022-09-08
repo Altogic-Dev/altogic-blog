@@ -4,9 +4,14 @@ import StoryLikesService from '@/services/storyLikes';
 import { storyLikesActions } from './storyLikesSlice';
 import { updateStoryLikeCountSaga } from '../story/storySaga';
 
-function* likeStorySaga({ payload: { userId, storyId } }) {
+function* likeStorySaga({ payload: { userId, storyId, categoryNames } }) {
   try {
-    const { errors } = yield call(StoryLikesService.like, userId, storyId);
+    const { errors } = yield call(
+      StoryLikesService.like,
+      userId,
+      storyId,
+      categoryNames
+    );
     if (errors) throw errors;
     yield put(storyLikesActions.likeStorySuccess());
     yield fork(updateStoryLikeCountSaga, true);
