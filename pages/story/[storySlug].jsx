@@ -13,7 +13,10 @@ import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import Replies from '@/components/story/Replies';
 import { reportActions } from '@/redux/report/reportSlice';
-import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
 import BookmarkLists from '@/components/bookmarks/BookmarkLists';
@@ -40,6 +43,7 @@ export default function BlogDetail() {
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
   const [createNewList, setCreateNewList] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
@@ -102,6 +106,11 @@ export default function BlogDetail() {
         getBookmarkListsRequest({
           username: _.get(user, 'username'),
           includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
         })
       );
     }
@@ -173,6 +182,8 @@ export default function BlogDetail() {
                       <BookmarkLists
                         bookmarkLists={bookmarkLists}
                         setCreateNewList={setCreateNewList}
+                        story={story}
+                        bookmarks={bookmarks}
                       />
                     </Menu>
                     <Menu as="div" className="relative inline-block text-left">
@@ -560,6 +571,8 @@ export default function BlogDetail() {
                         <BookmarkLists
                           bookmarkLists={bookmarkLists}
                           setCreateNewList={setCreateNewList}
+                          story={story}
+                          bookmarks={bookmarks}
                         />
                       </Menu>
                       <Menu
@@ -687,6 +700,7 @@ export default function BlogDetail() {
                         min={moreStory.estimatedReadingTime}
                         images={_.first(moreStory.storyImages)}
                         actionMenu
+                        storyId={moreStory._id}
                         optionButtons={{
                           unfollow: () =>
                             dispatch(
@@ -796,6 +810,8 @@ export default function BlogDetail() {
                             bookmarkLists={bookmarkLists}
                             setCreateNewList={setCreateNewList}
                             className="-top-48"
+                            story={story}
+                            bookmarks={bookmarks}
                           />
                         </Menu>
                         <Menu

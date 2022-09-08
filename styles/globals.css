@@ -17,7 +17,9 @@
   html {
     scroll-behavior: smooth;
   }
-
+  .Toastify__toast-container {
+    width: 400px !important;
+  }
   #editor-container {
     font-family: 'Open Sans', Helvetica, sans-serif;
     font-size: 1.2em;

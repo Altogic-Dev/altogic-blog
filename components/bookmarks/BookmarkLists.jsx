@@ -1,12 +1,49 @@
 import React, { Fragment } from 'react';
 import { Transition, Menu } from '@headlessui/react';
+import {
+  addBookmarkRequest,
+  deleteBookmarkRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
+import _ from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';
 
 export default function BookmarkLists({
   bookmarkLists,
   setCreateNewList,
   className,
+  story,
+  bookmarks,
 }) {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const handleAddBookmark = (e, list) => {
+    let { coverImages } = list;
+    const storyImages = _.map(story.storyImages, (image) => image);
+    if (e.target.checked) {
+      if (coverImages.length < 4) {
+        coverImages = [...coverImages, storyImages[0]];
+      } else {
+        coverImages = coverImages.slice(1, 4);
+        coverImages = [...coverImages, storyImages[0]];
+      }
+      dispatch(
+        addBookmarkRequest({
+          list: list._id,
+          userId: user._id,
+          story: story._id,
+          coverImages,
+        })
+      );
+    } else {
+      dispatch(
+        deleteBookmarkRequest({
+          listId: list._id,
+          storyId: story._id,
+        })
+      );
+    }
+  };
   return (
     <Transition
       as={Fragment}
@@ -29,8 +66,12 @@ export default function BookmarkLists({
                     id="private-list"
                     name="list"
                     type="checkbox"
-                    checked={list.isPrivate}
+                    checked={bookmarks?.some(
+                      (bk) =>
+                        bk.bookmarkList === list._id && bk.story === story._id
+                    )}
                     className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
+                    onChange={(e) => handleAddBookmark(e, list)}
                   />
                 </div>
                 <div className="ml-3 text-sm">

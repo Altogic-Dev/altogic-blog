@@ -38,6 +38,7 @@ export default function WriteAStory() {
         title: input.current.value,
         estimatedReadingTime: minRead,
       };
+      debugger;
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
         setIsCreated(true);

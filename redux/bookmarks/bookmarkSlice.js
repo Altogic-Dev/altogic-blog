@@ -1,12 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
+import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
   bookmarks: null,
   bookmarkLists: null,
+  bookmarkList: null,
   isLoading: false,
   error: null,
+  isStoryBookmarked: null,
 };
 
 // Actual Slice
@@ -14,7 +17,6 @@ export const bookmarkSlice = createSlice({
   name: 'bookmark',
   initialState,
   reducers: {
-    // Action to set the authentication status
     getBookmarksRequest(state) {
       state.isLoading = true;
     },
@@ -48,6 +50,77 @@ export const bookmarkSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    isBookmarkedSuccess(state, action) {
+      state.isStoryBookmarked = action.payload;
+    },
+    addBookmarkRequest(state) {
+      state.isLoading = true;
+    },
+    addBookmarkSuccess(state, action) {
+      state.isLoading = false;
+      state.bookmarks = [...state.bookmarks, action.payload.bookmark];
+      state.bookmarkLists = state.bookmarkLists.map((list) => {
+        if (list._id === action.payload.bookmarkList._id) {
+          return action.payload.bookmarkList;
+        }
+        return list;
+      });
+    },
+    addBookmarkFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    deleteBookmarkRequest(state) {
+      state.isLoading = true;
+    },
+    deleteBookmarkSuccess(state, action) {
+      state.isLoading = false;
+      state.bookmarks = state.bookmarks.filter(
+        (bookmark) => bookmark._id !== action.payload._id
+      );
+    },
+    deleteBookmarkFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    getBookmarkListDetailRequest(state) {
+      state.isLoading = true;
+    },
+    getBookmarkListDetailSuccess(state, action) {
+      state.isLoading = false;
+      state.bookmarkList = action.payload;
+    },
+    getBookmarkListDetailFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    deleteBookmarkListRequest(state) {
+      state.isLoading = true;
+    },
+    deleteBookmarkListSuccess(state, action) {
+      state.isLoading = false;
+      state.bookmarkLists = state.bookmarkLists.filter(
+        (list) => list._id !== action.payload
+      );
+    },
+    deleteBookmarkListFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    updateBookmarkListRequest(state) {
+      state.isLoading = true;
+    },
+    updateBookmarkListSuccess(state, action) {
+      state.isLoading = false;
+      state.bookmarkList.name = action.payload.name;
+      state.bookmarkList.isPrivate = action.payload.isPrivate;
+      state.bookmarkList.slug = action.payload.slug;
+      toast.success('Bookmark list updated successfully');
+    },
+    updateBookmarkListFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
     extraReducers: {
       [HYDRATE]: (state, action) => ({
         ...state,
@@ -67,6 +140,22 @@ export const {
   createBookmarkListRequest,
   createBookmarkListSuccess,
   createBookmarkListFailure,
+  isBookmarkedSuccess,
+  addBookmarkRequest,
+  addBookmarkSuccess,
+  addBookmarkFailure,
+  deleteBookmarkRequest,
+  deleteBookmarkSuccess,
+  deleteBookmarkFailure,
+  getBookmarkListDetailRequest,
+  getBookmarkListDetailSuccess,
+  getBookmarkListDetailFailure,
+  deleteBookmarkListRequest,
+  deleteBookmarkListSuccess,
+  deleteBookmarkListFailure,
+  updateBookmarkListRequest,
+  updateBookmarkListSuccess,
+  updateBookmarkListFailure,
 } = bookmarkSlice.actions;
 
 export default bookmarkSlice.reducer;

@@ -1,11 +1,10 @@
+import Link from 'next/link';
+
 export default function PostList({
   url,
   title,
   storiesNumber,
-  image1,
-  image2,
-  image3,
-  image4,
+  images,
   badges,
 }) {
   return (
@@ -13,11 +12,11 @@ export default function PostList({
       <div className="flex justify-between gap-8 sm:gap-4">
         <div className="flex flex-col items-start justify-between">
           <div className="flex flex-col items-start gap-2">
-            <a href={url}>
-              <h2 className="text-slate-800 text-2xl md:text-3xl font-bold tracking-md">
-                {title}
-              </h2>
-            </a>
+            <Link href={url}>
+              <a className="text-slate-800 text-2xl md:text-3xl font-bold tracking-md">
+                <h2>{title}</h2>
+              </a>
+            </Link>
             {badges && (
               <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
                 <svg
@@ -38,39 +37,38 @@ export default function PostList({
               {storiesNumber} Stories
             </span>
           </div>
-          <a
-            href={url}
-            className="inline-flex items-center px-5 py-3 text-base font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-          >
-            View List
-          </a>
+          <Link href={url}>
+            <a className="inline-flex items-center px-5 py-3 text-base font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+              View List
+            </a>
+          </Link>
         </div>
         <div className="grid sm:grid-cols-2 gap-1">
           <div className="group inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={image1}
+              src={images[0]}
               alt=""
             />
           </div>
           <div className="group inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={image2}
+              src={images[1]}
               alt=""
             />
           </div>
           <div className="group hidden sm:inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={image3}
+              src={images[2]}
               alt=""
             />
           </div>
           <div className="group hidden sm:inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={image4}
+              src={images[3]}
               alt=""
             />
           </div>

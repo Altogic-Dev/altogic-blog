@@ -31,7 +31,6 @@ export default function ProfilePage({ About, Home, List }) {
   const isMyProfile = username === _.get(sessionUser, 'username');
 
   const [userState, setUserState] = useState();
-  const [urlUsername, setUrlUsername] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
@@ -117,7 +116,7 @@ export default function ProfilePage({ About, Home, List }) {
   }, [sessionUser]);
 
   useEffect(() => {
-    if (username) {
+    if (username && selectedIndex === 1) {
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -127,23 +126,21 @@ export default function ProfilePage({ About, Home, List }) {
       );
     }
   }, [username]);
+
+  const handleBookmarkListEnd = useCallback(() => {
+    setBookmarkListLimit((prev) => prev + 3);
+  }, [username]);
   useEffect(() => {
     if (username) {
-      setUrlUsername(username);
-    }
-  }, [username]);
-  const handleBookmarkListEnd = useCallback(() => {
-    if (urlUsername) {
-      setBookmarkListLimit((prev) => prev + 3);
       dispatch(
         getBookmarkListsRequest({
-          username: urlUsername,
-          limit: bookmarkListLimit,
+          username,
           includePrivates: username === sessionUser?.username,
+          limit: bookmarkListLimit,
         })
       );
     }
-  }, [username]);
+  }, [bookmarkListLimit]);
   return (
     <div>
       <Head>
@@ -264,7 +261,10 @@ export default function ProfilePage({ About, Home, List }) {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <ProfilePageHome userId={_.get(sessionUser, '_id')} />
+                    <ProfilePageHome
+                      userId={_.get(sessionUser, '_id')}
+                      bookmarkLists={bookmarkLists}
+                    />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
                     <ListObserver onEnd={handleBookmarkListEnd}>
@@ -273,12 +273,9 @@ export default function ProfilePage({ About, Home, List }) {
                           key={list.id}
                           title={list.name}
                           storiesNumber={list.storyCount}
-                          url={list.href}
+                          url={`/${username}/${list.slug}`}
                           badges={list.isPrivate}
-                          image1={list.image1}
-                          image2={list.image2}
-                          image3={list.image3}
-                          image4={list.image4}
+                          images={list.coverImages}
                         />
                       ))}
                     </ListObserver>

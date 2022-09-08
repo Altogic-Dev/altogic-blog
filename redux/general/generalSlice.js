@@ -19,12 +19,10 @@ export const generalSlice = createSlice({
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
-      [HYDRATE]: (state, action) => {
-        return {
-          ...state,
-          ...action.payload.general,
-        };
-      },
+      [HYDRATE]: (state, action) => ({
+        ...state,
+        ...action.payload.general,
+      }),
     },
   },
 });

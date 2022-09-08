@@ -1,9 +1,7 @@
 import { Fragment, useState } from 'react';
-import { Menu, Transition, Switch } from '@headlessui/react';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { Menu, Transition } from '@headlessui/react';
+import { classNames } from '@/utils/utils';
+import CreateBookmarkList from './bookmarks/CreateBookmarkList';
 
 export default function PublicationPostCard({
   firstPadding,
@@ -18,7 +16,6 @@ export default function PublicationPostCard({
   bookmark,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
-  const [enabled, setEnabled] = useState(false);
 
   return (
     <>
@@ -184,121 +181,7 @@ export default function PublicationPostCard({
         </div>
       </div>
       {createNewList && (
-        <div className="relative z-20">
-          <div className="fixed inset-0 bg-black bg-opacity-50" />
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <div className="relative max-w-[400px] w-full bg-white p-6 rounded-xl shadow-lg">
-                <div className="flex items-center justify-between mb-5">
-                  <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 ring-8 ring-purple-50">
-                    <svg
-                      className="w-5 h-5"
-                      viewBox="0 0 22 22"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
-                        stroke="#7C3AED"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setCreateNewList(false)}
-                    className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
-                  >
-                    <svg
-                      className="w-3.5 h-3.5"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M13 1L1 13M1 1L13 13"
-                        stroke="#667085"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                </div>
-                <div className="text-left mb-8">
-                  <div className="mb-5">
-                    <h3 className="text-slate-800 mb-2 text-lg font-medium tracking-sm">
-                      Create List
-                    </h3>
-                    <span className="text-slate-500 text-sm tracking-sm">
-                      Please enter a name for this list.
-                    </span>
-                  </div>
-                  <form action="">
-                    <div className="mb-6">
-                      <label
-                        htmlFor="list-name"
-                        className="block text-slate-700 text-sm font-medium tracking-sm mb-1.5"
-                      >
-                        {' '}
-                        List name{' '}
-                      </label>
-                      <div className="mt-1">
-                        <input
-                          type="text"
-                          name="list-name"
-                          id="list-name"
-                          placeholder="e.g. App"
-                          className="block w-full min-h-[44px] text-slate-500 border-slate-300 rounded-md shadow-sm tracking-sm placeholder:text-slate-500 focus:ring-purple-500 focus:border-purple-500"
-                        />
-                      </div>
-                    </div>
-                    <Switch.Group as="div" className="flex items-center">
-                      <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        className={classNames(
-                          enabled ? 'bg-purple-600' : 'bg-gray-200',
-                          'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
-                        )}
-                      >
-                        <span
-                          aria-hidden="true"
-                          className={classNames(
-                            enabled ? 'translate-x-4' : 'translate-x-0',
-                            'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                          )}
-                        />
-                      </Switch>
-                      <Switch.Label as="span" className="ml-3">
-                        <span className="text-base font-medium tracking-sm text-slate-700">
-                          Private
-                        </span>
-                      </Switch.Label>
-                    </Switch.Group>
-                  </form>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setCreateNewList(false)}
-                    className="inline-flex items-center justify-center px-[14px] py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                  >
-                    Create
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <CreateBookmarkList setCreateNewList={setCreateNewList} />
       )}
     </>
   );

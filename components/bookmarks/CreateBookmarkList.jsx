@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { classNames } from '@/utils/utils';
 import { Switch } from '@headlessui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { createBookmarkListRequest } from '@/redux/bookmarks/bookmarkSlice';
+import {
+  createBookmarkListRequest,
+  updateBookmarkListRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import Input from '../Input';
 import Button from '../basic/button';
 
-export default function CreateBookmarkList({ setCreateNewList }) {
+export default function CreateBookmarkList({ setCreateNewList, list }) {
   const [enabled, setEnabled] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -21,18 +24,38 @@ export default function CreateBookmarkList({ setCreateNewList }) {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(bookmarkListSchema),
   });
   const createNewList = (data) => {
-    const req = {
-      ...data,
-      isPrivate: enabled,
-      user: user._id,
-      username: user.username,
-    };
-    dispatch(createBookmarkListRequest(req));
+    if (list) {
+      dispatch(
+        updateBookmarkListRequest({
+          name: data.name,
+          slug: data.name.replace(/\s+/g, '-').toLowerCase(),
+          isPrivate: enabled,
+          _id: list._id,
+        })
+      );
+    } else {
+      const req = {
+        ...data,
+        isPrivate: enabled,
+        user: user._id,
+        username: user.username,
+      };
+      dispatch(createBookmarkListRequest(req));
+    }
+    setCreateNewList(false);
   };
+  useEffect(() => {
+    if (list) {
+      setValue('name', list.name);
+      setEnabled(list.isPrivate);
+    }
+  }, [list]);
+
   return (
     <div className="relative z-30">
       <div className="fixed inset-0 bg-black bg-opacity-50" />
