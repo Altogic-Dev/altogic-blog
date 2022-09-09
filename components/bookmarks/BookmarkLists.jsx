@@ -4,6 +4,7 @@ import {
   addBookmarkRequest,
   deleteBookmarkRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
+import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';
@@ -33,6 +34,18 @@ export default function BookmarkLists({
           userId: user._id,
           story: story._id,
           coverImages,
+        })
+      );
+      dispatch(
+        notificationsActions.createNotificationRequest({
+          targetId: story._id,
+          targetTitle: story.title,
+          sentUsername: user.username,
+          sentUser: user._id,
+          type: 'bookmark',
+          targetSlug: story.slug,
+          sentUserProfilePicture: user.profilePicture,
+          user: story.user,
         })
       );
     } else {
@@ -68,7 +81,7 @@ export default function BookmarkLists({
                     type="checkbox"
                     checked={bookmarks?.some(
                       (bk) =>
-                        bk.bookmarkList === list._id && bk.story === story._id
+                        bk.bookmarkList === list._id && bk.story === story?._id
                     )}
                     className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
                     onChange={(e) => handleAddBookmark(e, list)}

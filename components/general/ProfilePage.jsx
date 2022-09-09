@@ -36,7 +36,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [isMyProfileState, setIsMyProfileState] = useState(isMyProfile);
-  const [bookmarkListLimit, setBookmarkListLimit] = useState(3);
+  const [bookmarkListLimit, setBookmarkListLimit] = useState(0);
   const [unfollowed, setUnfollowed] = useState([]);
 
   const copyToClipboard = () => {
@@ -128,8 +128,8 @@ export default function ProfilePage({ About, Home, List }) {
   }, [username]);
 
   const handleBookmarkListEnd = useCallback(() => {
-    setBookmarkListLimit((prev) => prev + 3);
-  }, [username]);
+    setBookmarkListLimit((prev) => prev + 10);
+  }, []);
   useEffect(() => {
     if (username) {
       dispatch(

@@ -45,9 +45,7 @@ export default function ListDetail() {
 
   useEffect(() => {
     if (bookmarks) {
-      bookmarks?.forEach((bookmark) => {
-        setStories((stories) => [...stories, bookmark.story]);
-      });
+      setStories(bookmarks.map((bookmark) => bookmark.story));
     }
   }, [bookmarks]);
 
