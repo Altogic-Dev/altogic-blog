@@ -9,8 +9,8 @@ const initialState = {
   isFollowing: false,
   followingStoriesLoading: false,
   followingActionResult: null,
-  userFollowers: null,
-  userFollowings: null,
+  userFollowers: [],
+  userFollowings: [],
   isLoading: false,
 };
 
@@ -28,12 +28,6 @@ export const followerConnectionSlice = createSlice({
     followRequest() {},
     followSuccess(state) {
       state.isFollowing = true;
-    },
-
-    getFollowingRequest() {},
-    getFollowingSuccess(state, action) {
-      state.followingUser = action.payload;
-      state.isFollowing = !_.isNull(action.payload);
     },
     getFollowingStoriesRequest(state) {
       state.followingStoriesLoading = true;
@@ -60,23 +54,14 @@ export const followerConnectionSlice = createSlice({
 
     getFollowerUsersRequest() {},
     getFollowerUsersSuccess(state, action) {
-      if (action.payload.page <= 1 && _.isNil(state.userFollowers)) {
-        state.userFollowers = action.payload.data;
-      } else {
-        state.userFollowers = [...state.userFollowers, ...action.payload.data];
-      }
+      state.userFollowers = [...state.userFollowers, ...action.payload.data];
+
     },
 
     getFollowingUsersRequest() {},
     getFollowingUsersSuccess(state, action) {
-      if (action.payload.page <= 1 && _.isNil(state.userFollowings)) {
-        state.userFollowings = action.payload.data;
-      } else {
-        state.userFollowings = [
-          ...state.userFollowings,
-          ...action.payload.data,
-        ];
-      }
+      state.userFollowings = [...state.userFollowings, ...action.payload.data];
+      state.userFollowings.page = action.payload.page;
     },
 
     setIsFollowing(state, action) {
