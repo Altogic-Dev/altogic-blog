@@ -48,7 +48,11 @@ const StoryService = {
   },
 
   getStory(id) {
-    return db.model('story').object(id).get();
+    return db
+      .model('story')
+      .filter(`_id == '${id}'`)
+      .lookup({ field: 'publication' })
+      .get();
   },
 
   getStoryBySlug(storySlug) {
@@ -100,6 +104,9 @@ const StoryService = {
     return endpoint.post(`/reply_comments`, comment);
   },
 
+  createStory(story) {
+    return db.model('story').object(story._id).create(story);
+  },
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },

@@ -108,7 +108,7 @@ function* getStorySaga({ payload: id }) {
   try {
     const { data, errors } = yield call(StoryService.getStory, id);
     if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(storyActions.getStorySuccess(data));
+      yield put(storyActions.getStorySuccess(_.first(data)));
     }
   } catch (e) {
     console.error({ e });
@@ -274,18 +274,19 @@ function* createStorySaga({ payload }) {
     if (!_.isNil(data)) {
       yield put(storyActions.createStorySuccess(data));
     }
-    if (_.isNil(errors)) {
+    if (!_.isNil(errors)) {
       throw errors.items;
     }
   } catch (e) {
     yield put(storyActions.createStoryFailure(e));
   }
 }
-function* updateStorySaga({ payload }) {
+function* updateStorySaga({ payload: { story, onSuccess } }) {
   try {
-    const { data, errors } = yield call(StoryService.updateStory, payload);
+    const { data, errors } = yield call(StoryService.updateStory, story);
     if (!_.isNil(data)) {
       yield put(storyActions.updateStorySuccess(data));
+      if (_.isFunction(onSuccess)) onSuccess();
     }
     if (_.isNil(errors)) {
       throw errors.items;

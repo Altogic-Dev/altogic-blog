@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import _ from 'lodash';
 import { CheckCircleIcon } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
@@ -44,8 +45,10 @@ export default function WriteAStory() {
       } else {
         dispatch(
           storyActions.updateStoryRequest({
-            _id: newStory._id,
-            ...story,
+            story: {
+              _id: newStory._id,
+              ...story,
+            },
           })
         );
       }
@@ -64,7 +67,7 @@ export default function WriteAStory() {
           <p className="text-slate-500">{minRead} min read</p>
 
           {isCreated && (
-            <Link href="publish-settings">
+            <Link href={`publish-settings?id=${_.get(newStory, '_id')}`}>
               <a className="inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24">
                 <CheckCircleIcon className="w-5 h-5" />
                 Publish
