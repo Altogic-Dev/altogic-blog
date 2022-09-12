@@ -5,7 +5,7 @@
       "@/components/*": ["components/*"],
       "@/constants": ["constants"],
       "@/hooks/*": ["hooks/*"],
-      "@/layout/*": ["layout/*"],
+      "@/layouts/*": ["layouts/*"],
       "@/services/*": ["services/*"],
       "@/styles/*": ["styles/*"],
       "@/utils/*": ["utils/*"],

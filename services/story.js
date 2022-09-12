@@ -70,11 +70,21 @@ const StoryService = {
   getUserStories(userId, page = 1, limit = 6) {
     return db
       .model('story')
-      .filter(`user == '${userId}'`)
+      .filter(`user == '${userId}' && !isDeleted && isPublished`)
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
-      .get();
+      .get(true);
+  },
+
+  getUserDraftStories(userId, page = 1, limit = 6) {
+    return db
+      .model('story')
+      .filter(`user == '${userId}' && !isDeleted && !isPublished`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get(true);
   },
   getStoryReplies(storyId, page, limit) {
     return db

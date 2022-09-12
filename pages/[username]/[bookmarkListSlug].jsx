@@ -15,8 +15,8 @@ import {
 import { DateTime } from 'luxon';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import _ from 'lodash';
-import Layout from '../../layout/Layout';
-import Sidebar from '../../layout/Sidebar';
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
 
 export default function ListDetail() {
   const [deleteListModal, setDeleteListModal] = useState(false);
@@ -45,9 +45,7 @@ export default function ListDetail() {
 
   useEffect(() => {
     if (bookmarks) {
-      bookmarks?.forEach((bookmark) => {
-        setStories((stories) => [...stories, bookmark.story]);
-      });
+      setStories(bookmarks.map((bookmark) => bookmark.story));
     }
   }, [bookmarks]);
 

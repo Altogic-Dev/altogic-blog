@@ -7,7 +7,8 @@ import {
   XIcon,
   PlusIcon,
 } from '@heroicons/react/solid';
-import Layout from '../layout/Layout';
+import Layout from '@/layouts/Layout';
+import { classNames } from '@/utils/utils';
 
 const peoples = [
   {
@@ -81,10 +82,6 @@ const peoples = [
       'https://images.unsplash.com/photo-1561505457-3bcad021f8ee?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
   },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function PublishSettings() {
   const [selected, setSelected] = useState(peoples[3]);

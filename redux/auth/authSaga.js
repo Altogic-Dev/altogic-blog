@@ -265,7 +265,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
   }
 }
 
-function* updateUserSaga(newUser) {
+export function* updateUserSaga(newUser) {
   const user = yield select((state) => state.auth.user);
   AuthService.setUserFromLocal({
     ...user,

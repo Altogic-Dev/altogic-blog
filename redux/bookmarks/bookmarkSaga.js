@@ -1,4 +1,4 @@
-import { call, takeEvery, put, all } from 'redux-saga/effects';
+import { call, takeEvery, put, all, fork } from 'redux-saga/effects';
 import BookmarkService from '@/services/bookmark';
 import {
   getBookmarkListsRequest,

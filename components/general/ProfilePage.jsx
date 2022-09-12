@@ -10,13 +10,13 @@ import { followerConnectionActions } from '@/redux/followerConnection/followerCo
 import AboutComponent from '@/components/general/About';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
-import Layout from '@/layout/Layout';
+import ProfilePageHome from '@/components/general/ProfilePageHome';
+import ListObserver from '@/components/ListObserver';
+import Button from '@/components/basic/button';
 import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
-import Sidebar from '../../layout/Sidebar';
-import Button from '../basic/button';
-import ProfilePageHome from './ProfilePageHome';
-import ListObserver from '../ListObserver';
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [isMyProfileState, setIsMyProfileState] = useState(isMyProfile);
-  const [bookmarkListLimit, setBookmarkListLimit] = useState(3);
+  const [bookmarkListLimit, setBookmarkListLimit] = useState(0);
   const [unfollowed, setUnfollowed] = useState([]);
 
   const copyToClipboard = () => {
@@ -128,8 +128,8 @@ export default function ProfilePage({ About, Home, List }) {
   }, [username]);
 
   const handleBookmarkListEnd = useCallback(() => {
-    setBookmarkListLimit((prev) => prev + 3);
-  }, [username]);
+    setBookmarkListLimit((prev) => prev + 10);
+  }, []);
   useEffect(() => {
     if (username) {
       dispatch(

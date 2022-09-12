@@ -12,6 +12,7 @@ import topicsSaga from './topics/topicsSaga';
 import generalSaga from './general/generalSaga';
 import fileSaga from './file/fileSaga';
 import bookmarkSaga from './bookmarks/bookmarkSaga';
+import notificationsSaga from './notifications/notificationsSaga';
 
 function* rootSaga() {
   yield all([
@@ -28,6 +29,7 @@ function* rootSaga() {
     fork(topicsSaga),
     fork(generalSaga),
     fork(bookmarkSaga),
+    fork(notificationsSaga),
   ]);
 }
 

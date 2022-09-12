@@ -5,8 +5,8 @@ import {
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
 import dynamic from 'next/dynamic';
-import Layout from '../layout/Layout';
-import StatsCard from '../components/StatsCard';
+import Layout from '@/layouts/Layout';
+import StatsCard from '@/components/StatsCard';
 
 const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,

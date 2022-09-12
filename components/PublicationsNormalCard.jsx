@@ -1,10 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Listbox, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { classNames } from '@/utils/utils';
 
 const stories = [
   {
