@@ -7,8 +7,8 @@ import Category from '@/components/Category';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
 import { storyActions } from '@/redux/story/storySlice';
-import PostCard from '../components/PostCard';
-import Layout from '../layout/Layout';
+import PostCard from '@/components/PostCard';
+import Layout from '@/layouts/Layout';
 
 export default function WriteAStorySettings() {
   const router = useRouter();

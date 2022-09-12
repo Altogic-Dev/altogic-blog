@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '@/layout/Layout';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '@/components/profile/Avatar';
 import { DateTime } from 'luxon';
 import { classNames } from '@/utils/utils';
 import ListObserver from '@/components/ListObserver';
-import Sidebar from '../layout/Sidebar';
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
+
 
 export default function Notifications() {
   const dispatch = useDispatch();

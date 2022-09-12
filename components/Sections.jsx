@@ -1,7 +1,8 @@
 import { useState, Fragment } from 'react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { Listbox, Transition, Tab, Switch } from '@headlessui/react';
-import Sidebar from '../layout/Sidebar';
+import Sidebar from '@/layouts/Sidebar';
+import { classNames } from '@/utils/utils';
 import PublicationsNormalCard from './PublicationsNormalCard';
 import PublicationsFullImageVerticalCard from './PublicationsFullImageVerticalCard';
 import PublicationsStreamCard from './PublicationsStreamCard';
@@ -11,10 +12,6 @@ const sections = [
   { id: 1, tag: 'Stories in a tag' },
   { id: 2, tag: 'Featured stories' },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function Sections() {
   const [selectedSectionBar, setSelectedSectionBar] = useState(sections[0]);

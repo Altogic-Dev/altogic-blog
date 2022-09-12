@@ -1,16 +1,13 @@
 import React from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
+import { classNames } from '@/utils/utils';
 
 const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
   ssr: false,
 });
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 const statistics = [
   {
