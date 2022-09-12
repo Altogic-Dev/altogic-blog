@@ -7,4 +7,4 @@ const altogic = createClient(
     signInRedirect: '/login',
   }
 );
-export const { db, auth, storage, endpoint, queue } = altogic;
+export const { db, auth, storage, endpoint, queue, realtime } = altogic;
