@@ -14,10 +14,10 @@ import {
   getBookmarkListsRequest,
   getBookmarksRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
-import { authActions } from '../redux/auth/authSlice';
-import Sidebar from '../layouts/Sidebar';
-import PostCard from '../components/PostCard';
-import Layout from '../layouts/Layout';
+import { authActions } from '@/redux/auth/authSlice';
+import Sidebar from '@/layouts/Sidebar';
+import PostCard from '@/components/PostCard';
+import Layout from '@/layouts/Layout';
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);

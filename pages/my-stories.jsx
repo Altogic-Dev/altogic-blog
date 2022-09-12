@@ -3,14 +3,14 @@ import Head from 'next/head';
 import { Tab, Menu, Transition } from '@headlessui/react';
 import Button from '@/components/basic/button';
 import { useSelector, useDispatch } from 'react-redux';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 import { classNames } from '@/utils/utils';
 import {
   getBookmarkListsRequest,
   getBookmarksRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
-import Sidebar from '../layout/Sidebar';
-import PostCard from '../components/PostCard';
+import Sidebar from '@/layouts/Sidebar';
+import PostCard from '@/components/PostCard';
 
 const posts = [
   {
