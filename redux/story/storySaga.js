@@ -349,10 +349,11 @@ export default function* rootSaga() {
       storyActions.updateCategoryNamesRequest.type,
       updateCategoryNamesSaga
     ),
-    yield takeEvery(
+    takeEvery(
       storyActions.getUserDraftStoriesRequest.type,
       getUserDraftStoriesSaga
     ),
+    takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
     takeEvery(storyActions.createReplyRequest.type, createReply),
     takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),
