@@ -5,7 +5,7 @@ import { CheckCircleIcon } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
 import dynamic from 'next/dynamic';
-import Layout from '../layout/Layout';
+import Layout from '../layouts/Layout';
 
 const Editor = dynamic(() => import('../components/Editor'), {
   ssr: false,

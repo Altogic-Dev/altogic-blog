@@ -1,13 +1,10 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 import { Listbox, Transition, Switch } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/solid';
 import { ChevronDownIcon } from '@heroicons/react/outline';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { classNames } from '@/utils/utils';
 
 const tabTypes = [
   { name: 'Many Stories (Features page)' },

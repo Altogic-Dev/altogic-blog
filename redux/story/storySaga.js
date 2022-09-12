@@ -213,15 +213,47 @@ export function* updateStoryLikeCountSaga(isIncrease) {
 
 function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
   try {
+    let userID = userId;
+    if (!userID) {
+      userID = yield select((state) => _.get(state.auth.user, '_id'));
+    }
     const { data, errors } = yield call(
       StoryService.getUserStories,
-      userId,
+      userID,
       page,
       limit
     );
     if (errors) throw errors;
-    if (_.isArray(data)) {
-      yield put(storyActions.getUserStoriesSuccess(data));
+    if (data) {
+      yield put(
+        storyActions.getUserStoriesSuccess({ data: data.data, info: data.info })
+      );
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
+  try {
+    let userID = userId;
+    if (!userID) {
+      userID = yield select((state) => _.get(state.auth.user, '_id'));
+    }
+    const { data, errors } = yield call(
+      StoryService.getUserDraftStories,
+      userID,
+      page,
+      limit
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(
+        storyActions.getUserDraftStoriesSuccess({
+          data: data.data,
+          info: data.info,
+        })
+      );
     }
   } catch (e) {
     console.error({ e });
@@ -318,6 +350,11 @@ export default function* rootSaga() {
       storyActions.updateCategoryNamesRequest.type,
       updateCategoryNamesSaga
     ),
+    takeEvery(
+      storyActions.getUserDraftStoriesRequest.type,
+      getUserDraftStoriesSaga
+    ),
+    takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
     takeEvery(storyActions.createReplyRequest.type, createReply),
     takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),

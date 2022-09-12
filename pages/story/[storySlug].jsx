@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import PostCard from '@/components/PostCard';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
@@ -21,7 +21,7 @@ import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
 import BookmarkLists from '@/components/bookmarks/BookmarkLists';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
-import Sidebar from '../../layout/Sidebar';
+import Sidebar from '@/layouts/Sidebar';
 
 export default function BlogDetail() {
   const router = useRouter();

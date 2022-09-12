@@ -1,110 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '@/layout/Layout';
-import Sidebar from '../layout/Sidebar';
+import { notificationsActions } from '@/redux/notifications/notificationsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import Avatar from '@/components/profile/Avatar';
+import { DateTime } from 'luxon';
+import { classNames } from '@/utils/utils';
+import ListObserver from '@/components/ListObserver';
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
 
-const allNotifications = [
-  {
-    id: 0,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'published',
-    time: '1 hour ago',
-  },
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Omar Lipshutz',
-    desc: 'Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.',
-    intermediateText: 'clapped for',
-    time: '3 days ago',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'published',
-    time: '1 hour ago',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'published',
-    time: '1 hour ago',
-  },
-  {
-    id: 4,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'published',
-    time: '1 hour ago',
-  },
-];
-
-const responses = [
-  {
-    id: 0,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'responsed to',
-    time: '1 hour ago',
-  },
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Omar Lipshutz',
-    desc: 'Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.',
-    intermediateText: 'responsed to',
-    time: '3 days ago',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'responsed to',
-    time: '1 hour ago',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'responsed to',
-    time: '1 hour ago',
-  },
-  {
-    id: 4,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Marley Rhiel Madsen',
-    desc: 'Lorem Ipsum Dolor Sit Amet',
-    intermediateText: 'responsed to',
-    time: '1 hour ago',
-  },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function Notifications() {
+  const dispatch = useDispatch();
+  const [notificationLimit, setNotificationLimit] = useState(20);
+  const allNotifications = useSelector(
+    (state) => state.notifications.notifications
+  );
+  const responses = useSelector(
+    (state) => state.notifications.responseNotifications
+  );
+  const user = useSelector((state) => state.auth.user);
+
+  useEffect(() => {
+    dispatch(
+      notificationsActions.getNotificationsRequest({
+        userId: user?._id,
+        limit: notificationLimit,
+      })
+    );
+  }, [notificationLimit]);
+
+  const handleLoadMore = () => {
+    setNotificationLimit((prev) => prev + 10);
+  };
   return (
     <div>
       <Head>
@@ -151,60 +80,68 @@ export default function Notifications() {
                 </Tab.List>
                 <Tab.Panels className="py-10 lg:py-12">
                   <Tab.Panel>
-                    <ul className="space-y-4">
-                      {allNotifications.map((allNotification) => (
-                        <li
-                          key={allNotification.id}
-                          className="flex items-center gap-3"
-                        >
-                          <img
-                            className="rounded-full w-[30px] h-[30px]"
-                            src={allNotification.image}
-                            alt={allNotification.name}
-                          />
-                          <span className="text-sm font-light tracking-sm text-slate-500">
-                            <strong className="text-slate-600 font-semibold">
-                              {allNotification.name}
-                            </strong>{' '}
-                            {allNotification.intermediateText}{' '}
-                            <strong className="text-slate-600 font-semibold">
-                              {allNotification.desc}
-                            </strong>{' '}
-                            <span className="text-slate-400 text-xs">
-                              {allNotification.time}
+                    <ListObserver onEnd={handleLoadMore}>
+                      <ul className="space-y-4">
+                        {allNotifications.map((allNotification) => (
+                          <li
+                            key={allNotification.id}
+                            className="flex items-center gap-3"
+                          >
+                            <Avatar
+                              className="w-[30px] h-[30px]"
+                              src={allNotification.sentUserProfilePicture}
+                              alt={allNotification.sentUsername}
+                            />
+                            <span className="text-sm font-light tracking-sm text-slate-500">
+                              <strong className="text-slate-600 font-semibold">
+                                {allNotification.sentUsername}
+                              </strong>{' '}
+                              {allNotification.intermediateText}{' '}
+                              <strong className="text-slate-600 font-semibold">
+                                {allNotification.targetTitle}
+                              </strong>{' '}
+                              <span className="text-slate-400 text-xs">
+                                {DateTime.fromISO(
+                                  allNotification.createdAt
+                                ).toRelative()}
+                              </span>
                             </span>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                          </li>
+                        ))}
+                      </ul>
+                    </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel>
-                    <ul className="space-y-4">
-                      {responses.map((response) => (
-                        <li
-                          key={response.id}
-                          className="flex items-center gap-3"
-                        >
-                          <img
-                            className="rounded-full w-[30px] h-[30px]"
-                            src={response.image}
-                            alt={response.name}
-                          />
-                          <span className="text-sm font-light tracking-sm text-slate-500">
-                            <strong className="text-slate-600 font-semibold">
-                              {response.name}
-                            </strong>{' '}
-                            {response.intermediateText}{' '}
-                            <strong className="text-slate-600 font-semibold">
-                              {response.desc}
-                            </strong>{' '}
-                            <span className="text-slate-400 text-xs">
-                              {response.time}
+                    <ListObserver onEnd={handleLoadMore}>
+                      <ul className="space-y-4">
+                        {responses.map((response) => (
+                          <li
+                            key={response.id}
+                            className="flex items-center gap-3"
+                          >
+                            <Avatar
+                              className="w-[30px] h-[30px]"
+                              src={response.sentUserProfilePicture}
+                              alt={response.sentUsername}
+                            />
+                            <span className="text-sm font-light tracking-sm text-slate-500">
+                              <strong className="text-slate-600 font-semibold">
+                                {response.sentUsername}
+                              </strong>{' '}
+                              {response.intermediateText}{' '}
+                              <strong className="text-slate-600 font-semibold">
+                                {response.targetTitle}
+                              </strong>{' '}
+                              <span className="text-slate-400 text-xs">
+                                {DateTime.fromISO(
+                                  response.createdAt
+                                ).toRelative()}
+                              </span>
                             </span>
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                          </li>
+                        ))}
+                      </ul>
+                    </ListObserver>
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>

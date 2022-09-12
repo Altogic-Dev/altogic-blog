@@ -1,19 +1,15 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import { storyActions } from '@/redux/story/storySlice';
 import _ from 'lodash';
+import { storyActions } from '@/redux/story/storySlice';
 import Category from '@/components/Category';
-import { parseHtml } from '@/utils/utils';
-import Link from 'next/link';
-import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/react/solid';
-import Layout from '../layout/Layout';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { parseHtml, classNames } from '@/utils/utils';
+import { Listbox, Transition } from '@headlessui/react';
+import Layout from '@/layouts/Layout';
 
 export default function PublishSettings() {
   const router = useRouter();
@@ -135,9 +131,10 @@ export default function PublishSettings() {
                 <span className="text-slate-600 text-sm tracking-sm">
                   Story Preview
                 </span>
-                <div className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-base prose-h1:md:text-lg prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm max-w-full mb-10 sm:mb-24">
-                  {parseHtml(_.get(story, 'content'))}
-                </div>
+                <div
+                  className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-base prose-h1:md:text-lg prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm max-w-full mb-10 sm:mb-24"
+                  dangerouslySetInnerHTML={{ __html: _.get(story, 'content') }}
+                />
                 <Link href={`/write-a-story?id=${_.get(story, '_id')}`}>
                   <button
                     type="button"

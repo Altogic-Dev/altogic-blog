@@ -1,9 +1,9 @@
 import React from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '../layout/Layout';
-// import Sidebar from '../layout/Sidebar';
-import PostCard from '../components/PostCard';
+import Layout from '@/layouts/Layout';
+import PostCard from '@/components/PostCard';
+import { classNames } from '@/utils/utils';
 
 const posts = [
   {
@@ -296,10 +296,6 @@ const topics = [
     href: '#',
   },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function SearchResult() {
   return (
