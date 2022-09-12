@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '@/layout/Layout';
 import PostCard from '@/components/PostCard';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
@@ -16,7 +15,8 @@ import {
 } from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
-import Sidebar from '../../layout/Sidebar';
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
 
 export default function TagPage({ Home, Latest, Best }) {
   const user = useSelector((state) => state.auth.user);

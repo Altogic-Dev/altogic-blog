@@ -4,11 +4,8 @@ import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useRouter } from 'next/router';
-import Layout from '@/layout/Layout';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import Layout from '@/layouts/Layout';
+import { classNames } from '@/utils/utils';
 
 export default function PublicationsFollowers() {
   const [selectedIndex, setSelectedIndex] = useState(0);

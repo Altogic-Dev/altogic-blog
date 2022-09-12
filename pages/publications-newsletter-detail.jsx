@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import Head from 'next/head';
 import { Menu, Transition } from '@headlessui/react';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import ShareButtons from '@/components/ShareButtons';
-import Sidebar from '../layout/Sidebar';
-import PostCard from '../components/PostCard';
+import Sidebar from '@/layouts/Sidebar';
+import PostCard from '@/components/PostCard';
 
 const posts = [
   {

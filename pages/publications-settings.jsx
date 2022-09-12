@@ -1,12 +1,9 @@
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import { PlusIcon, XIcon } from '@heroicons/react/solid';
-import Layout from '@/layout/Layout';
-import Sections from '../components/Sections';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import Layout from '@/layouts/Layout';
+import Sections from '@/components/Sections';
+import { classNames } from '@/utils/utils';
 
 export default function PublicationsSettings() {
   return (

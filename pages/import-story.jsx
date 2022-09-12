@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 
 export default function ImportStory() {
   return (
@@ -18,7 +18,11 @@ export default function ImportStory() {
           <p className="text-center text-gray-500 text-lg">
             Import a story from another publication.
           </p>
-          <input className='w-96' placeholder='http://www.yoursite.org/your-post' type="text" />
+          <input
+            className="w-96"
+            placeholder="http://www.yoursite.org/your-post"
+            type="text"
+          />
           <div className="flex flex-col justify-center items-center">
             <button
               type="button"
@@ -26,7 +30,7 @@ export default function ImportStory() {
             >
               Import
             </button>
-            <span className=''>Please only import content that you own.</span>
+            <span className="">Please only import content that you own.</span>
           </div>
         </div>
       </Layout>

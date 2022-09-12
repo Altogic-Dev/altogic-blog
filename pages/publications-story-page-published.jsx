@@ -2,13 +2,10 @@
 import React, { useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '@/layout/Layout';
-import PostCard from '../components/PostCard';
-import PublicationsPostCard from '../components/PublicationsDraftCard';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import Layout from '@/layouts/Layout';
+import PostCard from '@/components/PostCard';
+import PublicationsPostCard from '@/components/PublicationsDraftCard';
+import { classNames } from '@/utils/utils';
 
 const posts = [
   {
