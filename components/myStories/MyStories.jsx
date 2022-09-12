@@ -1,18 +1,15 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
 import { Tab, Menu, Transition } from '@headlessui/react';
 import Button from '@/components/basic/button';
-import Layout from '@/layout/Layout';
-import Sidebar from '@/layout/Sidebar';
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
+import { classNames } from '@/utils/utils';
 import MyStoriesPublished from './MyStoriesPublished';
 import MyStoriesDraft from './MyStoriesDraft';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default function MyStories({ publishedPage, draftPage }) {
   const sessionUser = useSelector((state) => state.auth.user);
