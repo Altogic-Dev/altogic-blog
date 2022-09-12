@@ -183,6 +183,7 @@ export const storySlice = createSlice({
     updateStoryFieldSuccess(state, action) {
       state.story = action.payload;
     },
+    cacheStoryRequest() {},
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

@@ -320,11 +320,18 @@ function* updateStorySaga({ payload: { story, onSuccess } }) {
       yield put(storyActions.updateStorySuccess(data));
       if (_.isFunction(onSuccess)) onSuccess();
     }
-    if (_.isNil(errors)) {
+    if (!_.isNil(errors)) {
       throw errors.items;
     }
   } catch (e) {
     yield put(storyActions.updateStoryFailure(e));
+  }
+}
+function* cacheStorySaga({ payload: { story } }) {
+  try {
+    yield call(StoryService.cacheStory, story);
+  } catch (e) {
+    console.error({ e });
   }
 }
 
@@ -362,5 +369,6 @@ export default function* rootSaga() {
     takeEvery(storyActions.createStoryRequest.type, createStorySaga),
     takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
     takeEvery(storyActions.updateStoryFieldRequest.type, updateStoryFieldSaga),
+    takeEvery(storyActions.cacheStoryRequest.type, cacheStorySaga),
   ]);
 }

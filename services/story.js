@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { db, endpoint } from '@/utils/altogic';
+import { db, endpoint, cache } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -130,6 +130,9 @@ const StoryService = {
       updateType: 'set',
       value: newCategoryNames,
     });
+  },
+  cacheStory(story) {
+    return cache.set(`${story.storySlug}`, story, 60 * 15);
   },
 };
 

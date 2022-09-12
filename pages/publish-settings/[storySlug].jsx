@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { storyActions } from '@/redux/story/storySlice';
 import Category from '@/components/Category';
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/react/solid';
-import { parseHtml, classNames } from '@/utils/utils';
+import { classNames } from '@/utils/utils';
 import { Listbox, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 
@@ -18,7 +18,7 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
 
-  const { id: storyId } = router.query;
+  const { storySlug } = router.query;
   const [user, setUser] = useState();
   const [authors, setAuthors] = useState([]);
   const [inpSelectedAuthor, setInpSelectedAuthor] = useState();
@@ -77,10 +77,6 @@ export default function PublishSettings() {
   useEffect(() => {
     setUser(userFromStorage);
   }, [userFromStorage]);
-
-  useEffect(() => {
-    if (storyId) dispatch(storyActions.getStoryRequest(storyId));
-  }, [storyId]);
 
   useEffect(() => {
     if (!_.isNil(story)) {
