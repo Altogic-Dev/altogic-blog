@@ -34,17 +34,22 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
-
-  const user = useSelector((state) => state.auth.user);
+  const userFromStorage = useSelector((state) => state.auth.user);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
+  const [user, setUser] = useState();
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
-    dispatch(
-      storyActions.getFollowingStoriesRequest({ userId: user._id, page })
-    );
+    if (userFromStorage) {
+      dispatch(
+        storyActions.getFollowingStoriesRequest({
+          userId: userFromStorage._id,
+          page,
+        })
+      );
+    }
   };
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
@@ -77,6 +82,10 @@ export default function Home() {
   }, [recommendedListPage]);
 
   useEffect(() => {
+    setUser(userFromStorage);
+  }, [userFromStorage]);
+
+  useEffect(() => {
     if (
       selectedIndex === 1 &&
       _.isNil(recommendedStories) &&
@@ -100,6 +109,7 @@ export default function Home() {
         })
       );
     }
+    setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
   }, [user]);
 
   return (
@@ -130,16 +140,6 @@ export default function Home() {
                     }
                   >
                     Your Following
-                    {/* <span
-                      className={classNames(
-                        'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex === 0
-                          ? 'bg-purple-50 text-purple-900'
-                          : ''
-                      )}
-                    >
-                      8
-                    </span> */}
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -158,9 +158,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
-                        {_.map(followingStories, (story) => (
+                        {_.map(followingStories, (story, index) => (
                           <PostCard
-                            key={story._id}
+                            key={story._id + index}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
@@ -206,9 +206,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(recommendedStories) && (
                       <ListObserver onEnd={handleRecommendedEndOfList}>
-                        {_.map(recommendedStories, (story) => (
+                        {_.map(recommendedStories, (story, index) => (
                           <PostCard
-                            key={story._id}
+                            key={story._id + index}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
