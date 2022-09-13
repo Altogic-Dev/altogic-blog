@@ -335,6 +335,33 @@ function* cacheStorySaga({ payload: { story } }) {
   }
 }
 
+function* getCacheStorySaga({ payload: storySlug }) {
+  try {
+    const { data, errors } = yield call(StoryService.getCacheStory, storySlug);
+    if (!_.isNil(data)) {
+      yield put(storyActions.getCacheStorySuccess(data));
+    }
+    if (!_.isNil(errors)) {
+      throw errors.items;
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* publishStorySaga({ payload: { story, onSuccess } }) {
+  try {
+    const { data, errors } = yield call(StoryService.publishStory, story);
+    if (!_.isNil(errors)) {
+      throw errors.items;
+    }
+    yield put(storyActions.publishStorySuccess(data));
+    if (_.isFunction(onSuccess)) onSuccess();
+  } catch (e) {
+    yield put(storyActions.publishStoryFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -370,5 +397,7 @@ export default function* rootSaga() {
     takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
     takeEvery(storyActions.updateStoryFieldRequest.type, updateStoryFieldSaga),
     takeEvery(storyActions.cacheStoryRequest.type, cacheStorySaga),
+    takeEvery(storyActions.getCacheStoryRequest.type, getCacheStorySaga),
+    takeEvery(storyActions.publishStoryRequest.type, publishStorySaga),
   ]);
 }

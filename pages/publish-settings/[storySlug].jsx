@@ -55,7 +55,7 @@ export default function PublishSettings() {
 
   const handlePublish = () => {
     dispatch(
-      storyActions.updateStoryRequest({
+      storyActions.publishStoryRequest({
         story: {
           ...story,
           categoryNames: inpCategoryNames,
@@ -73,6 +73,10 @@ export default function PublishSettings() {
       })
     );
   };
+
+  useEffect(() => {
+    if (storySlug) dispatch(storyActions.getCacheStoryRequest(storySlug));
+  }, [storySlug]);
 
   useEffect(() => {
     setUser(userFromStorage);

@@ -134,6 +134,13 @@ const StoryService = {
   cacheStory(story) {
     return cache.set(`${story.storySlug}`, story, 60 * 15);
   },
+  getCacheStory(storySlug) {
+    return cache.get(storySlug);
+  },
+
+  publishStory(story) {
+    return endpoint.post('/story', story);
+  },
 };
 
 export default StoryService;

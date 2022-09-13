@@ -185,6 +185,19 @@ export const storySlice = createSlice({
     },
     cacheStoryRequest() {},
 
+    getCacheStoryRequest() {},
+    getCacheStorySuccess(state, action) {
+      state.story = action.payload;
+    },
+
+    publishStoryRequest() {},
+    publishStorySuccess() {},
+    publishStoryFailure(state, action) {
+      state.story = null;
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({
