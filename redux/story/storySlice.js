@@ -132,7 +132,6 @@ export const storySlice = createSlice({
       state.isLoading = false;
     },
     updateStoryFailure(state, action) {
-      state.story = null;
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -191,11 +190,16 @@ export const storySlice = createSlice({
     },
 
     publishStoryRequest() {},
-    publishStorySuccess() {},
-    publishStoryFailure(state, action) {
+    publishStorySuccess(state) {
       state.story = null;
+    },
+    publishStoryFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
+    },
+
+    clearStory(state) {
+      state.story = null;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

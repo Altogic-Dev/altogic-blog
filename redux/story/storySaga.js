@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { call, takeEvery, put, all, select } from 'redux-saga/effects';
+import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 
@@ -338,24 +338,29 @@ function* cacheStorySaga({ payload: { story } }) {
 function* getCacheStorySaga({ payload: storySlug }) {
   try {
     const { data, errors } = yield call(StoryService.getCacheStory, storySlug);
+    if (!_.isNil(errors)) throw errors.items;
+
     if (!_.isNil(data)) {
       yield put(storyActions.getCacheStorySuccess(data));
-    }
-    if (!_.isNil(errors)) {
-      throw errors.items;
+    } else {
+      yield fork(getStoryBySlugSaga, { payload: storySlug });
     }
   } catch (e) {
     console.error(e);
   }
 }
 
-function* publishStorySaga({ payload: { story, onSuccess } }) {
+function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
   try {
-    const { data, errors } = yield call(StoryService.publishStory, story);
-    if (!_.isNil(errors)) {
-      throw errors.items;
-    }
-    yield put(storyActions.publishStorySuccess(data));
+    const operation = isEdited
+      ? StoryService.updateStory
+      : StoryService.publishStory;
+
+    const { errors } = yield call(operation, story);
+    if (!_.isNil(errors)) throw errors.items;
+
+    yield call(StoryService.deleteCacheStory, story.storySlug);
+    yield put(storyActions.publishStorySuccess());
     if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     yield put(storyActions.publishStoryFailure(e));

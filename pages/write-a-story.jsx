@@ -18,11 +18,15 @@ export default function WriteAStory() {
   const [isCreated, setIsCreated] = useState(false);
   const [username, setUsername] = useState('');
   const [minRead, setMinRead] = useState(0);
+  const [inpTitle, setInpTitle] = useState('');
+
   const user = useSelector((state) => state.auth.user);
   const newStory = useSelector((state) => state.story.story);
+  const isLoading = useSelector((state) => state.story.isLoading);
+
   const dispatch = useDispatch();
   const router = useRouter();
-  const input = useRef();
+  const { id } = router.query;
 
   useEffect(() => {
     if (user) {
@@ -31,15 +35,29 @@ export default function WriteAStory() {
   }, [user]);
 
   useEffect(() => {
-    if (content) {
+    if (newStory && !_.isNil(id)) setInpTitle(newStory.title);
+  }, [newStory]);
+
+  useEffect(() => {
+    if (id) {
+      setIsCreated(true);
+      dispatch(storyActions.getStoryRequest(id));
+    } else {
+      dispatch(storyActions.clearStory());
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (content && inpTitle) {
       const story = {
         user: user._id,
         username: user.username,
         userProfilePicture: user.profilePicture,
         content,
         storyImages: storyImages.filter(Boolean),
-        title: input.current.value,
+        title: inpTitle,
         estimatedReadingTime: minRead,
+        isPublished: false,
       };
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
@@ -57,7 +75,7 @@ export default function WriteAStory() {
     }
 
     setMinRead(Math.ceil(content.split(' ').length / 200));
-  }, [content]);
+  }, [content, inpTitle]);
 
   return (
     <Layout>
@@ -68,7 +86,7 @@ export default function WriteAStory() {
           </span>
           <p className="text-slate-500">{minRead} min read</p>
 
-          {isCreated && (
+          {isCreated && !isLoading && (
             <button
               type="button"
               onClick={() => {
@@ -80,10 +98,12 @@ export default function WriteAStory() {
                     },
                   })
                 );
-                console.log(newStory);
                 dispatch(storyActions.cacheStoryRequest({ story: newStory }));
                 router.push(
-                  `/publish-settings/${_.get(newStory, 'storySlug')}`
+                  `/publish-settings/${_.get(
+                    newStory,
+                    'storySlug'
+                  )}?isEdited=${!_.isNil(id)}`
                 );
               }}
               className="inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
@@ -100,13 +120,15 @@ export default function WriteAStory() {
             className="block w-2/3 text-slate-500 px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
             placeholder="Story Title"
             required
-            ref={input}
+            onChange={(e) => setInpTitle(e.currentTarget.value)}
+            value={inpTitle}
           />
           <div className="mt-4 w-2/3">
             <Editor
               setMinRead={setMinRead}
               onChange={setContent}
               setImages={setStoryImages}
+              value={!_.isNil(id) && _.get(newStory, 'content')}
             />
           </div>
         </form>

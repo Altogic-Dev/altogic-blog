@@ -18,12 +18,13 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
 
-  const { storySlug } = router.query;
+  const { storySlug, isEdited } = router.query;
   const [user, setUser] = useState();
   const [authors, setAuthors] = useState([]);
   const [inpSelectedAuthor, setInpSelectedAuthor] = useState();
   const [inpCategory, setInpCategory] = useState('');
   const [inpCategoryNames, setInpCategoryNames] = useState([]);
+  const [inpRestrictComments, setInpRestrictComments] = useState(false);
 
   const handleInsert = (e) => {
     if (
@@ -58,7 +59,6 @@ export default function PublishSettings() {
       storyActions.publishStoryRequest({
         story: {
           ...story,
-          categoryNames: inpCategoryNames,
           publication:
             inpSelectedAuthor.type === 'publication'
               ? inpSelectedAuthor.id
@@ -68,7 +68,10 @@ export default function PublishSettings() {
               ? inpSelectedAuthor.id
               : undefined,
           isPublished: true,
+          categoryNames: inpCategoryNames,
+          isRestrictedComments: inpRestrictComments,
         },
+        isEdited,
         onSuccess: () => router.push(`/story/${story.storySlug}`),
       })
     );
@@ -85,6 +88,7 @@ export default function PublishSettings() {
   useEffect(() => {
     if (!_.isNil(story)) {
       setInpCategoryNames(story.categoryNames || []);
+      setInpRestrictComments(story.isRestrictedComments);
       const userAuthor = {
         id: userFromStorage?._id,
         name: userFromStorage?.name,
@@ -287,7 +291,7 @@ export default function PublishSettings() {
                 </div>
                 <div className="md:mb-20">
                   <p className="text-slate-600 mb-4 text-sm tracking-sm">
-                    Recomended Categories
+                    Recommended Categories
                   </p>
                   <div className="flex flex-wrap items-center gap-4">
                     {_.map(user?.recommendedTopics, (categoryName) => (
@@ -304,6 +308,27 @@ export default function PublishSettings() {
                         {categoryName}
                       </button>
                     ))}
+                  </div>
+
+                  <div className="flex items-start mt-10">
+                    <div className="flex items-center h-5">
+                      <input
+                        id="private-list"
+                        name="list"
+                        type="checkbox"
+                        className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
+                        onChange={() => setInpRestrictComments((prev) => !prev)}
+                        checked={inpRestrictComments}
+                      />
+                    </div>
+                    <div className="ml-3 text-sm">
+                      <label
+                        htmlFor="private-list"
+                        className="text-sm font-medium text-slate-800 tracking-sm"
+                      >
+                        Restrict Comments
+                      </label>
+                    </div>
                   </div>
                 </div>
                 <button
