@@ -135,6 +135,9 @@ const StoryService = {
   getCacheStory(storySlug) {
     return cache.get(storySlug);
   },
+  deleteCacheStory(storySlug) {
+    return cache.delete(storySlug);
+  },
 
   publishStory(story) {
     return endpoint.post('/story', story);

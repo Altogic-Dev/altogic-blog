@@ -29,7 +29,7 @@ const TwitterWidgetsLoader = dynamic(import('twitter-widgets'), {
   ssr: false,
 });
 
-export default function Editor({ onChange, setImages }) {
+export default function Editor({ onChange, setImages, value }) {
   const uploadImage = async (file) => {
     const { data } = await FileService.uploadFile(file, file.name);
     return data.publicPath;
@@ -384,6 +384,11 @@ export default function Editor({ onChange, setImages }) {
       quill.focus();
     });
   }, []);
+
+  useEffect(() => {
+    if (value && quillInstance) quillInstance.root.innerHTML = value;
+  }, [value, quillInstance]);
+
   function convertMedia(url) {
     const vimeo = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
     const youtube =
