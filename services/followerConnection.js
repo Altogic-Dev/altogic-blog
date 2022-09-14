@@ -2,7 +2,6 @@ import { db, endpoint } from '@/utils/altogic';
 
 const FollowerConnectionService = {
   unfollow(userId, followingUserId) {
-    console.log(userId, followingUserId);
     return endpoint.delete(`/follower_connection/${userId}/${followingUserId}`);
   },
 

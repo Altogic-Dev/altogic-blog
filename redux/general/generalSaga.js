@@ -41,7 +41,6 @@ function* searchSaga({ payload: { query, limit } }) {
   }
 }
 function* searchPreviewSaga({ payload: { query } }) {
-  console.log('searchPreviewSaga');
   try {
     const { data, errors } = yield call(GeneralService.search, {
       query,
