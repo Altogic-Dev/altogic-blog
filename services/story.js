@@ -8,9 +8,9 @@ const StoryService = {
         const mutedUserQuery = _.map(mutedUsers, (user, index) =>
           index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
         );
-        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
+        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && (${mutedUserQuery})`;
       }
-      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
+      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate';
     };
 
     return db
@@ -27,24 +27,22 @@ const StoryService = {
       .get(true);
   },
 
-  getRecommendedStories(mutedUsers, page = 1, limit = 10) {
-    const query = () => {
-      if (_.isArray(mutedUsers) && !_.isEmpty(mutedUsers)) {
-        const mutedUserQuery = _.map(mutedUsers, (user, index) =>
-          index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
-        );
-        return `!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
-      }
-      return '!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
-    };
+  getRecommendedStories(page = 1, limit = 10) {
+    return endpoint.get('story/recommended', { page, limit });
+  },
 
-    return db
-      .model('story')
-      .filter(query())
-      .sort('createdAt', 'desc')
-      .limit(limit)
-      .page(page)
-      .get(true);
+  GetRecommendedStoriesByUser({
+    recommendedTopics,
+    mutedUsers,
+    page = 1,
+    limit = 10,
+  }) {
+    return endpoint.put('/story/recommendedByUser', {
+      recommendedTopics,
+      mutedUsers,
+      page,
+      limit,
+    });
   },
 
   getStory(id) {

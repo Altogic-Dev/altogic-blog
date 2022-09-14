@@ -86,18 +86,37 @@ function* createReplyComment({ payload: comment }) {
 function* getRecommendedStoriesSaga({ payload: { page } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const { data, errors } = yield call(
-      StoryService.getRecommendedStories,
-      _.get(user, 'mutedUser'),
-      page
-    );
-    if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(
-        storyActions.getRecommendedStoriesSuccess({
-          data: data.data,
-          info: data.info,
-        })
+
+    if (!_.isNil(user) && !_.isEmpty(user.recommendedTopics)) {
+      const { data, errors } = yield call(
+        StoryService.GetRecommendedStoriesByUser,
+        {
+          recommendedTopics: user.recommendedTopics,
+          mutedUsers: _.get(user, 'mutedUser'),
+          page,
+        }
       );
+      if (!_.isNil(data) && _.isNil(errors)) {
+        yield put(
+          storyActions.getRecommendedStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
+    } else {
+      const { data, errors } = yield call(
+        StoryService.getRecommendedStories,
+        page
+      );
+      if (!_.isNil(data) && _.isNil(errors)) {
+        yield put(
+          storyActions.getRecommendedStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
