@@ -68,6 +68,25 @@ export default function Home() {
     }
   };
 
+  const storiesYouFollow = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
+
+  const getFollowingRequest = (page) => {
+    dispatch(
+      followerConnectionActions.getFollowingUsersRequest({
+        userId: _.get(user, '_id'),
+        page,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (storiesYouFollow.length === 0) {
+      getFollowingRequest(1);
+    }
+  }, []);
+
   useEffect(() => {
     getFollowingStories(followingListPage);
   }, [followingListPage]);
@@ -101,6 +120,7 @@ export default function Home() {
       );
     }
   }, [user]);
+
 
   return (
     <div>
@@ -253,7 +273,8 @@ export default function Home() {
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
-                storiesYouFollow
+                storiesYouFollow={storiesYouFollow}
+                getFollowingRequest={getFollowingRequest}
                 whoToFollow
                 popularTopics
                 popularStories
@@ -261,7 +282,12 @@ export default function Home() {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar mobilePopularStories storiesYouFollow />
+              <Sidebar
+                mobilePopularStories
+                getFollowingRequest={getFollowingRequest}
+
+                storiesYouFollow={storiesYouFollow}
+              />
             </div>
           </div>
         </div>

@@ -17,14 +17,6 @@ const FollowerConnectionService = {
     });
   },
 
-  getFollowing(userId, followingUserId) {
-    return db
-      .model('follower_connection')
-      .filter(
-        `followerUser == '${userId}' && followingUser == '${followingUserId}'`
-      )
-      .get();
-  },
 
   followUser(followerUser, followingUser) {
     return db.model('follower_connection').create({
