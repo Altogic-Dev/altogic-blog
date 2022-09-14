@@ -1,14 +1,12 @@
 import { authActions } from '@/redux/auth/authSlice';
 import { GlobeAltIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
-import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../basic/button';
 import Topic from '../basic/topic';
 
 export default function YourTopics({ Tag }) {
-  const router = useRouter();
   const followingTopics = useSelector((state) =>
     _.get(state.auth.user, 'followingTopics')
   );
@@ -21,7 +19,7 @@ export default function YourTopics({ Tag }) {
     const topics = followingTopicsState.filter(
       (topic) => topic !== Tag.replace('-', ' ')
     );
-    
+
     setFollowingTopicsState(topics);
     dispatch(
       authActions.updateFollowingTopicsRequest({
@@ -48,8 +46,8 @@ export default function YourTopics({ Tag }) {
     if (Tag) {
       setFollowingTopicsState(followingTopics);
       setFollowed(
-        followingTopics.length > 0 &&
-          followingTopics.includes(Tag.replace('-', ' '))
+        followingTopics?.length > 0 &&
+          followingTopics?.includes(Tag.replace('-', ' '))
       );
     }
   }, [followingTopics, Tag]);
@@ -64,13 +62,7 @@ export default function YourTopics({ Tag }) {
             </span>
             <div className="flex gap-2">
               {followingTopicsState?.map((topic) => (
-                <Topic
-                  onClick={() =>
-                    router.push(`/tag/${topic.replaceAll(' ', '-')}`)
-                  }
-                  key={topic}
-                  title={topic}
-                />
+                <Topic key={topic} title={topic} />
               ))}
             </div>
           </div>
@@ -98,13 +90,7 @@ export default function YourTopics({ Tag }) {
             </span>
             <div className="flex items-center gap-4 overflow-x-auto">
               {followingTopicsState?.map((topic) => (
-                <Topic
-                  onClick={() =>
-                    router.push(`/tag/${topic.replaceAll(' ', '-')}`)
-                  }
-                  key={topic}
-                  title={topic}
-                />
+                <Topic key={topic} title={topic} />
               ))}
             </div>
           </div>

@@ -1,303 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
 import { classNames } from '@/utils/utils';
-
-const posts = [
-  {
-    id: 0,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 1,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Money',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 2,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'App',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 3,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Art',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 4,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Mindfulness',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-  {
-    id: 5,
-    href: '#',
-    title: 'Fermentum massa tincidunt placerat.',
-    infoText:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In amet, eu augue integer dui sodales viverra. Sapien dignissim euismod.',
-    badgeName: 'Technology',
-    badgeUrl: '/',
-    min: '9 min',
-    image:
-      'https://images.unsplash.com/photo-1496128858413-b36217c2ce36?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1679&q=80',
-    author: {
-      name: 'Oliva Rhy',
-      href: '#',
-      image:
-        'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-      timeAgo: '2 Hours',
-    },
-    actionMenu: true,
-  },
-];
-
-const peoples = [
-  {
-    id: 0,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 4,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-];
-
-const publications = [
-  {
-    id: 0,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 1,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 2,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 3,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-  {
-    id: 4,
-    image:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhy',
-    desc: 'Author, The Straight Dope, or What I learned from my first...',
-    href: '#',
-  },
-];
-
-const topics = [
-  {
-    id: 0,
-    name: 'Technology',
-    href: '#',
-  },
-  {
-    id: 1,
-    name: 'Money',
-    href: '#',
-  },
-  {
-    id: 2,
-    name: 'App',
-    href: '#',
-  },
-  {
-    id: 3,
-    name: 'Mindfulness',
-    href: '#',
-  },
-  {
-    id: 4,
-    name: 'Art',
-    href: '#',
-  },
-  {
-    id: 5,
-    name: 'Yoga',
-    href: '#',
-  },
-  {
-    id: 6,
-    name: 'Caravan Camping',
-    href: '#',
-  },
-  {
-    id: 7,
-    name: 'Technology',
-    href: '#',
-  },
-  {
-    id: 8,
-    name: 'Money',
-    href: '#',
-  },
-  {
-    id: 9,
-    name: 'App',
-    href: '#',
-  },
-  {
-    id: 10,
-    name: 'Mindfulness',
-    href: '#',
-  },
-  {
-    id: 11,
-    name: 'Art',
-    href: '#',
-  },
-  {
-    id: 12,
-    name: 'Yoga',
-    href: '#',
-  },
-  {
-    id: 13,
-    name: 'Caravan Camping',
-    href: '#',
-  },
-  {
-    id: 14,
-    name: 'Yoga',
-    href: '#',
-  },
-  {
-    id: 15,
-    name: 'Caravan Camping',
-    href: '#',
-  },
-];
+import { generalActions } from '@/redux/general/generalSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import UserCard from '@/components/general/UserCard';
+import { DateTime } from 'luxon';
+import Topic from '@/components/basic/topic';
 
 export default function SearchResult() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const searchResults = useSelector((state) => state.general.searchResult);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  useEffect(() => {
+    if (router.query.search) {
+      dispatch(
+        generalActions.searchRequest({
+          query: router.query.search,
+          limit: 10,
+        })
+      );
+    }
+  }, [router.query.search]);
+
   return (
     <div>
       <Head>
@@ -314,9 +45,9 @@ export default function SearchResult() {
             <div className="pt-8 lg:py-10 lg:px-8">
               <h1 className="text-slate-700 mb-14 text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                 <span className="text-slate-400">Result for </span>
-                Search Result
+                {router.query.search}
               </h1>
-              <Tab.Group>
+              <Tab.Group onChange={setSelectedIndex}>
                 <Tab.List className="flex items-center gap-4 sm:gap-10 h-11 border-b border-gray-300">
                   <Tab
                     className={({ selected }) =>
@@ -369,61 +100,36 @@ export default function SearchResult() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
+                    {searchResults?.stories.map((story) => (
                       <PostCard
-                        key={post.id}
+                        key={story._id}
                         noActiveBookmark
                         normalMenu
-                        authorUrl={post.author.href}
-                        authorName={post.author.name}
-                        authorImage={post.author.image}
-                        storyUrl={post.href}
-                        timeAgo={post.author.timeAgo}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={post.badgeName}
-                        min={post.min}
-                        images={post.image}
-                        actionMenu={post.actionMenu}
+                        authorUrl={`/${story.username}`}
+                        authorName={story.username}
+                        authorImage={story.userProfilePicture}
+                        storyUrl={`/story/${story.storySlug}`}
+                        timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+                        title={story.title}
+                        infoText={story.excerpt}
+                        badgeUrl="badgeUrl"
+                        badgeName={story.categoryNames[0]}
+                        min={story.estimatedReadingTime}
+                        images={story.storyImages[0]}
+                        actionMenu
                       />
                     ))}
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
                     <ul className="divide-y divide-gray-200">
-                      {peoples.map((people) => (
-                        <li
-                          key={people.id}
-                          className="flex items-center justify-between gap-3 py-4"
-                        >
-                          <div className="flex items-center gap-3">
-                            <img
-                              className="w-16 h-16 rounded-full"
-                              src={people.image}
-                              alt={people.name}
-                            />
-                            <div className="flex flex-col">
-                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                {people.name}
-                              </span>
-                              <span className="text-slate-500 text-xs tracking-sm">
-                                {people.desc}
-                              </span>
-                            </div>
-                          </div>
-                          <a
-                            href={people.href}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                          >
-                            Follow
-                          </a>
-                        </li>
+                      {searchResults?.users.map((people) => (
+                        <UserCard key={people.id} user={people} />
                       ))}
                     </ul>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <ul className="divide-y divide-gray-200">
-                      {publications.map((publication) => (
+                      {searchResults?.publications.map((publication) => (
                         <li
                           key={publication.id}
                           className="flex items-center justify-between gap-3 py-4"
@@ -455,23 +161,29 @@ export default function SearchResult() {
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <div className="flex flex-wrap gap-x-4 gap-y-6">
-                      {topics.map((topic) => (
-                        <a
-                          key={topic.id}
-                          href={topic.href}
+                      {searchResults?.topics.map((topic) => (
+                        <Topic
+                          key={topic._id}
+                          title={topic.name}
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        >
-                          {topic.name}
-                        </a>
+                        />
                       ))}
                     </div>
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </div>
-            {/* <div className="hidden lg:block p-8 space-y-10">
-              <Sidebar topicMatch peopleMatch />
-            </div> */}
+            <div className="hidden lg:block p-8 space-y-10">
+              <Sidebar
+                topics={searchResults?.topics.slice(0, 5)}
+                peoples={searchResults?.users.slice(0, 5)}
+                stories={searchResults?.stories.slice(0, 5)}
+                popularStories={selectedIndex !== 0}
+                topicMatch={selectedIndex !== 3}
+                peopleMatch={selectedIndex !== 1}
+                query={router.query.search}
+              />
+            </div>
           </div>
         </div>
       </Layout>
