@@ -12,6 +12,7 @@ import PeopleMatch from '@/components/sidebar/PeopleMatch';
 import Footer from './Footer';
 
 export default function Sidebar({
+  getFollowingRequest,
   personalFullStatistic,
   topicMatch,
   peopleMatch,
@@ -29,6 +30,7 @@ export default function Sidebar({
   isSubscribed,
   Tag,
 }) {
+
   return (
     <>
       <form action="" className="hidden lg:block">
@@ -78,7 +80,10 @@ export default function Sidebar({
         />
       )}
       {mobilePopularStories && <MobilePopularStories />}
-      {storiesYouFollow && <StoriesYouFollow />}
+
+ 
+      {storiesYouFollow && <StoriesYouFollow storiesYouFollow={storiesYouFollow}  getFollowingRequest={getFollowingRequest}/>}
+
       {(whoToFollow || topWriters) && <WhoToFollow isTopWriters={topWriters} Tag={Tag} />}
       {(popularTopics || relatedTopics) && <PopularTopics isRelatedTopics={relatedTopics} />}
       {popularStories && <PopularStories />}

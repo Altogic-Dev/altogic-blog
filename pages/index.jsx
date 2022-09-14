@@ -34,17 +34,22 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
-
-  const user = useSelector((state) => state.auth.user);
+  const userFromStorage = useSelector((state) => state.auth.user);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
+  const [user, setUser] = useState();
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
-    dispatch(
-      storyActions.getFollowingStoriesRequest({ userId: user._id, page })
-    );
+    if (userFromStorage) {
+      dispatch(
+        storyActions.getFollowingStoriesRequest({
+          userId: userFromStorage._id,
+          page,
+        })
+      );
+    }
   };
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
@@ -68,6 +73,25 @@ export default function Home() {
     }
   };
 
+  const storiesYouFollow = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
+
+  const getFollowingRequest = (page) => {
+    dispatch(
+      followerConnectionActions.getFollowingUsersRequest({
+        userId: _.get(user, '_id'),
+        page,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (storiesYouFollow.length === 0) {
+      getFollowingRequest(1);
+    }
+  }, []);
+
   useEffect(() => {
     getFollowingStories(followingListPage);
   }, [followingListPage]);
@@ -75,6 +99,10 @@ export default function Home() {
   useEffect(() => {
     if (selectedIndex !== 0) getRecommendedStories(recommendedListPage);
   }, [recommendedListPage]);
+
+  useEffect(() => {
+    setUser(userFromStorage);
+  }, [userFromStorage]);
 
   useEffect(() => {
     if (
@@ -100,7 +128,9 @@ export default function Home() {
         })
       );
     }
+    setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
   }, [user]);
+
 
   return (
     <div>
@@ -130,16 +160,6 @@ export default function Home() {
                     }
                   >
                     Your Following
-                    {/* <span
-                      className={classNames(
-                        'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex === 0
-                          ? 'bg-purple-50 text-purple-900'
-                          : ''
-                      )}
-                    >
-                      8
-                    </span> */}
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -158,9 +178,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
-                        {_.map(followingStories, (story) => (
+                        {_.map(followingStories, (story, index) => (
                           <PostCard
-                            key={story._id}
+                            key={story._id + index}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
@@ -206,9 +226,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(recommendedStories) && (
                       <ListObserver onEnd={handleRecommendedEndOfList}>
-                        {_.map(recommendedStories, (story) => (
+                        {_.map(recommendedStories, (story, index) => (
                           <PostCard
-                            key={story._id}
+                            key={story._id + index}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
@@ -253,7 +273,8 @@ export default function Home() {
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
-                storiesYouFollow
+                storiesYouFollow={storiesYouFollow}
+                getFollowingRequest={getFollowingRequest}
                 whoToFollow
                 popularTopics
                 popularStories
@@ -261,7 +282,12 @@ export default function Home() {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar mobilePopularStories storiesYouFollow />
+              <Sidebar
+                mobilePopularStories
+                getFollowingRequest={getFollowingRequest}
+
+                storiesYouFollow={storiesYouFollow}
+              />
             </div>
           </div>
         </div>

@@ -7,8 +7,16 @@ const StoryLikesService = {
     });
   },
 
+  likeNormalize(likeNormalizedBody) {
+    return endpoint.post('/story_likes_normalized/like', likeNormalizedBody);
+  },
+
   unlike(userId, storyId) {
     return endpoint.delete(`/story_like/${userId}/${storyId}`);
+  },
+
+  unlikeNormalize(storyId) {
+    return endpoint.delete(`/story_likes_normalized/${storyId}`);
   },
 
   isLiked(userId, storyId) {
