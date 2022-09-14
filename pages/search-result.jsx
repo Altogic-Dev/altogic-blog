@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import UserCard from '@/components/general/UserCard';
 import { DateTime } from 'luxon';
 import Topic from '@/components/basic/topic';
+import PublicationCard from '@/components/PublicationCard';
 
 export default function SearchResult() {
   const dispatch = useDispatch();
@@ -123,39 +124,17 @@ export default function SearchResult() {
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
                     <ul className="divide-y divide-gray-200">
                       {searchResults?.users.map((people) => (
-                        <UserCard key={people.id} user={people} />
+                        <UserCard key={people._id} user={people} />
                       ))}
                     </ul>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <ul className="divide-y divide-gray-200">
                       {searchResults?.publications.map((publication) => (
-                        <li
-                          key={publication.id}
-                          className="flex items-center justify-between gap-3 py-4"
-                        >
-                          <div className="flex items-center gap-3">
-                            <img
-                              className="w-16 h-16 rounded-full"
-                              src={publication.image}
-                              alt={publication.name}
-                            />
-                            <div className="flex flex-col">
-                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                {publication.name}
-                              </span>
-                              <span className="text-slate-500 text-xs tracking-sm">
-                                {publication.desc}
-                              </span>
-                            </div>
-                          </div>
-                          <a
-                            href={publication.href}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                          >
-                            Follow
-                          </a>
-                        </li>
+                        <PublicationCard
+                          key={publication._id}
+                          publication={publication}
+                        />
                       ))}
                     </ul>
                   </Tab.Panel>
@@ -178,9 +157,11 @@ export default function SearchResult() {
                 topics={searchResults?.topics.slice(0, 5)}
                 peoples={searchResults?.users.slice(0, 5)}
                 stories={searchResults?.stories.slice(0, 5)}
+                publications={searchResults?.publications.slice(0, 5)}
                 popularStories={selectedIndex !== 0}
-                topicMatch={selectedIndex !== 3}
                 peopleMatch={selectedIndex !== 1}
+                publicationsMatch={selectedIndex !== 2}
+                topicMatch={selectedIndex !== 3}
                 query={router.query.search}
               />
             </div>

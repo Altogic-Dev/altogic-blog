@@ -10,6 +10,7 @@ import PublicationProfile from '@/components/sidebar/PublicationProfile';
 import PersonalFullStatistic from '@/components/sidebar/PersonalFullStatistic';
 import PeopleMatch from '@/components/sidebar/PeopleMatch';
 import Footer from './Footer';
+import PublicationMatch from '@/components/sidebar/PublicationMatch';
 
 export default function Sidebar({
   getFollowingRequest,
@@ -33,6 +34,8 @@ export default function Sidebar({
   peoples,
   query,
   stories,
+  publications,
+  publicationsMatch,
 }) {
   return (
     <>
@@ -69,6 +72,9 @@ export default function Sidebar({
       )}
 
       {peopleMatch && <PeopleMatch whoFollows={peoples} query={query} />}
+      {publicationsMatch && (
+        <PublicationMatch publications={publications} query={query} />
+      )}
 
       <Footer />
     </>

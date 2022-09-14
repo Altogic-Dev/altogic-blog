@@ -18,9 +18,11 @@ export default function UserCard({ user }) {
               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
                 {user.name}
               </span>
-              <span className="text-slate-500 text-xs tracking-sm">
-                {parseHtml(user.about)}
-              </span>
+              {user?.about && (
+                <span className="text-slate-500 text-xs tracking-sm">
+                  {parseHtml(user.about)}
+                </span>
+              )}
             </div>
           </div>
         </a>
