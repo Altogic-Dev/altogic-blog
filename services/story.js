@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { db, endpoint } from '@/utils/altogic';
+import { db, endpoint, cache } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -48,7 +48,11 @@ const StoryService = {
   },
 
   getStory(id) {
-    return db.model('story').object(id).get();
+    return db
+      .model('story')
+      .filter(`_id == '${id}'`)
+      .lookup({ field: 'publication' })
+      .get();
   },
 
   getStoryBySlug(storySlug) {
@@ -110,6 +114,9 @@ const StoryService = {
     return endpoint.post(`/reply_comments`, comment);
   },
 
+  createStory(story) {
+    return db.model('story').object(story._id).create(story);
+  },
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },
@@ -123,6 +130,16 @@ const StoryService = {
       updateType: 'set',
       value: newCategoryNames,
     });
+  },
+  cacheStory(story) {
+    return cache.set(`${story.storySlug}`, story, 60 * 15);
+  },
+  getCacheStory(storySlug) {
+    return cache.get(storySlug);
+  },
+
+  publishStory(story) {
+    return endpoint.post('/story', story);
   },
 };
 
