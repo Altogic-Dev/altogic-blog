@@ -12,23 +12,42 @@ import UserCard from '@/components/general/UserCard';
 import { DateTime } from 'luxon';
 import Topic from '@/components/basic/topic';
 import PublicationCard from '@/components/PublicationCard';
+import ListObserver from '@/components/ListObserver';
 
 export default function SearchResult() {
   const dispatch = useDispatch();
   const router = useRouter();
   const searchResults = useSelector((state) => state.general.searchResult);
   const [selectedIndex, setSelectedIndex] = useState(0);
-
+  const [topicLimit, setTopicLimit] = useState(10);
+  const [userLimit, setUserLimit] = useState(10);
+  const [publicationLimit, setPublicationLimit] = useState(10);
+  const [postLimit, setPostLimit] = useState(10);
   useEffect(() => {
     if (router.query.search) {
       dispatch(
         generalActions.searchRequest({
           query: router.query.search,
-          limit: 10,
+          topicLimit,
+          userLimit,
+          publicationLimit,
+          postLimit,
         })
       );
     }
   }, [router.query.search]);
+
+  useEffect(() => {
+    dispatch(
+      generalActions.searchRequest({
+        query: router.query.search,
+        topicLimit,
+        userLimit,
+        publicationLimit,
+        postLimit,
+      })
+    );
+  }, [topicLimit, userLimit, publicationLimit, postLimit]);
 
   return (
     <div>
@@ -101,52 +120,70 @@ export default function SearchResult() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {searchResults?.stories.map((story) => (
-                      <PostCard
-                        key={story._id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={`/${story.username}`}
-                        authorName={story.username}
-                        authorImage={story.userProfilePicture}
-                        storyUrl={`/story/${story.storySlug}`}
-                        timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
-                        title={story.title}
-                        infoText={story.excerpt}
-                        badgeUrl="badgeUrl"
-                        badgeName={story.categoryNames[0]}
-                        min={story.estimatedReadingTime}
-                        images={story.storyImages[0]}
-                        actionMenu
-                      />
-                    ))}
+                    <ListObserver
+                      onEnd={() => setPostLimit((prev) => prev + 10)}
+                    >
+                      {searchResults?.stories.map((story) => (
+                        <PostCard
+                          key={story._id}
+                          noActiveBookmark
+                          normalMenu
+                          authorUrl={`/${story.username}`}
+                          authorName={story.username}
+                          authorImage={story.userProfilePicture}
+                          storyUrl={`/story/${story.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            story.createdAt
+                          ).toRelative()}
+                          title={story.title}
+                          infoText={story.excerpt}
+                          badgeUrl="badgeUrl"
+                          badgeName={story.categoryNames[0]}
+                          min={story.estimatedReadingTime}
+                          images={story.storyImages[0]}
+                          actionMenu
+                        />
+                      ))}
+                    </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
-                    <ul className="divide-y divide-gray-200">
-                      {searchResults?.users.map((people) => (
-                        <UserCard key={people._id} user={people} />
-                      ))}
-                    </ul>
+                    <ListObserver
+                      onEnd={() => setUserLimit((prev) => prev + 10)}
+                    >
+                      <ul className="divide-y divide-gray-200">
+                        {searchResults?.users.map((people) => (
+                          <UserCard key={people._id} user={people} />
+                        ))}
+                      </ul>
+                    </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <ul className="divide-y divide-gray-200">
-                      {searchResults?.publications.map((publication) => (
-                        <PublicationCard
-                          key={publication._id}
-                          publication={publication}
-                        />
-                      ))}
+                      <ListObserver
+                        onEnd={() => setPublicationLimit((prev) => prev + 10)}
+                      >
+                        {searchResults?.publications.map((publication) => (
+                          <PublicationCard
+                            key={publication._id}
+                            publication={publication}
+                          />
+                        ))}
+                      </ListObserver>
                     </ul>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <div className="flex flex-wrap gap-x-4 gap-y-6">
-                      {searchResults?.topics.map((topic) => (
-                        <Topic
-                          key={topic._id}
-                          title={topic.name}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        />
-                      ))}
+                      <ListObserver
+                        onEnd={() => setTopicLimit((prev) => prev + 10)}
+                      >
+                        {searchResults?.topics.map((topic) => (
+                          <Topic
+                            key={topic._id}
+                            title={topic.name}
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                          />
+                        ))}
+                      </ListObserver>
                     </div>
                   </Tab.Panel>
                 </Tab.Panels>

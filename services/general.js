@@ -4,10 +4,13 @@ const GeneralService = {
   getConnectInformationStory(storyId, authorId) {
     return endpoint.get(`/connect-info/${storyId}/${authorId}`);
   },
-  search({ query, limit }) {
+  search({ query, topicLimit, userLimit, publicationLimit, postLimit }) {
     return endpoint.get('search', {
       query,
-      limit,
+      topicLimit,
+      userLimit,
+      publicationLimit,
+      postLimit,
     });
   },
 };

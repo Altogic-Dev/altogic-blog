@@ -26,12 +26,9 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     console.error({ e });
   }
 }
-function* searchSaga({ payload: { query, limit } }) {
+function* searchSaga({ payload }) {
   try {
-    const { data, errors } = yield call(GeneralService.search, {
-      query,
-      limit,
-    });
+    const { data, errors } = yield call(GeneralService.search, payload);
     if (errors) throw errors;
     if (data) {
       yield put(generalActions.searchSuccess(data));
@@ -44,7 +41,10 @@ function* searchPreviewSaga({ payload: { query } }) {
   try {
     const { data, errors } = yield call(GeneralService.search, {
       query,
-      limit: 3,
+      topicLimit: 3,
+      userLimit: 3,
+      publicationLimit: 3,
+      postLimit: 3,
     });
     if (errors) throw errors;
     if (data) {
