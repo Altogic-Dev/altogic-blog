@@ -29,6 +29,7 @@ export default function HeaderMenu() {
   const loading = useSelector((state) => state.general.isLoading);
   const [user, setUser] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [hideMenu, setHideMenu] = useState(false);
   useEffect(() => {
     if (sessionUser) {
       setUser(sessionUser);
@@ -84,7 +85,12 @@ export default function HeaderMenu() {
               </a>
             </Link>
           </div>
-          <Popover.Group as="nav" className="hidden lg:flex gap-1">
+          <Popover.Group
+            as="nav"
+            className={`${
+              !hideMenu ? 'hidden lg:flex' : 'hidden'
+            } gap-1 transition-all duration-1000`}
+          >
             <Link href="/">
               <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
                 <HomeIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
@@ -105,10 +111,19 @@ export default function HeaderMenu() {
               </a>
             </Link>
           </Popover.Group>
-          <div className="flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 lg:w-0 gap-4">
+          <div
+            className={`${
+              !hideMenu && 'lg:w-0'
+            } flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 gap-4`}
+          >
             <div
               className="search"
-              onMouseLeave={() => setShowSuggestions(false)}
+              onMouseLeave={() => {
+                setShowSuggestions(false);
+                setHideMenu(false);
+              }}
+              onMouseOver={() => setHideMenu(true)}
+              onFocus={() => setHideMenu(true)}
             >
               <Search
                 showSuggestions={showSuggestions}

@@ -44,7 +44,7 @@ export default function Suggestion({ suggestions, name, onClick }) {
               aria-hidden="true"
             >
               <li className="hover:cursor-pointer hover:text-slate-300 hover:bg-gray-100">
-                <div className="flex items-center p-2">
+                <div className="flex items-center p-2 w-full">
                   {suggestion.profilePicture || suggestion.storyImages ? (
                     <img
                       src={
@@ -58,8 +58,8 @@ export default function Suggestion({ suggestions, name, onClick }) {
                   ) : (
                     <TagIcon className="w-6 h-6 rounded-full mr-2 text-gray-600" />
                   )}
-                  <div className="ml-2">
-                    <p className="text-sm font-semibold text-slate-500 w-20 inline-block truncate text-start">
+                  <div className="ml-2 w-full text-start">
+                    <p className="text-sm font-semibold text-slate-500 inline-block w-96 truncate">
                       {name === 'Stories' ? suggestion.title : suggestion.name}
                     </p>
                   </div>

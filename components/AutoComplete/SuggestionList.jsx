@@ -11,7 +11,7 @@ export default function SuggestionList({
 }) {
   return (
     <div
-      className="absolute bg-white border border-gray-100 border-t-0 p-4 shadow top-[48.5px] left-0 z-50 duration-1000"
+      className="w-full absolute bg-white border border-gray-100 border-t-0 p-4 shadow top-[48.5px] left-0 z-50 duration-1000"
       id="suggestionList"
     >
       <ul className="suggestions list-none mt-0 overflow-y-auto pl-0 w-full">

@@ -9,8 +9,8 @@ import Profile from '@/components/sidebar/Profile';
 import PublicationProfile from '@/components/sidebar/PublicationProfile';
 import PersonalFullStatistic from '@/components/sidebar/PersonalFullStatistic';
 import PeopleMatch from '@/components/sidebar/PeopleMatch';
-import Footer from './Footer';
 import PublicationMatch from '@/components/sidebar/PublicationMatch';
+import Footer from './Footer';
 
 export default function Sidebar({
   getFollowingRequest,

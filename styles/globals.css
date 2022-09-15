@@ -245,7 +245,7 @@
     transition: 0.3s;
   }
   .search:hover {
-    width: 250px;
+    width: 32rem;
     cursor: pointer;
     border: 1px solid;
     border-color: rgb(209 213 219 / var(--tw-border-opacity));
@@ -253,6 +253,9 @@
   .search:hover .search-input {
     display: block;
   }
+}
+.main-menu {
+  display: none !important;
 }
 * {
   box-sizing: border-box;
