@@ -22,6 +22,7 @@ import ShareButtons from '@/components/ShareButtons';
 import BookmarkLists from '@/components/bookmarks/BookmarkLists';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import Sidebar from '@/layouts/Sidebar';
+import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -71,7 +72,20 @@ export default function BlogDetail() {
       })
     );
   };
-
+  const sendNotification = (type) => {
+    dispatch(
+      notificationsActions.createNotificationRequest({
+        targetId: story._id,
+        targetTitle: story.title,
+        sentUsername: user.username,
+        sentUser: user._id,
+        type,
+        targetSlug: story.slug,
+        sentUserProfilePicture: user.profilePicture,
+        user: story.user,
+      })
+    );
+  };
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -265,172 +279,34 @@ export default function BlogDetail() {
               </div>
               <div className="relative flex flex-col items-center justify-center">
                 <div className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm max-w-full mb-10 sm:mb-24">
-                  <figure>
-                    <img
-                      className="w-full rounded-lg"
-                      src="https://images.unsplash.com/photo-1658195771962-93726079f35b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-                      alt=""
-                    />
-                  </figure>
-                  <h1>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Enim natoque turpis.
-                  </h1>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec ullamcorper mattis lorem non. Ultrices praesent amet
-                    ipsum justo massa. Eu dolor aliquet risus gravida nunc at
-                    feugiat consequat purus. Non massa enim vitae duis mattis.
-                    Vel in ultricies vel fringilla.
-                  </p>
-                  <hr />
-                  <h2>Lorem Ipsum</h2>
-                  <p>
-                    Mi tincidunt elit, id quisque ligula ac diam, amet. Vel
-                    etiam suspendisse morbi eleifend faucibus eget vestibulum
-                    felis. Dictum quis montes, sit sit. Tellus aliquam enim
-                    urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
-                    tellus tincidunt. At feugiat sapien varius id.
-                  </p>
-                  <p>
-                    Eget quis mi enim, leo lacinia pharetra, semper. Eget in
-                    volutpat mollis at volutpat lectus velit, sed auctor.
-                    Porttitor fames arcu quis fusce augue enim. Quis at habitant
-                    diam at. Suscipit tristique risus, at donec. In turpis vel
-                    et quam imperdiet. Ipsum molestie aliquet sodales id est ac
-                    volutpat.{' '}
-                  </p>
-                  <figure>
-                    <img
-                      className="w-full rounded-lg"
-                      src="https://images.unsplash.com/photo-1658195771962-93726079f35b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-                      alt=""
-                    />
-                    <figcaption>
-                      Image courtesy of Katie McBroom via Unsplash
-                    </figcaption>
-                  </figure>
-                  <blockquote>
-                    “In a world older and more complete than ours they move
-                    finished and complete, gifted with extensions of the senses
-                    we have lost or never attained, living by voices we shall
-                    never hear.”
-                  </blockquote>
-                  <p>
-                    Dolor enim eu tortor urna sed duis nulla. Aliquam
-                    vestibulum, nulla odio nisl vitae. In aliquet pellentesque
-                    aenean hac vestibulum turpis mi bibendum diam. Tempor
-                    integer aliquam in vitae malesuada fringilla.
-                  </p>
-                  <p>
-                    Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
-                    imperdiet commodo consectetur convallis risus. Sed
-                    condimentum enim dignissim adipiscing faucibus consequat,
-                    urna. Viverra purus et erat auctor aliquam. Risus, volutpat
-                    vulputate posuere purus sit congue convallis aliquet. Arcu
-                    id augue ut feugiat donec porttitor neque. Mauris, neque
-                    ultricies eu vestibulum, bibendum quam lorem id. Dolor
-                    lacus, eget nunc lectus in tellus, pharetra, porttitor.
-                  </p>
-                  <p>
-                    Ipsum sit mattis nulla quam nulla. Gravida id gravida ac
-                    enim mauris id. Non pellentesque congue eget consectetur
-                    turpis. Sapien, dictum molestie sem tempor. Diam elit, orci,
-                    tincidunt aenean tempus. Quis velit eget ut tortor tellus.
-                    Sed vel, congue felis elit erat nam nibh orci.
-                  </p>
-                  <h2>Diam dui, vel bibendum aliquam in imperdiet mi </h2>
-                  <p>
-                    Mi tincidunt elit, id quisque ligula ac diam, amet. Vel
-                    etiam suspendisse morbi eleifend faucibus eget vestibulum
-                    felis. Dictum quis montes, sit sit. Tellus aliquam enim
-                    urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
-                    tellus tincidunt. At feugiat sapien varius id.
-                  </p>
-                  <h2>Feugiat nibh blandit</h2>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Massa, in eu elit, vel aliquet sed scelerisque. Ante
-                    facilisis adipiscing aliquam egestas nulla. Amet porta odio
-                    leo, consequat, at diam amet in pharetra. Eget facilisis
-                    vitae magna ullamcorper netus sed maecenas.
-                  </p>
-                  <ol>
-                    <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
-                    <li>Nunc sagittis quam vitae fringilla efficitur.</li>
-                    <li>
-                      Sed ullamcorper neque et nisl efficitur, eget molestie
-                      dolor ultrices.
-                    </li>
-                    <li>
-                      Donec luctus ligula sed sapien dapibus tempus ac at velit.
-                    </li>
-                  </ol>
-                  <figure>
-                    <img
-                      className="w-full rounded-lg"
-                      src="https://images.unsplash.com/photo-1658195771962-93726079f35b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-                      alt=""
-                    />
-                    <figcaption>
-                      Image courtesy of Omid Armin via Unsplash
-                    </figcaption>
-                  </figure>
-                  <p>
-                    Dolor enim eu tortor urna sed duis nulla. Aliquam
-                    vestibulum, nulla odio nisl vitae. In aliquet pellentesque
-                    aenean hac vestibulum turpis mi bibendum diam. Tempor
-                    integer aliquam in vitae malesuada fringilla.
-                  </p>
-                  <p>
-                    Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
-                    imperdiet commodo consectetur convallis risus. Sed
-                    condimentum enim dignissim adipiscing faucibus consequat,
-                    urna. Viverra purus et erat auctor aliquam. Risus, volutpat
-                    vulputate posuere purus sit congue convallis aliquet. Arcu
-                    id augue ut feugiat donec porttitor neque. Mauris, neque
-                    ultricies eu vestibulum, bibendum quam lorem id. Dolor
-                    lacus, eget nunc lectus in tellus, pharetra, porttitor.
-                  </p>
-                  <h2>Eu nulla tortor elementum pulvinar eu ipsum.</h2>
-                  <p>
-                    Mi tincidunt elit, id quisque ligula ac diam, amet. Vel
-                    etiam suspendisse morbi eleifend faucibus eget vestibulum
-                    felis. Dictum quis montes, sit sit. Tellus aliquam enim
-                    urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
-                    tellus tincidunt. At feugiat sapien varius id.
-                  </p>
-                  <ul>
-                    <li>Cras scelerisque leo quis molestie consectetur.</li>
-                    <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
-                    <li>
-                      Cras et nibh tincidunt, imperdiet risus non, pretium
-                      purus.
-                    </li>
-                    <li>Ut auctor dolor sed augue viverra ultricies.</li>
-                  </ul>
+                  <article
+                    dangerouslySetInnerHTML={{ __html: story?.content }}
+                  />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 sm:p-2 mb-10 sm:mb-24 w-full">
                   <div className="flex items-center justify-center sm:justify-start gap-4 border-b-8 sm:border-0 border-white">
                     <button
                       type="button"
                       className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-                      onClick={() =>
-                        isLiked
-                          ? dispatch(
-                              storyLikesActions.unlikeStoryRequest({
-                                userId: _.get(user, '_id'),
-                                storyId: _.get(story, '_id'),
-                              })
-                            )
-                          : dispatch(
-                              storyLikesActions.likeStoryRequest({
-                                userId: _.get(user, '_id'),
-                                storyId: _.get(story, '_id'),
-                                categoryNames: _.get(story, 'categoryNames'),
-                              })
-                            )
-                      }
+                      onClick={() => {
+                        if (!isLiked) {
+                          dispatch(
+                            authActions.likeStoryRequest({
+                              userId: _.get(user, '_id'),
+                              storyId: _.get(story, '_id'),
+                            })
+                          );
+                        } else {
+                          dispatch(
+                            authActions.unlikeStoryRequest({
+                              userId: _.get(user, '_id'),
+                              storyId: _.get(story, '_id'),
+                              authorId: _.get(story, 'user._id'),
+                            })
+                          );
+                        }
+                        sendNotification('story_like');
+                      }}
                     >
                       <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
                         <svg
@@ -753,6 +629,7 @@ export default function BlogDetail() {
                                 storyLikesActions.likeStoryRequest({
                                   userId: _.get(user, '_id'),
                                   storyId: _.get(story, '_id'),
+                                  authorId: _.get(story, 'user._id'),
                                   categoryNames: _.get(story, 'categoryNames'),
                                 })
                               )

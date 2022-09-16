@@ -16,7 +16,9 @@ function* likeNormalizeStorySaga(likeNormalizedBody) {
   }
 }
 
-function* likeStorySaga({ payload: { userId, storyId, categoryNames } }) {
+function* likeStorySaga({
+  payload: { userId, storyId, authorId, categoryNames },
+}) {
   try {
     const likeNormalizedBody = _.map(categoryNames, (category) => ({
       topic: category,
@@ -27,6 +29,7 @@ function* likeStorySaga({ payload: { userId, storyId, categoryNames } }) {
       StoryLikesService.like,
       userId,
       storyId,
+      authorId,
       categoryNames
     );
     if (errors) throw errors;

@@ -142,6 +142,9 @@ const StoryService = {
   publishStory(story) {
     return endpoint.post('/story', story);
   },
+  getPopularStories() {
+    return endpoint.get('/story/popular');
+  },
 };
 
 export default StoryService;

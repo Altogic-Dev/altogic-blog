@@ -4,9 +4,11 @@ import { ChatIcon, HeartIcon, XIcon } from '@heroicons/react/outline';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
+import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { storyActions } from '@/redux/story/storySlice';
 import Button from '../basic/button';
 import Avatar from '../profile/Avatar';
+import ListObserver from '../ListObserver';
 
 export default function Replies({ story, slideOvers, setSlideOvers }) {
   const dispatch = useDispatch();
@@ -20,11 +22,12 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const [commentText, setCommentText] = useState([]);
   const [replyText, setReplyText] = useState();
   const [showReplies, setShowReplies] = useState([]);
+  const [replyLimit, setReplyLimit] = useState(10);
   const getReplies = () => {
     dispatch(
       storyActions.getStoryRepliesRequest({
         story: story._id,
-        limit: 10,
+        limit: replyLimit,
         page: 1,
       })
     );
@@ -40,7 +43,20 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const createComment = (comment) => {
     dispatch(storyActions.createReplyCommentRequest(comment));
   };
-
+  const sendNotification = (type) => {
+    dispatch(
+      notificationsActions.createNotificationRequest({
+        targetId: story._id,
+        targetTitle: story.title,
+        sentUsername: user.username,
+        sentUser: user._id,
+        type,
+        targetSlug: story.slug,
+        sentUserProfilePicture: user.profilePicture,
+        user: story.user,
+      })
+    );
+  };
   const getComments = (reply) => {
     getReplyComments(reply._id);
   };
@@ -69,9 +85,11 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       content: replyText,
       likeCount: 0,
       commentCount: 0,
+      reply: story.user,
     };
     createReply(reply);
     setCommentText('');
+    sendNotification('reply');
   };
   const handleComment = (e, reply, index) => {
     e.preventDefault();
@@ -92,11 +110,13 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       temp[index] = '';
       return temp;
     });
+    sendNotification('comment');
   };
 
   useEffect(() => {
     if (story) getReplies();
-  }, [story]);
+  }, [story, replyLimit]);
+
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
@@ -219,7 +239,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                         </div>
                       </form>
                       {/* Slide Over All Responses Post */}
-                      <div>
+                      <ListObserver
+                        onEnd={() => setReplyLimit((prev) => prev + 10)}
+                      >
                         <h2 className="text-slate-800 pb-6 text-lg font-semibold tracking-sm border-b border-gray-200">
                           All Responses ({replyCount})
                         </h2>
@@ -335,7 +357,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                             </li>
                           ))}
                         </ul>
-                      </div>
+                      </ListObserver>
                     </div>
                   </div>
                 </Dialog.Panel>

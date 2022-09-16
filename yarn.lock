@@ -419,6 +419,11 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
+"@tailwindcss/line-clamp@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/line-clamp/-/line-clamp-0.4.2.tgz#f353c5a8ab2c939c6267ac5b907f012e5ee130f9"
+  integrity sha512-HFzAQuqYCjyy/SX9sLGB1lroPzmcnWv1FHkIpmypte10hptf4oPUfucryMKovZh2u0uiS9U5Ty3GghWfEJGwVw==
+
 "@tailwindcss/typography@^0.5.2":
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/@tailwindcss/typography/-/typography-0.5.4.tgz#ad8c9e6808bae297bb7826742e4789f2a9f09a48"
@@ -575,10 +580,10 @@ ajv@^6.10.0, ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-altogic@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/altogic/-/altogic-2.0.1.tgz#c466a64c79d0a9813f87f28a2090ed65b618dac8"
-  integrity sha512-g41sxlE1oi6Jw2m2ogeUbD0YVrLVowaSIctgks6AgKGLrDEL0TfGBycOezTfuiZecrP0/EP9HSY70iZ4hReZ6Q==
+altogic@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/altogic/-/altogic-2.2.2.tgz#58726bac1b26bf78b0f20552296e18a097e1569e"
+  integrity sha512-cCD5qE/yenfOmOA6Kn2QYiC1ahjcekD5WgTshbqjN0BskZNLA6z+Fg5B+2Om5lgnZLlTiUYxXDsnZ7KN93wBow==
   dependencies:
     cross-fetch "^3.1.4"
     socket.io-client "^4.5.1"

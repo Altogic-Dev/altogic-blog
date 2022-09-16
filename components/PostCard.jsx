@@ -29,7 +29,7 @@ export default function PostCard({
 }) {
   const [createNewList, setCreateNewList] = useState(false);
   const [deleteListModal, setDeleteListModal] = useState(false);
-
+  console.log('bookmarkList Post', bookmarkList);
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row items-center gap-4 md:gap-6 py-8 md:py-10">
