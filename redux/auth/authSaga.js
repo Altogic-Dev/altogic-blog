@@ -7,7 +7,6 @@ import { authActions } from './authSlice';
 function* registerSaga({ payload: req }) {
   try {
     const { user, errors } = yield call(AuthService.register, req);
-    debugger;
     if (user) {
       yield put(authActions.registerSuccess(user));
     }
