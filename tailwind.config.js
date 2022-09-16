@@ -21,6 +21,7 @@ module.exports = {
   plugins: [
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
+    require('@tailwindcss/line-clamp'),
     plugin(({ addComponents, theme }) => {
       addComponents({
         '.settingsInput': {

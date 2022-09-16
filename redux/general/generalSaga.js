@@ -5,7 +5,6 @@ import { followerConnectionActions } from '../followerConnection/followerConnect
 import { storyLikesActions } from '../storyLikes/storyLikesSlice';
 import { reportActions } from '../report/reportSlice';
 import { subscribeConnectionActions } from '../subscribeConnection/subscribeConnectionSlice';
-import { isBookmarkedSuccess } from '../bookmarks/bookmarkSlice';
 
 function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
   try {
@@ -18,7 +17,6 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     if (data) {
       yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
       yield put(storyLikesActions.isLikedStorySuccess(data.isStoryLiked));
-      yield put(isBookmarkedSuccess(data.isBookmarked));
       yield put(
         reportActions.getReportedStoryByUserSuccess(data.isStoryReported)
       );
@@ -28,10 +26,40 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     console.error({ e });
   }
 }
+function* searchSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(GeneralService.search, payload);
+    if (errors) throw errors;
+    if (data) {
+      yield put(generalActions.searchSuccess(data));
+    }
+  } catch (e) {
+    yield put(generalActions.searchFailure(e));
+  }
+}
+function* searchPreviewSaga({ payload: { query } }) {
+  try {
+    const { data, errors } = yield call(GeneralService.search, {
+      query,
+      topicLimit: 3,
+      userLimit: 3,
+      publicationLimit: 3,
+      postLimit: 3,
+    });
+    if (errors) throw errors;
+    if (data) {
+      yield put(generalActions.searchPreviewSuccess(data));
+    }
+  } catch (e) {
+    yield put(generalActions.searchPreviewFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield takeEvery(
     generalActions.getConnectInformationStoryRequest.type,
     getConnectInformationStorySaga
   );
+  yield takeEvery(generalActions.searchRequest.type, searchSaga);
+  yield takeEvery(generalActions.searchPreviewRequest.type, searchPreviewSaga);
 }

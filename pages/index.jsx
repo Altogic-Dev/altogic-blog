@@ -87,7 +87,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (storiesYouFollow.length === 0) {
+    if (storiesYouFollow?.length === 0) {
       getFollowingRequest(1);
     }
   }, []);
@@ -130,7 +130,6 @@ export default function Home() {
     }
     setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
   }, [user]);
-
 
   return (
     <div>
@@ -285,7 +284,6 @@ export default function Home() {
               <Sidebar
                 mobilePopularStories
                 getFollowingRequest={getFollowingRequest}
-
                 storiesYouFollow={storiesYouFollow}
               />
             </div>
