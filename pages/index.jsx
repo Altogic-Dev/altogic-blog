@@ -131,7 +131,6 @@ export default function Home() {
     setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
   }, [user]);
 
-
   return (
     <div>
       <Head>
@@ -192,7 +191,6 @@ export default function Home() {
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl="badgeUrl"
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
@@ -240,7 +238,6 @@ export default function Home() {
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl="badgeUrl"
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
@@ -285,7 +282,6 @@ export default function Home() {
               <Sidebar
                 mobilePopularStories
                 getFollowingRequest={getFollowingRequest}
-
                 storiesYouFollow={storiesYouFollow}
               />
             </div>

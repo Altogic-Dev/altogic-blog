@@ -71,7 +71,7 @@ export default function PublishSettings() {
           categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,
         },
-        isEdited,
+        isEdited: isEdited === 'true',
         onSuccess: () => router.push(`/story/${story.storySlug}`),
       })
     );
