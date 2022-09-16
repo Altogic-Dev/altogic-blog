@@ -14,7 +14,6 @@ export default function PostCard({
   draft,
   title,
   infoText,
-  badgeUrl,
   badgeName,
   min,
   actionMenu,
@@ -78,7 +77,7 @@ export default function PostCard({
             </a>
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <a href={badgeUrl}>
+                <a href={`/tag/${badgeName}`}>
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
                     {badgeName}
                   </span>

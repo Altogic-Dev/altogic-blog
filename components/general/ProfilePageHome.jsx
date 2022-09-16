@@ -50,7 +50,6 @@ function ProfilePageHome({ userId, bookmarkLists }) {
           timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
           title={story.title}
           infoText={story.excerpt}
-          badgeUrl="badgeUrl"
           badgeName={_.first(story.categoryNames)}
           min={story.estimatedReadingTime}
           images={_.first(story.storyImages)}
