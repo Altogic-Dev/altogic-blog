@@ -17,13 +17,14 @@ import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import _ from 'lodash';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
+import ListObserver from '@/components/ListObserver';
 
 export default function ListDetail() {
   const [deleteListModal, setDeleteListModal] = useState(false);
   const [editBookmarkList, setEditBookmarkList] = useState(false);
   const [user, setUser] = useState();
   const [stories, setStories] = useState([]);
-
+  const [bookmarkListLimit, setBookmarkListLimit] = useState(10);
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
@@ -39,7 +40,12 @@ export default function ListDetail() {
   }, [sessionUser]);
   useEffect(() => {
     if (bookmarkListSlug) {
-      dispatch(getBookmarkListDetailRequest({ slug: bookmarkListSlug }));
+      dispatch(
+        getBookmarkListDetailRequest({
+          slug: bookmarkListSlug,
+          limit: bookmarkListLimit,
+        })
+      );
     }
   }, [bookmarkListSlug]);
 
@@ -48,6 +54,17 @@ export default function ListDetail() {
       setStories(bookmarks.map((bookmark) => bookmark.story));
     }
   }, [bookmarks]);
+
+  useEffect(() => {
+    if (bookmarkListLimit > 10) {
+      dispatch(
+        getBookmarkListDetailRequest({
+          slug: bookmarkListSlug,
+          limit: bookmarkListLimit,
+        })
+      );
+    }
+  }, [bookmarkListLimit]);
 
   return (
     <div>
@@ -147,24 +164,24 @@ export default function ListDetail() {
                           <Menu.Item>
                             <Button
                               type="button"
-                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                               onClick={() => setEditBookmarkList(true)}
                             >
                               Rename list
                             </Button>
                           </Menu.Item>
                           <Menu.Item>
-                            <button
+                            <Button
                               type="button"
-                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             >
                               Remove items
-                            </button>
+                            </Button>
                           </Menu.Item>
                           <Menu.Item>
                             <Button
                               type="button"
-                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                               onClick={() =>
                                 dispatch(
                                   updateBookmarkListRequest({
@@ -179,13 +196,13 @@ export default function ListDetail() {
                             </Button>
                           </Menu.Item>
                           <Menu.Item>
-                            <button
+                            <Button
                               type="button"
                               onClick={() => setDeleteListModal(true)}
-                              className="flex items-center justify-center w-full px-6 py-3 text-red-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              className="w-full px-6 py-3 text-red-600 text-base tracking-sm transform transition text-start ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             >
                               Delete list
-                            </button>
+                            </Button>
                           </Menu.Item>
                         </Menu.Items>
                       </Transition>
@@ -193,7 +210,10 @@ export default function ListDetail() {
                   </div>
                 )}
               </div>
-              <div>
+
+              <ListObserver
+                onEnd={() => setBookmarkListLimit((prev) => prev + 10)}
+              >
                 {stories.map((post) => (
                   <PostCard
                     key={post.id}
@@ -212,7 +232,7 @@ export default function ListDetail() {
                     images={_.first(post.storyImages)}
                   />
                 ))}
-              </div>
+              </ListObserver>
             </div>
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar following profile editButton />

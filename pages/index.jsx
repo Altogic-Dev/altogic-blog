@@ -63,7 +63,7 @@ export default function Home() {
       setFollowingListPage((prev) => prev + 1);
     }
   };
-
+  console.log('index', bookmarkLists);
   const handleRecommendedEndOfList = () => {
     if (
       _.isNil(recommendedStoriesInfo) ||
@@ -173,6 +173,7 @@ export default function Home() {
                     Recommended
                   </Tab>
                 </Tab.List>
+
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
@@ -196,7 +197,7 @@ export default function Home() {
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
-                            bookmarkLists={bookmarkLists}
+                            bookmarkList={bookmarkLists}
                             story={story}
                             bookmarks={bookmarks}
                             optionButtons={{
