@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { db } from '@/utils/altogic';
+import { db, endpoint, cache } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -8,9 +8,9 @@ const StoryService = {
         const mutedUserQuery = _.map(mutedUsers, (user, index) =>
           index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
         );
-        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
+        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && (${mutedUserQuery})`;
       }
-      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
+      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate';
     };
 
     return db
@@ -27,40 +27,34 @@ const StoryService = {
       .get(true);
   },
 
-  getRecommendedStories(mutedUsers, page = 1, limit = 10) {
-    const query = () => {
-      if (_.isArray(mutedUsers) && !_.isEmpty(mutedUsers)) {
-        const mutedUserQuery = _.map(mutedUsers, (user, index) =>
-          index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
-        );
-        return `!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
-      }
-      return '!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
-    };
+  getRecommendedStories(page = 1, limit = 10) {
+    return endpoint.get('story/recommended', { page, limit });
+  },
 
-    return db
-      .model('story')
-      .filter(query())
-      .sort('createdAt', 'desc')
-      .limit(limit)
-      .page(page)
-      .get(true);
+  GetRecommendedStoriesByUser({
+    recommendedTopics,
+    mutedUsers,
+    page = 1,
+    limit = 10,
+  }) {
+    return endpoint.put('/story/recommendedByUser', {
+      recommendedTopics,
+      mutedUsers,
+      page,
+      limit,
+    });
   },
 
   getStory(id) {
     return db
       .model('story')
-      .filter(`_id == '${id}' && isPublished && !isPrivate`)
-      .lookup({ field: 'user' })
+      .filter(`_id == '${id}'`)
+      .lookup({ field: 'publication' })
       .get();
   },
 
-  getStoryBySlug(slug) {
-    return db
-      .model('story')
-      .filter(`storySlug == '${slug}' && isPublished && !isPrivate`)
-      .lookup({ field: 'user' })
-      .get();
+  getStoryBySlug(storySlug) {
+    return endpoint.get(`/story/bySlug`, { storySlug });
   },
 
   getMoreUserStories(authorId, storyId, page = 1, limit = 5) {
@@ -78,21 +72,78 @@ const StoryService = {
   getUserStories(userId, page = 1, limit = 6) {
     return db
       .model('story')
-      .filter(`user == '${userId}'`)
+      .filter(`user == '${userId}' && !isDeleted && isPublished`)
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
+      .get(true);
+  },
+
+  getUserDraftStories(userId, page = 1, limit = 6) {
+    return db
+      .model('story')
+      .filter(`user == '${userId}' && !isDeleted && !isPublished`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get(true);
+  },
+  getStoryReplies(storyId, page, limit) {
+    return db
+      .model('replies')
+      .filter(`story == '${storyId}'`)
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get(true);
+  },
+  getReplyComments(reply) {
+    return db
+      .model('reply_comments')
+      .filter(`reply == '${reply}'`)
+      .sort('createdAt', 'desc')
       .get();
+  },
+  createReply(reply) {
+    return db.model('replies').create(reply);
+  },
+
+  createReplyComment(comment) {
+    return endpoint.post(`/reply_comments`, comment);
   },
 
   createStory(story) {
-    return db.model('story').create(story);
+    return db.model('story').object(story._id).create(story);
   },
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {
     return db.model('story').object(storyId).delete();
+  },
+
+  updateCategory(storyId, newCategoryNames) {
+    return db.model('story').object(storyId).updateFields({
+      field: 'categoryNames',
+      updateType: 'set',
+      value: newCategoryNames,
+    });
+  },
+  cacheStory(story) {
+    return cache.set(`${story.storySlug}`, story, 60 * 15);
+  },
+  getCacheStory(storySlug) {
+    return cache.get(storySlug);
+  },
+  deleteCacheStory(storySlug) {
+    return cache.delete(storySlug);
+  },
+
+  publishStory(story) {
+    return endpoint.post('/story', story);
+  },
+  getPopularStories() {
+    return endpoint.get('/story/popular');
   },
 };
 

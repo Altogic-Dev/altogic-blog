@@ -9,14 +9,15 @@ import { DateTime } from 'luxon';
 import _ from 'lodash';
 import YourTopics from '@/components/general/YourTopics';
 import ListObserver from '@/components/ListObserver';
-import { authActions } from '../redux/auth/authSlice';
-import Sidebar from '../layouts/Sidebar';
-import PostCard from '../components/PostCard';
-import Layout from '../layouts/Layout';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import { classNames } from '@/utils/utils';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
+import { authActions } from '@/redux/auth/authSlice';
+import Sidebar from '@/layouts/Sidebar';
+import PostCard from '@/components/PostCard';
+import Layout from '@/layouts/Layout';
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -33,13 +34,22 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
+  const userFromStorage = useSelector((state) => state.auth.user);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
-  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
-
+  const [user, setUser] = useState();
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
-    dispatch(storyActions.getFollowingStoriesRequest({ userId, page }));
+    if (userFromStorage) {
+      dispatch(
+        storyActions.getFollowingStoriesRequest({
+          userId: userFromStorage._id,
+          page,
+        })
+      );
+    }
   };
   const getRecommendedStories = (page) => {
     dispatch(storyActions.getRecommendedStoriesRequest({ page }));
@@ -53,7 +63,7 @@ export default function Home() {
       setFollowingListPage((prev) => prev + 1);
     }
   };
-
+  console.log('index', bookmarkLists);
   const handleRecommendedEndOfList = () => {
     if (
       _.isNil(recommendedStoriesInfo) ||
@@ -62,6 +72,25 @@ export default function Home() {
       setRecommendedListPage((prev) => prev + 1);
     }
   };
+
+  const storiesYouFollow = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
+
+  const getFollowingRequest = (page) => {
+    dispatch(
+      followerConnectionActions.getFollowingUsersRequest({
+        userId: _.get(user, '_id'),
+        page,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (storiesYouFollow?.length === 0) {
+      getFollowingRequest(1);
+    }
+  }, []);
 
   useEffect(() => {
     getFollowingStories(followingListPage);
@@ -72,6 +101,10 @@ export default function Home() {
   }, [recommendedListPage]);
 
   useEffect(() => {
+    setUser(userFromStorage);
+  }, [userFromStorage]);
+
+  useEffect(() => {
     if (
       selectedIndex === 1 &&
       _.isNil(recommendedStories) &&
@@ -80,6 +113,23 @@ export default function Home() {
       getRecommendedStories(followingListPage);
     }
   }, [selectedIndex]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+    setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
+  }, [user]);
 
   return (
     <div>
@@ -109,16 +159,6 @@ export default function Home() {
                     }
                   >
                     Your Following
-                    {/* <span
-                      className={classNames(
-                        'inline-flex bg-slate-50 text-slate-500 px-2.5 py-0.5 rounded-full',
-                        selectedIndex === 0
-                          ? 'bg-purple-50 text-purple-900'
-                          : ''
-                      )}
-                    >
-                      8
-                    </span> */}
                   </Tab>
                   <Tab
                     className={({ selected }) =>
@@ -133,13 +173,14 @@ export default function Home() {
                     Recommended
                   </Tab>
                 </Tab.List>
+
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
-                        {_.map(followingStories, (story) => (
+                        {_.map(followingStories, (story, index) => (
                           <PostCard
-                            key={story._id}
+                            key={story._id + index}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
@@ -151,23 +192,25 @@ export default function Home() {
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl="badgeUrl"
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
+                            bookmarkList={bookmarkLists}
+                            story={story}
+                            bookmarks={bookmarks}
                             optionButtons={{
                               unfollow: () =>
                                 dispatch(
                                   followerConnectionActions.unfollowRequest({
-                                    userId,
+                                    userId: user._id,
                                     followingUserId: story.user,
                                   })
                                 ),
                               report: () =>
                                 dispatch(
                                   reportActions.reportStoryRequest({
-                                    userId,
+                                    userId: user._id,
                                     storyId: story._id,
                                     reportedUserId: story.user,
                                   })
@@ -182,9 +225,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(recommendedStories) && (
                       <ListObserver onEnd={handleRecommendedEndOfList}>
-                        {_.map(recommendedStories, (story) => (
+                        {_.map(recommendedStories, (story, index) => (
                           <PostCard
-                            key={story._id}
+                            key={story._id + index}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
@@ -196,11 +239,13 @@ export default function Home() {
                             ).toRelative()}
                             title={story.title}
                             infoText={story.excerpt}
-                            badgeUrl="badgeUrl"
                             badgeName={_.first(story.categoryNames)}
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
+                            bookmarkList={bookmarkLists}
+                            story={story}
+                            bookmarks={bookmarks}
                             optionButtons={{
                               mute: () =>
                                 dispatch(
@@ -209,7 +254,7 @@ export default function Home() {
                               report: () =>
                                 dispatch(
                                   reportActions.reportStoryRequest({
-                                    userId,
+                                    userId: user._id,
                                     storyId: story._id,
                                     reportedUserId: story.user,
                                   })
@@ -226,7 +271,8 @@ export default function Home() {
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
-                storiesYouFollow
+                storiesYouFollow={storiesYouFollow}
+                getFollowingRequest={getFollowingRequest}
                 whoToFollow
                 popularTopics
                 popularStories
@@ -234,7 +280,11 @@ export default function Home() {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar mobilePopularStories storiesYouFollow />
+              <Sidebar
+                mobilePopularStories
+                getFollowingRequest={getFollowingRequest}
+                storiesYouFollow={storiesYouFollow}
+              />
             </div>
           </div>
         </div>

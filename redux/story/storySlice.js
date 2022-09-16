@@ -11,7 +11,12 @@ const initialState = {
   story: null,
   moreUserStories: null,
   userStories: null,
+  userStoriesInfo: null,
+  userDraftStories: null,
+  userDraftStoriesInfo: null,
   isLoading: false,
+  replies: [],
+  replyCount: 0,
 };
 
 // Actual Slice
@@ -51,7 +56,7 @@ export const storySlice = createSlice({
     getStorySuccess(state, action) {
       state.story = action.payload;
     },
-    createStoryRequest(state, action) {
+    createStoryRequest(state) {
       state.isLoading = true;
     },
     createStorySuccess(state, action) {
@@ -62,6 +67,61 @@ export const storySlice = createSlice({
     createStoryFailure(state, action) {
       state.story = null;
       state.error = action.payload;
+      state.isLoading = false;
+    },
+    getStoryRepliesRequest(state) {
+      state.isLoading = true;
+    },
+    getStoryRepliesSuccess(state, action) {
+      state.replies = action.payload.data;
+      state.replyCount = action.payload.info.count;
+      state.isLoading = false;
+    },
+    getStoryRepliesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createReplyRequest(state) {
+      state.isLoading = true;
+    },
+    createReplySuccess(state, action) {
+      state.replies = [action.payload, ...state.replies];
+      state.isLoading = false;
+    },
+    createReplyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createReplyCommentRequest(state) {
+      state.isLoading = true;
+    },
+    createReplyCommentSuccess(state, action) {
+      state.story = action.payload;
+      state.isLoading = false;
+    },
+    createReplyCommentFailure(state, action) {
+      state.story = null;
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getReplyCommentsRequest(state) {
+      state.isLoading = true;
+    },
+    getReplyCommentsSuccess(state, action) {
+      state.replies = state.replies.map((reply) => {
+        if (reply._id === action.payload[0].reply) {
+          return {
+            ...reply,
+            comments: action.payload,
+          };
+        }
+        return reply;
+      });
+      state.isLoading = false;
+    },
+    getReplyCommentsFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
     },
     updateStoryRequest(state) {
       state.isLoading = true;
@@ -72,7 +132,6 @@ export const storySlice = createSlice({
       state.isLoading = false;
     },
     updateStoryFailure(state, action) {
-      state.story = null;
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -93,7 +152,14 @@ export const storySlice = createSlice({
 
     getUserStoriesRequest() {},
     getUserStoriesSuccess(state, action) {
-      state.userStories = action.payload;
+      state.userStories = action.payload.data;
+      state.userStoriesInfo = action.payload.info;
+    },
+
+    getUserDraftStoriesRequest() {},
+    getUserDraftStoriesSuccess(state, action) {
+      state.userDraftStories = action.payload.data;
+      state.userDraftStoriesInfo = action.payload.info;
     },
 
     deleteStoryRequest() {},
@@ -102,6 +168,38 @@ export const storySlice = createSlice({
         state.userStories,
         (story) => story._id === action.payload
       );
+    },
+
+    updateCategoryNamesRequest() {},
+    updateCategoryNamesSuccess(state, action) {
+      state.story = {
+        ...state.story,
+        categoryNames: action.payload,
+      };
+    },
+
+    updateStoryFieldRequest() {},
+    updateStoryFieldSuccess(state, action) {
+      state.story = action.payload;
+    },
+    cacheStoryRequest() {},
+
+    getCacheStoryRequest() {},
+    getCacheStorySuccess(state, action) {
+      state.story = action.payload;
+    },
+
+    publishStoryRequest() {},
+    publishStorySuccess(state) {
+      state.story = null;
+    },
+    publishStoryFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    clearStory(state) {
+      state.story = null;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

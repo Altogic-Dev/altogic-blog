@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { call, takeEvery, put } from 'redux-saga/effects';
 import GeneralService from '@/services/general';
 import { generalActions } from './generalSlice';
@@ -27,10 +26,40 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     console.error({ e });
   }
 }
+function* searchSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(GeneralService.search, payload);
+    if (errors) throw errors;
+    if (data) {
+      yield put(generalActions.searchSuccess(data));
+    }
+  } catch (e) {
+    yield put(generalActions.searchFailure(e));
+  }
+}
+function* searchPreviewSaga({ payload: { query } }) {
+  try {
+    const { data, errors } = yield call(GeneralService.search, {
+      query,
+      topicLimit: 3,
+      userLimit: 3,
+      publicationLimit: 3,
+      postLimit: 3,
+    });
+    if (errors) throw errors;
+    if (data) {
+      yield put(generalActions.searchPreviewSuccess(data));
+    }
+  } catch (e) {
+    yield put(generalActions.searchPreviewFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield takeEvery(
     generalActions.getConnectInformationStoryRequest.type,
     getConnectInformationStorySaga
   );
+  yield takeEvery(generalActions.searchRequest.type, searchSaga);
+  yield takeEvery(generalActions.searchPreviewRequest.type, searchPreviewSaga);
 }

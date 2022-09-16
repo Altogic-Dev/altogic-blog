@@ -1,74 +1,28 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import Head from 'next/head';
-import { Dialog, Menu, Transition, Switch } from '@headlessui/react';
+import { Menu, Transition } from '@headlessui/react';
 import { useRouter } from 'next/router';
-import { XIcon } from '@heroicons/react/outline';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import PostCard from '@/components/PostCard';
-import Layout from '@/layout/Layout';
+import Layout from '@/layouts/Layout';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { authActions } from '@/redux/auth/authSlice';
+import Replies from '@/components/story/Replies';
 import { reportActions } from '@/redux/report/reportSlice';
-import Button from '@/components/basic/button';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import ShareButtons from '@/components/ShareButtons';
-import Sidebar from '../../layout/Sidebar';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
-
-const allResponses = [
-  {
-    id: 0,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 1,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 2,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 3,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-  {
-    id: 4,
-    avatarImage:
-      'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    name: 'Oliva Rhye',
-    description:
-      'Et platea semper hac fames posuere in vivamus eleifend. Odio rhoncus volutpat vitae, egestas at. Amet ac in velit dolor. Egestas nisl urna sed.',
-    timeAgo: '3 days ago',
-  },
-];
+import BookmarkLists from '@/components/bookmarks/BookmarkLists';
+import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
+import Sidebar from '@/layouts/Sidebar';
+import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -86,14 +40,15 @@ export default function BlogDetail() {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
+
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const isReported = useSelector((state) => state.report.isReported);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
   const [createNewList, setCreateNewList] = useState(false);
-  const [enabled, setEnabled] = useState(false);
   const [slideOvers, setSlideOvers] = useState(false);
   const [didMount, setDidMount] = useState(true);
-  const [commentBoxes, setCommentBoxes] = useState([]);
   const [morePage, setMorePage] = useState(1);
 
   const toggleFollow = () => {
@@ -117,7 +72,20 @@ export default function BlogDetail() {
       })
     );
   };
-
+  const sendNotification = (type) => {
+    dispatch(
+      notificationsActions.createNotificationRequest({
+        targetId: story._id,
+        targetTitle: story.title,
+        sentUsername: user.username,
+        sentUser: user._id,
+        type,
+        targetSlug: story.slug,
+        sentUserProfilePicture: user.profilePicture,
+        user: story.user,
+      })
+    );
+  };
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -146,7 +114,21 @@ export default function BlogDetail() {
   useEffect(() => {
     if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
   }, [storySlug]);
-
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: _.get(user, 'username'),
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
   return (
     <div>
       <Head>
@@ -185,7 +167,7 @@ export default function BlogDetail() {
                       >
                         <circle cx={4} cy={4} r={3} />
                       </svg>
-                      <span>2 stories</span>
+                      {/* <span>{_.get(user, 'storyCount')} stories</span> */}
                     </div>
                   </div>
                 </div>
@@ -211,82 +193,12 @@ export default function BlogDetail() {
                           </svg>
                         </Menu.Button>
                       </div>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          <div disabled>
-                            <div className="relative flex items-center justify-between w-full px-6 py-4">
-                              <div className="flex items-start">
-                                <div className="flex items-center h-5">
-                                  <input
-                                    id="private-list"
-                                    name="list"
-                                    type="checkbox"
-                                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                  />
-                                </div>
-                                <div className="ml-3 text-sm">
-                                  <label
-                                    htmlFor="private-list"
-                                    className="text-sm font-medium text-slate-800 tracking-sm"
-                                  >
-                                    Private List
-                                  </label>
-                                </div>
-                              </div>
-                              <div>
-                                <svg
-                                  className="w-6 h-6 text-slate-400"
-                                  viewBox="0 0 24 25"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M16 10.5C16 11.0523 16.4477 11.5 17 11.5C17.5523 11.5 18 11.0523 18 10.5H16ZM6 10.5C6 11.0523 6.44772 11.5 7 11.5C7.55228 11.5 8 11.0523 8 10.5H6ZM13 15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15H13ZM11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17H11ZM5.63803 21.173L5.18404 22.064L5.63803 21.173ZM4.32698 19.862L3.43597 20.316L4.32698 19.862ZM19.673 19.862L20.564 20.316L19.673 19.862ZM18.362 21.173L18.816 22.064L18.362 21.173ZM18.362 10.827L18.816 9.93597L18.362 10.827ZM19.673 12.138L20.564 11.684L19.673 12.138ZM5.63803 10.827L5.18404 9.93597L5.63803 10.827ZM4.32698 12.138L3.43597 11.684L4.32698 12.138ZM16 8.5V10.5H18V8.5H16ZM8 10.5V8.5H6V10.5H8ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H18C18 5.18629 15.3137 2.5 12 2.5V4.5ZM12 2.5C8.68629 2.5 6 5.18629 6 8.5H8C8 6.29086 9.79086 4.5 12 4.5V2.5ZM11 15V17H13V15H11ZM8.8 11.5H15.2V9.5H8.8V11.5ZM19 15.3V16.7H21V15.3H19ZM15.2 20.5H8.8V22.5H15.2V20.5ZM5 16.7V15.3H3V16.7H5ZM8.8 20.5C7.94342 20.5 7.36113 20.4992 6.91104 20.4624C6.47262 20.4266 6.24842 20.3617 6.09202 20.282L5.18404 22.064C5.66937 22.3113 6.18608 22.4099 6.74817 22.4558C7.2986 22.5008 7.97642 22.5 8.8 22.5V20.5ZM3 16.7C3 17.5236 2.99922 18.2014 3.04419 18.7518C3.09012 19.3139 3.18868 19.8306 3.43597 20.316L5.21799 19.408C5.1383 19.2516 5.07337 19.0274 5.03755 18.589C5.00078 18.1389 5 17.5566 5 16.7H3ZM6.09202 20.282C5.7157 20.0903 5.40973 19.7843 5.21799 19.408L3.43597 20.316C3.81947 21.0686 4.43139 21.6805 5.18404 22.064L6.09202 20.282ZM19 16.7C19 17.5566 18.9992 18.1389 18.9624 18.589C18.9266 19.0274 18.8617 19.2516 18.782 19.408L20.564 20.316C20.8113 19.8306 20.9099 19.3139 20.9558 18.7518C21.0008 18.2014 21 17.5236 21 16.7H19ZM15.2 22.5C16.0236 22.5 16.7014 22.5008 17.2518 22.4558C17.8139 22.4099 18.3306 22.3113 18.816 22.064L17.908 20.282C17.7516 20.3617 17.5274 20.4266 17.089 20.4624C16.6389 20.4992 16.0566 20.5 15.2 20.5V22.5ZM18.782 19.408C18.5903 19.7843 18.2843 20.0903 17.908 20.282L18.816 22.064C19.5686 21.6805 20.1805 21.0686 20.564 20.316L18.782 19.408ZM15.2 11.5C16.0566 11.5 16.6389 11.5008 17.089 11.5376C17.5274 11.5734 17.7516 11.6383 17.908 11.718L18.816 9.93597C18.3306 9.68868 17.8139 9.59012 17.2518 9.54419C16.7014 9.49922 16.0236 9.5 15.2 9.5V11.5ZM21 15.3C21 14.4764 21.0008 13.7986 20.9558 13.2482C20.9099 12.6861 20.8113 12.1694 20.564 11.684L18.782 12.592C18.8617 12.7484 18.9266 12.9726 18.9624 13.411C18.9992 13.8611 19 14.4434 19 15.3H21ZM17.908 11.718C18.2843 11.9097 18.5903 12.2157 18.782 12.592L20.564 11.684C20.1805 10.9314 19.5686 10.3195 18.816 9.93597L17.908 11.718ZM8.8 9.5C7.97642 9.5 7.2986 9.49922 6.74817 9.54419C6.18608 9.59012 5.66937 9.68868 5.18404 9.93597L6.09202 11.718C6.24842 11.6383 6.47262 11.5734 6.91104 11.5376C7.36113 11.5008 7.94342 11.5 8.8 11.5V9.5ZM5 15.3C5 14.4434 5.00078 13.8611 5.03755 13.411C5.07337 12.9726 5.1383 12.7484 5.21799 12.592L3.43597 11.684C3.18868 12.1694 3.09012 12.6861 3.04419 13.2482C2.99922 13.7986 3 14.4764 3 15.3H5ZM5.18404 9.93597C4.43139 10.3195 3.81947 10.9314 3.43597 11.684L5.21799 12.592C5.40973 12.2157 5.71569 11.9097 6.09202 11.718L5.18404 9.93597Z"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                              </div>
-                            </div>
-                          </div>
-                          <div disabled>
-                            <div className="relative flex items-center w-full px-6 py-4">
-                              <div className="flex items-center h-5">
-                                <input
-                                  id="public-list"
-                                  name="list"
-                                  type="checkbox"
-                                  className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                />
-                              </div>
-                              <div className="ml-3 text-sm">
-                                <label
-                                  htmlFor="public-list"
-                                  className="text-sm font-medium text-slate-800 tracking-sm"
-                                >
-                                  Public List
-                                </label>
-                              </div>
-                            </div>
-                          </div>
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() => setCreateNewList(true)}
-                              className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
-                            >
-                              Create new list
-                            </button>
-                          </div>
-                        </Menu.Items>
-                      </Transition>
+                      <BookmarkLists
+                        bookmarkLists={bookmarkLists}
+                        setCreateNewList={setCreateNewList}
+                        story={story}
+                        bookmarks={bookmarks}
+                      />
                     </Menu>
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
@@ -367,171 +279,34 @@ export default function BlogDetail() {
               </div>
               <div className="relative flex flex-col items-center justify-center">
                 <div className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm max-w-full mb-10 sm:mb-24">
-                  <figure>
-                    <img
-                      className="w-full rounded-lg"
-                      src="https://images.unsplash.com/photo-1658195771962-93726079f35b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-                      alt=""
-                    />
-                  </figure>
-                  <h1>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Enim natoque turpis.
-                  </h1>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec ullamcorper mattis lorem non. Ultrices praesent amet
-                    ipsum justo massa. Eu dolor aliquet risus gravida nunc at
-                    feugiat consequat purus. Non massa enim vitae duis mattis.
-                    Vel in ultricies vel fringilla.
-                  </p>
-                  <hr />
-                  <h2>Lorem Ipsum</h2>
-                  <p>
-                    Mi tincidunt elit, id quisque ligula ac diam, amet. Vel
-                    etiam suspendisse morbi eleifend faucibus eget vestibulum
-                    felis. Dictum quis montes, sit sit. Tellus aliquam enim
-                    urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
-                    tellus tincidunt. At feugiat sapien varius id.
-                  </p>
-                  <p>
-                    Eget quis mi enim, leo lacinia pharetra, semper. Eget in
-                    volutpat mollis at volutpat lectus velit, sed auctor.
-                    Porttitor fames arcu quis fusce augue enim. Quis at habitant
-                    diam at. Suscipit tristique risus, at donec. In turpis vel
-                    et quam imperdiet. Ipsum molestie aliquet sodales id est ac
-                    volutpat.{' '}
-                  </p>
-                  <figure>
-                    <img
-                      className="w-full rounded-lg"
-                      src="https://images.unsplash.com/photo-1658195771962-93726079f35b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-                      alt=""
-                    />
-                    <figcaption>
-                      Image courtesy of Katie McBroom via Unsplash
-                    </figcaption>
-                  </figure>
-                  <blockquote>
-                    “In a world older and more complete than ours they move
-                    finished and complete, gifted with extensions of the senses
-                    we have lost or never attained, living by voices we shall
-                    never hear.”
-                  </blockquote>
-                  <p>
-                    Dolor enim eu tortor urna sed duis nulla. Aliquam
-                    vestibulum, nulla odio nisl vitae. In aliquet pellentesque
-                    aenean hac vestibulum turpis mi bibendum diam. Tempor
-                    integer aliquam in vitae malesuada fringilla.
-                  </p>
-                  <p>
-                    Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
-                    imperdiet commodo consectetur convallis risus. Sed
-                    condimentum enim dignissim adipiscing faucibus consequat,
-                    urna. Viverra purus et erat auctor aliquam. Risus, volutpat
-                    vulputate posuere purus sit congue convallis aliquet. Arcu
-                    id augue ut feugiat donec porttitor neque. Mauris, neque
-                    ultricies eu vestibulum, bibendum quam lorem id. Dolor
-                    lacus, eget nunc lectus in tellus, pharetra, porttitor.
-                  </p>
-                  <p>
-                    Ipsum sit mattis nulla quam nulla. Gravida id gravida ac
-                    enim mauris id. Non pellentesque congue eget consectetur
-                    turpis. Sapien, dictum molestie sem tempor. Diam elit, orci,
-                    tincidunt aenean tempus. Quis velit eget ut tortor tellus.
-                    Sed vel, congue felis elit erat nam nibh orci.
-                  </p>
-                  <h2>Diam dui, vel bibendum aliquam in imperdiet mi </h2>
-                  <p>
-                    Mi tincidunt elit, id quisque ligula ac diam, amet. Vel
-                    etiam suspendisse morbi eleifend faucibus eget vestibulum
-                    felis. Dictum quis montes, sit sit. Tellus aliquam enim
-                    urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
-                    tellus tincidunt. At feugiat sapien varius id.
-                  </p>
-                  <h2>Feugiat nibh blandit</h2>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Massa, in eu elit, vel aliquet sed scelerisque. Ante
-                    facilisis adipiscing aliquam egestas nulla. Amet porta odio
-                    leo, consequat, at diam amet in pharetra. Eget facilisis
-                    vitae magna ullamcorper netus sed maecenas.
-                  </p>
-                  <ol>
-                    <li>Nunc eleifend tellus eu risus porta sollicitudin.</li>
-                    <li>Nunc sagittis quam vitae fringilla efficitur.</li>
-                    <li>
-                      Sed ullamcorper neque et nisl efficitur, eget molestie
-                      dolor ultrices.
-                    </li>
-                    <li>
-                      Donec luctus ligula sed sapien dapibus tempus ac at velit.
-                    </li>
-                  </ol>
-                  <figure>
-                    <img
-                      className="w-full rounded-lg"
-                      src="https://images.unsplash.com/photo-1658195771962-93726079f35b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80"
-                      alt=""
-                    />
-                    <figcaption>
-                      Image courtesy of Omid Armin via Unsplash
-                    </figcaption>
-                  </figure>
-                  <p>
-                    Dolor enim eu tortor urna sed duis nulla. Aliquam
-                    vestibulum, nulla odio nisl vitae. In aliquet pellentesque
-                    aenean hac vestibulum turpis mi bibendum diam. Tempor
-                    integer aliquam in vitae malesuada fringilla.
-                  </p>
-                  <p>
-                    Elit nisi in eleifend sed nisi. Pulvinar at orci, proin
-                    imperdiet commodo consectetur convallis risus. Sed
-                    condimentum enim dignissim adipiscing faucibus consequat,
-                    urna. Viverra purus et erat auctor aliquam. Risus, volutpat
-                    vulputate posuere purus sit congue convallis aliquet. Arcu
-                    id augue ut feugiat donec porttitor neque. Mauris, neque
-                    ultricies eu vestibulum, bibendum quam lorem id. Dolor
-                    lacus, eget nunc lectus in tellus, pharetra, porttitor.
-                  </p>
-                  <h2>Eu nulla tortor elementum pulvinar eu ipsum.</h2>
-                  <p>
-                    Mi tincidunt elit, id quisque ligula ac diam, amet. Vel
-                    etiam suspendisse morbi eleifend faucibus eget vestibulum
-                    felis. Dictum quis montes, sit sit. Tellus aliquam enim
-                    urna, etiam. Mauris posuere vulputate arcu amet, vitae nisi,
-                    tellus tincidunt. At feugiat sapien varius id.
-                  </p>
-                  <ul>
-                    <li>Cras scelerisque leo quis molestie consectetur.</li>
-                    <li>Donec sed risus eget ex rhoncus fermentum eu id mi.</li>
-                    <li>
-                      Cras et nibh tincidunt, imperdiet risus non, pretium
-                      purus.
-                    </li>
-                    <li>Ut auctor dolor sed augue viverra ultricies.</li>
-                  </ul>
+                  <article
+                    dangerouslySetInnerHTML={{ __html: story?.content }}
+                  />
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 sm:p-2 mb-10 sm:mb-24 w-full">
                   <div className="flex items-center justify-center sm:justify-start gap-4 border-b-8 sm:border-0 border-white">
                     <button
                       type="button"
                       className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-                      onClick={() =>
-                        isLiked
-                          ? dispatch(
-                              storyLikesActions.unlikeStoryRequest({
-                                userId: _.get(user, '_id'),
-                                storyId: _.get(story, '_id'),
-                              })
-                            )
-                          : dispatch(
-                              storyLikesActions.likeStoryRequest({
-                                userId: _.get(user, '_id'),
-                                storyId: _.get(story, '_id'),
-                              })
-                            )
-                      }
+                      onClick={() => {
+                        if (!isLiked) {
+                          dispatch(
+                            authActions.likeStoryRequest({
+                              userId: _.get(user, '_id'),
+                              storyId: _.get(story, '_id'),
+                            })
+                          );
+                        } else {
+                          dispatch(
+                            authActions.unlikeStoryRequest({
+                              userId: _.get(user, '_id'),
+                              storyId: _.get(story, '_id'),
+                              authorId: _.get(story, 'user._id'),
+                            })
+                          );
+                        }
+                        sendNotification('story_like');
+                      }}
                     >
                       <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
                         <svg
@@ -549,25 +324,27 @@ export default function BlogDetail() {
                       </span>
                       {_.get(story, 'likeCount')}
                     </button>
-                    <button
-                      type="button"
-                      className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-                    >
-                      <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
-                        <svg
-                          className="w-6 h-6 text-slate-400 group-hover:text-slate-700"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M19 22L18.4292 22.8211C18.7348 23.0336 19.1333 23.0587 19.4632 22.8862C19.7932 22.7138 20 22.3723 20 22H19ZM19 19.9143V18.9143C18.4477 18.9143 18 19.362 18 19.9143H19ZM15.7356 19.9474L15.9168 18.964L15.7356 19.9474ZM16.8236 20.4869L16.2528 21.3079L16.8236 20.4869ZM16.1982 20.0924L15.7856 21.0034L16.1982 20.0924ZM10.218 18.8223L11.109 18.3683L10.218 18.8223ZM11.092 19.6963L11.546 18.8053L11.092 19.6963ZM11.092 11.218L11.546 12.109L11.092 11.218ZM10.218 12.092L11.109 12.546L10.218 12.092ZM21.8478 18.6797L20.9239 18.297L21.8478 18.6797ZM20.908 11.218L20.454 12.109L20.908 11.218ZM21.782 12.092L20.891 12.546L21.782 12.092ZM10.7115 15.7027C11.0996 15.3098 11.0956 14.6766 10.7027 14.2885C10.3098 13.9004 9.67661 13.9044 9.28852 14.2973L10.7115 15.7027ZM6.92474 18.1137L6.21326 17.411L6.92474 18.1137ZM18 11C18 11.5523 18.4477 12 19 12C19.5523 12 20 11.5523 20 11H18ZM5.67596 18.6076L6.43515 17.9568L6.43515 17.9568L5.67596 18.6076ZM6.09695 18.7805L6.01416 17.7839L6.01415 17.7839L6.09695 18.7805ZM2.03168 12.4348L1.04223 12.5797L2.03168 12.4348ZM17.362 2.32698L17.816 1.43597V1.43597L17.362 2.32698ZM18.673 3.63803L19.564 3.18404V3.18404L18.673 3.63803ZM3.63803 2.32698L4.09202 3.21799L3.63803 2.32698ZM2.32698 3.63803L3.21799 4.09202L2.32698 3.63803ZM18.8 10H13.2V12H18.8V10ZM9 14.2V16.7143H11V14.2H9ZM13.2 20.9143H14.9969V18.9143H13.2V20.9143ZM16.2528 21.3079L18.4292 22.8211L19.5708 21.1789L17.3944 19.6658L16.2528 21.3079ZM23 16.9143V14.2H21V16.9143H23ZM20 22V19.9143H18V22H20ZM14.9969 20.9143C15.4052 20.9143 15.4851 20.9181 15.5543 20.9308L15.9168 18.964C15.6265 18.9105 15.3339 18.9143 14.9969 18.9143V20.9143ZM17.3944 19.6658C17.1178 19.4735 16.8797 19.3033 16.6108 19.1815L15.7856 21.0034C15.8497 21.0324 15.9175 21.0749 16.2528 21.3079L17.3944 19.6658ZM15.5543 20.9308C15.6341 20.9455 15.7118 20.9699 15.7856 21.0034L16.6108 19.1815C16.3891 19.0811 16.1561 19.0081 15.9168 18.964L15.5543 20.9308ZM9 16.7143C9 17.2578 8.99922 17.7256 9.03057 18.1093C9.06287 18.5047 9.13419 18.8979 9.32698 19.2763L11.109 18.3683C11.0838 18.3188 11.0461 18.2181 11.0239 17.9465C11.0008 17.6631 11 17.2908 11 16.7143H9ZM13.2 18.9143C12.6234 18.9143 12.2512 18.9135 11.9678 18.8904C11.6962 18.8682 11.5955 18.8305 11.546 18.8053L10.638 20.5873C11.0164 20.7801 11.4096 20.8514 11.805 20.8837C12.1886 20.9151 12.6564 20.9143 13.2 20.9143V18.9143ZM9.32698 19.2763C9.6146 19.8407 10.0735 20.2997 10.638 20.5873L11.546 18.8053C11.3578 18.7094 11.2049 18.5564 11.109 18.3683L9.32698 19.2763ZM13.2 10C12.6564 10 12.1886 9.99922 11.805 10.0306C11.4096 10.0629 11.0164 10.1342 10.638 10.327L11.546 12.109C11.5955 12.0838 11.6962 12.0461 11.9678 12.0239C12.2512 12.0008 12.6234 12 13.2 12V10ZM11 14.2C11 13.6234 11.0008 13.2512 11.0239 12.9678C11.0461 12.6962 11.0838 12.5955 11.109 12.546L9.32698 11.638C9.13419 12.0164 9.06287 12.4096 9.03057 12.805C8.99922 13.1886 9 13.6564 9 14.2H11ZM10.638 10.327C10.0735 10.6146 9.6146 11.0735 9.32698 11.638L11.109 12.546C11.2049 12.3578 11.3578 12.2049 11.546 12.109L10.638 10.327ZM21 16.9143C21 17.3939 20.9995 17.7035 20.9833 17.9405C20.9677 18.1685 20.9411 18.2554 20.9239 18.297L22.7716 19.0623C22.9066 18.7364 22.9561 18.4065 22.9787 18.0767C23.0005 17.7558 23 17.3665 23 16.9143H21ZM19 20.9143C19.4523 20.9143 19.8415 20.9148 20.1624 20.8929C20.4922 20.8704 20.8221 20.8209 21.1481 20.6859L20.3827 18.8382C20.3411 18.8554 20.2542 18.882 20.0262 18.8976C19.7893 18.9137 19.4796 18.9143 19 18.9143V20.9143ZM20.9239 18.297C20.8224 18.542 20.6277 18.7367 20.3827 18.8382L21.1481 20.6859C21.8831 20.3814 22.4672 19.7974 22.7716 19.0623L20.9239 18.297ZM18.8 12C19.3766 12 19.7488 12.0008 20.0322 12.0239C20.3038 12.0461 20.4045 12.0838 20.454 12.109L21.362 10.327C20.9836 10.1342 20.5904 10.0629 20.195 10.0306C19.8114 9.99922 19.3436 10 18.8 10V12ZM23 14.2C23 13.6564 23.0008 13.1886 22.9694 12.805C22.9371 12.4096 22.8658 12.0164 22.673 11.638L20.891 12.546C20.9162 12.5955 20.9539 12.6962 20.9761 12.9678C20.9992 13.2512 21 13.6234 21 14.2H23ZM20.454 12.109C20.6422 12.2049 20.7951 12.3578 20.891 12.546L22.673 11.638C22.3854 11.0735 21.9265 10.6146 21.362 10.327L20.454 12.109ZM6.8 3H14.2V1H6.8V3ZM3 11.4444V6.8H1V11.4444H3ZM6.55556 17.5515V15.9916H4.55556V17.5515H6.55556ZM9.28852 14.2973L6.21326 17.411L7.63623 18.8164L10.7115 15.7027L9.28852 14.2973ZM18 6.8V11H20V6.8H18ZM4.55556 17.5515C4.55556 17.837 4.55461 18.1191 4.57449 18.3439C4.59139 18.5349 4.63564 18.9306 4.91677 19.2585L6.43515 17.9568C6.52357 18.0599 6.55632 18.1549 6.56616 18.1886C6.57498 18.2187 6.57138 18.2204 6.56672 18.1677C6.56232 18.118 6.55905 18.046 6.55731 17.9382C6.55558 17.8313 6.55556 17.7066 6.55556 17.5515H4.55556ZM6.21326 17.411C6.10432 17.5213 6.01666 17.61 5.9403 17.6849C5.8633 17.7604 5.81036 17.8093 5.77231 17.8416C5.73198 17.8758 5.7306 17.872 5.75808 17.8568C5.78873 17.8397 5.87877 17.7952 6.01416 17.7839L6.17975 19.7771C6.61018 19.7413 6.91969 19.4909 7.06593 19.3669C7.23809 19.2209 7.43564 19.0195 7.63623 18.8164L6.21326 17.411ZM4.91676 19.2585C5.23013 19.624 5.69992 19.8169 6.17975 19.7771L6.01415 17.7839C6.1741 17.7706 6.3307 17.8349 6.43515 17.9568L4.91676 19.2585ZM1 11.4444C1 11.9252 0.997339 12.2732 1.04223 12.5797L3.02112 12.2899C3.00266 12.1639 3 11.9959 3 11.4444H1ZM1.04223 12.5797C1.29837 14.3283 2.67166 15.7016 4.42027 15.9578L4.71014 13.9789C3.83583 13.8508 3.14918 13.1642 3.02112 12.2899L1.04223 12.5797ZM14.2 3C15.0566 3 15.6389 3.00078 16.089 3.03755C16.5274 3.07337 16.7516 3.1383 16.908 3.21799L17.816 1.43597C17.3306 1.18868 16.8139 1.09012 16.2518 1.04419C15.7014 0.999222 15.0236 1 14.2 1V3ZM20 6.8C20 5.97642 20.0008 5.2986 19.9558 4.74817C19.9099 4.18608 19.8113 3.66937 19.564 3.18404L17.782 4.09202C17.8617 4.24842 17.9266 4.47262 17.9624 4.91104C17.9992 5.36113 18 5.94342 18 6.8H20ZM16.908 3.21799C17.2843 3.40973 17.5903 3.71569 17.782 4.09202L19.564 3.18404C19.1805 2.43139 18.5686 1.81947 17.816 1.43597L16.908 3.21799ZM6.8 1C5.97642 1 5.2986 0.999222 4.74817 1.04419C4.18608 1.09012 3.66937 1.18868 3.18404 1.43597L4.09202 3.21799C4.24842 3.1383 4.47262 3.07337 4.91104 3.03755C5.36113 3.00078 5.94342 3 6.8 3V1ZM3 6.8C3 5.94342 3.00078 5.36113 3.03755 4.91104C3.07337 4.47262 3.1383 4.24842 3.21799 4.09202L1.43597 3.18404C1.18868 3.66937 1.09012 4.18608 1.04419 4.74817C0.999222 5.2986 1 5.97642 1 6.8H3ZM3.18404 1.43597C2.43139 1.81947 1.81947 2.43139 1.43597 3.18404L3.21799 4.09202C3.40973 3.71569 3.71569 3.40973 4.09202 3.21799L3.18404 1.43597ZM6.55556 15.9916C6.55556 14.8142 5.59828 14.109 4.71014 13.9789L4.42027 15.9578C4.50012 15.9695 4.54639 16.0016 4.56126 16.0162C4.56721 16.0221 4.56476 16.0216 4.56092 16.0128C4.5591 16.0086 4.55758 16.004 4.55659 15.9993C4.55613 15.997 4.55585 15.9952 4.5557 15.9937C4.55555 15.9923 4.55556 15.9915 4.55556 15.9916H6.55556Z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                      </span>
-                      33
-                    </button>
+                    {!_.get(story, 'isRestrictedComments') && (
+                      <button
+                        type="button"
+                        className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
+                      >
+                        <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
+                          <svg
+                            className="w-6 h-6 text-slate-400 group-hover:text-slate-700"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M19 22L18.4292 22.8211C18.7348 23.0336 19.1333 23.0587 19.4632 22.8862C19.7932 22.7138 20 22.3723 20 22H19ZM19 19.9143V18.9143C18.4477 18.9143 18 19.362 18 19.9143H19ZM15.7356 19.9474L15.9168 18.964L15.7356 19.9474ZM16.8236 20.4869L16.2528 21.3079L16.8236 20.4869ZM16.1982 20.0924L15.7856 21.0034L16.1982 20.0924ZM10.218 18.8223L11.109 18.3683L10.218 18.8223ZM11.092 19.6963L11.546 18.8053L11.092 19.6963ZM11.092 11.218L11.546 12.109L11.092 11.218ZM10.218 12.092L11.109 12.546L10.218 12.092ZM21.8478 18.6797L20.9239 18.297L21.8478 18.6797ZM20.908 11.218L20.454 12.109L20.908 11.218ZM21.782 12.092L20.891 12.546L21.782 12.092ZM10.7115 15.7027C11.0996 15.3098 11.0956 14.6766 10.7027 14.2885C10.3098 13.9004 9.67661 13.9044 9.28852 14.2973L10.7115 15.7027ZM6.92474 18.1137L6.21326 17.411L6.92474 18.1137ZM18 11C18 11.5523 18.4477 12 19 12C19.5523 12 20 11.5523 20 11H18ZM5.67596 18.6076L6.43515 17.9568L6.43515 17.9568L5.67596 18.6076ZM6.09695 18.7805L6.01416 17.7839L6.01415 17.7839L6.09695 18.7805ZM2.03168 12.4348L1.04223 12.5797L2.03168 12.4348ZM17.362 2.32698L17.816 1.43597V1.43597L17.362 2.32698ZM18.673 3.63803L19.564 3.18404V3.18404L18.673 3.63803ZM3.63803 2.32698L4.09202 3.21799L3.63803 2.32698ZM2.32698 3.63803L3.21799 4.09202L2.32698 3.63803ZM18.8 10H13.2V12H18.8V10ZM9 14.2V16.7143H11V14.2H9ZM13.2 20.9143H14.9969V18.9143H13.2V20.9143ZM16.2528 21.3079L18.4292 22.8211L19.5708 21.1789L17.3944 19.6658L16.2528 21.3079ZM23 16.9143V14.2H21V16.9143H23ZM20 22V19.9143H18V22H20ZM14.9969 20.9143C15.4052 20.9143 15.4851 20.9181 15.5543 20.9308L15.9168 18.964C15.6265 18.9105 15.3339 18.9143 14.9969 18.9143V20.9143ZM17.3944 19.6658C17.1178 19.4735 16.8797 19.3033 16.6108 19.1815L15.7856 21.0034C15.8497 21.0324 15.9175 21.0749 16.2528 21.3079L17.3944 19.6658ZM15.5543 20.9308C15.6341 20.9455 15.7118 20.9699 15.7856 21.0034L16.6108 19.1815C16.3891 19.0811 16.1561 19.0081 15.9168 18.964L15.5543 20.9308ZM9 16.7143C9 17.2578 8.99922 17.7256 9.03057 18.1093C9.06287 18.5047 9.13419 18.8979 9.32698 19.2763L11.109 18.3683C11.0838 18.3188 11.0461 18.2181 11.0239 17.9465C11.0008 17.6631 11 17.2908 11 16.7143H9ZM13.2 18.9143C12.6234 18.9143 12.2512 18.9135 11.9678 18.8904C11.6962 18.8682 11.5955 18.8305 11.546 18.8053L10.638 20.5873C11.0164 20.7801 11.4096 20.8514 11.805 20.8837C12.1886 20.9151 12.6564 20.9143 13.2 20.9143V18.9143ZM9.32698 19.2763C9.6146 19.8407 10.0735 20.2997 10.638 20.5873L11.546 18.8053C11.3578 18.7094 11.2049 18.5564 11.109 18.3683L9.32698 19.2763ZM13.2 10C12.6564 10 12.1886 9.99922 11.805 10.0306C11.4096 10.0629 11.0164 10.1342 10.638 10.327L11.546 12.109C11.5955 12.0838 11.6962 12.0461 11.9678 12.0239C12.2512 12.0008 12.6234 12 13.2 12V10ZM11 14.2C11 13.6234 11.0008 13.2512 11.0239 12.9678C11.0461 12.6962 11.0838 12.5955 11.109 12.546L9.32698 11.638C9.13419 12.0164 9.06287 12.4096 9.03057 12.805C8.99922 13.1886 9 13.6564 9 14.2H11ZM10.638 10.327C10.0735 10.6146 9.6146 11.0735 9.32698 11.638L11.109 12.546C11.2049 12.3578 11.3578 12.2049 11.546 12.109L10.638 10.327ZM21 16.9143C21 17.3939 20.9995 17.7035 20.9833 17.9405C20.9677 18.1685 20.9411 18.2554 20.9239 18.297L22.7716 19.0623C22.9066 18.7364 22.9561 18.4065 22.9787 18.0767C23.0005 17.7558 23 17.3665 23 16.9143H21ZM19 20.9143C19.4523 20.9143 19.8415 20.9148 20.1624 20.8929C20.4922 20.8704 20.8221 20.8209 21.1481 20.6859L20.3827 18.8382C20.3411 18.8554 20.2542 18.882 20.0262 18.8976C19.7893 18.9137 19.4796 18.9143 19 18.9143V20.9143ZM20.9239 18.297C20.8224 18.542 20.6277 18.7367 20.3827 18.8382L21.1481 20.6859C21.8831 20.3814 22.4672 19.7974 22.7716 19.0623L20.9239 18.297ZM18.8 12C19.3766 12 19.7488 12.0008 20.0322 12.0239C20.3038 12.0461 20.4045 12.0838 20.454 12.109L21.362 10.327C20.9836 10.1342 20.5904 10.0629 20.195 10.0306C19.8114 9.99922 19.3436 10 18.8 10V12ZM23 14.2C23 13.6564 23.0008 13.1886 22.9694 12.805C22.9371 12.4096 22.8658 12.0164 22.673 11.638L20.891 12.546C20.9162 12.5955 20.9539 12.6962 20.9761 12.9678C20.9992 13.2512 21 13.6234 21 14.2H23ZM20.454 12.109C20.6422 12.2049 20.7951 12.3578 20.891 12.546L22.673 11.638C22.3854 11.0735 21.9265 10.6146 21.362 10.327L20.454 12.109ZM6.8 3H14.2V1H6.8V3ZM3 11.4444V6.8H1V11.4444H3ZM6.55556 17.5515V15.9916H4.55556V17.5515H6.55556ZM9.28852 14.2973L6.21326 17.411L7.63623 18.8164L10.7115 15.7027L9.28852 14.2973ZM18 6.8V11H20V6.8H18ZM4.55556 17.5515C4.55556 17.837 4.55461 18.1191 4.57449 18.3439C4.59139 18.5349 4.63564 18.9306 4.91677 19.2585L6.43515 17.9568C6.52357 18.0599 6.55632 18.1549 6.56616 18.1886C6.57498 18.2187 6.57138 18.2204 6.56672 18.1677C6.56232 18.118 6.55905 18.046 6.55731 17.9382C6.55558 17.8313 6.55556 17.7066 6.55556 17.5515H4.55556ZM6.21326 17.411C6.10432 17.5213 6.01666 17.61 5.9403 17.6849C5.8633 17.7604 5.81036 17.8093 5.77231 17.8416C5.73198 17.8758 5.7306 17.872 5.75808 17.8568C5.78873 17.8397 5.87877 17.7952 6.01416 17.7839L6.17975 19.7771C6.61018 19.7413 6.91969 19.4909 7.06593 19.3669C7.23809 19.2209 7.43564 19.0195 7.63623 18.8164L6.21326 17.411ZM4.91676 19.2585C5.23013 19.624 5.69992 19.8169 6.17975 19.7771L6.01415 17.7839C6.1741 17.7706 6.3307 17.8349 6.43515 17.9568L4.91676 19.2585ZM1 11.4444C1 11.9252 0.997339 12.2732 1.04223 12.5797L3.02112 12.2899C3.00266 12.1639 3 11.9959 3 11.4444H1ZM1.04223 12.5797C1.29837 14.3283 2.67166 15.7016 4.42027 15.9578L4.71014 13.9789C3.83583 13.8508 3.14918 13.1642 3.02112 12.2899L1.04223 12.5797ZM14.2 3C15.0566 3 15.6389 3.00078 16.089 3.03755C16.5274 3.07337 16.7516 3.1383 16.908 3.21799L17.816 1.43597C17.3306 1.18868 16.8139 1.09012 16.2518 1.04419C15.7014 0.999222 15.0236 1 14.2 1V3ZM20 6.8C20 5.97642 20.0008 5.2986 19.9558 4.74817C19.9099 4.18608 19.8113 3.66937 19.564 3.18404L17.782 4.09202C17.8617 4.24842 17.9266 4.47262 17.9624 4.91104C17.9992 5.36113 18 5.94342 18 6.8H20ZM16.908 3.21799C17.2843 3.40973 17.5903 3.71569 17.782 4.09202L19.564 3.18404C19.1805 2.43139 18.5686 1.81947 17.816 1.43597L16.908 3.21799ZM6.8 1C5.97642 1 5.2986 0.999222 4.74817 1.04419C4.18608 1.09012 3.66937 1.18868 3.18404 1.43597L4.09202 3.21799C4.24842 3.1383 4.47262 3.07337 4.91104 3.03755C5.36113 3.00078 5.94342 3 6.8 3V1ZM3 6.8C3 5.94342 3.00078 5.36113 3.03755 4.91104C3.07337 4.47262 3.1383 4.24842 3.21799 4.09202L1.43597 3.18404C1.18868 3.66937 1.09012 4.18608 1.04419 4.74817C0.999222 5.2986 1 5.97642 1 6.8H3ZM3.18404 1.43597C2.43139 1.81947 1.81947 2.43139 1.43597 3.18404L3.21799 4.09202C3.40973 3.71569 3.71569 3.40973 4.09202 3.21799L3.18404 1.43597ZM6.55556 15.9916C6.55556 14.8142 5.59828 14.109 4.71014 13.9789L4.42027 15.9578C4.50012 15.9695 4.54639 16.0016 4.56126 16.0162C4.56721 16.0221 4.56476 16.0216 4.56092 16.0128C4.5591 16.0086 4.55758 16.004 4.55659 15.9993C4.55613 15.997 4.55585 15.9952 4.5557 15.9937C4.55555 15.9923 4.55556 15.9915 4.55556 15.9916H6.55556Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </span>
+                        {_.get(story, 'commentCount')}
+                      </button>
+                    )}
                   </div>
                   <div className="flex items-center justify-center gap-6 bg-white sm:bg-transparent border-y sm:border-0 border-gray-200">
                     <ul className="flex items-center">
@@ -670,82 +447,12 @@ export default function BlogDetail() {
                             </svg>
                           </Menu.Button>
                         </div>
-                        <Transition
-                          as={Fragment}
-                          enter="transition ease-out duration-100"
-                          enterFrom="transform opacity-0 scale-95"
-                          enterTo="transform opacity-100 scale-100"
-                          leave="transition ease-in duration-75"
-                          leaveFrom="transform opacity-100 scale-100"
-                          leaveTo="transform opacity-0 scale-95"
-                        >
-                          <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                            <div disabled>
-                              <div className="relative flex items-center justify-between w-full px-6 py-4">
-                                <div className="flex items-start">
-                                  <div className="flex items-center h-5">
-                                    <input
-                                      id="private-list"
-                                      name="list"
-                                      type="checkbox"
-                                      className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                    />
-                                  </div>
-                                  <div className="ml-3 text-sm">
-                                    <label
-                                      htmlFor="private-list"
-                                      className="text-sm font-medium text-slate-800 tracking-sm"
-                                    >
-                                      Private List
-                                    </label>
-                                  </div>
-                                </div>
-                                <div>
-                                  <svg
-                                    className="w-6 h-6 text-slate-400"
-                                    viewBox="0 0 24 25"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                    <path
-                                      d="M16 10.5C16 11.0523 16.4477 11.5 17 11.5C17.5523 11.5 18 11.0523 18 10.5H16ZM6 10.5C6 11.0523 6.44772 11.5 7 11.5C7.55228 11.5 8 11.0523 8 10.5H6ZM13 15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15H13ZM11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17H11ZM5.63803 21.173L5.18404 22.064L5.63803 21.173ZM4.32698 19.862L3.43597 20.316L4.32698 19.862ZM19.673 19.862L20.564 20.316L19.673 19.862ZM18.362 21.173L18.816 22.064L18.362 21.173ZM18.362 10.827L18.816 9.93597L18.362 10.827ZM19.673 12.138L20.564 11.684L19.673 12.138ZM5.63803 10.827L5.18404 9.93597L5.63803 10.827ZM4.32698 12.138L3.43597 11.684L4.32698 12.138ZM16 8.5V10.5H18V8.5H16ZM8 10.5V8.5H6V10.5H8ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H18C18 5.18629 15.3137 2.5 12 2.5V4.5ZM12 2.5C8.68629 2.5 6 5.18629 6 8.5H8C8 6.29086 9.79086 4.5 12 4.5V2.5ZM11 15V17H13V15H11ZM8.8 11.5H15.2V9.5H8.8V11.5ZM19 15.3V16.7H21V15.3H19ZM15.2 20.5H8.8V22.5H15.2V20.5ZM5 16.7V15.3H3V16.7H5ZM8.8 20.5C7.94342 20.5 7.36113 20.4992 6.91104 20.4624C6.47262 20.4266 6.24842 20.3617 6.09202 20.282L5.18404 22.064C5.66937 22.3113 6.18608 22.4099 6.74817 22.4558C7.2986 22.5008 7.97642 22.5 8.8 22.5V20.5ZM3 16.7C3 17.5236 2.99922 18.2014 3.04419 18.7518C3.09012 19.3139 3.18868 19.8306 3.43597 20.316L5.21799 19.408C5.1383 19.2516 5.07337 19.0274 5.03755 18.589C5.00078 18.1389 5 17.5566 5 16.7H3ZM6.09202 20.282C5.7157 20.0903 5.40973 19.7843 5.21799 19.408L3.43597 20.316C3.81947 21.0686 4.43139 21.6805 5.18404 22.064L6.09202 20.282ZM19 16.7C19 17.5566 18.9992 18.1389 18.9624 18.589C18.9266 19.0274 18.8617 19.2516 18.782 19.408L20.564 20.316C20.8113 19.8306 20.9099 19.3139 20.9558 18.7518C21.0008 18.2014 21 17.5236 21 16.7H19ZM15.2 22.5C16.0236 22.5 16.7014 22.5008 17.2518 22.4558C17.8139 22.4099 18.3306 22.3113 18.816 22.064L17.908 20.282C17.7516 20.3617 17.5274 20.4266 17.089 20.4624C16.6389 20.4992 16.0566 20.5 15.2 20.5V22.5ZM18.782 19.408C18.5903 19.7843 18.2843 20.0903 17.908 20.282L18.816 22.064C19.5686 21.6805 20.1805 21.0686 20.564 20.316L18.782 19.408ZM15.2 11.5C16.0566 11.5 16.6389 11.5008 17.089 11.5376C17.5274 11.5734 17.7516 11.6383 17.908 11.718L18.816 9.93597C18.3306 9.68868 17.8139 9.59012 17.2518 9.54419C16.7014 9.49922 16.0236 9.5 15.2 9.5V11.5ZM21 15.3C21 14.4764 21.0008 13.7986 20.9558 13.2482C20.9099 12.6861 20.8113 12.1694 20.564 11.684L18.782 12.592C18.8617 12.7484 18.9266 12.9726 18.9624 13.411C18.9992 13.8611 19 14.4434 19 15.3H21ZM17.908 11.718C18.2843 11.9097 18.5903 12.2157 18.782 12.592L20.564 11.684C20.1805 10.9314 19.5686 10.3195 18.816 9.93597L17.908 11.718ZM8.8 9.5C7.97642 9.5 7.2986 9.49922 6.74817 9.54419C6.18608 9.59012 5.66937 9.68868 5.18404 9.93597L6.09202 11.718C6.24842 11.6383 6.47262 11.5734 6.91104 11.5376C7.36113 11.5008 7.94342 11.5 8.8 11.5V9.5ZM5 15.3C5 14.4434 5.00078 13.8611 5.03755 13.411C5.07337 12.9726 5.1383 12.7484 5.21799 12.592L3.43597 11.684C3.18868 12.1694 3.09012 12.6861 3.04419 13.2482C2.99922 13.7986 3 14.4764 3 15.3H5ZM5.18404 9.93597C4.43139 10.3195 3.81947 10.9314 3.43597 11.684L5.21799 12.592C5.40973 12.2157 5.71569 11.9097 6.09202 11.718L5.18404 9.93597Z"
-                                      fill="currentColor"
-                                    />
-                                  </svg>
-                                </div>
-                              </div>
-                            </div>
-                            <div disabled>
-                              <div className="relative flex items-center w-full px-6 py-4">
-                                <div className="flex items-center h-5">
-                                  <input
-                                    id="public-list"
-                                    name="list"
-                                    type="checkbox"
-                                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                  />
-                                </div>
-                                <div className="ml-3 text-sm">
-                                  <label
-                                    htmlFor="public-list"
-                                    className="text-sm font-medium text-slate-800 tracking-sm"
-                                  >
-                                    Public List
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                            <div>
-                              <button
-                                type="button"
-                                onClick={() => setCreateNewList(true)}
-                                className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
-                              >
-                                Create new list
-                              </button>
-                            </div>
-                          </Menu.Items>
-                        </Transition>
+                        <BookmarkLists
+                          bookmarkLists={bookmarkLists}
+                          setCreateNewList={setCreateNewList}
+                          story={story}
+                          bookmarks={bookmarks}
+                        />
                       </Menu>
                       <Menu
                         as="div"
@@ -872,6 +579,7 @@ export default function BlogDetail() {
                         min={moreStory.estimatedReadingTime}
                         images={_.first(moreStory.storyImages)}
                         actionMenu
+                        storyId={moreStory._id}
                         optionButtons={{
                           unfollow: () =>
                             dispatch(
@@ -921,6 +629,8 @@ export default function BlogDetail() {
                                 storyLikesActions.likeStoryRequest({
                                   userId: _.get(user, '_id'),
                                   storyId: _.get(story, '_id'),
+                                  authorId: _.get(story, 'user._id'),
+                                  categoryNames: _.get(story, 'categoryNames'),
                                 })
                               )
                         }
@@ -938,23 +648,25 @@ export default function BlogDetail() {
                           />
                         </svg>
                       </button>
-                      <button
-                        type="button"
-                        onClick={() => setSlideOvers(!slideOvers)}
-                        className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm transition ease-in-out duration-200 hover:text-slate-700"
-                      >
-                        <svg
-                          className="w-6 h-6"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
+                      {!_.get(story, 'isRestrictedComments') && (
+                        <button
+                          type="button"
+                          onClick={() => setSlideOvers(!slideOvers)}
+                          className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm transition ease-in-out duration-200 hover:text-slate-700"
                         >
-                          <path
-                            d="M19 22L18.4292 22.8211C18.7348 23.0336 19.1333 23.0587 19.4632 22.8862C19.7932 22.7138 20 22.3723 20 22H19ZM19 19.9143V18.9143C18.4477 18.9143 18 19.362 18 19.9143H19ZM15.7356 19.9474L15.9168 18.964L15.7356 19.9474ZM16.8236 20.4869L16.2528 21.3079L16.8236 20.4869ZM16.1982 20.0924L15.7856 21.0034L16.1982 20.0924ZM10.218 18.8223L11.109 18.3683L10.218 18.8223ZM11.092 19.6963L11.546 18.8053L11.092 19.6963ZM11.092 11.218L11.546 12.109L11.092 11.218ZM10.218 12.092L11.109 12.546L10.218 12.092ZM21.8478 18.6797L20.9239 18.297L21.8478 18.6797ZM20.908 11.218L20.454 12.109L20.908 11.218ZM21.782 12.092L20.891 12.546L21.782 12.092ZM10.7115 15.7027C11.0996 15.3098 11.0956 14.6766 10.7027 14.2885C10.3098 13.9004 9.67661 13.9044 9.28852 14.2973L10.7115 15.7027ZM6.92474 18.1137L6.21326 17.411L6.92474 18.1137ZM18 11C18 11.5523 18.4477 12 19 12C19.5523 12 20 11.5523 20 11H18ZM5.67596 18.6076L6.43515 17.9568L6.43515 17.9568L5.67596 18.6076ZM6.09695 18.7805L6.01416 17.7839L6.01415 17.7839L6.09695 18.7805ZM2.03168 12.4348L1.04223 12.5797L2.03168 12.4348ZM17.362 2.32698L17.816 1.43597V1.43597L17.362 2.32698ZM18.673 3.63803L19.564 3.18404V3.18404L18.673 3.63803ZM3.63803 2.32698L4.09202 3.21799L3.63803 2.32698ZM2.32698 3.63803L3.21799 4.09202L2.32698 3.63803ZM18.8 10H13.2V12H18.8V10ZM9 14.2V16.7143H11V14.2H9ZM13.2 20.9143H14.9969V18.9143H13.2V20.9143ZM16.2528 21.3079L18.4292 22.8211L19.5708 21.1789L17.3944 19.6658L16.2528 21.3079ZM23 16.9143V14.2H21V16.9143H23ZM20 22V19.9143H18V22H20ZM14.9969 20.9143C15.4052 20.9143 15.4851 20.9181 15.5543 20.9308L15.9168 18.964C15.6265 18.9105 15.3339 18.9143 14.9969 18.9143V20.9143ZM17.3944 19.6658C17.1178 19.4735 16.8797 19.3033 16.6108 19.1815L15.7856 21.0034C15.8497 21.0324 15.9175 21.0749 16.2528 21.3079L17.3944 19.6658ZM15.5543 20.9308C15.6341 20.9455 15.7118 20.9699 15.7856 21.0034L16.6108 19.1815C16.3891 19.0811 16.1561 19.0081 15.9168 18.964L15.5543 20.9308ZM9 16.7143C9 17.2578 8.99922 17.7256 9.03057 18.1093C9.06287 18.5047 9.13419 18.8979 9.32698 19.2763L11.109 18.3683C11.0838 18.3188 11.0461 18.2181 11.0239 17.9465C11.0008 17.6631 11 17.2908 11 16.7143H9ZM13.2 18.9143C12.6234 18.9143 12.2512 18.9135 11.9678 18.8904C11.6962 18.8682 11.5955 18.8305 11.546 18.8053L10.638 20.5873C11.0164 20.7801 11.4096 20.8514 11.805 20.8837C12.1886 20.9151 12.6564 20.9143 13.2 20.9143V18.9143ZM9.32698 19.2763C9.6146 19.8407 10.0735 20.2997 10.638 20.5873L11.546 18.8053C11.3578 18.7094 11.2049 18.5564 11.109 18.3683L9.32698 19.2763ZM13.2 10C12.6564 10 12.1886 9.99922 11.805 10.0306C11.4096 10.0629 11.0164 10.1342 10.638 10.327L11.546 12.109C11.5955 12.0838 11.6962 12.0461 11.9678 12.0239C12.2512 12.0008 12.6234 12 13.2 12V10ZM11 14.2C11 13.6234 11.0008 13.2512 11.0239 12.9678C11.0461 12.6962 11.0838 12.5955 11.109 12.546L9.32698 11.638C9.13419 12.0164 9.06287 12.4096 9.03057 12.805C8.99922 13.1886 9 13.6564 9 14.2H11ZM10.638 10.327C10.0735 10.6146 9.6146 11.0735 9.32698 11.638L11.109 12.546C11.2049 12.3578 11.3578 12.2049 11.546 12.109L10.638 10.327ZM21 16.9143C21 17.3939 20.9995 17.7035 20.9833 17.9405C20.9677 18.1685 20.9411 18.2554 20.9239 18.297L22.7716 19.0623C22.9066 18.7364 22.9561 18.4065 22.9787 18.0767C23.0005 17.7558 23 17.3665 23 16.9143H21ZM19 20.9143C19.4523 20.9143 19.8415 20.9148 20.1624 20.8929C20.4922 20.8704 20.8221 20.8209 21.1481 20.6859L20.3827 18.8382C20.3411 18.8554 20.2542 18.882 20.0262 18.8976C19.7893 18.9137 19.4796 18.9143 19 18.9143V20.9143ZM20.9239 18.297C20.8224 18.542 20.6277 18.7367 20.3827 18.8382L21.1481 20.6859C21.8831 20.3814 22.4672 19.7974 22.7716 19.0623L20.9239 18.297ZM18.8 12C19.3766 12 19.7488 12.0008 20.0322 12.0239C20.3038 12.0461 20.4045 12.0838 20.454 12.109L21.362 10.327C20.9836 10.1342 20.5904 10.0629 20.195 10.0306C19.8114 9.99922 19.3436 10 18.8 10V12ZM23 14.2C23 13.6564 23.0008 13.1886 22.9694 12.805C22.9371 12.4096 22.8658 12.0164 22.673 11.638L20.891 12.546C20.9162 12.5955 20.9539 12.6962 20.9761 12.9678C20.9992 13.2512 21 13.6234 21 14.2H23ZM20.454 12.109C20.6422 12.2049 20.7951 12.3578 20.891 12.546L22.673 11.638C22.3854 11.0735 21.9265 10.6146 21.362 10.327L20.454 12.109ZM6.8 3H14.2V1H6.8V3ZM3 11.4444V6.8H1V11.4444H3ZM6.55556 17.5515V15.9916H4.55556V17.5515H6.55556ZM9.28852 14.2973L6.21326 17.411L7.63623 18.8164L10.7115 15.7027L9.28852 14.2973ZM18 6.8V11H20V6.8H18ZM4.55556 17.5515C4.55556 17.837 4.55461 18.1191 4.57449 18.3439C4.59139 18.5349 4.63564 18.9306 4.91677 19.2585L6.43515 17.9568C6.52357 18.0599 6.55632 18.1549 6.56616 18.1886C6.57498 18.2187 6.57138 18.2204 6.56672 18.1677C6.56232 18.118 6.55905 18.046 6.55731 17.9382C6.55558 17.8313 6.55556 17.7066 6.55556 17.5515H4.55556ZM6.21326 17.411C6.10432 17.5213 6.01666 17.61 5.9403 17.6849C5.8633 17.7604 5.81036 17.8093 5.77231 17.8416C5.73198 17.8758 5.7306 17.872 5.75808 17.8568C5.78873 17.8397 5.87877 17.7952 6.01416 17.7839L6.17975 19.7771C6.61018 19.7413 6.91969 19.4909 7.06593 19.3669C7.23809 19.2209 7.43564 19.0195 7.63623 18.8164L6.21326 17.411ZM4.91676 19.2585C5.23013 19.624 5.69992 19.8169 6.17975 19.7771L6.01415 17.7839C6.1741 17.7706 6.3307 17.8349 6.43515 17.9568L4.91676 19.2585ZM1 11.4444C1 11.9252 0.997339 12.2732 1.04223 12.5797L3.02112 12.2899C3.00266 12.1639 3 11.9959 3 11.4444H1ZM1.04223 12.5797C1.29837 14.3283 2.67166 15.7016 4.42027 15.9578L4.71014 13.9789C3.83583 13.8508 3.14918 13.1642 3.02112 12.2899L1.04223 12.5797ZM14.2 3C15.0566 3 15.6389 3.00078 16.089 3.03755C16.5274 3.07337 16.7516 3.1383 16.908 3.21799L17.816 1.43597C17.3306 1.18868 16.8139 1.09012 16.2518 1.04419C15.7014 0.999222 15.0236 1 14.2 1V3ZM20 6.8C20 5.97642 20.0008 5.2986 19.9558 4.74817C19.9099 4.18608 19.8113 3.66937 19.564 3.18404L17.782 4.09202C17.8617 4.24842 17.9266 4.47262 17.9624 4.91104C17.9992 5.36113 18 5.94342 18 6.8H20ZM16.908 3.21799C17.2843 3.40973 17.5903 3.71569 17.782 4.09202L19.564 3.18404C19.1805 2.43139 18.5686 1.81947 17.816 1.43597L16.908 3.21799ZM6.8 1C5.97642 1 5.2986 0.999222 4.74817 1.04419C4.18608 1.09012 3.66937 1.18868 3.18404 1.43597L4.09202 3.21799C4.24842 3.1383 4.47262 3.07337 4.91104 3.03755C5.36113 3.00078 5.94342 3 6.8 3V1ZM3 6.8C3 5.94342 3.00078 5.36113 3.03755 4.91104C3.07337 4.47262 3.1383 4.24842 3.21799 4.09202L1.43597 3.18404C1.18868 3.66937 1.09012 4.18608 1.04419 4.74817C0.999222 5.2986 1 5.97642 1 6.8H3ZM3.18404 1.43597C2.43139 1.81947 1.81947 2.43139 1.43597 3.18404L3.21799 4.09202C3.40973 3.71569 3.71569 3.40973 4.09202 3.21799L3.18404 1.43597ZM6.55556 15.9916C6.55556 14.8142 5.59828 14.109 4.71014 13.9789L4.42027 15.9578C4.50012 15.9695 4.54639 16.0016 4.56126 16.0162C4.56721 16.0221 4.56476 16.0216 4.56092 16.0128C4.5591 16.0086 4.55758 16.004 4.55659 15.9993C4.55613 15.997 4.55585 15.9952 4.5557 15.9937C4.55555 15.9923 4.55556 15.9915 4.55556 15.9916H6.55556Z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                      </button>
+                          <svg
+                            className="w-6 h-6"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M19 22L18.4292 22.8211C18.7348 23.0336 19.1333 23.0587 19.4632 22.8862C19.7932 22.7138 20 22.3723 20 22H19ZM19 19.9143V18.9143C18.4477 18.9143 18 19.362 18 19.9143H19ZM15.7356 19.9474L15.9168 18.964L15.7356 19.9474ZM16.8236 20.4869L16.2528 21.3079L16.8236 20.4869ZM16.1982 20.0924L15.7856 21.0034L16.1982 20.0924ZM10.218 18.8223L11.109 18.3683L10.218 18.8223ZM11.092 19.6963L11.546 18.8053L11.092 19.6963ZM11.092 11.218L11.546 12.109L11.092 11.218ZM10.218 12.092L11.109 12.546L10.218 12.092ZM21.8478 18.6797L20.9239 18.297L21.8478 18.6797ZM20.908 11.218L20.454 12.109L20.908 11.218ZM21.782 12.092L20.891 12.546L21.782 12.092ZM10.7115 15.7027C11.0996 15.3098 11.0956 14.6766 10.7027 14.2885C10.3098 13.9004 9.67661 13.9044 9.28852 14.2973L10.7115 15.7027ZM6.92474 18.1137L6.21326 17.411L6.92474 18.1137ZM18 11C18 11.5523 18.4477 12 19 12C19.5523 12 20 11.5523 20 11H18ZM5.67596 18.6076L6.43515 17.9568L6.43515 17.9568L5.67596 18.6076ZM6.09695 18.7805L6.01416 17.7839L6.01415 17.7839L6.09695 18.7805ZM2.03168 12.4348L1.04223 12.5797L2.03168 12.4348ZM17.362 2.32698L17.816 1.43597V1.43597L17.362 2.32698ZM18.673 3.63803L19.564 3.18404V3.18404L18.673 3.63803ZM3.63803 2.32698L4.09202 3.21799L3.63803 2.32698ZM2.32698 3.63803L3.21799 4.09202L2.32698 3.63803ZM18.8 10H13.2V12H18.8V10ZM9 14.2V16.7143H11V14.2H9ZM13.2 20.9143H14.9969V18.9143H13.2V20.9143ZM16.2528 21.3079L18.4292 22.8211L19.5708 21.1789L17.3944 19.6658L16.2528 21.3079ZM23 16.9143V14.2H21V16.9143H23ZM20 22V19.9143H18V22H20ZM14.9969 20.9143C15.4052 20.9143 15.4851 20.9181 15.5543 20.9308L15.9168 18.964C15.6265 18.9105 15.3339 18.9143 14.9969 18.9143V20.9143ZM17.3944 19.6658C17.1178 19.4735 16.8797 19.3033 16.6108 19.1815L15.7856 21.0034C15.8497 21.0324 15.9175 21.0749 16.2528 21.3079L17.3944 19.6658ZM15.5543 20.9308C15.6341 20.9455 15.7118 20.9699 15.7856 21.0034L16.6108 19.1815C16.3891 19.0811 16.1561 19.0081 15.9168 18.964L15.5543 20.9308ZM9 16.7143C9 17.2578 8.99922 17.7256 9.03057 18.1093C9.06287 18.5047 9.13419 18.8979 9.32698 19.2763L11.109 18.3683C11.0838 18.3188 11.0461 18.2181 11.0239 17.9465C11.0008 17.6631 11 17.2908 11 16.7143H9ZM13.2 18.9143C12.6234 18.9143 12.2512 18.9135 11.9678 18.8904C11.6962 18.8682 11.5955 18.8305 11.546 18.8053L10.638 20.5873C11.0164 20.7801 11.4096 20.8514 11.805 20.8837C12.1886 20.9151 12.6564 20.9143 13.2 20.9143V18.9143ZM9.32698 19.2763C9.6146 19.8407 10.0735 20.2997 10.638 20.5873L11.546 18.8053C11.3578 18.7094 11.2049 18.5564 11.109 18.3683L9.32698 19.2763ZM13.2 10C12.6564 10 12.1886 9.99922 11.805 10.0306C11.4096 10.0629 11.0164 10.1342 10.638 10.327L11.546 12.109C11.5955 12.0838 11.6962 12.0461 11.9678 12.0239C12.2512 12.0008 12.6234 12 13.2 12V10ZM11 14.2C11 13.6234 11.0008 13.2512 11.0239 12.9678C11.0461 12.6962 11.0838 12.5955 11.109 12.546L9.32698 11.638C9.13419 12.0164 9.06287 12.4096 9.03057 12.805C8.99922 13.1886 9 13.6564 9 14.2H11ZM10.638 10.327C10.0735 10.6146 9.6146 11.0735 9.32698 11.638L11.109 12.546C11.2049 12.3578 11.3578 12.2049 11.546 12.109L10.638 10.327ZM21 16.9143C21 17.3939 20.9995 17.7035 20.9833 17.9405C20.9677 18.1685 20.9411 18.2554 20.9239 18.297L22.7716 19.0623C22.9066 18.7364 22.9561 18.4065 22.9787 18.0767C23.0005 17.7558 23 17.3665 23 16.9143H21ZM19 20.9143C19.4523 20.9143 19.8415 20.9148 20.1624 20.8929C20.4922 20.8704 20.8221 20.8209 21.1481 20.6859L20.3827 18.8382C20.3411 18.8554 20.2542 18.882 20.0262 18.8976C19.7893 18.9137 19.4796 18.9143 19 18.9143V20.9143ZM20.9239 18.297C20.8224 18.542 20.6277 18.7367 20.3827 18.8382L21.1481 20.6859C21.8831 20.3814 22.4672 19.7974 22.7716 19.0623L20.9239 18.297ZM18.8 12C19.3766 12 19.7488 12.0008 20.0322 12.0239C20.3038 12.0461 20.4045 12.0838 20.454 12.109L21.362 10.327C20.9836 10.1342 20.5904 10.0629 20.195 10.0306C19.8114 9.99922 19.3436 10 18.8 10V12ZM23 14.2C23 13.6564 23.0008 13.1886 22.9694 12.805C22.9371 12.4096 22.8658 12.0164 22.673 11.638L20.891 12.546C20.9162 12.5955 20.9539 12.6962 20.9761 12.9678C20.9992 13.2512 21 13.6234 21 14.2H23ZM20.454 12.109C20.6422 12.2049 20.7951 12.3578 20.891 12.546L22.673 11.638C22.3854 11.0735 21.9265 10.6146 21.362 10.327L20.454 12.109ZM6.8 3H14.2V1H6.8V3ZM3 11.4444V6.8H1V11.4444H3ZM6.55556 17.5515V15.9916H4.55556V17.5515H6.55556ZM9.28852 14.2973L6.21326 17.411L7.63623 18.8164L10.7115 15.7027L9.28852 14.2973ZM18 6.8V11H20V6.8H18ZM4.55556 17.5515C4.55556 17.837 4.55461 18.1191 4.57449 18.3439C4.59139 18.5349 4.63564 18.9306 4.91677 19.2585L6.43515 17.9568C6.52357 18.0599 6.55632 18.1549 6.56616 18.1886C6.57498 18.2187 6.57138 18.2204 6.56672 18.1677C6.56232 18.118 6.55905 18.046 6.55731 17.9382C6.55558 17.8313 6.55556 17.7066 6.55556 17.5515H4.55556ZM6.21326 17.411C6.10432 17.5213 6.01666 17.61 5.9403 17.6849C5.8633 17.7604 5.81036 17.8093 5.77231 17.8416C5.73198 17.8758 5.7306 17.872 5.75808 17.8568C5.78873 17.8397 5.87877 17.7952 6.01416 17.7839L6.17975 19.7771C6.61018 19.7413 6.91969 19.4909 7.06593 19.3669C7.23809 19.2209 7.43564 19.0195 7.63623 18.8164L6.21326 17.411ZM4.91676 19.2585C5.23013 19.624 5.69992 19.8169 6.17975 19.7771L6.01415 17.7839C6.1741 17.7706 6.3307 17.8349 6.43515 17.9568L4.91676 19.2585ZM1 11.4444C1 11.9252 0.997339 12.2732 1.04223 12.5797L3.02112 12.2899C3.00266 12.1639 3 11.9959 3 11.4444H1ZM1.04223 12.5797C1.29837 14.3283 2.67166 15.7016 4.42027 15.9578L4.71014 13.9789C3.83583 13.8508 3.14918 13.1642 3.02112 12.2899L1.04223 12.5797ZM14.2 3C15.0566 3 15.6389 3.00078 16.089 3.03755C16.5274 3.07337 16.7516 3.1383 16.908 3.21799L17.816 1.43597C17.3306 1.18868 16.8139 1.09012 16.2518 1.04419C15.7014 0.999222 15.0236 1 14.2 1V3ZM20 6.8C20 5.97642 20.0008 5.2986 19.9558 4.74817C19.9099 4.18608 19.8113 3.66937 19.564 3.18404L17.782 4.09202C17.8617 4.24842 17.9266 4.47262 17.9624 4.91104C17.9992 5.36113 18 5.94342 18 6.8H20ZM16.908 3.21799C17.2843 3.40973 17.5903 3.71569 17.782 4.09202L19.564 3.18404C19.1805 2.43139 18.5686 1.81947 17.816 1.43597L16.908 3.21799ZM6.8 1C5.97642 1 5.2986 0.999222 4.74817 1.04419C4.18608 1.09012 3.66937 1.18868 3.18404 1.43597L4.09202 3.21799C4.24842 3.1383 4.47262 3.07337 4.91104 3.03755C5.36113 3.00078 5.94342 3 6.8 3V1ZM3 6.8C3 5.94342 3.00078 5.36113 3.03755 4.91104C3.07337 4.47262 3.1383 4.24842 3.21799 4.09202L1.43597 3.18404C1.18868 3.66937 1.09012 4.18608 1.04419 4.74817C0.999222 5.2986 1 5.97642 1 6.8H3ZM3.18404 1.43597C2.43139 1.81947 1.81947 2.43139 1.43597 3.18404L3.21799 4.09202C3.40973 3.71569 3.71569 3.40973 4.09202 3.21799L3.18404 1.43597ZM6.55556 15.9916C6.55556 14.8142 5.59828 14.109 4.71014 13.9789L4.42027 15.9578C4.50012 15.9695 4.54639 16.0016 4.56126 16.0162C4.56721 16.0221 4.56476 16.0216 4.56092 16.0128C4.5591 16.0086 4.55758 16.004 4.55659 15.9993C4.55613 15.997 4.55585 15.9952 4.5557 15.9937C4.55555 15.9923 4.55556 15.9915 4.55556 15.9916H6.55556Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </button>
+                      )}
                     </div>
                     <div>
                       <div className="flex items-center relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
@@ -977,82 +689,13 @@ export default function BlogDetail() {
                               </svg>
                             </Menu.Button>
                           </div>
-                          <Transition
-                            as={Fragment}
-                            enter="transition ease-out duration-100"
-                            enterFrom="transform opacity-0 scale-95"
-                            enterTo="transform opacity-100 scale-100"
-                            leave="transition ease-in duration-75"
-                            leaveFrom="transform opacity-100 scale-100"
-                            leaveTo="transform opacity-0 scale-95"
-                          >
-                            <Menu.Items className="absolute -top-48 right-0 mt-2 w-56 origin-top divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                              <div disabled>
-                                <div className="relative flex items-center justify-between w-full px-6 py-4">
-                                  <div className="flex items-start">
-                                    <div className="flex items-center h-5">
-                                      <input
-                                        id="private-list"
-                                        name="list"
-                                        type="checkbox"
-                                        className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                      />
-                                    </div>
-                                    <div className="ml-3 text-sm">
-                                      <label
-                                        htmlFor="private-list"
-                                        className="text-sm font-medium text-slate-800 tracking-sm"
-                                      >
-                                        Private List
-                                      </label>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <svg
-                                      className="w-6 h-6 text-slate-400"
-                                      viewBox="0 0 24 25"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M16 10.5C16 11.0523 16.4477 11.5 17 11.5C17.5523 11.5 18 11.0523 18 10.5H16ZM6 10.5C6 11.0523 6.44772 11.5 7 11.5C7.55228 11.5 8 11.0523 8 10.5H6ZM13 15C13 14.4477 12.5523 14 12 14C11.4477 14 11 14.4477 11 15H13ZM11 17C11 17.5523 11.4477 18 12 18C12.5523 18 13 17.5523 13 17H11ZM5.63803 21.173L5.18404 22.064L5.63803 21.173ZM4.32698 19.862L3.43597 20.316L4.32698 19.862ZM19.673 19.862L20.564 20.316L19.673 19.862ZM18.362 21.173L18.816 22.064L18.362 21.173ZM18.362 10.827L18.816 9.93597L18.362 10.827ZM19.673 12.138L20.564 11.684L19.673 12.138ZM5.63803 10.827L5.18404 9.93597L5.63803 10.827ZM4.32698 12.138L3.43597 11.684L4.32698 12.138ZM16 8.5V10.5H18V8.5H16ZM8 10.5V8.5H6V10.5H8ZM12 4.5C14.2091 4.5 16 6.29086 16 8.5H18C18 5.18629 15.3137 2.5 12 2.5V4.5ZM12 2.5C8.68629 2.5 6 5.18629 6 8.5H8C8 6.29086 9.79086 4.5 12 4.5V2.5ZM11 15V17H13V15H11ZM8.8 11.5H15.2V9.5H8.8V11.5ZM19 15.3V16.7H21V15.3H19ZM15.2 20.5H8.8V22.5H15.2V20.5ZM5 16.7V15.3H3V16.7H5ZM8.8 20.5C7.94342 20.5 7.36113 20.4992 6.91104 20.4624C6.47262 20.4266 6.24842 20.3617 6.09202 20.282L5.18404 22.064C5.66937 22.3113 6.18608 22.4099 6.74817 22.4558C7.2986 22.5008 7.97642 22.5 8.8 22.5V20.5ZM3 16.7C3 17.5236 2.99922 18.2014 3.04419 18.7518C3.09012 19.3139 3.18868 19.8306 3.43597 20.316L5.21799 19.408C5.1383 19.2516 5.07337 19.0274 5.03755 18.589C5.00078 18.1389 5 17.5566 5 16.7H3ZM6.09202 20.282C5.7157 20.0903 5.40973 19.7843 5.21799 19.408L3.43597 20.316C3.81947 21.0686 4.43139 21.6805 5.18404 22.064L6.09202 20.282ZM19 16.7C19 17.5566 18.9992 18.1389 18.9624 18.589C18.9266 19.0274 18.8617 19.2516 18.782 19.408L20.564 20.316C20.8113 19.8306 20.9099 19.3139 20.9558 18.7518C21.0008 18.2014 21 17.5236 21 16.7H19ZM15.2 22.5C16.0236 22.5 16.7014 22.5008 17.2518 22.4558C17.8139 22.4099 18.3306 22.3113 18.816 22.064L17.908 20.282C17.7516 20.3617 17.5274 20.4266 17.089 20.4624C16.6389 20.4992 16.0566 20.5 15.2 20.5V22.5ZM18.782 19.408C18.5903 19.7843 18.2843 20.0903 17.908 20.282L18.816 22.064C19.5686 21.6805 20.1805 21.0686 20.564 20.316L18.782 19.408ZM15.2 11.5C16.0566 11.5 16.6389 11.5008 17.089 11.5376C17.5274 11.5734 17.7516 11.6383 17.908 11.718L18.816 9.93597C18.3306 9.68868 17.8139 9.59012 17.2518 9.54419C16.7014 9.49922 16.0236 9.5 15.2 9.5V11.5ZM21 15.3C21 14.4764 21.0008 13.7986 20.9558 13.2482C20.9099 12.6861 20.8113 12.1694 20.564 11.684L18.782 12.592C18.8617 12.7484 18.9266 12.9726 18.9624 13.411C18.9992 13.8611 19 14.4434 19 15.3H21ZM17.908 11.718C18.2843 11.9097 18.5903 12.2157 18.782 12.592L20.564 11.684C20.1805 10.9314 19.5686 10.3195 18.816 9.93597L17.908 11.718ZM8.8 9.5C7.97642 9.5 7.2986 9.49922 6.74817 9.54419C6.18608 9.59012 5.66937 9.68868 5.18404 9.93597L6.09202 11.718C6.24842 11.6383 6.47262 11.5734 6.91104 11.5376C7.36113 11.5008 7.94342 11.5 8.8 11.5V9.5ZM5 15.3C5 14.4434 5.00078 13.8611 5.03755 13.411C5.07337 12.9726 5.1383 12.7484 5.21799 12.592L3.43597 11.684C3.18868 12.1694 3.09012 12.6861 3.04419 13.2482C2.99922 13.7986 3 14.4764 3 15.3H5ZM5.18404 9.93597C4.43139 10.3195 3.81947 10.9314 3.43597 11.684L5.21799 12.592C5.40973 12.2157 5.71569 11.9097 6.09202 11.718L5.18404 9.93597Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </div>
-                                </div>
-                              </div>
-                              <div disabled>
-                                <div className="relative flex items-center w-full px-6 py-4">
-                                  <div className="flex items-center h-5">
-                                    <input
-                                      id="public-list"
-                                      name="list"
-                                      type="checkbox"
-                                      className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
-                                    />
-                                  </div>
-                                  <div className="ml-3 text-sm">
-                                    <label
-                                      htmlFor="public-list"
-                                      className="text-sm font-medium text-slate-800 tracking-sm"
-                                    >
-                                      Public List
-                                    </label>
-                                  </div>
-                                </div>
-                              </div>
-                              <div>
-                                <button
-                                  type="button"
-                                  onClick={() => setCreateNewList(true)}
-                                  className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
-                                >
-                                  Create new list
-                                </button>
-                              </div>
-                            </Menu.Items>
-                          </Transition>
+                          <BookmarkLists
+                            bookmarkLists={bookmarkLists}
+                            setCreateNewList={setCreateNewList}
+                            className="-top-48"
+                            story={story}
+                            bookmarks={bookmarks}
+                          />
                         </Menu>
                         <Menu
                           as="div"
@@ -1160,348 +803,13 @@ export default function BlogDetail() {
             </div>
           </div>
         </div>
-        <Transition.Root show={slideOvers} as={Fragment}>
-          <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-in-out duration-500"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in-out duration-500"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-            </Transition.Child>
-
-            <div className="fixed inset-0 overflow-hidden">
-              <div className="absolute inset-0 overflow-hidden">
-                <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="transform transition ease-in-out duration-500 sm:duration-700"
-                    enterFrom="translate-x-full"
-                    enterTo="translate-x-0"
-                    leave="transform transition ease-in-out duration-500 sm:duration-700"
-                    leaveFrom="translate-x-0"
-                    leaveTo="translate-x-full"
-                  >
-                    <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                      <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll">
-                        <div>
-                          <div className="flex items-start justify-between pb-3">
-                            <Dialog.Title className="text-slate-800 text-lg font-medium tracking-sm">
-                              Write a responses
-                            </Dialog.Title>
-                            <div className="ml-3 flex h-7 items-center">
-                              <button
-                                type="button"
-                                className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
-                                onClick={() => setSlideOvers(!slideOvers)}
-                              >
-                                <span className="sr-only">Close panel</span>
-                                <XIcon className="h-6 w-6" aria-hidden="true" />
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          {/* Slide Over Form */}
-                          <form action="" className="mb-12">
-                            <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
-                              <div className="flex items-center gap-2 mb-4">
-                                <img
-                                  className="w-8 h-8 object-cover rounded-full"
-                                  src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                                  alt=""
-                                />
-                                <span className="text-slate-700 text-sm font-medium tracking-sm">
-                                  {_.get(story, 'user.name')}
-                                </span>
-                              </div>
-                              <div className="mb-4">
-                                <textarea
-                                  id="about"
-                                  name="about"
-                                  rows={5}
-                                  className="block w-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
-                                  placeholder="What are you thoughts?"
-                                />
-                              </div>
-                              <div className="flex items-center justify-between">
-                                <div>
-                                  <button
-                                    type="button"
-                                    className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                  >
-                                    <svg
-                                      className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                  >
-                                    <svg
-                                      className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                      viewBox="0 0 24 24"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                      <path
-                                        d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
-                                        fill="currentColor"
-                                      />
-                                    </svg>
-                                  </button>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Cancel
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                  >
-                                    Respond
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="relative flex items-start">
-                              <div className="flex items-center h-5">
-                                <input
-                                  id="comments"
-                                  name="comments"
-                                  type="checkbox"
-                                  className="h-5 w-5 text-purple-600 border-gray-300 rounded focus:ring-purple-500"
-                                />
-                              </div>
-                              <div className="ml-3 text-sm">
-                                <label
-                                  htmlFor="comments"
-                                  className="text-slate-500 text-sm tracking-sm"
-                                >
-                                  Also publish to my profile
-                                </label>
-                              </div>
-                            </div>
-                          </form>
-                          {/* Slide Over All Responses Post */}
-                          <div>
-                            <h2 className="text-slate-800 pb-6 text-lg font-semibold tracking-sm border-b border-gray-200">
-                              All Responses (3)
-                            </h2>
-                            <ul className="divide-y divide-gray-200">
-                              {allResponses.map((allResponse, index) => (
-                                <li
-                                  key={allResponse.id}
-                                  className="py-6 space-y-4"
-                                >
-                                  <div className="flex items-center gap-3">
-                                    <img
-                                      className="w-10 h-10 rounded-full object-cover"
-                                      src={allResponse.avatarImage}
-                                      alt={allResponse.name}
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="text-slate-700 text-base font-medium tracking-sm">
-                                        {allResponse.name}
-                                      </span>
-                                      <span className="text-slate-500 text-sm tracking-sm">
-                                        {allResponse.timeAgo}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <p className="text-slate-700 text-sm tracking-sm">
-                                    {allResponse.description}
-                                  </p>
-                                  <div className="flex items-center justify-between">
-                                    <button
-                                      type="button"
-                                      className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-                                    >
-                                      <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
-                                        <svg
-                                          className="w-6 h-6 text-slate-400 group-hover:text-slate-700"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                          <path
-                                            d="M11.9932 5.13581L11.2332 5.78583C11.4232 6.00794 11.7009 6.13581 11.9932 6.13581C12.2854 6.13581 12.5631 6.00794 12.7531 5.78583L11.9932 5.13581ZM3.2642 12.5604L4.0538 11.9468L3.2642 12.5604ZM20.7221 12.5604L19.9325 11.9468L20.7221 12.5604ZM11.4721 20.5408L12.1351 19.7922L11.4721 20.5408ZM11.8502 20.8135L11.5643 21.7718L11.8502 20.8135ZM12.5142 20.5408L11.8512 19.7922L12.5142 20.5408ZM12.1361 20.8135L12.422 21.7718L12.1361 20.8135ZM12.7531 4.4858C10.4594 1.80434 6.50161 0.989451 3.5051 3.54974L4.80429 5.07029C6.81788 3.34983 9.52816 3.79246 11.2332 5.78583L12.7531 4.4858ZM3.5051 3.54974C0.598307 6.03336 0.175977 10.2162 2.4746 13.174L4.0538 11.9468C2.41796 9.84179 2.70098 6.86741 4.80429 5.07029L3.5051 3.54974ZM21.5117 13.174C23.8015 10.2275 23.4444 6.01246 20.4708 3.54097L19.1924 5.07906C21.315 6.84328 21.5772 9.83042 19.9325 11.9468L21.5117 13.174ZM20.4708 3.54097C17.4415 1.02319 13.5344 1.79553 11.2332 4.4858L12.7531 5.78583C14.4506 3.80127 17.1255 3.36113 19.1924 5.07906L20.4708 3.54097ZM2.4746 13.174C3.34712 14.2968 5.05011 15.9836 6.68673 17.5283C8.3425 19.0912 9.99445 20.568 10.8091 21.2895L12.1351 19.7922C11.3274 19.0769 9.69323 17.6159 8.05954 16.0739C6.40669 14.5138 4.81689 12.9287 4.0538 11.9468L2.4746 13.174ZM13.1772 21.2895C13.9919 20.568 15.6438 19.0912 17.2996 17.5283C18.9362 15.9836 20.6392 14.2968 21.5117 13.174L19.9325 11.9468C19.1694 12.9287 17.5796 14.5138 15.9268 16.0739C14.2931 17.6159 12.6589 19.0769 11.8512 19.7922L13.1772 21.2895ZM10.8091 21.2895C10.8881 21.3594 10.9903 21.4509 11.088 21.5245C11.1974 21.6069 11.3545 21.7092 11.5643 21.7718L12.1361 19.8553C12.1859 19.8701 12.2264 19.8888 12.2555 19.9048C12.2821 19.9195 12.2954 19.93 12.2911 19.9268C12.2862 19.9231 12.2727 19.9125 12.2442 19.888C12.2156 19.8634 12.1821 19.8339 12.1351 19.7922L10.8091 21.2895ZM11.8512 19.7922C11.8042 19.8339 11.7707 19.8634 11.7421 19.888C11.7136 19.9125 11.7001 19.9231 11.6952 19.9268C11.6909 19.93 11.7042 19.9195 11.7308 19.9048C11.7599 19.8888 11.8004 19.8701 11.8502 19.8553L12.422 21.7718C12.6318 21.7092 12.7889 21.6069 12.8983 21.5245C12.996 21.4509 13.0982 21.3594 13.1772 21.2895L11.8512 19.7922ZM11.5643 21.7718C11.8433 21.855 12.1431 21.855 12.422 21.7718L11.8502 19.8553C11.9443 19.8272 12.042 19.8272 12.1361 19.8553L11.5643 21.7718Z"
-                                            fill="currentColor"
-                                          />
-                                        </svg>
-                                      </span>
-                                      3
-                                    </button>
-                                    <button
-                                      type="button"
-                                      onClick={() =>
-                                        setCommentBoxes((prev) => {
-                                          const temp = prev;
-                                          temp[index] = true;
-                                          return temp;
-                                        })
-                                      }
-                                      className="inline-flex items-center gap-2 px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                                    >
-                                      Reply
-                                    </button>
-                                  </div>
-                                  {commentBoxes[index] === true && (
-                                    <div className="flex flex-col items-end">
-                                      <textarea
-                                        className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
-                                        placeholder="Write a comment..."
-                                      />
-
-                                      <Button type="button" extraClasses="mt-5">
-                                        Comment
-                                      </Button>
-                                    </div>
-                                  )}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </Dialog.Panel>
-                  </Transition.Child>
-                </div>
-              </div>
-            </div>
-          </Dialog>
-        </Transition.Root>
+        <Replies
+          slideOvers={slideOvers}
+          setSlideOvers={setSlideOvers}
+          story={story}
+        />
         {createNewList && (
-          <div className="relative z-30">
-            <div className="fixed inset-0 bg-black bg-opacity-50" />
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4 text-center">
-                <div className="relative max-w-[400px] w-full bg-white p-6 rounded-xl shadow-lg">
-                  <div className="flex items-center justify-between mb-5">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-purple-100 ring-8 ring-purple-50">
-                      <svg
-                        className="w-5 h-5"
-                        viewBox="0 0 22 22"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
-                          stroke="#7C3AED"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setCreateNewList(false)}
-                      className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5"
-                        viewBox="0 0 14 14"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M13 1L1 13M1 1L13 13"
-                          stroke="#667085"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <div className="text-left mb-8">
-                    <div className="mb-5">
-                      <h3 className="text-slate-800 mb-2 text-lg font-medium tracking-sm">
-                        Create List
-                      </h3>
-                      <span className="text-slate-500 text-sm tracking-sm">
-                        Please enter a name for this list.
-                      </span>
-                    </div>
-                    <form action="">
-                      <div className="mb-6">
-                        <label
-                          htmlFor="list-name"
-                          className="block text-slate-700 text-sm font-medium tracking-sm mb-1.5"
-                        >
-                          {' '}
-                          List name{' '}
-                        </label>
-                        <div className="mt-1">
-                          <input
-                            type="text"
-                            name="list-name"
-                            id="list-name"
-                            placeholder="e.g. App"
-                            className="block w-full min-h-[44px] text-slate-500 border-slate-300 rounded-md shadow-sm tracking-sm placeholder:text-slate-500 focus:ring-purple-500 focus:border-purple-500"
-                          />
-                        </div>
-                      </div>
-                      <Switch.Group as="div" className="flex items-center">
-                        <Switch
-                          checked={enabled}
-                          onChange={setEnabled}
-                          className={classNames(
-                            enabled ? 'bg-purple-600' : 'bg-gray-200',
-                            'relative inline-flex flex-shrink-0 h-5 w-9 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500'
-                          )}
-                        >
-                          <span
-                            aria-hidden="true"
-                            className={classNames(
-                              enabled ? 'translate-x-4' : 'translate-x-0',
-                              'pointer-events-none inline-block h-4 w-4 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200'
-                            )}
-                          />
-                        </Switch>
-                        <Switch.Label as="span" className="ml-3">
-                          <span className="text-base font-medium tracking-sm text-slate-700">
-                            Private
-                          </span>
-                        </Switch.Label>
-                      </Switch.Group>
-                    </form>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setCreateNewList(false)}
-                      className="inline-flex items-center justify-center px-[14px] py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    >
-                      Create
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <CreateBookmarkList setCreateNewList={setCreateNewList} />
         )}
       </Layout>
     </div>

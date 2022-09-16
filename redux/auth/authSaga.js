@@ -265,7 +265,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
   }
 }
 
-function* updateUserSaga(newUser) {
+export function* updateUserSaga(newUser) {
   const user = yield select((state) => state.auth.user);
   AuthService.setUserFromLocal({
     ...user,
@@ -292,6 +292,18 @@ function* changeEmailSaga({ payload }) {
     }
   } catch (e) {
     yield put(authActions.changeEmailFailure(e));
+  }
+}
+function* getUserByUsernameSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(AuthService.getUserByUsername, payload);
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.getUserByUserNameSuccess(data));
+    }
+  } catch (e) {
+    yield put(authActions.getUserByUserNameFailure(e));
   }
 }
 
@@ -327,5 +339,6 @@ export default function* rootSaga() {
     takeEvery(authActions.logoutRequest.type, logoutSaga),
     takeEvery(authActions.changeEmailRequest.type, changeEmailSaga),
     takeEvery(authActions.updateUserSuccess.type, setUserFromLocalStorage),
+    takeEvery(authActions.getUserByUserNameRequest.type, getUserByUsernameSaga),
   ]);
 }

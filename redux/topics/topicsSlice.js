@@ -6,10 +6,12 @@ const initialState = {
   latestTopics: [],
   bestTopics: [],
   trendingTopics: [],
+  trendingTopicsIdList: [],
   relatedTopics: [],
   popularTopics: [],
   topWritersIdList: [],
   topWriters: [],
+  topicAnalytics: null,
   isLoading: false,
   error: null,
 };
@@ -28,6 +30,17 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
     },
     getTrendingsOfTopicFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getIdListTrendingsOfTopicRequest(state) {
+      state.isLoading = true;
+    },
+    getIdListTrendingsOfTopicSuccess(state, action) {
+      state.trendingTopicsIdList = action.payload;
+      state.isLoading = false;
+    },
+    getIdListTrendingsOfTopicFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -53,6 +66,7 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+
     getPopularTopicsRequest(state) {
       state.isLoading = true;
     },
@@ -98,6 +112,10 @@ export const topicsSlice = createSlice({
       state.errors = action.payload;
     },
 
+    getTopicAnalyticsRequest() {},
+    getTopicAnalyticsSuccess(state, action) {
+      state.topicAnalytics = action.payload;
+    },
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({

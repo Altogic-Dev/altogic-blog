@@ -9,9 +9,11 @@ import Profile from '@/components/sidebar/Profile';
 import PublicationProfile from '@/components/sidebar/PublicationProfile';
 import PersonalFullStatistic from '@/components/sidebar/PersonalFullStatistic';
 import PeopleMatch from '@/components/sidebar/PeopleMatch';
+import PublicationMatch from '@/components/sidebar/PublicationMatch';
 import Footer from './Footer';
 
 export default function Sidebar({
+  getFollowingRequest,
   personalFullStatistic,
   topicMatch,
   peopleMatch,
@@ -27,41 +29,19 @@ export default function Sidebar({
   publicationProfile,
   isFollowing,
   isSubscribed,
+  Tag,
+  topics,
+  peoples,
+  query,
+  stories,
+  publications,
+  publicationsMatch,
 }) {
   return (
     <>
-      <form action="" className="hidden lg:block">
-        <div>
-          <div className="relative rounded-md shadow-sm">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg
-                className="w-5 h-5 text-gray-500"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M17.5 17.5L14.5834 14.5833M16.6667 9.58333C16.6667 13.4954 13.4954 16.6667 9.58333 16.6667C5.67132 16.6667 2.5 13.4954 2.5 9.58333C2.5 5.67132 5.67132 2.5 9.58333 2.5C13.4954 2.5 16.6667 5.67132 16.6667 9.58333Z"
-                  stroke="currentColor"
-                  strokeWidth="1.66667"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              className="focus:ring-purple-500 focus:border-purple-500 block w-full h-11 pl-10 sm:text-sm text-gray-500 border-gray-300 rounded-md placeholder:text-gray-500"
-              placeholder="Search"
-            />
-          </div>
-        </div>
-      </form>
       {personalFullStatistic && <PersonalFullStatistic />}
       {publicationProfile && <PublicationProfile />}
-      {topicMatch && <TopicMatch />}
+      {topicMatch && <TopicMatch topics={topics} query={query} />}
       {profile && (
         <Profile
           profile={profile}
@@ -78,13 +58,23 @@ export default function Sidebar({
       )}
       {mobilePopularStories && <MobilePopularStories />}
       {storiesYouFollow && <StoriesYouFollow />}
-      {(whoToFollow || topWriters) && <WhoToFollow isTopWriters={topWriters} />}
+      {(whoToFollow || topWriters) && (
+        <WhoToFollow isTopWriters={topWriters} Tag={Tag} />
+      )}
       {(popularTopics || relatedTopics) && (
         <PopularTopics isRelatedTopics={relatedTopics} />
       )}
-      {popularStories && <PopularStories />}
+      {popularStories && (
+        <PopularStories
+          title={query ? `Stories Match ${query}` : 'Popular Stories'}
+          stories={stories}
+        />
+      )}
 
-      {peopleMatch && <PeopleMatch />}
+      {peopleMatch && <PeopleMatch whoFollows={peoples} query={query} />}
+      {publicationsMatch && (
+        <PublicationMatch publications={publications} query={query} />
+      )}
 
       <Footer />
     </>

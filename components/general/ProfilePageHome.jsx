@@ -7,8 +7,7 @@ import { storyActions } from '@/redux/story/storySlice';
 import PostCard from '../PostCard';
 import ListObserver from '../ListObserver';
 
-function ProfilePageHome(props) {
-  const { userId } = props;
+function ProfilePageHome({ userId, bookmarkLists }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -34,7 +33,7 @@ function ProfilePageHome(props) {
   };
 
   useEffect(() => {
-    if (userStories > 1 || _.isNil(userStories)) getUserStories();
+    if (page > 1 || _.isNil(userStories)) getUserStories();
   }, [page]);
 
   return (
@@ -51,10 +50,11 @@ function ProfilePageHome(props) {
           timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
           title={story.title}
           infoText={story.excerpt}
-          badgeUrl="badgeUrl"
           badgeName={_.first(story.categoryNames)}
           min={story.estimatedReadingTime}
           images={_.first(story.storyImages)}
+          bookmarkLists={bookmarkLists}
+          story={story}
           optionButtons={{
             editStory: () => {
               router.push(`/write-a-story?id=${story._id}`);
@@ -66,7 +66,7 @@ function ProfilePageHome(props) {
               router.push(`stats-blog-post?id=${story._id}`);
             },
             deleteStory: () => {
-              dispatch(storyActions.deleteStoryRequest(story._id));
+              dispatch(storyActions.deleteStoryRequest({ storyId: story._id }));
             },
           }}
           actionMenu

@@ -1,8 +1,8 @@
 import React from 'react';
 import Head from 'next/head';
 import dynamic from 'next/dynamic';
-import Layout from '../layout/Layout';
-import StatsCard from '../components/StatsCard';
+import Layout from '@/layouts/Layout';
+import StatsCard from '@/components/StatsCard';
 
 const ViewAreaChart = dynamic(import('../components/ViewAreaChart'), {
   ssr: false,

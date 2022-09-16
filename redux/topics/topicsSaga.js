@@ -1,11 +1,17 @@
 import TopicsService from '@/services/topics';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import _ from 'lodash';
+import { call, fork, put, takeEvery, select, delay } from 'redux-saga/effects';
 
 import { topicsActions } from './topicsSlice';
 
-function* getLatestsOfTopicSaga({ payload: {topic,page,limit} }) {
+function* getLatestsOfTopicSaga({ payload: { topic, page, limit } }) {
   try {
-    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic,page,limit);
+    const { data, errors } = yield call(
+      TopicsService.getLatestsOfTopic,
+      topic,
+      page,
+      limit
+    );
 
     if (data) {
       yield put(topicsActions.getLatestsOfTopicSuccess(data));
@@ -18,9 +24,14 @@ function* getLatestsOfTopicSaga({ payload: {topic,page,limit} }) {
   }
 }
 
-function* getBestsOfTopicSaga({ payload: {topic,page,limit} }) {
+function* getBestsOfTopicSaga({ payload: { topic, page, limit } }) {
   try {
-    const { data, errors } = yield call(TopicsService.getBestsOfTopic, topic,page,limit);
+    const { data, errors } = yield call(
+      TopicsService.getBestsOfTopic,
+      topic,
+      page,
+      limit
+    );
 
     if (data) {
       yield put(topicsActions.getBestsOfTopicSuccess(data));
@@ -33,20 +44,45 @@ function* getBestsOfTopicSaga({ payload: {topic,page,limit} }) {
   }
 }
 
-// function* getTrendingsOfTopicsSaga({ payload: topic }) {
-//   try {
-//     const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
+function* getIdListTrendingsOfTopicsSaga({
+  payload: { topic, page, limit, date },
+}) {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getIdListTrendingsOfTopic,
+      topic,
+      page,
+      limit,
+      date
+    );
 
-//     if (data) {
-//       yield put(topicsActions.getLatestsOfTopicSuccess(data));
-//     }
-//     if (errors) {
-//       throw errors.items;
-//     }
-//   } catch (e) {
-//     yield put(topicsActions.getLatestsOfTopicFailure(e));
-//   }
-// }
+    if (data) {
+      yield put(topicsActions.getIdListTrendingsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getIdListTrendingsOfTopicFailure(e));
+  }
+}
+function* getTrendingsOfTopicsSaga({ payload: stories }) {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getTrendingsOfTopic,
+      stories
+    );
+
+    if (data) {
+      yield put(topicsActions.getTrendingsOfTopicSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(topicsActions.getTrendingsOfTopicFailure(e));
+  }
+}
 
 function* getPopularTopicsSaga() {
   try {
@@ -93,6 +129,59 @@ function* getTopicTopWritersSaga({ payload: people }) {
     yield put(topicsActions.getTopicTopWritersFailure(e));
   }
 }
+function* insertTopicWritersSaga(story) {
+  const user = yield select((state) => state.auth.user);
+  const topicWriters = _.map(story.categoryNames, (topic) => ({
+    topic,
+    username: user.username,
+    profilePicture: user.profilePicture,
+    user: user._id,
+    story: story._id,
+  }));
+  yield call(TopicsService.insertTopicWriters, topicWriters);
+}
+export function* insertTopicsSaga(story) {
+  try {
+    const insertedTopics = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const topic of story.categoryNames) {
+      const { data } = yield call(TopicsService.isTopicExist, topic);
+      if (data && !data.isExist) {
+        insertedTopics.push({ name: topic });
+      }
+      yield delay(100);
+    }
+    if (!_.isEmpty(insertedTopics)) {
+      yield call(TopicsService.insertTopics, insertedTopics);
+    }
+    yield fork(insertTopicWritersSaga, story);
+  } catch (e) {
+    console.error(e);
+  }
+}
+export function* getTopicAnalyticsSaga({ payload: topicName }) {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getTopicAnalytics,
+      topicName
+    );
+    if (errors) throw errors;
+    else if (data) {
+      yield put(
+        topicsActions.getTopicAnalyticsSuccess({
+          storyCount: _.size(data.storyCount),
+          authorCount: _.size(data.userCount),
+          profilePictures: _.map(
+            data.profilePictures,
+            'groupby.profilePicture'
+          ),
+        })
+      );
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
 export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getLatestsOfTopicRequest.type,
@@ -102,10 +191,14 @@ export default function* rootSaga() {
     topicsActions.getBestsOfTopicRequest.type,
     getBestsOfTopicSaga
   );
-  // yield takeEvery(
-  //   topicsActions.getTrendingsOfTopicsRequest.type,
-  //   getTrendingsOfTopicsSaga
-  // );
+  yield takeEvery(
+    topicsActions.getTrendingsOfTopicRequest.type,
+    getTrendingsOfTopicsSaga
+  );
+  yield takeEvery(
+    topicsActions.getIdListTrendingsOfTopicRequest.type,
+    getIdListTrendingsOfTopicsSaga
+  );
   yield takeEvery(
     topicsActions.getPopularTopicsRequest.type,
     getPopularTopicsSaga
@@ -121,5 +214,9 @@ export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getTopicTopWritersIdListRequest.type,
     getTopicTopWritersIdListSaga
+  );
+  yield takeEvery(
+    topicsActions.getTopicAnalyticsRequest.type,
+    getTopicAnalyticsSaga
   );
 }

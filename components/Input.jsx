@@ -16,7 +16,7 @@ function Input({
     <div className="relative">
       <label
         htmlFor={id}
-        className={`block text-base font-medium text-slate-700 ${
+        className={`block text-base font-medium text-slate-700 mb-1 ${
           error && 'text-red-600'
         }`}
       >

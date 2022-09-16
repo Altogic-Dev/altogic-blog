@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
-import Layout from '@/layout/Layout';
 import PostCard from '@/components/PostCard';
 import YourTopics from '@/components/general/YourTopics';
 import { useRouter } from 'next/router';
@@ -10,21 +9,29 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 import { DateTime } from 'luxon';
 import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
+import { classNames } from '@/utils/utils';
 import _ from 'lodash';
-import Sidebar from '../../layout/Sidebar';
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
+import Layout from '@/layouts/Layout';
+import Sidebar from '@/layouts/Sidebar';
 
 export default function TagPage({ Home, Latest, Best }) {
-  const userId = useSelector((state) => _.get(state.auth.user, '_id'));
+  const user = useSelector((state) => state.auth.user);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const { tag } = router.query;
   const dispatch = useDispatch();
   const latestTopics = useSelector((state) => state.topics.latestTopics);
   const bestTopics = useSelector((state) => state.topics.bestTopics);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const trendingTopicsIdList = useSelector(
+    (state) => state.topics.trendingTopicsIdList
+  );
+  const trendingTopics = useSelector((state) => state.topics.trendingTopics);
 
   const [posts, setPosts] = useState([]);
 
@@ -46,33 +53,71 @@ export default function TagPage({ Home, Latest, Best }) {
       })
     );
   };
+  const getTrendings = (stories) => {
+    dispatch(
+      topicsActions.getTrendingsOfTopicRequest(
+        stories.map((person) => person.groupby.story)
+      )
+    );
+  };
+  const getTopicTopWritersIdListRequest = () => {
+    dispatch(
+      topicsActions.getIdListTrendingsOfTopicRequest({
+        topic: tag,
+        limit: 10,
+        page: 1,
+        date: DateTime.local().plus({ weeks: -1 }).toISODate(),
+      })
+    );
+  };
 
   useEffect(() => {
     if (tag) {
       if (Home) {
+        getTopicTopWritersIdListRequest();
         setSelectedIndex(0);
       } else if (Latest) {
         getLatests(1);
         setSelectedIndex(1);
       } else if (Best) {
         getBests(1);
-
         setSelectedIndex(2);
       }
+      dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
   }, [tag]);
 
   useEffect(() => {
     if (Home) {
-      console.log('s');
+      setPosts(trendingTopics);
     } else if (Latest) {
       setPosts(latestTopics);
     } else if (Best) {
       setPosts(bestTopics);
     }
-  }, [latestTopics, bestTopics]);
+  }, [latestTopics, bestTopics, trendingTopics]);
 
-  console.log(bestTopics);
+  useEffect(() => {
+    if (trendingTopicsIdList.length > 0) {
+      getTrendings(trendingTopicsIdList);
+    }
+  }, [trendingTopicsIdList]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
   return (
     <div>
       <Head>
@@ -147,18 +192,55 @@ export default function TagPage({ Home, Latest, Best }) {
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
                         actionMenu
+                        bookmarkList={bookmarkLists}
+                        story={post}
+                        bookmarks={bookmarks}
                         optionButtons={{
                           mute: () =>
                             dispatch(authActions.muteAuthorRequest(post.user)),
                           report: () =>
                             dispatch(
                               reportActions.reportStoryRequest({
-                                userId,
+                                userId: user?._id,
+                                storyId: post._id,
+                                reportedUserId: post.user,
+                              })
+                            ),
+                        }}
+                      />
+                    ))}
+                  </Tab.Panel>
+                  <Tab.Panel className="divide-y divide-gray-200">
+                    {posts.map((post) => (
+                      <PostCard
+                        key={post._id}
+                        noActiveBookmark
+                        normalMenu
+                        actionMenu
+                        authorUrl={`/${post.username}`}
+                        authorName={post.username}
+                        authorImage={post.userProfilePicture}
+                        storyUrl={`/story/${post.storySlug}`}
+                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
+                        title={post.title}
+                        infoText={post.infoText}
+                        badgeName={_.first(post.categoryNames)}
+                        min={post.estimatedReadingTime}
+                        images={_.first(post.storyImages)}
+                        bookmarkList={bookmarkLists}
+                        story={post}
+                        bookmarks={bookmarks}
+                        optionButtons={{
+                          mute: () =>
+                            dispatch(authActions.muteAuthorRequest(post.user)),
+                          report: () =>
+                            dispatch(
+                              reportActions.reportStoryRequest({
+                                userId: user?._id,
                                 storyId: post._id,
                                 reportedUserId: post.user,
                               })
@@ -180,51 +262,20 @@ export default function TagPage({ Home, Latest, Best }) {
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
                         actionMenu
+                        bookmarkList={bookmarkLists}
+                        story={post}
+                        bookmarks={bookmarks}
                         optionButtons={{
                           mute: () =>
                             dispatch(authActions.muteAuthorRequest(post.user)),
                           report: () =>
                             dispatch(
                               reportActions.reportStoryRequest({
-                                userId,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
-                  </Tab.Panel>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        key={post._id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        actionMenu
-                        optionButtons={{
-                          mute: () =>
-                            dispatch(authActions.muteAuthorRequest(post.user)),
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId,
+                                userId: user?._id,
                                 storyId: post._id,
                                 reportedUserId: post.user,
                               })

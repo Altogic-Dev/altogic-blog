@@ -6,8 +6,8 @@ import ChangePassword from '@/components/settings/ChangePassword';
 import MySessions from '@/components/settings/MySessions';
 import MyPlans from '@/components/settings/MyPlans';
 import ChangeEmail from '@/components/settings/ChangeEmail';
-import Layout from '../layout/Layout';
-import constants from '../constants';
+import Layout from '@/layouts/Layout';
+import constants from '@/constants';
 
 export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
