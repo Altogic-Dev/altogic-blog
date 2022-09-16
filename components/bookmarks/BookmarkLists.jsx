@@ -4,7 +4,6 @@ import {
   addBookmarkRequest,
   deleteBookmarkRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
-import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { XIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import Avatar from '../profile/Avatar';
 import { useRouter } from 'next/router';
+import Avatar from '../profile/Avatar';
 
 export default function NotificationItem({ notification }) {
   const router = useRouter();

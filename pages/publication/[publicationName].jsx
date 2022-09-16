@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { isNil } from 'lodash';
 import Head from 'next/head';
-import Layout from 'layouts/Layout';
+import Layout from '@/layouts/Layout';
 import SocialIcons from '@/components/publication/SocialIcons';
 import Sidebar from '@/layouts/Sidebar';
 import PublicationPostCard from '@/components/PublicationsPostCard';
