@@ -12,6 +12,7 @@ const initialState = {
   updateProfileError: null,
   changeEmailError: null,
   user: AuthService.getUser(),
+  profileUser: null,
   isMuted: false,
   isAuthenticated: false,
   sessions: [],
@@ -211,11 +212,22 @@ export const authSlice = createSlice({
     changeEmailSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;
-      // window.location.href = `/mail-verification?email=${state.user.email}`;
+      window.location.href = `/mail-verification?email=${state.user.email}`;
     },
     changeEmailFailure(state, action) {
       state.isLoading = false;
       state.changeEmailError = action.payload;
+    },
+    getUserByUserNameRequest(state) {
+      state.isLoading = true;
+    },
+    getUserByUserNameSuccess(state, action) {
+      state.isLoading = false;
+      state.profileUser = action.payload;
+    },
+    getUserByUserNameFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

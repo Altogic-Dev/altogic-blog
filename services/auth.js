@@ -96,5 +96,8 @@ const AuthService = {
   changeEmail({ email, password }) {
     return auth.changeEmail(password, email);
   },
+  getUserByUsername(username) {
+    return endpoint.get('user/username', { username });
+  },
 };
 export default AuthService;

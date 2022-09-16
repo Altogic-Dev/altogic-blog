@@ -13,11 +13,18 @@ import { DateTime } from 'luxon';
 import Topic from '@/components/basic/topic';
 import PublicationCard from '@/components/PublicationCard';
 import ListObserver from '@/components/ListObserver';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 export default function SearchResult() {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const searchResults = useSelector((state) => state.general.searchResult);
+  const user = useSelector((state) => state.auth.user);
+  const userFollowings = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
+
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [topicLimit, setTopicLimit] = useState(10);
   const [userLimit, setUserLimit] = useState(10);
@@ -32,6 +39,11 @@ export default function SearchResult() {
           userLimit,
           publicationLimit,
           postLimit,
+        })
+      );
+      dispatch(
+        followerConnectionActions.getFollowingUsersRequest({
+          userId: user?._id,
         })
       );
     }
@@ -152,7 +164,13 @@ export default function SearchResult() {
                     >
                       <ul className="divide-y divide-gray-200">
                         {searchResults?.users.map((people) => (
-                          <UserCard key={people._id} user={people} />
+                          <UserCard
+                            key={people._id}
+                            user={people}
+                            isFollowing={userFollowings.some(
+                              (u) => u.followingUser === people._id
+                            )}
+                          />
                         ))}
                       </ul>
                     </ListObserver>

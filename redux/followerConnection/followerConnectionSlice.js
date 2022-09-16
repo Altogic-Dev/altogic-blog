@@ -21,8 +21,12 @@ export const followerConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     unfollowRequest() {},
-    unfollowSuccess(state) {
+    unfollowSuccess(state, action) {
       state.isFollowing = false;
+      userFollowings = _.filter(
+        state.userFollowings,
+        (user) => user._id !== action.payload
+      );
     },
 
     followRequest() {},
@@ -55,7 +59,6 @@ export const followerConnectionSlice = createSlice({
     getFollowerUsersRequest() {},
     getFollowerUsersSuccess(state, action) {
       state.userFollowers = [...state.userFollowers, ...action.payload.data];
-
     },
 
     getFollowingUsersRequest() {},
