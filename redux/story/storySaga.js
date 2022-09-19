@@ -2,7 +2,10 @@ import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
-import { insertTopicsSaga } from '../topics/topicsSaga';
+import {
+  insertTopicsSaga,
+  insertTopicsWriterCountSaga,
+} from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
@@ -381,6 +384,7 @@ function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
 
     if (!_.isEmpty(story.categoryNames)) {
       yield fork(insertTopicsSaga, story);
+      yield fork(insertTopicsWriterCountSaga, story);
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
     yield put(storyActions.publishStorySuccess());
