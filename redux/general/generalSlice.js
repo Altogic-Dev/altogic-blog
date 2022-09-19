@@ -43,6 +43,7 @@ export const generalSlice = createSlice({
       state.isLoading = false;
     },
 
+    getFollowAndSubscribedInfoRequest() {},
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({

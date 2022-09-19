@@ -26,6 +26,21 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     console.error({ e });
   }
 }
+function* getFollowAndSubscribedInfoSaga({ payload: authorId }) {
+  try {
+    const { data, errors } = yield call(
+      GeneralService.getFollowAndSubscribedInfo,
+      authorId
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
+      yield put(subscribeConnectionActions.setIsSubscribed(data.isSubscribed));
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
 function* searchSaga({ payload }) {
   try {
     const { data, errors } = yield call(GeneralService.search, payload);
@@ -62,4 +77,8 @@ export default function* rootSaga() {
   );
   yield takeEvery(generalActions.searchRequest.type, searchSaga);
   yield takeEvery(generalActions.searchPreviewRequest.type, searchPreviewSaga);
+  yield takeEvery(
+    generalActions.getFollowAndSubscribedInfoRequest.type,
+    getFollowAndSubscribedInfoSaga
+  );
 }
