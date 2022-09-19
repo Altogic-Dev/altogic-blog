@@ -68,7 +68,10 @@ export default function Profile({ profile, isFollowing, isSubscribed }) {
         <span className="inline-block mb-3 text-slate-500 text-sm">
           {_.get(profile, 'followerCount')} Followers
         </span>
-        <p className="text-slate-500 text-xs mb-8">{_.get(profile, 'about')}</p>
+        <p
+          className="text-slate-500 text-xs mb-8"
+          dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
+        />
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
           {!isMyProfileState && (
             <button

@@ -23,7 +23,7 @@ export const followerConnectionSlice = createSlice({
     unfollowRequest() {},
     unfollowSuccess(state, action) {
       state.isFollowing = false;
-      userFollowings = _.filter(
+      state.userFollowings = _.filter(
         state.userFollowings,
         (user) => user._id !== action.payload
       );
