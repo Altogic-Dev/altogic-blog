@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
 import { Tab, Menu, Transition } from '@headlessui/react';
@@ -10,14 +10,17 @@ import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
 import MyStoriesPublished from './MyStoriesPublished';
 import MyStoriesDraft from './MyStoriesDraft';
+import { storyActions } from '@/redux/story/storySlice';
 
 export default function MyStories({ publishedPage, draftPage }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
+  const popularStories = useSelector((state) => state.story.popularStories);
   const userDraftStoriesInfo = useSelector(
     (state) => state.story.userDraftStoriesInfo
   );
 
+  const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user, setUser] = useState();
@@ -30,7 +33,7 @@ export default function MyStories({ publishedPage, draftPage }) {
 
   useEffect(() => {
     setUser(sessionUser);
-
+    dispatch(storyActions.popularStoriesRequest());
     if (publishedPage) setSelectedIndex(0);
     else if (draftPage) setSelectedIndex(1);
   }, []);

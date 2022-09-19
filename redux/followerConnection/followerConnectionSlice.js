@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
@@ -23,15 +22,15 @@ export const followerConnectionSlice = createSlice({
     unfollowRequest() {},
     unfollowSuccess(state, action) {
       state.isFollowing = false;
-      state.userFollowings = _.filter(
-        state.userFollowings,
-        (user) => user._id !== action.payload
+      state.userFollowings = state.userFollowings.filter(
+        (following) => following.followingUser !== action.payload
       );
     },
 
     followRequest() {},
-    followSuccess(state) {
+    followSuccess(state, action) {
       state.isFollowing = true;
+      state.userFollowings = [...state.userFollowings, action.payload];
     },
     getFollowingStoriesRequest(state) {
       state.followingStoriesLoading = true;
