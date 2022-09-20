@@ -30,7 +30,6 @@ export default function MyStories({ publishedPage, draftPage }) {
 
   useEffect(() => {
     setUser(sessionUser);
-
     if (publishedPage) setSelectedIndex(0);
     else if (draftPage) setSelectedIndex(1);
   }, []);
