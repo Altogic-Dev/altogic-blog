@@ -389,6 +389,18 @@ function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
     yield put(storyActions.publishStoryFailure(e));
   }
 }
+function* popularStoriesSaga() {
+  try {
+    const { data, errors } = yield call(StoryService.getPopularStories);
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(storyActions.popularStoriesSuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.popularStoriesFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield all([
@@ -427,5 +439,6 @@ export default function* rootSaga() {
     takeEvery(storyActions.cacheStoryRequest.type, cacheStorySaga),
     takeEvery(storyActions.getCacheStoryRequest.type, getCacheStorySaga),
     takeEvery(storyActions.publishStoryRequest.type, publishStorySaga),
+    takeEvery(storyActions.popularStoriesRequest.type, popularStoriesSaga),
   ]);
 }
