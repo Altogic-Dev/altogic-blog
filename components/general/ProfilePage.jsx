@@ -69,7 +69,7 @@ export default function ProfilePage({ About, Home, List }) {
   }, [followingPage, _.get(userState, '_id')]);
 
   const toggleFollowingsModal = () => {
-    if (!followingModal && _.isNil(userFollowings)) {
+    if (!followingModal && _.isEmpty(userFollowings)) {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
           userId: _.get(userState, '_id'),
