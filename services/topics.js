@@ -69,6 +69,12 @@ const TopicsService = {
   getTopicAnalytics(topicName) {
     return endpoint.get('/topic_writes/analytics', { topicName });
   },
+  isTopicWriterExist(topicName) {
+    return endpoint.get('/topic_writes/isTopicWriterExist', { topicName });
+  },
+  increaseWriterCounts(topics) {
+    return endpoint.post('/topic/increaseWriterCounts', { topics });
+  },
 };
 
 export default TopicsService;
