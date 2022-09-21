@@ -361,5 +361,6 @@ export default function* rootSaga() {
     takeEvery(storyActions.createStoryRequest.type, createStorySaga),
     takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
     takeEvery(storyActions.updateStoryFieldRequest.type, updateStoryFieldSaga),
+
   ]);
 }

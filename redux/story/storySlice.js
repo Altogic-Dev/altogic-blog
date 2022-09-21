@@ -17,6 +17,8 @@ const initialState = {
   isLoading: false,
   replies: [],
   replyCount: 0,
+
+
 };
 
 // Actual Slice
@@ -136,6 +138,7 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+   
 
     getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {
