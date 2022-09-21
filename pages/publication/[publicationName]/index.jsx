@@ -9,6 +9,7 @@ import Layout from '@/layouts/Layout';
 import SocialIcons from '@/components/publication/SocialIcons';
 import Sidebar from '@/layouts/Sidebar';
 import PublicationPostCard from '@/components/PublicationsPostCard';
+import { DateTime } from 'luxon';
 
 const posts = [
   {
@@ -199,10 +200,9 @@ const latests = [
 export default function Publications() {
   const router = useRouter();
   const { publicationName } = router.query;
-  const sessionUser = useSelector((state) => state.auth.user);
   const publication = useSelector((state) => state.publication.publication);
-  const publicationStories = useSelector(
-    (state) => state.publication.publicationStories
+  const latestPublicationStories = useSelector(
+    (state) => state.publication.latestPublicationStories
   );
   const dispatch = useDispatch();
 
@@ -211,9 +211,9 @@ export default function Publications() {
       publicationActions.getPublicationRequest(publicationName.toLowerCase())
     );
   };
-  const getPublicationStories = () => {
+  const getLatestPublicationStories = () => {
     dispatch(
-      publicationActions.getPublicationStoriesRequest(
+      publicationActions.getLatestPublicationStoriesRequest(
         publicationName.toLowerCase()
       )
     );
@@ -221,11 +221,11 @@ export default function Publications() {
   useEffect(() => {
     if (!isNil(publicationName)) {
       getPublication();
-      getPublicationStories();
+      getLatestPublicationStories();
     }
   }, [publicationName]);
 
-  console.log(publicationStories);
+  console.log(latestPublicationStories);
   return (
     <div>
       <Head>
@@ -296,23 +296,26 @@ export default function Publications() {
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>
-              <div className="flex items-center gap-8">
-                {publicationStories.map((post) => (
+              <div className="mt-5 flex items-center gap-8">
+                {latestPublicationStories?.map((post) => (
                   <PublicationPostCard
                     key={post._id}
-                    image={_.first(post.storyImages)}
-                    title={post.title}
-                    description={post.description}
+                    image={_.first(post.storyImages) ?? latests[0].image}
+                    title={post.title ?? "Untitled"}
+                    description={post.content ?? "Test"}
                     readMoreUrl={`/publications/${publicationName}/${post.slug}`}
                     personName={post.username}
-                    date={post.createdAt}
-                    storiesCount={5}
+                    date={DateTime.fromISO(
+                      post.createdAt
+                    ).toRelative()}
+                    storiesCount={post.user.storyCount}
                     bookmark={post.bookmark}
                     firstPadding
                     bigImage={_.first(post.storyImages)}
                     Ï
                   />
                 ))}
+               
               </div>
             </div>
           </div>
