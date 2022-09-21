@@ -35,7 +35,11 @@ export default function WriteAStorySettings() {
   const [deleteStoryModal, setDeleteStoryModal] = useState(false);
 
   const handleInsert = (e) => {
-    if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
+    if (
+      e.key === 'Enter' &&
+      _.size(inpCategoryNames) < 5 &&
+      !_.includes(inpCategoryNames, inpCategory)
+    ) {
       setInpCategoryNames((prev) => [inpCategory, ...prev]);
       setInpCategory('');
     }

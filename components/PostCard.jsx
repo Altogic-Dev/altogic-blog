@@ -14,7 +14,6 @@ export default function PostCard({
   draft,
   title,
   infoText,
-  badgeUrl,
   badgeName,
   min,
   actionMenu,
@@ -30,7 +29,6 @@ export default function PostCard({
 }) {
   const [createNewList, setCreateNewList] = useState(false);
   const [deleteListModal, setDeleteListModal] = useState(false);
-
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row items-center gap-4 md:gap-6 py-8 md:py-10">
@@ -78,7 +76,7 @@ export default function PostCard({
             </a>
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <a href={badgeUrl}>
+                <a href={`/tag/${badgeName}`}>
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
                     {badgeName}
                   </span>

@@ -1,14 +1,22 @@
 import { db, endpoint } from '@/utils/altogic';
 
 const StoryLikesService = {
-  like(userId, storyId, categoryNames) {
-    return endpoint.post(`/story_like/${userId}/${storyId}`, {
+  like(userId, storyId, authorId, categoryNames) {
+    return endpoint.post(`/story_like/${userId}/${storyId}/${authorId}`, {
       topics: categoryNames,
     });
   },
 
+  likeNormalize(likeNormalizedBody) {
+    return endpoint.post('/story_likes_normalized/like', likeNormalizedBody);
+  },
+
   unlike(userId, storyId) {
     return endpoint.delete(`/story_like/${userId}/${storyId}`);
+  },
+
+  unlikeNormalize(storyId) {
+    return endpoint.delete(`/story_likes_normalized/${storyId}`);
   },
 
   isLiked(userId, storyId) {

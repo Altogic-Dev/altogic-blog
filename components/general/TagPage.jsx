@@ -83,6 +83,7 @@ export default function TagPage({ Home, Latest, Best }) {
         getBests(1);
         setSelectedIndex(2);
       }
+      dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
   }, [tag]);
 
@@ -191,7 +192,6 @@ export default function TagPage({ Home, Latest, Best }) {
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
@@ -228,7 +228,6 @@ export default function TagPage({ Home, Latest, Best }) {
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
@@ -263,7 +262,6 @@ export default function TagPage({ Home, Latest, Best }) {
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
                         infoText={post.infoText}
-                        badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}

@@ -8,6 +8,7 @@ const initialState = {
   followingStoriesInfo: null,
   recommendedStories: null,
   recommendedStoriesInfo: null,
+  popularStories: null,
   story: null,
   moreUserStories: null,
   userStories: null,
@@ -134,7 +135,6 @@ export const storySlice = createSlice({
       state.isLoading = false;
     },
     updateStoryFailure(state, action) {
-      state.story = null;
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -185,6 +185,35 @@ export const storySlice = createSlice({
     updateStoryFieldRequest() {},
     updateStoryFieldSuccess(state, action) {
       state.story = action.payload;
+    },
+    cacheStoryRequest() {},
+
+    getCacheStoryRequest() {},
+    getCacheStorySuccess(state, action) {
+      state.story = action.payload;
+    },
+
+    publishStoryRequest() {},
+    publishStorySuccess(state) {
+      state.story = null;
+    },
+    publishStoryFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    clearStory(state) {
+      state.story = null;
+    },
+    popularStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    popularStoriesSuccess(state, action) {
+      state.popularStories = action.payload;
+    },
+    popularStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

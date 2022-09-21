@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { db, endpoint } from '@/utils/altogic';
+import { db, endpoint, cache } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
@@ -8,9 +8,9 @@ const StoryService = {
         const mutedUserQuery = _.map(mutedUsers, (user, index) =>
           index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
         );
-        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
+        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && (${mutedUserQuery})`;
       }
-      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
+      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate';
     };
 
     return db
@@ -27,28 +27,30 @@ const StoryService = {
       .get(true);
   },
 
-  getRecommendedStories(mutedUsers, page = 1, limit = 10) {
-    const query = () => {
-      if (_.isArray(mutedUsers) && !_.isEmpty(mutedUsers)) {
-        const mutedUserQuery = _.map(mutedUsers, (user, index) =>
-          index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
-        );
-        return `!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0 && (${mutedUserQuery})`;
-      }
-      return '!isDeleted && isPublished && !isPrivate && commentCount != 0 && readingCount != 0 && likeCount != 0';
-    };
+  getRecommendedStories(page = 1, limit = 10) {
+    return endpoint.get('story/recommended', { page, limit });
+  },
 
-    return db
-      .model('story')
-      .filter(query())
-      .sort('createdAt', 'desc')
-      .limit(limit)
-      .page(page)
-      .get(true);
+  GetRecommendedStoriesByUser({
+    recommendedTopics,
+    mutedUsers,
+    page = 1,
+    limit = 10,
+  }) {
+    return endpoint.put('/story/recommendedByUser', {
+      recommendedTopics,
+      mutedUsers,
+      page,
+      limit,
+    });
   },
 
   getStory(id) {
-    return db.model('story').object(id).get();
+    return db
+      .model('story')
+      .filter(`_id == '${id}'`)
+      .lookup({ field: 'publication' })
+      .get();
   },
 
   getStoryBySlug(storySlug) {
@@ -111,6 +113,9 @@ const StoryService = {
     return endpoint.post(`/reply_comments`, comment);
   },
 
+  createStory(story) {
+    return db.model('story').object(story._id).create(story);
+  },
   updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },
@@ -124,6 +129,22 @@ const StoryService = {
       updateType: 'set',
       value: newCategoryNames,
     });
+  },
+  cacheStory(story) {
+    return cache.set(`${story.storySlug}`, story, 60 * 15);
+  },
+  getCacheStory(storySlug) {
+    return cache.get(storySlug);
+  },
+  deleteCacheStory(storySlug) {
+    return cache.delete(storySlug);
+  },
+
+  publishStory(story) {
+    return endpoint.post('/story', story);
+  },
+  getPopularStories() {
+    return endpoint.get('/story/popular');
   },
 };
 

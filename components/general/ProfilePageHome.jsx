@@ -15,7 +15,6 @@ function ProfilePageHome({ userId, bookmarkLists }) {
 
   const [page, setPage] = useState(1);
   const PAGE_LIMIT = 6;
-
   const getUserStories = useCallback(() => {
     dispatch(
       storyActions.getUserStoriesRequest({
@@ -24,7 +23,7 @@ function ProfilePageHome({ userId, bookmarkLists }) {
         limit: PAGE_LIMIT,
       })
     );
-  }, [page]);
+  }, [page, userId]);
 
   const handleEndOfList = () => {
     if (!_.isNil(userStories) && _.size(userStories) >= PAGE_LIMIT) {
@@ -33,8 +32,8 @@ function ProfilePageHome({ userId, bookmarkLists }) {
   };
 
   useEffect(() => {
-    if (page > 1 || _.isNil(userStories)) getUserStories();
-  }, [page]);
+    if (page > 1 || (_.isNil(userStories) && userId)) getUserStories();
+  }, [page, userId]);
 
   return (
     <ListObserver onEnd={handleEndOfList}>
@@ -50,7 +49,6 @@ function ProfilePageHome({ userId, bookmarkLists }) {
           timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
           title={story.title}
           infoText={story.excerpt}
-          badgeUrl="badgeUrl"
           badgeName={_.first(story.categoryNames)}
           min={story.estimatedReadingTime}
           images={_.first(story.storyImages)}

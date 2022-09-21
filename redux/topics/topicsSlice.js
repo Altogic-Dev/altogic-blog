@@ -11,6 +11,7 @@ const initialState = {
   popularTopics: [],
   topWritersIdList: [],
   topWriters: [],
+  topicAnalytics: null,
   isLoading: false,
   error: null,
 };
@@ -65,7 +66,7 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-   
+
     getPopularTopicsRequest(state) {
       state.isLoading = true;
     },
@@ -111,6 +112,10 @@ export const topicsSlice = createSlice({
       state.errors = action.payload;
     },
 
+    getTopicAnalyticsRequest() {},
+    getTopicAnalyticsSuccess(state, action) {
+      state.topicAnalytics = action.payload;
+    },
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({

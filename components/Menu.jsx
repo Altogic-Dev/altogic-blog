@@ -6,31 +6,35 @@ import {
   BookOpenIcon,
   CogIcon,
   PencilIcon,
-  SearchCircleIcon,
+  SearchIcon,
 } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { useRouter } from 'next/router';
 import { realtime } from '@/utils/altogic';
+import { generalActions } from '@/redux/general/generalSlice';
 import Avatar from './profile/Avatar';
 import Button from './basic/button';
 import Notifications from './Notifications/Notifications';
 import HeaderDropdown from './HeaderDropdown';
 import { authActions } from '../redux/auth/authSlice';
+import Search from './AutoComplete/Search';
 
 export default function HeaderMenu() {
   const router = useRouter();
   const dispatch = useDispatch();
-
   const sessionUser = useSelector((state) => state.auth.user);
+  const searchResults = useSelector((state) => state.general.searchPreview);
+  const loading = useSelector((state) => state.general.isLoading);
   const [user, setUser] = useState();
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [hideMenu, setHideMenu] = useState(false);
   useEffect(() => {
     if (sessionUser) {
       setUser(sessionUser);
     }
   }, [sessionUser]);
-
   const logout = () => {
     dispatch(authActions.logoutRequest());
   };
@@ -57,10 +61,18 @@ export default function HeaderMenu() {
       });
     }
   }, [user]);
+
+  const handleOnSearch = (value) => {
+    dispatch(
+      generalActions.searchPreviewRequest({
+        query: value,
+      })
+    );
+  };
   return (
     <div>
       <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6">
-        <div className="flex justify-between items-center lg:justify-start md:space-x-10">
+        <div className="flex justify-between items-center lg:justify-start md:space-x-5">
           <div className="flex justify-start lg:w-0 lg:flex-1">
             <Link href="/">
               <a>
@@ -73,7 +85,12 @@ export default function HeaderMenu() {
               </a>
             </Link>
           </div>
-          <Popover.Group as="nav" className="hidden lg:flex gap-1">
+          <Popover.Group
+            as="nav"
+            className={`${
+              !hideMenu ? 'hidden lg:flex' : 'hidden'
+            } gap-1 transition-all duration-1000`}
+          >
             <Link href="/">
               <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
                 <HomeIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
@@ -94,7 +111,31 @@ export default function HeaderMenu() {
               </a>
             </Link>
           </Popover.Group>
-          <div className="flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 lg:w-0 gap-4">
+          <div
+            className={`${
+              !hideMenu && 'lg:w-0'
+            } flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 gap-4`}
+          >
+            <div
+              className="search"
+              onMouseLeave={() => {
+                setShowSuggestions(false);
+                setHideMenu(false);
+              }}
+              onMouseOver={() => setHideMenu(true)}
+              onFocus={() => setHideMenu(true)}
+            >
+              <Search
+                showSuggestions={showSuggestions}
+                setShowSuggestions={setShowSuggestions}
+                onSearch={handleOnSearch}
+                suggestions={searchResults}
+                loading={loading}
+              />
+              <Button className="search-button">
+                <SearchIcon className="w-5 h-5" />
+              </Button>
+            </div>
             <Button
               onClick={() => {
                 router.push('/write-a-story');
@@ -107,12 +148,6 @@ export default function HeaderMenu() {
               mobileNotifications={mobileNotifications}
               setMobileNotifications={setMobileNotifications}
             />
-            <Button
-              type="button"
-              className="inline-flex lg:hidden items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            >
-              <SearchCircleIcon className="w-5 h-5" />
-            </Button>
             <Link href="/settings">
               <a className="hidden lg:inline-flex items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                 <CogIcon className="w-5 h-5" />

@@ -4,7 +4,6 @@ import {
   addBookmarkRequest,
   deleteBookmarkRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
-import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';
@@ -28,26 +27,17 @@ export default function BookmarkLists({
         coverImages = coverImages.slice(1, 4);
         coverImages = [...coverImages, storyImages[0]];
       }
-      dispatch(
-        addBookmarkRequest({
-          list: list._id,
-          userId: user._id,
-          story: story._id,
-          coverImages,
-        })
-      );
-      dispatch(
-        notificationsActions.createNotificationRequest({
-          targetId: story._id,
-          targetTitle: story.title,
-          sentUsername: user.username,
-          sentUser: user._id,
-          type: 'bookmark',
-          targetSlug: story.slug,
-          sentUserProfilePicture: user.profilePicture,
-          user: story.user,
-        })
-      );
+      const req = {
+        list: list._id,
+        userId: user._id,
+        story: story._id,
+      };
+      if (coverImages.length > 0) {
+        coverImages = coverImages.pop();
+        req.coverImages = coverImages;
+      }
+
+      dispatch(addBookmarkRequest(req));
     } else {
       dispatch(
         deleteBookmarkRequest({

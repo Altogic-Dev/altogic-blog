@@ -1,5 +1,4 @@
-import { db } from '@/utils/altogic';
-import { addDays } from '@/utils/utils';
+import { db, endpoint } from '@/utils/altogic';
 
 const TopicsService = {
   getLatestsOfTopic(topic, page, limit) {
@@ -20,7 +19,7 @@ const TopicsService = {
       .limit(limit)
       .get();
   },
-  getIdListTrendingsOfTopic(topic,limit,page,date) {
+  getIdListTrendingsOfTopic(topic, limit, page, date) {
     return db
       .model('story_likes')
       .filter(`createdAt > ${date} && IN(this.topics, '${topic}')`)
@@ -57,6 +56,24 @@ const TopicsService = {
     query += people.join(`' || _id == '`);
     query += `'`;
     return db.model('users').filter(query).get();
+  },
+  isTopicExist(topic) {
+    return endpoint.get('/topic/isExist', { topicName: topic });
+  },
+  insertTopics(topics) {
+    return db.model('topics').create(topics);
+  },
+  insertTopicWriters(topics) {
+    return endpoint.put('/topic_writers', topics);
+  },
+  getTopicAnalytics(topicName) {
+    return endpoint.get('/topic_writes/analytics', { topicName });
+  },
+  isTopicWriterExist(topicName) {
+    return endpoint.get('/topic_writes/isTopicWriterExist', { topicName });
+  },
+  increaseWriterCounts(topics) {
+    return endpoint.post('/topic/increaseWriterCounts', { topics });
   },
 };
 

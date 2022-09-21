@@ -4,6 +4,10 @@ import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
 const initialState = {
   storyConnectInfo: null,
+  isLoading: false,
+  error: null,
+  searchResult: null,
+  searchPreview: null,
 };
 
 // Actual Slice
@@ -16,7 +20,30 @@ export const generalSlice = createSlice({
     getConnectInformationStorySuccess(state, action) {
       state.storyConnectInfo = action.payload;
     },
+    searchRequest(state) {
+      state.isLoading = true;
+    },
+    searchSuccess(state, action) {
+      state.searchResult = action.payload;
+      state.isLoading = false;
+    },
+    searchFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    searchPreviewRequest(state) {
+      state.isLoading = true;
+    },
+    searchPreviewSuccess(state, action) {
+      state.searchPreview = action.payload;
+      state.isLoading = false;
+    },
+    searchPreviewFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
 
+    getFollowAndSubscribedInfoRequest() {},
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({

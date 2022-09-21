@@ -1,7 +1,11 @@
 import _ from 'lodash';
-import { call, takeEvery, put, all, select } from 'redux-saga/effects';
+import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
+import {
+  insertTopicsSaga,
+  insertTopicsWriterCountSaga,
+} from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
@@ -86,18 +90,37 @@ function* createReplyComment({ payload: comment }) {
 function* getRecommendedStoriesSaga({ payload: { page } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const { data, errors } = yield call(
-      StoryService.getRecommendedStories,
-      _.get(user, 'mutedUser'),
-      page
-    );
-    if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(
-        storyActions.getRecommendedStoriesSuccess({
-          data: data.data,
-          info: data.info,
-        })
+
+    if (!_.isNil(user) && !_.isEmpty(user.recommendedTopics)) {
+      const { data, errors } = yield call(
+        StoryService.GetRecommendedStoriesByUser,
+        {
+          recommendedTopics: user.recommendedTopics,
+          mutedUsers: _.get(user, 'mutedUser'),
+          page,
+        }
       );
+      if (!_.isNil(data) && _.isNil(errors)) {
+        yield put(
+          storyActions.getRecommendedStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
+    } else {
+      const { data, errors } = yield call(
+        StoryService.getRecommendedStories,
+        page
+      );
+      if (!_.isNil(data) && _.isNil(errors)) {
+        yield put(
+          storyActions.getRecommendedStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
@@ -108,7 +131,7 @@ function* getStorySaga({ payload: id }) {
   try {
     const { data, errors } = yield call(StoryService.getStory, id);
     if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(storyActions.getStorySuccess(data));
+      yield put(storyActions.getStorySuccess(_.first(data)));
     }
   } catch (e) {
     console.error({ e });
@@ -306,24 +329,80 @@ function* createStorySaga({ payload }) {
     if (!_.isNil(data)) {
       yield put(storyActions.createStorySuccess(data));
     }
-    if (_.isNil(errors)) {
+    if (!_.isNil(errors)) {
       throw errors.items;
     }
   } catch (e) {
     yield put(storyActions.createStoryFailure(e));
   }
 }
-function* updateStorySaga({ payload }) {
+function* updateStorySaga({ payload: { story, onSuccess } }) {
   try {
-    const { data, errors } = yield call(StoryService.updateStory, payload);
+    const { data, errors } = yield call(StoryService.updateStory, story);
     if (!_.isNil(data)) {
       yield put(storyActions.updateStorySuccess(data));
+      if (_.isFunction(onSuccess)) onSuccess();
     }
-    if (_.isNil(errors)) {
+    if (!_.isNil(errors)) {
       throw errors.items;
     }
   } catch (e) {
     yield put(storyActions.updateStoryFailure(e));
+  }
+}
+function* cacheStorySaga({ payload: { story } }) {
+  try {
+    yield call(StoryService.cacheStory, story);
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* getCacheStorySaga({ payload: storySlug }) {
+  try {
+    const { data, errors } = yield call(StoryService.getCacheStory, storySlug);
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(storyActions.getCacheStorySuccess(data));
+    } else {
+      yield fork(getStoryBySlugSaga, { payload: storySlug });
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
+  try {
+    const operation = isEdited
+      ? StoryService.updateStory
+      : StoryService.publishStory;
+
+    const { errors } = yield call(operation, story);
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isEmpty(story.categoryNames)) {
+      yield fork(insertTopicsSaga, story);
+      yield fork(insertTopicsWriterCountSaga, story);
+    }
+    yield call(StoryService.deleteCacheStory, story.storySlug);
+    yield put(storyActions.publishStorySuccess());
+    if (_.isFunction(onSuccess)) onSuccess();
+  } catch (e) {
+    yield put(storyActions.publishStoryFailure(e));
+  }
+}
+function* popularStoriesSaga() {
+  try {
+    const { data, errors } = yield call(StoryService.getPopularStories);
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(storyActions.popularStoriesSuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.popularStoriesFailure(e));
   }
 }
 
@@ -361,6 +440,9 @@ export default function* rootSaga() {
     takeEvery(storyActions.createStoryRequest.type, createStorySaga),
     takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
     takeEvery(storyActions.updateStoryFieldRequest.type, updateStoryFieldSaga),
-
+    takeEvery(storyActions.cacheStoryRequest.type, cacheStorySaga),
+    takeEvery(storyActions.getCacheStoryRequest.type, getCacheStorySaga),
+    takeEvery(storyActions.publishStoryRequest.type, publishStorySaga),
+    takeEvery(storyActions.popularStoriesRequest.type, popularStoriesSaga),
   ]);
 }

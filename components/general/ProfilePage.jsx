@@ -1,5 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import _ from 'lodash';
@@ -17,6 +23,8 @@ import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
+import { authActions } from '@/redux/auth/authSlice';
+import { generalActions } from '@/redux/general/generalSlice';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
@@ -24,19 +32,25 @@ export default function ProfilePage({ About, Home, List }) {
   const { username } = router.query;
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
-  const isMyProfile = username === _.get(sessionUser, 'username');
+  const isFollowing = useSelector(
+    (state) => state.followerConnection.isFollowing
+  );
+  const isSubscribed = useSelector(
+    (state) => state.subscribeConnection.isSubscribed
+  );
 
   const [userState, setUserState] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
-  const [isMyProfileState, setIsMyProfileState] = useState(isMyProfile);
-  const [bookmarkListLimit, setBookmarkListLimit] = useState(0);
+  const [isMyProfileState, setIsMyProfileState] = useState(false);
+  const [bookmarkListLimit, setBookmarkListLimit] = useState(3);
   const [unfollowed, setUnfollowed] = useState([]);
 
   const copyToClipboard = () => {
@@ -48,17 +62,17 @@ export default function ProfilePage({ About, Home, List }) {
   const getFollowingUsers = useCallback(() => {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
-        userId: _.get(sessionUser, '_id'),
+        userId: _.get(userState, '_id'),
         page: followingPage,
       })
     );
-  }, [followingPage]);
+  }, [followingPage, _.get(userState, '_id')]);
 
   const toggleFollowingsModal = () => {
-    if (!followingModal && _.isNil(userFollowings)) {
+    if (!followingModal && _.isEmpty(userFollowings)) {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
-          userId: _.get(sessionUser, '_id'),
+          userId: _.get(userState, '_id'),
           page: followingPage,
         })
       );
@@ -105,15 +119,38 @@ export default function ProfilePage({ About, Home, List }) {
   }, []);
 
   useEffect(() => {
-    if (followingPage > 1 || _.isNil(userFollowings)) getFollowingUsers();
-  }, [followingPage]);
+    if (
+      followingPage > 1 ||
+      (_.isEmpty(userFollowings) && _.get(userState, '_id'))
+    ) {
+      getFollowingUsers();
+    }
+  }, [followingPage, _.get(userState, '_id')]);
 
   useEffect(() => {
-    setIsMyProfileState(isMyProfile);
-  }, [isMyProfile]);
-  useEffect(() => {
-    setUserState(sessionUser);
-  }, [sessionUser]);
+    if (username) {
+      setIsMyProfileState(username === _.get(sessionUser, 'username'));
+    }
+  }, [username]);
+
+  useLayoutEffect(() => {
+    if (!isMyProfileState && username) {
+      dispatch(authActions.getUserByUserNameRequest(username));
+    }
+  }, [username]);
+
+  useLayoutEffect(() => {
+    if (sessionUser) {
+      setUserState(isMyProfileState ? sessionUser : profileUser);
+      if (!isMyProfileState && profileUser) {
+        dispatch(
+          generalActions.getFollowAndSubscribedInfoRequest(
+            _.get(profileUser, '_id')
+          )
+        );
+      }
+    }
+  }, [isMyProfileState, profileUser, sessionUser]);
 
   useEffect(() => {
     if (username && selectedIndex === 1) {
@@ -262,7 +299,7 @@ export default function ProfilePage({ About, Home, List }) {
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <ProfilePageHome
-                      userId={_.get(sessionUser, '_id')}
+                      userId={_.get(userState, '_id')}
                       bookmarkLists={bookmarkLists}
                     />
                   </Tab.Panel>
@@ -292,8 +329,8 @@ export default function ProfilePage({ About, Home, List }) {
                     />
                     {!isMyProfileState && (
                       <AboutSubscribeCard
-                        name="Olivia Rhye"
-                        mailAddress="oliviarhye@gmail.com"
+                        name={_.get(userState, 'name')}
+                        mailAddress={_.get(userState, 'mailAddress')}
                       />
                     )}
                   </Tab.Panel>
@@ -316,6 +353,8 @@ export default function ProfilePage({ About, Home, List }) {
                   username: _.get(userState, 'username'),
                   about: _.get(userState, 'about'),
                 }}
+                isFollowing={isFollowing}
+                isSubscribed={isSubscribed}
               />
             </div>
             {/* Mobile Sidebar */}

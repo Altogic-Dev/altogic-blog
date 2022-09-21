@@ -1,75 +1,54 @@
+import { DateTime } from 'luxon';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { storyActions } from '@/redux/story/storySlice';
+import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
-export default function PopularStories() {
-    const stories = [
-        {
-          id: 0,
-          image:
-            'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          name: 'Marley Rhiel Madsen',
-          desc: 'Lorem Ipsum Dolor Sit Amet',
-          intermediateText: 'published',
-          time: '1 hour ago',
-        },
-        {
-          id: 1,
-          image:
-            'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          name: 'Omar Lipshutz',
-          desc: 'Sed ullamcorper neque et nisl efficitur, eget molestie dolor ultrices.',
-          intermediateText: 'clapped for',
-          time: '3 days ago',
-        },
-        {
-          id: 2,
-          image:
-            'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          name: 'Marley Rhiel Madsen',
-          desc: 'Lorem Ipsum Dolor Sit Amet',
-          intermediateText: 'published',
-          time: '1 hour ago',
-        },
-        {
-          id: 3,
-          image:
-            'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          name: 'Marley Rhiel Madsen',
-          desc: 'Lorem Ipsum Dolor Sit Amet',
-          intermediateText: 'published',
-          time: '1 hour ago',
-        },
-        {
-          id: 4,
-          image:
-            'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-          name: 'Marley Rhiel Madsen',
-          desc: 'Lorem Ipsum Dolor Sit Amet',
-          intermediateText: 'published',
-          time: '1 hour ago',
-        },
-      ];
+export default function PopularStories({ title, stories }) {
+  const popularStories = useSelector((state) => state.story.popularStories);
+  const dispatch = useDispatch();
+  const [storyList, setStoryList] = useState([]);
+
+  useEffect(() => {
+    if (!stories) {
+      dispatch(storyActions.popularStoriesRequest());
+    }
+  }, [stories]);
+
+  useEffect(() => {
+    setStoryList(stories || popularStories);
+  }, [popularStories, stories]);
+
   return (
     <div>
-      <SidebarTitle title="Popular Stories" spacing="mb-4" />
+      <SidebarTitle title={title} spacing="mb-4" />
       <ul className="space-y-3">
-        {stories.map((story) => (
-          <li key={story.id} className="flex gap-3">
-            <img
-              className="rounded-full w-[30px] h-[30px]"
-              src={story.image}
-              alt={story.name}
-            />
-            <span className="text-sm font-light tracking-sm text-slate-500">
-              <strong className="text-slate-600 font-semibold">
-                {story.name}
-              </strong>{' '}
-              {story.intermediateText}{' '}
-              <strong className="text-slate-600 font-semibold">
-                {story.desc}
-              </strong>{' '}
-              <span className="text-slate-400 text-xs">{story.time}</span>
-            </span>
-          </li>
+        {storyList?.map((story) => (
+          <Link href={`/story/${story.slug}`} key={story._id}>
+            <a className="flex items-center gap-3">
+              <li className="flex gap-3">
+                <img
+                  className="rounded-full w-[30px] h-[30px]"
+                  src={story.storyImages[0]}
+                  alt={story.title}
+                />
+                <div className="flex justify-center">
+                  <div className="flex flex-col text-sm font-light tracking-sm">
+                    <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
+                      {story.title}
+                    </span>
+                    <span className="text-slate-500 text-xs w-40 tracking-sm line-clamp-3">
+                      {story.excerpt}
+                    </span>
+                  </div>
+                  <span className="text-slate-400 text-xs">
+                    {DateTime.fromISO(story.createdAt).toRelative()}
+                  </span>
+                </div>
+              </li>
+            </a>
+          </Link>
         ))}
       </ul>
     </div>
