@@ -272,7 +272,7 @@ export default function Publications() {
             </div>
             <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8 mb-[60px]">
               <div className="lg:pl-8 lg:pr-8 divide-y divide-gray-200">
-                {publicationStories.map((post) => (
+                {posts.map((post) => (
                   <PublicationPostCard
                     key={post._id}
                     image={_.first(post.storyImages)}
@@ -281,7 +281,7 @@ export default function Publications() {
                     readMoreUrl={`/publications/${publicationName}/${post.slug}`}
                     personName={post.username}
                     date={post.createdAt}
-                    storiesCount={sessionUser.storyCount}
+                    storiesCount={5}
                     bookmark={post.bookmark}
                     firstPadding
                     bigImage={_.first(post.storyImages)}
@@ -297,7 +297,7 @@ export default function Publications() {
                 Latest
               </h2>
               <div className="flex items-center gap-8">
-                {latests.map((post) => (
+                {publicationStories.map((post) => (
                   <PublicationPostCard
                     key={post._id}
                     image={_.first(post.storyImages)}
@@ -306,7 +306,7 @@ export default function Publications() {
                     readMoreUrl={`/publications/${publicationName}/${post.slug}`}
                     personName={post.username}
                     date={post.createdAt}
-                    storiesCount={sessionUser.storyCount}
+                    storiesCount={5}
                     bookmark={post.bookmark}
                     firstPadding
                     bigImage={_.first(post.storyImages)}
