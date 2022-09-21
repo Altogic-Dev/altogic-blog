@@ -1,5 +1,5 @@
 import { toMonthName } from '@/utils/utils';
-import _, { first } from 'lodash';
+import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 
 import {
@@ -42,7 +42,6 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
       });
     } else {
       firstData?.forEach((obj) => {
-        console.log(obj)
         tempData = {
           ...tempData,
           [obj.groupby.group]: {
@@ -73,7 +72,6 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
     setData(tempStack);
   }, [firstData, secondData]);
 
-  console.log(data)
   return (
     <div className="w-full h-[280px] md:h-[550px]">
       {!(firstData?.length === 0 && secondData?.length ===0) ? (

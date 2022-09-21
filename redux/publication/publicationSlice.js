@@ -46,11 +46,11 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     getPublicationStoriesSuccess(state, action) {
-      state.publication = action.payload;
+      state.publicationStories = action.payload;
       state.isLoading = false;
 
     },
-    getPublicationStoriesailure(state, action) {
+    getPublicationStoriesFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
       

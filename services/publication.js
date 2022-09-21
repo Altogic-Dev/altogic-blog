@@ -18,7 +18,7 @@ const PublicationService = {
   getPublicationStories(publicationName) {
     return db
       .model('story')
-      .filter(`publicationName == '${publicationName}' && isPublication == true'`)
+      .filter(`publicationName == '${publicationName}' && isPublished == true`)
       .get();
   },
 };

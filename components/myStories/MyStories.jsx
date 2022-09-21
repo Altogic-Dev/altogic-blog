@@ -5,12 +5,12 @@ import _ from 'lodash';
 import Link from 'next/link';
 import { Tab, Menu, Transition } from '@headlessui/react';
 import Button from '@/components/basic/button';
+import { storyActions } from '@/redux/story/storySlice';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
 import MyStoriesPublished from './MyStoriesPublished';
 import MyStoriesDraft from './MyStoriesDraft';
-import { storyActions } from '@/redux/story/storySlice';
 
 export default function MyStories({ publishedPage, draftPage }) {
   const sessionUser = useSelector((state) => state.auth.user);
