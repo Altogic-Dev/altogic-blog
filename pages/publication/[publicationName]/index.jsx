@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
-import { isNil } from 'lodash';
+import _, { isNil } from 'lodash';
 import Head from 'next/head';
 import Layout from '@/layouts/Layout';
 import SocialIcons from '@/components/publication/SocialIcons';
@@ -199,14 +199,24 @@ const latests = [
 export default function Publications() {
   const router = useRouter();
   const { publicationName } = router.query;
-  const { publication } = useSelector((state) => state.publication);
+  const sessionUser = useSelector((state) => state.auth.user);
+  const publication = useSelector((state) => state.publication.publication);
+  const publicationStories = useSelector(
+    (state) => state.publication.publicationStories
+  );
   const dispatch = useDispatch();
 
   const getPublication = () => {
-    dispatch(publicationActions.getPublicationRequest(publicationName));
+    dispatch(
+      publicationActions.getPublicationRequest(publicationName.toLowerCase())
+    );
   };
   const getPublicationStories = () => {
-    dispatch(publicationActions.getPublicationStoriesRequest(publicationName));
+    dispatch(
+      publicationActions.getPublicationStoriesRequest(
+        publicationName.toLowerCase()
+      )
+    );
   };
   useEffect(() => {
     if (!isNil(publicationName)) {
@@ -215,6 +225,7 @@ export default function Publications() {
     }
   }, [publicationName]);
 
+  console.log(publicationStories);
   return (
     <div>
       <Head>
@@ -263,17 +274,17 @@ export default function Publications() {
               <div className="lg:pl-8 lg:pr-8 divide-y divide-gray-200">
                 {posts.map((post) => (
                   <PublicationPostCard
-                    key={post.id}
-                    image={post.image}
+                    key={post._id}
+                    image={_.first(post.storyImages)}
                     title={post.title}
                     description={post.description}
-                    readMoreUrl={post.readMoreUrl}
-                    personName={post.personName}
-                    date={post.date}
-                    storiesCount={post.storiesCount}
+                    readMoreUrl={`/publications/${publicationName}/${post.slug}`}
+                    personName={post.username}
+                    date={post.createdAt}
+                    storiesCount={5}
                     bookmark={post.bookmark}
-                    firstPadding={post.firstPadding}
-                    bigImage={post.bigImage}
+                    firstPadding
+                    bigImage={_.first(post.storyImages)}
                   />
                 ))}
               </div>
@@ -286,19 +297,20 @@ export default function Publications() {
                 Latest
               </h2>
               <div className="flex items-center gap-8">
-                {latests.map((latest) => (
+                {publicationStories.map((post) => (
                   <PublicationPostCard
-                    key={latest.id}
-                    image={latest.image}
-                    title={latest.title}
-                    description={latest.description}
-                    readMoreUrl={latest.readMoreUrl}
-                    personName={latest.personName}
-                    date={latest.date}
-                    storiesCount={latest.storiesCount}
-                    bookmark={latest.bookmark}
-                    firstPadding={latest.firstPadding}
-                    bigImage={latest.bigImage}
+                    key={post._id}
+                    image={_.first(post.storyImages)}
+                    title={post.title}
+                    description={post.description}
+                    readMoreUrl={`/publications/${publicationName}/${post.slug}`}
+                    personName={post.username}
+                    date={post.createdAt}
+                    storiesCount={5}
+                    bookmark={post.bookmark}
+                    firstPadding
+                    bigImage={_.first(post.storyImages)}
+                    Ï
                   />
                 ))}
               </div>

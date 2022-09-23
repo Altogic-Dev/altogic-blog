@@ -113,7 +113,6 @@ function* authenticateWithProvider({ payload: provider }) {
   }
 }
 function* updateFollowingTopicsSaga({ payload: { topics } }) {
-  console.log(topics);
 
   try {
     const { data, errors } = yield call(

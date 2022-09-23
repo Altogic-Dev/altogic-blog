@@ -1,114 +1,153 @@
-import React from 'react';
-import Head from 'next/head';
-import {
-  ArrowNarrowLeftIcon,
-  ArrowNarrowRightIcon,
-} from '@heroicons/react/solid';
-import dynamic from 'next/dynamic';
 import Layout from '@/layouts/Layout';
+import Head from 'next/head';
 import StatsCard from '@/components/StatsCard';
-
-const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
-  ssr: false,
-});
+import { useDispatch, useSelector } from 'react-redux';
+import { statsActions } from '@/redux/stats/statsSlice';
+import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
+import Chart from '@/components/stats/chart';
+import { parseHtml } from '@/utils/utils';
+import Link from 'next/link';
 
 const statCards = [
   {
     title: 'Total Blogs',
-    number: '5',
-    percentNumber: '60',
-    lastTime: 'last 12 Months',
-    upDown: 1,
   },
   {
-    title: 'Total Blogs',
-    number: '5',
-    percentNumber: '60',
-    lastTime: 'last 12 Months',
-    upDown: 0,
+    title: 'Total Views Received',
   },
   {
-    title: 'Total Blogs',
-    number: '5',
-    percentNumber: '60',
-    lastTime: 'last 12 Months',
-    upDown: 1,
+    title: 'Average Reading Time',
   },
   {
-    title: 'Total Blogs',
-    number: '5',
-    percentNumber: '60',
-    lastTime: 'last 12 Months',
-    upDown: 0,
+    title: 'Total Likes Received',
   },
   {
-    title: 'Total Blogs',
-    number: '5',
-    percentNumber: '60',
-    lastTime: 'last 12 Months',
-    upDown: 1,
-  },
-];
-
-const statistics = [
-  {
-    title:
-      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
-    description:
-      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
-    description:
-      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
-    description:
-      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
-    description:
-      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
-    description:
-      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
+    title: 'Total Replies Received',
   },
 ];
 
 export default function Stats() {
+  const [stats, setStats] = useState([]);
+  const [percentages, setPercentages] = useState([]);
+  const dispatch = useDispatch();
+
+
+  const user = useSelector((state) => state.auth.user);
+  const statisticsData = useSelector((state) => state.stats.statistics);
+  const storiesStatistics = useSelector(
+    (state) => state.stats.storiesStatistics
+  );
+
+
+
+  const getStatistics = () => {
+    dispatch(statsActions.getStatisticsRequest({ userId: user._id }));
+  };
+  const getAllStoriesStatistics = () => {
+    dispatch(statsActions.getAllStoriesStatisticsRequest(user._id));
+  };
+
+  useEffect(() => {
+    getStatistics();
+    getAllStoriesStatistics();
+  }, []);
+
+  useEffect(() => {
+    if (statisticsData) {
+      setStats(() => {
+        const temp = [];
+
+        temp['Total Blogs'] = _.first(statisticsData.totalBlogs)?.count ?? 0;
+        temp['Total Reading Time'] =
+          _.first(statisticsData.totalReading)?.sum ?? 0;
+        temp['Average Reading Time'] = (
+          _.first(statisticsData.totalReading)?.count
+            ? _.first(statisticsData.totalReading).sum /
+              _.first(statisticsData.totalReading).count
+            : 100
+        ).toFixed(1);
+        temp['Total Likes Received'] =
+          _.first(statisticsData.totalLikes)?.count ?? 0;
+        temp['Total Views Received'] =
+          _.first(statisticsData.totalViews)?.count ?? 0;
+
+        temp['Total Replies Received'] =
+          _.first(statisticsData.totalReplies)?.count ?? 0;
+
+        return temp;
+      });
+      setPercentages(() => {
+        const temp = [];
+        try {
+          temp['Total Blogs'] =
+            (100 *
+              (_.first(statisticsData.totalBlogsThisYear).count -
+                _.first(statisticsData.totalBlogsLastYear).count)) /
+            _.first(statisticsData.totalBlogsLastYear).count;
+        } catch (error) {
+          temp['Total Blogs'] = 100;
+        }
+
+        try {
+          temp['Total Replies Received'] =
+            (100 *
+              (_.first(statisticsData.totalRepliesThisYear).count -
+                _.first(statisticsData.totalRepliesLastYear).count)) /
+            _.first(statisticsData.totalRepliesLastYear).count;
+        } catch (error) {
+          temp['Total Replies Received'] = 100;
+        }
+        try {
+          temp['Total Likes Received'] =
+            (100 *
+              (_.first(statisticsData.totalLikesThisYear).count -
+                _.first(statisticsData.totalLikesLastYear).count)) /
+            _.first(statisticsData.totalLikesLastYear).count;
+        } catch (error) {
+          temp['Total Likes Received'] = 100;
+        }
+        try {
+          temp['Total Likes Received'] =
+            (100 *
+              (_.first(statisticsData.totalViewsThisYear).count -
+                _.first(statisticsData.totalViewsLastYear).count)) /
+            _.first(statisticsData.totalViewsLastYear).count;
+        } catch (error) {
+          temp['Total Views Received'] = 100;
+        }
+        try {
+          temp['Total Reading Time'] =
+            (100 *
+              (_.first(statisticsData.totalReadingThisYear).sum -
+                _.first(statisticsData.totalReadingLastYear).count)) /
+            _.first(statisticsData.totalReadingLastYear).count;
+        } catch (error) {
+          temp['Total Reading Time'] = 100;
+        }
+        try {
+          temp['Average Reading Time'] = (
+            (100 *
+              (_.first(statisticsData.totalReadingThisYear).sum /
+                _.first(statisticsData.totalReadingThisYear).count -
+                _.first(statisticsData.totalReadingLastYear).sum /
+                  _.first(statisticsData.totalReadingLastYear).count)) /
+            (_.first(statisticsData.totalReadingLastYear).sum /
+              _.first(statisticsData.totalReadingLastYear).count)
+          ).toFixed(1);
+        } catch (error) {
+          if (!_.first(statisticsData.totalReadingThisYear)?.count) {
+            temp['Average Reading Time'] = -100;
+          } else {
+            temp['Average Reading Time'] = 100;
+          }
+        }
+
+        return temp;
+      });
+    }
+  }, [statisticsData]);
+
   return (
     <div>
       <Head>
@@ -155,47 +194,16 @@ export default function Stats() {
               <StatsCard
                 key={statCard.title}
                 title={statCard.title}
-                number={statCard.number}
-                percentNumber={statCard.percentNumber}
-                lastTime={statCard.lastTime}
-                upDown={statCard.upDown}
+                number={stats[statCard.title]}
+                percentNumber={percentages[statCard.title]}
+                lastTime="last 12 Months"
+                upDown={percentages[statCard.title] >= 0 ? 1 : -1}
               />
             ))}
           </div>
-          <div className="mt-12 md:mt-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-7">
-              <h2 className="text-slate-700 text-2xl sm:text-3xl tracking-md">
-                Total Blogs last <span className="font-medium">12 Months</span>
-              </h2>
-              <div className="relative z-0 inline-flex shadow-sm rounded-md">
-                <button
-                  type="button"
-                  className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                >
-                  24 Hours
-                </button>
-                <button
-                  type="button"
-                  className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                >
-                  7 Days
-                </button>
-                <button
-                  type="button"
-                  className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                >
-                  30 Days
-                </button>
-                <button
-                  type="button"
-                  className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                >
-                  12 Months
-                </button>
-              </div>
-            </div>
-            <ReadingBarChart />
-          </div>
+          <hr className="mt-10 pb-10" />
+
+          <Chart />
           <div>
             {/* Desktop Statistics */}
             <div className="hidden lg:block mt-12 md:mt-20 border border-gray-200 rounded-lg overflow-hidden">
@@ -213,9 +221,9 @@ export default function Stats() {
                           <tr>
                             <th
                               scope="col"
-                              className="py-3.5 pl-4 pr-3 text-center text-xs font-medium text-slate-600 sm:pl-6"
+                              className="py-3.5 pl-4 pr-3 text-start text-xs font-medium text-slate-600 sm:pl-6"
                             >
-                              <span className="sr-only">Name</span>
+                              Title
                             </th>
                             <th
                               scope="col"
@@ -250,35 +258,39 @@ export default function Stats() {
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 bg-white">
-                          {statistics.map((statistic) => (
-                            <tr key={statistic.email}>
+                          {storiesStatistics.map((statistic) => (
+                            <tr key={statistic._id}>
                               <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
                                 <p className="text-slate-800 text-base font-medium tracking-sm">
-                                  {statistic.title}
+                                  {statistic.title ?? 'Untitled'}
                                 </p>
-                                <p className="text-slate-500 text-sm tracking-sm">
-                                  {statistic.description}
+                                <p className="text-slate-500 text-sm tracking-sm text-ellipsis w-96 overflow-hidden">
+                                  {parseHtml(statistic.content) ?? ''}
                                 </p>
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                {statistic.views}
+                              <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
+                                {statistic.viewCount ?? 0}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                {statistic.reads}
+                              <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
+                                {statistic.readingCount ?? 0}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                %{statistic.readRatio}
+                              <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
+                                %
+                                {statistic.readingCount > 0
+                                  ? statistic.viewCount / statistic.readingCount
+                                  : 0}
                               </td>
-                              <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                {statistic.fans}
+                              <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
+                                {statistic.fanCount ?? 0}
                               </td>
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium tracking-sm sm:pr-6">
-                                <a
-                                  href={statistic.href}
-                                  className="text-purple-600 hover:text-purple-900"
+                                <Link
+                                  href={`/story/${statistic.storySlug}/stats`}
                                 >
-                                  Detail
-                                </a>
+                                  <a className="text-purple-600 hover:text-purple-900">
+                                    Detail
+                                  </a>
+                                </Link>
                               </td>
                             </tr>
                           ))}
@@ -288,199 +300,71 @@ export default function Stats() {
                   </div>
                 </div>
               </div>
-              <div className="py-5 px-6 border-t border-gray-200">
-                <nav className="px-4 flex items-center justify-between sm:px-0">
-                  <div className="-mt-px w-0 flex-1 flex">
-                    <a
-                      href="#"
-                      className="inline-flex items-center text-slate-700 px-3.5 py-2 text-sm font-medium border border-gray-300 rounded-[128px] hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      <ArrowNarrowLeftIcon
-                        className="mr-3 h-5 w-5 text-slate-700"
-                        aria-hidden="true"
-                      />
-                      Previous
-                    </a>
-                  </div>
-                  <div className="hidden md:-mt-px md:flex gap-2">
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-800 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      1
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-500 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      2
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-500 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      3
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-500 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      ...
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-500 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      8
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-500 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      9
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-10 h-10 text-slate-500 p-3 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      10
-                    </a>
-                  </div>
-                  <div className="-mt-px w-0 flex-1 flex justify-end">
-                    <a
-                      href="#"
-                      className="inline-flex items-center text-slate-700 px-3.5 py-2 text-sm font-medium border border-gray-300 rounded-[128px] hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      Next
-                      <ArrowNarrowRightIcon
-                        className="ml-3 h-5 w-5 text-slate-700"
-                        aria-hidden="true"
-                      />
-                    </a>
-                  </div>
-                </nav>
-              </div>
             </div>
             {/* Mobile Statistics */}
             <div className="lg:hidden">
               <ul className="divide-y divide-gray-200">
-                {statistics.map((statistic) => (
+                {storiesStatistics.map((statistic) => (
                   <li key={statistic.title} className="py-4">
                     <div className="p-4">
                       <p className="text-slate-800 text-base font-medium tracking-sm">
-                        {statistic.title}
+                        {statistic.title ?? 'Untitled'}
                       </p>
                       <p className="text-slate-500 text-sm tracking-sm">
-                        {statistic.description}
+                        {parseHtml(statistic.content) ?? ''}
                       </p>
                     </div>
                     <div className="flex items-center justify-center gap-2">
                       <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                         View
                         <span className="text-purple-700 text-lg font-semibold">
-                          {statistic.views}
+                          {statistic.viewCount ?? 0}
                         </span>
                       </span>
                       <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                         Reads
                         <span className="text-purple-700 text-lg font-semibold">
-                          {statistic.reads}
+                          {statistic.readCount ?? 0}
                         </span>
                       </span>
                       <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                         Read Ratio
                         <span className="text-purple-700 text-lg font-semibold">
-                          {statistic.readRatio}
+                          %
+                          {statistic.readingCount > 0
+                            ? statistic.viewCount / statistic.readingCount
+                            : 0}
                         </span>
                       </span>
                       <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                         Fans
                         <span className="text-purple-700 text-lg font-semibold">
-                          {statistic.fans}
+                          {statistic.fanCount ?? 0}
                         </span>
                       </span>
-                      <a
-                        href={statistic.href}
-                        className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg"
-                      >
-                        Detail
-                        <svg
-                          className="w-6 h-6 text-purple-700"
-                          viewBox="0 0 25 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M4.89941 12H20.8994M20.8994 12L14.8994 6M20.8994 12L14.8994 18"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </a>
+                      <Link href={`/story/${statistic.storySlug}/stats`}>
+                        <a className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
+                          Detail
+                          <svg
+                            className="w-6 h-6 text-purple-700"
+                            viewBox="0 0 25 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M4.89941 12H20.8994M20.8994 12L14.8994 6M20.8994 12L14.8994 18"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </a>
+                      </Link>
                     </div>
                   </li>
                 ))}
               </ul>
-              <div className="py-5 px-3 border-t border-gray-200">
-                <nav className="flex items-center justify-between">
-                  <div className="-mt-px w-0 flex-1 flex">
-                    <a
-                      href="#"
-                      className="inline-flex items-center text-slate-700 p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      <ArrowNarrowLeftIcon
-                        className="h-5 w-5 text-slate-700"
-                        aria-hidden="true"
-                      />
-                    </a>
-                  </div>
-                  <div className="flex gap-2">
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-6 h-6 text-slate-800 p-1 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      1
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-6 h-6 text-slate-500 p-1 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      3
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-6 h-6 text-slate-500 p-1 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      ...
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-6 h-6 text-slate-500 p-1 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      8
-                    </a>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center w-6 h-6 text-slate-500 p-1 text-sm font-medium tracking-sm rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      10
-                    </a>
-                  </div>
-                  <div className="-mt-px w-0 flex-1 flex justify-end">
-                    <a
-                      href="#"
-                      className="inline-flex items-center text-slate-700 p-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                    >
-                      <ArrowNarrowRightIcon
-                        className="h-5 w-5 text-slate-700"
-                        aria-hidden="true"
-                      />
-                    </a>
-                  </div>
-                </nav>
-              </div>
             </div>
           </div>
         </div>
