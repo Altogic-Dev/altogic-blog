@@ -55,6 +55,18 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
       
     },
+    visitPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    visitPublicationSuccess(state) {
+      state.isLoading = false;
+
+    },
+    visitPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+      
+    },
 
    
     extraReducers: {
