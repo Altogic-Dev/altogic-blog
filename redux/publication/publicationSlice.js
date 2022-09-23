@@ -8,6 +8,7 @@ const initialState = {
   latestPublicationStories:[],
   error: null,
   isLoading: false,
+  userPublications: [],
 };
 
 export const publicationSlice = createSlice({
@@ -65,6 +66,11 @@ export const publicationSlice = createSlice({
     visitPublicationFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
+      
+    },
+    setPublicationFromLocalStorage(state, action) {
+      state.userPublications = action.payload;
+
       
     },
 

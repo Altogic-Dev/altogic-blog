@@ -27,73 +27,82 @@ export default function Sections() {
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <div className="flex flex-col xl:flex-row items-center justify-between gap-8 max-w-screen-xl mx-auto px-4 lg:px-8 mb-12">
-        <div className="flex items-center gap-4">
-          <span>Section: </span>
-          <Listbox value={selectedSectionBar} onChange={setSelectedSectionBar}>
-            <div className="relative">
-              <Listbox.Button
-                className={`relative ${
-                  tag ? 'max-w-[180px]' : 'max-w-[240px] min-w-[240px]'
-                } w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
-              >
-                <span className="block truncate">{selectedSectionBar.tag}</span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
-                  <ChevronDownIcon
-                    className="h-5 w-5 text-slate-500"
-                    aria-hidden="true"
-                  />
-                </span>
-              </Listbox.Button>
-              <Transition
-                as={Fragment}
-                leave="transition ease-in duration-100"
-                leaveFrom="opacity-100"
-                leaveTo="opacity-0"
-              >
-                <Listbox.Options className="absolute mt-1 min-w-[240px] max-w-[240px] w-full bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-50 focus:outline-none">
-                  {sections.map((section) => (
-                    <Listbox.Option
-                      key={section.id}
-                      className={({ active }) =>
-                        `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
-                          active
-                            ? 'bg-slate-50 text-slate-700'
-                            : 'text-slate-700'
-                        }`
-                      }
-                      value={section}
-                    >
-                      {({ selected }) => (
-                        <>
-                          <span className="block truncate">{section.tag}</span>
-                          {selected ? (
-                            <span className="absolute inset-y-0 right-3.5 flex items-center text-purple-700">
-                              <CheckIcon
-                                className="h-5 w-5"
-                                aria-hidden="true"
-                              />
+        <div className="flex gap-5 justify-end">
+          <div className="flex items-center gap-4 ">
+            <span className="hidden sm:inline">Section: </span>
+            <Listbox
+              value={selectedSectionBar}
+              onChange={setSelectedSectionBar}
+            >
+              <div className="relative">
+                <Listbox.Button
+                  className={`relative ${
+                    tag ? 'max-w-[180px]' : 'max-w-[240px] min-w-[240px]'
+                  } w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
+                >
+                  <span className="block truncate">
+                    {selectedSectionBar.tag}
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
+                    <ChevronDownIcon
+                      className="h-5 w-5 text-slate-500"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Listbox.Button>
+                <Transition
+                  as={Fragment}
+                  leave="transition ease-in duration-100"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <Listbox.Options className="absolute mt-1 min-w-[240px] max-w-[240px] w-full bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-50 focus:outline-none">
+                    {sections.map((section) => (
+                      <Listbox.Option
+                        key={section.id}
+                        className={({ active }) =>
+                          `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
+                            active
+                              ? 'bg-slate-50 text-slate-700'
+                              : 'text-slate-700'
+                          }`
+                        }
+                        value={section}
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span className="block truncate">
+                              {section.tag}
                             </span>
-                          ) : null}
-                        </>
-                      )}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </Transition>
-            </div>
-          </Listbox>
-        </div>
-        {tag ? (
-          <div className="ml-4">
-            <input
-              type="text"
-              name="title"
-              id="title"
-              placeholder="#Tag"
-              className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-            />
+                            {selected ? (
+                              <span className="absolute inset-y-0 right-3.5 flex items-center text-purple-700">
+                                <CheckIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </Listbox>
           </div>
-        ) : null}
+          {tag ? (
+            <div className="ml-4">
+              <input
+                type="text"
+                name="title"
+                id="title"
+                placeholder="#Tag"
+                className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+              />
+            </div>
+          ) : null}
+        </div>
         <div className="flex items-center flex-wrap justify-center gap-y-6">
           <div className="relative inline-flex max-h-[32px] pr-5 sm:border-r border-slate-300">
             <button

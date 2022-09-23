@@ -52,7 +52,7 @@ function MyApp({ Component, pageProps }) {
       );
       visitPublication(publicationName);
     }
-  }, [router,sessionUser]);
+  }, [router]);
   return (
     <>
       <ToastContainer
