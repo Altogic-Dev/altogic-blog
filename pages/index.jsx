@@ -37,6 +37,7 @@ export default function Home() {
   const userFromStorage = useSelector((state) => state.auth.user);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const popularStories = useSelector((state) => state.story.popularStories);
 
   const [user, setUser] = useState();
   const dispatch = useDispatch();
@@ -63,7 +64,6 @@ export default function Home() {
       setFollowingListPage((prev) => prev + 1);
     }
   };
-  console.log('index', bookmarkLists);
   const handleRecommendedEndOfList = () => {
     if (
       _.isNil(recommendedStoriesInfo) ||
@@ -90,6 +90,7 @@ export default function Home() {
     if (storiesYouFollow?.length === 0) {
       getFollowingRequest(1);
     }
+    dispatch(storyActions.popularStoriesRequest());
   }, []);
 
   useEffect(() => {
@@ -284,6 +285,7 @@ export default function Home() {
                 mobilePopularStories
                 getFollowingRequest={getFollowingRequest}
                 storiesYouFollow={storiesYouFollow}
+                stories={popularStories}
               />
             </div>
           </div>
