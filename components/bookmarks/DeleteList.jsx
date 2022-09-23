@@ -67,7 +67,10 @@ export default function DeleteList({ setDeleteList, listId }) {
               <Button
                 type="button"
                 className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                onClick={() => dispatch(deleteBookmarkListRequest(listId))}
+                onClick={() => {
+                  dispatch(deleteBookmarkListRequest(listId));
+                  setDeleteList(false);
+                }}
               >
                 Delete
               </Button>

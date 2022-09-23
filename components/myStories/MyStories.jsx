@@ -34,6 +34,7 @@ export default function MyStories({ publishedPage, draftPage }) {
   useEffect(() => {
     setUser(sessionUser);
     dispatch(storyActions.popularStoriesRequest());
+
     if (publishedPage) setSelectedIndex(0);
     else if (draftPage) setSelectedIndex(1);
   }, []);

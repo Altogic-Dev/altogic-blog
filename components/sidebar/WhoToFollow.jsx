@@ -99,7 +99,8 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
         <div>
           <ul className="divide-y divide-gray-200">
             {peopleMinimized?.map((person) => (
-              <UserCard key={person.id} user={person} />
+
+              <UserCard key={person._id} user={person} />
             ))}
           </ul>
           <Button
