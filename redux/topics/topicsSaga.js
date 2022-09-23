@@ -198,6 +198,19 @@ export function* getTopicAnalyticsSaga({ payload: topicName }) {
     console.error(e);
   }
 }
+function* publicationsTopicsSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getPublicationsTopics,
+      payload
+    );
+    if (errors) throw errors;
+    else if (data) yield put(topicsActions.getPublicationsTopicsSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.getPublicationsTopicsFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getLatestsOfTopicRequest.type,
@@ -234,5 +247,9 @@ export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getTopicAnalyticsRequest.type,
     getTopicAnalyticsSaga
+  );
+  yield takeEvery(
+    topicsActions.getPublicationsTopicsRequest.type,
+    publicationsTopicsSaga
   );
 }
