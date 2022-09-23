@@ -1,4 +1,4 @@
-import { db } from '@/utils/altogic';
+import { db, endpoint } from '@/utils/altogic';
 
 const PublicationService = {
   getPublicationFollowers(publicationId) {
@@ -9,10 +9,7 @@ const PublicationService = {
   },
 
   getPublication(publicationName) {
-    return db
-      .model('publication')
-      .filter(`name == '${publicationName}'`)
-      .get();
+    return db.model('publication').filter(`name == '${publicationName}'`).get();
   },
 
   getLatestPublicationStories(publicationName) {
@@ -21,8 +18,12 @@ const PublicationService = {
       .filter(`publicationName == '${publicationName}' && isPublished == true`)
       .sort('createdAt', 'desc')
       .limit(10)
-      .lookup({field: 'user'})
+      .lookup({ field: 'user' })
       .get();
+  },
+
+  visitPublication(publicationName, user) {
+    return endpoint.get('/publication/visit', { publicationName, user });
   },
 };
 export default PublicationService;

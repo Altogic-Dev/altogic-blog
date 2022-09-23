@@ -64,12 +64,29 @@ function* getLatestPublicationStoriesSaga({ payload: publicationName }) {
     yield put(publicationActions.getLatestPublicationStoriesFailure(e));
   }
 }
+function* visitPublicationSaga({ payload: { publicationName, user } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.visitPublication,
+      publicationName,
+      user
+    );
+    if (data) {
+      yield put(publicationActions.visitPublicationSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.visitPublicationFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getPublicationFollowersRequest.type,
     getPublicationFollowersSaga
-  )
+  );
   yield takeEvery(
     publicationActions.getPublicationRequest.type,
     getPublicationSaga
@@ -78,6 +95,12 @@ export default function* rootSaga() {
     publicationActions.getLatestPublicationStoriesRequest.type,
     getLatestPublicationStoriesSaga
   );
-  yield takeEvery(publicationActions.getPublicationRequest.type, getPublicationSaga);
-
+  yield takeEvery(
+    publicationActions.getPublicationRequest.type,
+    getPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.visitPublicationRequest.type,
+    visitPublicationSaga
+  );
 }
