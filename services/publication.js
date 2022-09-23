@@ -15,10 +15,13 @@ const PublicationService = {
       .get();
   },
 
-  getPublicationStories(publicationName) {
+  getLatestPublicationStories(publicationName) {
     return db
       .model('story')
       .filter(`publicationName == '${publicationName}' && isPublished == true`)
+      .sort('createdAt', 'desc')
+      .limit(10)
+      .lookup({field: 'user'})
       .get();
   },
 };

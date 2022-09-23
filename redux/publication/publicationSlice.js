@@ -5,7 +5,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   publicationFollowers:[],
   publication:null,
-  publicationStories:[],
+  latestPublicationStories:[],
   error: null,
   isLoading: false,
 };
@@ -42,15 +42,15 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
       
     },
-    getPublicationStoriesRequest(state) {
+    getLatestPublicationStoriesRequest(state) {
       state.isLoading = true;
     },
-    getPublicationStoriesSuccess(state, action) {
-      state.publicationStories = action.payload;
+    getLatestPublicationStoriesSuccess(state, action) {
+      state.latestPublicationStories = action.payload;
       state.isLoading = false;
 
     },
-    getPublicationStoriesFailure(state, action) {
+    getLatestPublicationStoriesFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
       
