@@ -32,6 +32,7 @@ function* getPublicationFollowersSaga({ payload: publicationId }) {
     yield put(publicationActions.getPublicationFollowersFailure(e));
   }
 }
+
 function* getPublicationSaga({ payload: publicationName }) {
   try {
     const { data, errors } = yield call(
@@ -103,4 +104,5 @@ export default function* rootSaga() {
     publicationActions.visitPublicationRequest.type,
     visitPublicationSaga
   );
+ 
 }

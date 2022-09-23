@@ -11,6 +11,9 @@ const PublicationService = {
   getPublication(publicationName) {
     return db.model('publication').filter(`name == '${publicationName}'`).get();
   },
+  getAllUserPublications(publications) {
+    return db.model('publication').filter(`IN(${JSON.stringify(publications)}, this._id)`).get()
+  },
 
   getLatestPublicationStories(publicationName) {
     return db
