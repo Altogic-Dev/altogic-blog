@@ -8,11 +8,15 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { fileActions } from '@/redux/file/fileSlice';
 import Button from '@/components/basic/button';
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function PublicationsNewFeature() {
+  const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+
+  const [file, setFile] = useState();
+
   const fileLink = useSelector((state) => state.file.fileLink);
   const formSchema = new yup.ObjectSchema({
     title: yup.string().required('Title is required'),
@@ -20,6 +24,10 @@ export default function PublicationsNewFeature() {
     link: yup.string().url("Url is not valid'").required('Url is required'),
     file: yup.string().required('Logo is required'),
   });
+
+  const userPublications = useSelector(
+    (state) => state.publication.userPublications
+  );
 
   const {
     handleSubmit,
@@ -29,9 +37,22 @@ export default function PublicationsNewFeature() {
     resolver: yupResolver(formSchema),
   });
 
-  const submitFunction = () => {
-    console.log('sa');
+  const submitFunction = (data) => {
+    console.log(data)
+    const publication = userPublications.find(
+      (publication) => publication.name === router.query.publicationName
+    );
+    dispatch(
+      fileActions.uploadFileRequest({
+        file,
+        name: `${publication.name}-${publication.featurePageCount}`,
+      })
+    );
+   // Datayı gönder title link 
   };
+
+
+
   const uploadPhotoHandler = () => {
     const fileInput = document.createElement('input');
 
@@ -40,13 +61,7 @@ export default function PublicationsNewFeature() {
     fileInput.click();
 
     fileInput.onchange = async () => {
-      const file = fileInput.files[0];
-      dispatch(
-        fileActions.uploadFileRequest({
-          file,
-          name: 'PublicationName - Featured Page Name - featurepagecount',
-        })
-      );
+      setFile(fileInput.files[0]);
     };
   };
   return (

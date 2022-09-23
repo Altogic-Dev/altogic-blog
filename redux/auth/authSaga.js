@@ -4,6 +4,7 @@ import _, { isArray } from 'lodash';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { takeEvery, put, call, all, select } from 'redux-saga/effects';
+import { publicationActions } from '../publication/publicationSlice';
 import { authActions } from './authSlice';
 
 function* registerSaga({ payload: req }) {
@@ -62,6 +63,7 @@ function* loginSaga({ payload }) {
       if (data) {
         localStorage.setItem('publications', JSON.stringify(data));
       }
+      yield put(publicationActions.setPublicationFromLocalStorage(JSON.parse(localStorage.getItem('publications'))))
       yield put(authActions.loginSuccess(user));
     }
     if (errors) {
