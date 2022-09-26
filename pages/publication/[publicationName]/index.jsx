@@ -206,11 +206,7 @@ export default function Publications() {
   );
   const dispatch = useDispatch();
 
-  const getPublication = () => {
-    dispatch(
-      publicationActions.getPublicationRequest(publicationName.toLowerCase())
-    );
-  };
+
   const getLatestPublicationStories = () => {
     dispatch(
       publicationActions.getLatestPublicationStoriesRequest(
@@ -220,12 +216,10 @@ export default function Publications() {
   };
   useEffect(() => {
     if (!isNil(publicationName)) {
-      getPublication();
       getLatestPublicationStories();
     }
   }, [publicationName]);
 
-  console.log(latestPublicationStories);
   return (
     <div>
       <Head>

@@ -11,7 +11,6 @@ export default function UserCard({ user, isFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
   const toggleFollow = () => {
-    console.log('toggle follow');
     if (isFollowing) {
       return dispatch(
         followerConnectionActions.unfollowRequest({

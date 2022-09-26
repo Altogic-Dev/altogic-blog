@@ -1,8 +1,40 @@
-import React from 'react';
 import Head from 'next/head';
 import Layout from '@/layouts/Layout';
+import { publicationActions } from '@/redux/publication/publicationSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import Button from '@/components/basic/button';
+import Link from 'next/link';
 
 export default function PublicationsFeature() {
+  const publication = useSelector((state) => state.publication.publication);
+
+  const dispatch = useDispatch();
+  const publicationFeatures = useSelector(
+    (state) => state.publication.publicationFeatures
+  );
+
+  const getPublicationFeatures = () => {
+    dispatch(
+      publicationActions.getPublicationFeaturesRequest({
+        publication: publication._id,
+      })
+    );
+  };
+  const handleDeleteFeature = () => {
+    dispatch(
+      publicationActions.deleteFeature({
+        publication: publication._id,
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (publication) {
+      getPublicationFeatures();
+    }
+  }, [publication]);
+
   return (
     <div>
       <Head>
@@ -39,84 +71,50 @@ export default function PublicationsFeature() {
           </div>
           <div>
             <ul>
-              <li className="py-4 border-b border-gray-200 mb-8">
-                <h2 className="text-slate-700 mb-2 text-2xl font-bold tracking-md">
-                  Featured Page One
-                </h2>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
-                  >
-                    Edit page
-                  </button>
-                  <svg
-                    className="h-1 w-1 text-slate-500"
-                    fill="currentColor"
-                    viewBox="0 0 8 8"
-                  >
-                    <circle cx={4} cy={4} r={3} />
-                  </svg>
-                  <button
-                    type="button"
-                    className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
-                  >
-                    Go to page
-                  </button>
-                  <svg
-                    className="h-1 w-1 text-slate-500"
-                    fill="currentColor"
-                    viewBox="0 0 8 8"
-                  >
-                    <circle cx={4} cy={4} r={3} />
-                  </svg>
-                  <button
-                    type="button"
-                    className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
-              <li className="py-4 border-b border-gray-200 mb-8">
-                <h2 className="text-slate-700 mb-2 text-2xl font-bold tracking-md">
-                  Featured Page Two
-                </h2>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
-                  >
-                    Edit page
-                  </button>
-                  <svg
-                    className="h-1 w-1 text-slate-500"
-                    fill="currentColor"
-                    viewBox="0 0 8 8"
-                  >
-                    <circle cx={4} cy={4} r={3} />
-                  </svg>
-                  <button
-                    type="button"
-                    className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
-                  >
-                    Go to page
-                  </button>
-                  <svg
-                    className="h-1 w-1 text-slate-500"
-                    fill="currentColor"
-                    viewBox="0 0 8 8"
-                  >
-                    <circle cx={4} cy={4} r={3} />
-                  </svg>
-                  <button
-                    type="button"
-                    className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </li>
+              {publicationFeatures?.map((feature) => (
+                <li
+                  key={feature._id}
+                  className="py-4 border-b border-gray-200 mb-8"
+                >
+                  <Link href="test">
+                    <h2 className="text-slate-700 mb-2 text-2xl font-bold tracking-md cursor-pointer">
+                      {feature.title}
+                    </h2>
+                  </Link>
+                  <div className="flex items-center gap-3">
+                    <Button className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500">
+                      Edit page
+                    </Button>
+                    <svg
+                      className="h-1 w-1 text-slate-500"
+                      fill="currentColor"
+                      viewBox="0 0 8 8"
+                    >
+                      <circle cx={4} cy={4} r={3} />
+                    </svg>
+                    <Link href="test">
+                      <a className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500">
+                        Go to page
+                      </a>
+                    </Link>
+                    <svg
+                      className="h-1 w-1 text-slate-500"
+                      fill="currentColor"
+                      viewBox="0 0 8 8"
+                    >
+                      <circle cx={4} cy={4} r={3} />
+                    </svg>
+                    <Button
+                      onClick={() => {
+                        handleDeleteFeature(feature._id);
+                      }}
+                      className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

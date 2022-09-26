@@ -38,7 +38,6 @@ export default function PublicationsNewFeature() {
   });
 
   const submitFunction = (data) => {
-    console.log(data)
     const publication = userPublications.find(
       (publication) => publication.name === router.query.publicationName
     );
