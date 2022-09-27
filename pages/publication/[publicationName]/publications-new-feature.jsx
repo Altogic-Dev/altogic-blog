@@ -1,8 +1,69 @@
 import Head from 'next/head';
 import Layout from '@/layouts/Layout';
-import Sections from '../components/Sections';
+import Sections from '@/components/Sections';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import Input from '@/components/Input';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { fileActions } from '@/redux/file/fileSlice';
+import Button from '@/components/basic/button';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function PublicationsNewFeature() {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const [file, setFile] = useState();
+
+  const fileLink = useSelector((state) => state.file.fileLink);
+  const formSchema = new yup.ObjectSchema({
+    title: yup.string().required('Title is required'),
+    description: yup.string().required('Description is required'),
+    link: yup.string().url("Url is not valid'").required('Url is required'),
+    file: yup.string().required('Logo is required'),
+  });
+
+  const userPublications = useSelector(
+    (state) => state.publication.userPublications
+  );
+
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(formSchema),
+  });
+
+  const submitFunction = (data) => {
+    console.log(data)
+    const publication = userPublications.find(
+      (publication) => publication.name === router.query.publicationName
+    );
+    dispatch(
+      fileActions.uploadFileRequest({
+        file,
+        name: `${publication.name}-${publication.featurePageCount}`,
+      })
+    );
+   // Datayı gönder title link 
+  };
+
+
+
+  const uploadPhotoHandler = () => {
+    const fileInput = document.createElement('input');
+
+    fileInput.setAttribute('type', 'file');
+    fileInput.setAttribute('accept', 'image/*');
+    fileInput.click();
+
+    fileInput.onchange = async () => {
+      setFile(fileInput.files[0]);
+    };
+  };
   return (
     <div>
       <Head>
@@ -14,7 +75,10 @@ export default function PublicationsNewFeature() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Layout>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
+        <form
+          onSubmit={handleSubmit(submitFunction)}
+          className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16"
+        >
           <div className="flex flex-col gap-4 mt-8 mb-[80px] md:mt-[60px]">
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full">
               <h1 className="text-slate-700 mb-8 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
@@ -22,7 +86,7 @@ export default function PublicationsNewFeature() {
               </h1>
               <div className="flex items-center gap-4">
                 <button
-                  type="button"
+                  type="submit"
                   className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Save
@@ -37,7 +101,7 @@ export default function PublicationsNewFeature() {
             </div>
           </div>
           <div>
-            <form action="" className="mb-24">
+            <div className="mb-24">
               <div className="grid lg:grid-cols-2 gap-8">
                 <div>
                   <label
@@ -47,10 +111,12 @@ export default function PublicationsNewFeature() {
                     Title*
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <input
+                    <Input
+                      error={errors.title}
                       type="text"
                       name="title"
                       id="title"
+                      register={register('title')}
                       placeholder="Type a title for your feature page"
                       className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
@@ -64,10 +130,12 @@ export default function PublicationsNewFeature() {
                     Link*
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <input
+                    <Input
+                      error={errors.link}
                       type="text"
                       name="link"
                       id="link"
+                      register={register('link')}
                       placeholder="Type a custom link for your feature page"
                       className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
@@ -84,10 +152,12 @@ export default function PublicationsNewFeature() {
                     Description*
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <input
+                    <Input
+                      error={errors.description}
                       type="text"
                       name="description"
                       id="description"
+                      register={register('description')}
                       placeholder="Type a short description"
                       className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
@@ -114,7 +184,7 @@ export default function PublicationsNewFeature() {
                       Use SVG, PNG, JPG or GIF
                     </p>
                   </div>
-                  <div className="flex items-center justify-center max-w-[280px] max-h-[104px] py-4 px-6 border border-gray-300 rounded-md">
+                  <div className="flex items-center justify-center max-w-[280px] max-h-[124px] py-4 px-6 border border-gray-300 rounded-md">
                     <div className="text-center">
                       <span className="inline-flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-gray-100 ring-8 ring-gray-50">
                         <svg
@@ -133,27 +203,33 @@ export default function PublicationsNewFeature() {
                         </svg>
                       </span>
                       <div className="flex text-sm text-gray-600">
-                        <label
+                        <Button
+                          onClick={uploadPhotoHandler}
                           htmlFor="file-upload"
                           className="relative cursor-pointer bg-white rounded-md font-medium text-purple-700 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
                         >
                           <span>Click to upload</span>
-                          <input
+                          <Input
                             id="file-upload"
                             name="file-upload"
                             type="file"
                             className="sr-only"
                           />
-                        </label>
+                        </Button>
                         <p className="text-slate-600 pl-1">or drag and drop</p>
                       </div>
+                      {errors?.file?.message && (
+                        <span className="inline-block text-sm text-red-600">
+                          {errors.file.message}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
           </div>
-        </div>
+        </form>
         <div className="mb-20">
           <div className="relative max-w-screen-xl mx-auto mb-6">
             <div
@@ -186,6 +262,7 @@ export default function PublicationsNewFeature() {
             <Sections />
           </div>
         </div>
+        Message Enes Malik Ozer
       </Layout>
     </div>
   );

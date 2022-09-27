@@ -43,7 +43,7 @@ export default function PublicationPostCard({
             </div>
           </div>
         </a>
-        <a href="#" className="group inline-block mb-4 md:mb-8">
+        <a href="#" className="group mb-4 md:mb-8 flex flex-col">
           <img
             className={classNames(
               bigImage

@@ -1,4 +1,4 @@
-import { call, takeEvery, put, all, fork } from 'redux-saga/effects';
+import { call, takeEvery, put, all } from 'redux-saga/effects';
 import BookmarkService from '@/services/bookmark';
 import {
   getBookmarkListsRequest,
@@ -25,6 +25,9 @@ import {
   getBookmarksRequest,
   getBookmarksSuccess,
   getBookmarksFailure,
+  clearBookmarkListRequest,
+  clearBookmarkListSuccess,
+  clearBookmarkListFailure,
 } from '@/redux/bookmarks/bookmarkSlice';
 
 // Get bookmark lists
@@ -133,6 +136,20 @@ function* getBookmarksSaga({ payload }) {
     yield put(getBookmarksFailure(error));
   }
 }
+function* clearBookmarkListSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      BookmarkService.clearBookmarkList,
+      payload
+    );
+    if (data) {
+      yield put(clearBookmarkListSuccess(data));
+    }
+    if (errors) throw errors.items;
+  } catch (error) {
+    yield put(clearBookmarkListFailure(error));
+  }
+}
 
 export default function* bookmarkSaga() {
   yield all([
@@ -144,5 +161,6 @@ export default function* bookmarkSaga() {
     yield takeEvery(deleteBookmarkListRequest.type, deleteBookmarkListSaga),
     yield takeEvery(updateBookmarkListRequest.type, updateBookmarkListSaga),
     yield takeEvery(getBookmarksRequest.type, getBookmarksSaga),
+    yield takeEvery(clearBookmarkListRequest.type, clearBookmarkListSaga),
   ]);
 }

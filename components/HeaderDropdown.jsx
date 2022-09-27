@@ -54,9 +54,8 @@ export default function HeaderDropdown({ user, logout, className }) {
                 Settings
               </a>
             </Menu.Item>
-            <Menu.Item>
+            <Menu.Item onClick={() => router.push('/stats')}>
               <a
-                href="#"
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
               >
                 <ChartBarIcon className="w-4 h-4 text-slate-500" />

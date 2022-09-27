@@ -50,15 +50,17 @@ export default function SearchResult() {
   }, [router.query.search]);
 
   useEffect(() => {
-    dispatch(
-      generalActions.searchRequest({
-        query: router.query.search,
-        topicLimit,
-        userLimit,
-        publicationLimit,
-        postLimit,
-      })
-    );
+    if (router.query.search) {
+      dispatch(
+        generalActions.searchRequest({
+          query: router.query.search,
+          topicLimit,
+          userLimit,
+          publicationLimit,
+          postLimit,
+        })
+      );
+    }
   }, [topicLimit, userLimit, publicationLimit, postLimit]);
 
   return (

@@ -57,6 +57,7 @@ const StoryService = {
     return endpoint.get(`/story/bySlug`, { storySlug });
   },
 
+
   getMoreUserStories(authorId, storyId, page = 1, limit = 5) {
     return db
       .model('story')
@@ -144,6 +145,17 @@ const StoryService = {
   },
   getPopularStories() {
     return endpoint.get('/story/popular');
+  },
+  getStoriesByPublication(publicationId, page = 1, limit = 10) {
+    return db
+      .model('story')
+      .filter(
+        `publication == '${publicationId}' && !isDeleted && isPublished && !isPrivate`
+      )
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
   },
 };
 

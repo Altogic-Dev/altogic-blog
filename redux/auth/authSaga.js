@@ -1,5 +1,7 @@
 import AuthService from '@/services/auth';
-import _ from 'lodash';
+import PublicationService from '@/services/publication';
+import _, { isArray } from 'lodash';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import {
   takeEvery,
@@ -9,6 +11,7 @@ import {
   select,
   debounce,
 } from 'redux-saga/effects';
+import { publicationActions } from '../publication/publicationSlice';
 import { authActions } from './authSlice';
 
 function* registerSaga({ payload: req }) {
@@ -60,6 +63,18 @@ function* loginSaga({ payload }) {
       payload.password
     );
     if (user) {
+      const { data } = yield call(
+        PublicationService.getAllUserPublications,
+        user.publications
+      );
+      if (data) {
+        localStorage.setItem('publications', JSON.stringify(data));
+      }
+      yield put(
+        publicationActions.setPublicationFromLocalStorage(
+          JSON.parse(localStorage.getItem('publications'))
+        )
+      );
       yield put(authActions.loginSuccess(user));
     }
     if (errors) {
@@ -120,8 +135,6 @@ function* authenticateWithProvider({ payload: provider }) {
   }
 }
 function* updateFollowingTopicsSaga({ payload: { topics } }) {
-  console.log(topics);
-
   try {
     const { data, errors } = yield call(
       AuthService.updateFollowingTopics,

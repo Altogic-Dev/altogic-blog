@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   getBookmarkListDetailRequest,
   updateBookmarkListRequest,
+  clearBookmarkListRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
 import { DateTime } from 'luxon';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -34,10 +35,12 @@ export default function ListDetail() {
   const [user, setUser] = useState();
   const [isMyProfileState, setIsMyProfileState] = useState(false);
   const [stories, setStories] = useState([]);
+
   const [bookmarkListLimit, setBookmarkListLimit] = useState(10);
   const [followingPage, setFollowingPage] = useState(1);
   const [followingModal, setFollowingModal] = useState(false);
   const [unfollowed, setUnfollowed] = useState([]);
+  
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
@@ -149,7 +152,7 @@ export default function ListDetail() {
   }, [bookmarks]);
 
   useEffect(() => {
-    if (bookmarkListLimit > 10) {
+    if (bookmarkListSlug) {
       dispatch(
         getBookmarkListDetailRequest({
           slug: bookmarkListSlug,
@@ -276,6 +279,11 @@ export default function ListDetail() {
                             <Button
                               type="button"
                               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={() =>
+                                dispatch(
+                                  clearBookmarkListRequest(bookmarkList._id)
+                                )
+                              }
                             >
                               Remove items
                             </Button>
@@ -314,7 +322,7 @@ export default function ListDetail() {
               </div>
 
               <ListObserver
-                onEnd={() => setBookmarkListLimit((prev) => prev + 10)}
+                onEnd={() => setBookmarkListLimit((prev) => prev + 5)}
               >
                 {stories.map((post) => (
                   <PostCard

@@ -20,6 +20,40 @@ const PublicationService = {
       )
       .get();
   },
+  getAllUserPublications(publications) {
+    return db
+      .model('publication')
+      .filter(`IN(${JSON.stringify(publications)}, this._id)`)
+      .get();
+  },
+
+  getLatestPublicationStories(publicationName) {
+    return db
+      .model('story')
+      .filter(
+        `publicationName == '${publicationName}' && isPublication == true'`
+      )
+      .get();
+  },
+  getFeaturePagesByPublication(publicationId) {
+    return db
+      .model('feature_page')
+      .filter(`publication == '${publicationId}'`)
+      .get();
+  },
+
+  visitPublication(publicationName, user) {
+    return endpoint.get('/publication/visit', { publicationName, user });
+  },
+  getPublicationsNavigation(publicationId) {
+    return endpoint.get(`publication/navigation/${publicationId}`);
+  },
+  cratePublicationNavigation(publication) {
+    return db.model('publication_navigation').create(publication);
+  },
+  updatePublicationNavigation(publicationId, navigation) {
+    return endpoint.put(`publication/navigation/${publicationId}`, navigation);
+  },
 
   getPublicationById(publicationId) {
     return db.model('publication').object(publicationId).get();

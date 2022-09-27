@@ -8,8 +8,12 @@ const initialState = {
   publicationStories: [],
   isPublicationnameValid: true,
   publicationname: null,
+  latestPublicationStories: [],
+  featurePages: [],
+  publicationNavigation: [],
   error: null,
   isLoading: false,
+  userPublications: [],
 };
 
 export const publicationSlice = createSlice({
@@ -39,11 +43,21 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    getPublicationStoriesRequest(state) {
+    getLatestPublicationStoriesRequest(state) {
       state.isLoading = true;
     },
-    getPublicationStoriesSuccess(state, action) {
-      state.publication = action.payload;
+    getLatestPublicationStoriesSuccess(state, action) {
+      state.latestPublicationStories = action.payload;
+      state.isLoading = false;
+    },
+    getLatestPublicationStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    visitPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    visitPublicationSuccess(state) {
       state.isLoading = false;
     },
     getPublicationStoriesailure(state, action) {
@@ -67,6 +81,54 @@ export const publicationSlice = createSlice({
     updatePublicationRequest() {},
     updatePublicationSuccess(state, action) {
       state.publication = action.payload;
+    },
+
+    getFeaturePagesByPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    getFeaturePagesByPublicationSuccess(state, action) {
+      state.featurePages = action.payload;
+      state.isLoading = false;
+    },
+    getFeaturePagesByPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationNavigationRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationNavigationSuccess(state, action) {
+      state.publicationNavigation = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationNavigationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createPublicationNavigationRequest(state) {
+      state.isLoading = true;
+    },
+    createPublicationNavigationSuccess(state, action) {
+      state.publicationNavigation = action.payload;
+      state.isLoading = false;
+    },
+    createPublicationNavigationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    updatePublicationNavigationRequest(state) {
+      state.isLoading = true;
+    },
+    updatePublicationNavigationSuccess(state, action) {
+      state.publicationNavigation = action.payload;
+      state.isLoading = false;
+    },
+    updatePublicationNavigationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    setPublicationFromLocalStorage(state, action) {
+      state.userPublications = action.payload;
     },
 
     extraReducers: {

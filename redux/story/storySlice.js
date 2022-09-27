@@ -15,9 +15,12 @@ const initialState = {
   userStoriesInfo: null,
   userDraftStories: null,
   userDraftStoriesInfo: null,
+  publicationsStories: null,
   isLoading: false,
   replies: [],
   replyCount: 0,
+
+
 };
 
 // Actual Slice
@@ -136,6 +139,7 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+   
 
     getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {
@@ -209,6 +213,16 @@ export const storySlice = createSlice({
       state.popularStories = action.payload;
     },
     popularStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesSuccess(state, action) {
+      state.publicationsStories = action.payload;
+    },
+    getPublicationsStoriesFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },
