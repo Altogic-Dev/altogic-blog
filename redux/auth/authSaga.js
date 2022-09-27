@@ -1,7 +1,14 @@
 import AuthService from '@/services/auth';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
-import { takeEvery, put, call, all, select } from 'redux-saga/effects';
+import {
+  takeEvery,
+  put,
+  call,
+  all,
+  select,
+  debounce,
+} from 'redux-saga/effects';
 import { authActions } from './authSlice';
 
 function* registerSaga({ payload: req }) {
@@ -307,6 +314,23 @@ function* getUserByUsernameSaga({ payload }) {
   }
 }
 
+function* searchUserByUsernameSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      AuthService.searchUserByUsername,
+      payload
+    );
+    if (errors) {
+      throw errors.items;
+    } else {
+      yield put(authActions.searchUserByUsernameSuccess(data));
+    }
+  } catch (e) {
+    yield put(authActions.searchUserByUsernameFailure());
+    console.error(e);
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(authActions.registerRequest.type, registerSaga),
@@ -340,5 +364,10 @@ export default function* rootSaga() {
     takeEvery(authActions.changeEmailRequest.type, changeEmailSaga),
     takeEvery(authActions.updateUserSuccess.type, setUserFromLocalStorage),
     takeEvery(authActions.getUserByUserNameRequest.type, getUserByUsernameSaga),
+    debounce(
+      800,
+      authActions.searchUserByUsernameRequest.type,
+      searchUserByUsernameSaga
+    ),
   ]);
 }

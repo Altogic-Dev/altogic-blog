@@ -19,6 +19,11 @@ export function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+export function removeSpaces(str) {
+  if (!str) return '';
+  return str.replace(/\s+/g, '');
+}
+
 export function formatDate(date) {
   return DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_FULL);
 }
