@@ -11,8 +11,20 @@ const PublicationService = {
   getPublication(publicationName) {
     return db.model('publication').filter(`name == '${publicationName}'`).get();
   },
+  getPublicationFeatures(publication) {
+    return db
+      .model('feature_page')
+      .filter(`publication == '${publication}'`)
+      .get();
+  },
+  deleteFeature(publication) {
+    return db.model('feature_page').delete(publication).get();
+  },
   getAllUserPublications(publications) {
-    return db.model('publication').filter(`IN(${JSON.stringify(publications)}, this._id)`).get()
+    return db
+      .model('publication')
+      .filter(`IN(${JSON.stringify(publications)}, this._id)`)
+      .get();
   },
 
   getLatestPublicationStories(publicationName) {
@@ -41,6 +53,26 @@ const PublicationService = {
   },
   updatePublicationNavigation(publicationId, navigation) {
     return endpoint.put(`publication/navigation/${publicationId}`, navigation);
+  },
+
+  followPublication(publication, user) {
+    return endpoint.post(`/publication/follow`, {
+      publication,
+      userAbout: user.userAbout,
+      userName: user.userName,
+      user: user._id,
+      userProfilePicture: user.userProfilePicture,
+    });
+  },
+
+  unfollowPublication(publication, user) {
+    return endpoint.delete(`/publication/unfollow/${publication}/${user._id}`);
+  },
+  checkPublicationFollowing(user) {
+    return db
+      .model('publication_follower_connection')
+      .filter(`this.user == '${user}'`)
+      .get();
   },
 };
 export default PublicationService;

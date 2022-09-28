@@ -2,19 +2,6 @@ import PublicationService from '@/services/publication';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { publicationActions } from './publicationSlice';
 
-// function* followPublicationSaga({ payload: { followerUser, followingUser } }) {
-//   try {
-//     const { data, error } = yield call(
-//       FollowerConnectionService.followUser,
-//       followerUser,
-//       followingUser
-//     );
-//     console.log({ data, error });
-//     // yield put(followerConnectionActions.fetchDataSuccess());
-//   } catch (e) {
-//     console.error({ e });
-//   }
-// }
 
 function* getPublicationFollowersSaga({ payload: publicationId }) {
   try {
@@ -150,6 +137,91 @@ function* updatePublicationNavigation({
   }
 }
 
+function* followPublicationSaga({ payload: { publication, user } }) {
+  try {
+
+    const { data, errors } = yield call(
+      PublicationService.followPublication,
+      publication,
+      user
+    );
+    if (data) {
+      data.user = user
+      yield put(publicationActions.followPublicationSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.followPublicationFailure(e));
+  }
+}
+function* unfollowPublicationSaga({ payload: { publication, user } }) {
+  try {
+    const {data} = yield call(
+      PublicationService.unfollowPublication,
+      publication,
+      user
+    );
+
+    if (data.deleted>0) {
+      yield put(publicationActions.unfollowPublicationSuccess(publication));
+    }
+   
+  } catch (e) {
+    yield put(publicationActions.unfollowPublicationFailure(e));
+  }
+}
+function* checkPublicationFollowingSaga({ payload: { user } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.checkPublicationFollowing,
+      user
+    );
+    if (data) {
+      yield put(publicationActions.checkPublicationFollowingSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.checkPublicationFollowingFailure(e));
+  }
+}
+function* getPublicationFeaturesSaga({ payload: { publication } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getPublicationFeatures,
+      publication
+    );
+    if (data) {
+      yield put(publicationActions.getPublicationFeaturesSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.getPublicationFeaturesFailure(e));
+  }
+}
+function* deleteFeatureSaga({ payload: { publication } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.deleteFeature,
+      publication
+    );
+    if (data) {
+      data.publication = publication
+      yield put(publicationActions.deleteFeatureSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.deleteFeatureFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getPublicationFollowersRequest.type,
@@ -166,6 +238,26 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.visitPublicationRequest.type,
     visitPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.followPublicationRequest.type,
+    followPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.unfollowPublicationRequest.type,
+    unfollowPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.checkPublicationFollowingRequest.type,
+    checkPublicationFollowingSaga,
+  );
+  yield takeEvery(
+    publicationActions.getPublicationFeaturesRequest.type,
+    getPublicationFeaturesSaga,
+  );
+  yield takeEvery(
+    publicationActions.deleteFeatureRequest.type,
+    deleteFeatureSaga,
   );
   yield takeEvery(
     publicationActions.getFeaturePagesByPublicationRequest.type,
