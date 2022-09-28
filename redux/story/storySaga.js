@@ -405,6 +405,21 @@ function* popularStoriesSaga() {
     yield put(storyActions.popularStoriesFailure(e));
   }
 }
+function* getPublicationsStoriesSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getStoriesByPublication,
+      payload
+    );
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(storyActions.getPublicationsStoriesSuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.getPublicationsStoriesFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield all([
@@ -444,5 +459,9 @@ export default function* rootSaga() {
     takeEvery(storyActions.getCacheStoryRequest.type, getCacheStorySaga),
     takeEvery(storyActions.publishStoryRequest.type, publishStorySaga),
     takeEvery(storyActions.popularStoriesRequest.type, popularStoriesSaga),
+    takeEvery(
+      storyActions.getPublicationsStoriesRequest.type,
+      getPublicationsStoriesSaga
+    ),
   ]);
 }

@@ -6,6 +6,8 @@ const initialState = {
   publicationFollowers: [],
   publication: null,
   latestPublicationStories: [],
+  featurePages: [],
+  publicationNavigation: [],
   error: null,
   isLoading: false,
   userPublications: [],
@@ -68,7 +70,51 @@ export const publicationSlice = createSlice({
     visitPublicationSuccess(state) {
       state.isLoading = false;
     },
-    visitPublicationFailure(state, action) {
+    getPublicationStoriesailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getFeaturePagesByPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    getFeaturePagesByPublicationSuccess(state, action) {
+      state.featurePages = action.payload;
+      state.isLoading = false;
+    },
+    getFeaturePagesByPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationNavigationRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationNavigationSuccess(state, action) {
+      state.publicationNavigation = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationNavigationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createPublicationNavigationRequest(state) {
+      state.isLoading = true;
+    },
+    createPublicationNavigationSuccess(state, action) {
+      state.publicationNavigation = action.payload;
+      state.isLoading = false;
+    },
+    createPublicationNavigationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    updatePublicationNavigationRequest(state) {
+      state.isLoading = true;
+    },
+    updatePublicationNavigationSuccess(state, action) {
+      state.publicationNavigation = action.payload;
+      state.isLoading = false;
+    },
+    updatePublicationNavigationFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

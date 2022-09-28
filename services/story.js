@@ -146,6 +146,17 @@ const StoryService = {
   getPopularStories() {
     return endpoint.get('/story/popular');
   },
+  getStoriesByPublication(publicationId, page = 1, limit = 10) {
+    return db
+      .model('story')
+      .filter(
+        `publication == '${publicationId}' && !isDeleted && isPublished && !isPrivate`
+      )
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get();
+  },
 };
 
 export default StoryService;
