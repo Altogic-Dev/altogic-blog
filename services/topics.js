@@ -75,6 +75,12 @@ const TopicsService = {
   increaseWriterCounts(topics) {
     return endpoint.post('/topic/increaseWriterCounts', { topics });
   },
+  getPublicationsTopics(publicationId) {
+    return db
+      .model('topic_writers')
+      .filter(`publication == '${publicationId}'`)
+      .get();
+  },
 };
 
 export default TopicsService;
