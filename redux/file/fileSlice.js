@@ -5,6 +5,7 @@ const initialState = {
   isLoading: true,
   error: null,
   fileLink: null,
+  fileLinks: {},
 };
 
 export const fileSlice = createSlice({
@@ -18,9 +19,19 @@ export const fileSlice = createSlice({
       state.isLoading = false;
       state.fileLink = action.payload;
     },
+    uploadFilesSuccess(state, action) {
+      state.isLoading = false;
+      state.fileLinks = {
+        ...state.fileLinks,
+        [action.payload.name]: action.payload.data,
+      };
+    },
     uploadFileFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
+    },
+    setUploadedFiles(state, action) {
+      state.fileLinks = action.payload;
     },
     extraReducers: {
       [HYDRATE]: (state, action) => ({

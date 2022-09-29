@@ -11,6 +11,15 @@ const PublicationService = {
   getPublication(publicationName) {
     return db.model('publication').filter(`name == '${publicationName}'`).get();
   },
+
+  getPublicationStories(publicationName) {
+    return db
+      .model('story')
+      .filter(
+        `publicationName == '${publicationName}' && isPublication == true'`
+      )
+      .get();
+  },
   getPublicationFeatures(publication) {
     return db
       .model('feature_page')
@@ -55,6 +64,20 @@ const PublicationService = {
     return endpoint.put(`publication/navigation/${publicationId}`, navigation);
   },
 
+  getPublicationById(publicationId) {
+    return db.model('publication').object(publicationId).get();
+  },
+
+  isPublicationExist(publicationId, publicationname) {
+    return endpoint.get('/publication/isExistName', {
+      publicationId,
+      publicationname,
+    });
+  },
+
+  updatePublication(publication) {
+    return endpoint.put(`publication/${publication._id}`, publication);
+  },
   followPublication(publication, user) {
     return endpoint.post(`/publication/follow`, {
       publication,
