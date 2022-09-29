@@ -8,6 +8,7 @@ import SocialIcons from '../publication/SocialIcons';
 
 export default function PublicationProfile() {
   const publication = useSelector((state) => state.publication.publication);
+  const isLoading = useSelector((state) => state.publication.isLoading);
   const userFollowingPublication = useSelector(
     (state) => state.publication.userFollowingPublication
   );
@@ -76,6 +77,7 @@ export default function PublicationProfile() {
       <div>
         <div className="my-5">
           <FollowButton
+            isLoading={isLoading}
             isFollowing={isFollowing}
             onClick={handleFollowButton}
           />

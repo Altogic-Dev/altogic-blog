@@ -1,8 +1,9 @@
 import Button from "./button";
 
-export default function FollowButton({onClick,isFollowing}) {
+export default function FollowButton({onClick,isFollowing,isLoading}) {
+  console.log(isLoading);
   return (
-    <Button extraClasses="gap-2 px-[14px] " onClick={onClick}>
+    <Button loading={isLoading} extraClasses="gap-2 px-[14px] " onClick={onClick}>
       <svg
         className="w-5 h-5"
         viewBox="0 0 20 20"
