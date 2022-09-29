@@ -1,7 +1,75 @@
 import Head from 'next/head';
 import Layout from '@/layouts/Layout';
+import Button from '@/components/basic/button';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import Input from '@/components/Input';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { fileActions } from '@/redux/file/fileSlice';
+import { publicationActions } from '@/redux/publication/publicationSlice';
 
 export default function PublicationsNewsletterSettings() {
+  const dispatch = useDispatch();
+  const formSchema = new yup.ObjectSchema({
+    title: yup.string().required('Title is required'),
+    description: yup.string().required('Description is required'),
+    link: yup.string().url("Url is not valid'").required('Url is required'),
+    file: yup.string().required('Logo is required'),
+  });
+
+  const [file, setFile] = useState();
+
+  const fileLink = useSelector((state) => state.file.fileLink);
+  const subscribers = useSelector((state) => state.publication.subscribers);
+  const publication = useSelector((state) => state.publication.publication);
+  const newsletter = useSelector((state) => state.publication.newsletter);
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(formSchema),
+  });
+
+  const submitFunction = (data) => {
+    console.log(data)
+    dispatch(
+      fileActions.uploadFileRequest({
+        file,
+        name: `${publication.name}-${publication.featurePageCount}`,
+      })
+    );
+    dispatch(
+      publicationActions.uptadeNewsletterRequest({
+        newsletter: newsletter._id,
+
+      })
+    )
+  };
+
+  const uploadPhotoHandler = () => {
+    const fileInput = document.createElement('input');
+
+    fileInput.setAttribute('type', 'file');
+    fileInput.setAttribute('accept', 'image/*');
+    fileInput.click();
+
+    fileInput.onchange = async () => {
+      setFile(fileInput.files[0]);
+    };
+  };
+
+  const exportList = () => {
+    dispatch(
+      publicationActions.getSubscribersRequest({
+        publication: publication._id,
+      })
+    );
+  };
+
+  console.log(subscribers);
   return (
     <div>
       <Head>
@@ -13,25 +81,20 @@ export default function PublicationsNewsletterSettings() {
         <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
+        <form
+          onSubmit={handleSubmit(submitFunction)}
+          className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16"
+        >
           <div className="flex flex-col gap-4 my-8 lg:mb-[80px] lg:mt-[60px]">
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full lg:mb-[72px]">
               <h1 className="text-slate-700 mb-8 lg:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
                 HiThemes newsletter settings
               </h1>
               <div className="hidden lg:flex items-center gap-4">
-                <button
-                  type="button"
-                  className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                >
+                <Button extraClasses="px-[18px] py-2.5">Save</Button>
+                <Button primaryColor extraClasses="px-[18px] py-2.5">
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
             <div className="pb-2 lg:mb-16 border-b border-gray-200">
@@ -41,7 +104,7 @@ export default function PublicationsNewsletterSettings() {
             </div>
           </div>
           <div>
-            <form action="">
+            <div>
               <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8">
                 <div>
                   <label
@@ -51,7 +114,9 @@ export default function PublicationsNewsletterSettings() {
                     Newsletter name*
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <input
+                    <Input
+                      error={errors.name}
+                      register={register('name')}
                       type="text"
                       name="newsletter-name"
                       id="newsletter-name"
@@ -68,7 +133,9 @@ export default function PublicationsNewsletterSettings() {
                     Newsletter description*
                   </label>
                   <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <input
+                    <Input
+                      error={errors.description}
+                      register={register('description')}
                       type="text"
                       name="newsletter-description"
                       id="newsletter-description"
@@ -104,29 +171,29 @@ export default function PublicationsNewsletterSettings() {
                       alt=""
                     />
                     <div className="space-x-4">
-                      <button
-                        type="button"
+                      <Button
+                        onClick={() => setFile()}
                         className="text-slate-600 text-sm font-medium tracking-sm"
                       >
                         Delete
-                      </button>
-                      <button
-                        type="button"
+                      </Button>
+                      <Button
+                        onClick={uploadPhotoHandler}
                         className="text-purple-700 text-sm font-medium tracking-sm"
                       >
                         Change Avatar
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-8">
                   <div>
-                    <label
-                      htmlFor="description"
+                    <Button
+                      onClick={exportList}
                       className="block text-slate-700 mb-3 text-lg"
                     >
                       Export subscribers
-                    </label>
+                    </Button>
                     <p className="text-slate-500 text-sm">
                       Get a list of subscribers who’ve opted to share their
                       email address. So far, 23456789 of your subscribers have
@@ -185,7 +252,7 @@ export default function PublicationsNewsletterSettings() {
                   </div>
                 </div>
               </div>
-            </form>
+            </div>
             <hr className="my-8" />
             <p className="text-slate-500 mb-8 lg:mb-0 text-sm tracking-sm">
               All HiThemes editors can contribute to this newsletter. Existing
@@ -206,7 +273,7 @@ export default function PublicationsNewsletterSettings() {
               </button>
             </div>
           </div>
-        </div>
+        </form>
       </Layout>
     </div>
   );
