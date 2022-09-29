@@ -4,11 +4,12 @@ import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
 import StatsCard from '@/components/StatsCard';
 
-const ViewAreaChart = dynamic(import('../components/ViewAreaChart'), {
+
+const ViewAreaChart = dynamic(import('@/components/ViewAreaChart'), {
   ssr: false,
 });
 
-const MemberAreaChart = dynamic(import('../components/MemberAreaChart'), {
+const MemberAreaChart = dynamic(import('@/components/MemberAreaChart'), {
   ssr: false,
 });
 
@@ -64,6 +65,7 @@ const memberStatsCards = [
 ];
 
 export default function PublicationsStatsBlogPost() {
+ 
   return (
     <div>
       <Head>

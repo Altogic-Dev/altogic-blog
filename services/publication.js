@@ -97,5 +97,11 @@ const PublicationService = {
       .filter(`this.user == '${user}'`)
       .get();
   },
+  getNewsletters(publication) {
+    return db
+      .model('newsletter_stories')
+      .filter(`this.publication == '${publication}'`)
+      .get();
+  },
 };
 export default PublicationService;

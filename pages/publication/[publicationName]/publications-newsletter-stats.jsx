@@ -4,6 +4,11 @@ import {
   ArrowNarrowRightIcon,
 } from '@heroicons/react/solid';
 import Layout from '@/layouts/Layout';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { publicationActions } from '@/redux/publication/publicationSlice';
+import _ from 'lodash';
+import { parseHtml } from '@/utils/utils';
 
 const statistics = [
   {
@@ -54,6 +59,25 @@ const statistics = [
 ];
 
 export default function PublicationsNewsletterStats() {
+  const dispatch = useDispatch();
+
+  const newsletters = useSelector((state) => state.publication.getNewsletters);
+  const publication = useSelector((state) => state.publication.publication);
+
+  const getNewsletters = () => {
+    dispatch(
+      publicationActions.getNewslettersRequest({
+        publication: _.get(publication, '_id'),
+      })
+    );
+  };
+  useEffect(() => {
+    if (publication) {
+      getNewsletters();
+    }
+  }, [publication]);
+
+  console.log(newsletters);
   return (
     <div>
       <Head>
@@ -107,24 +131,28 @@ export default function PublicationsNewsletterStats() {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-gray-200 bg-white">
-                            {statistics.map((statistic) => (
-                              <tr key={statistic.email}>
+                            {newsletters?.map((statistic) => (
+                              <tr key={statistic.title}>
                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
-                                  <p className="text-slate-800 text-base font-medium tracking-sm">
-                                    {statistic.title}
+                                  <p className="text-slate-800 text-base font-medium tracking-sm text-ellipsis">
+                                    {parseHtml(statistic.content) ?? ''}
                                   </p>
                                   <p className="text-slate-500 text-sm tracking-sm">
                                     {statistic.description}
                                   </p>
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                  {statistic.send}
+                                  {statistic.sendCount}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                  {statistic.opened}
+                                  {statistic.openCount}
                                 </td>
                                 <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                  %{statistic.clicked}
+                                  %
+                                  {statistic.sendCount === 0
+                                    ? 0
+                                    : (100 * statistic.openCount) /
+                                      statistic.sendCount}
                                 </td>
                               </tr>
                             ))}

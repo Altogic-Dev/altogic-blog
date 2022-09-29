@@ -199,6 +199,16 @@ export const publicationSlice = createSlice({
     deleteFeatureFailure(state) {
       state.isLoading = false;
     },
+    getNewslettersRequest(state) {
+      state.isLoading = true;
+    },
+    getNewslettersSuccess(state, action) {
+      state.isLoading = false;
+      state.newsletters = action.payload;
+    },
+    getNewslettersFailure(state) {
+      state.isLoading = false;
+    },
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({
