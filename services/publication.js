@@ -80,5 +80,11 @@ const PublicationService = {
       .filter(`this.publication == '${publication}'`)
       .get();
   },
+  getSubscribers(newsletter) {
+    return db
+      .model('newsletter')
+      .object(newsletter)
+      .get();
+  },
 };
 export default PublicationService;

@@ -34,7 +34,7 @@ export default function PublicationsNewsletterSettings() {
   });
 
   const submitFunction = (data) => {
-    console.log(data)
+    console.log(data);
     dispatch(
       fileActions.uploadFileRequest({
         file,
@@ -44,12 +44,13 @@ export default function PublicationsNewsletterSettings() {
     dispatch(
       publicationActions.uptadeNewsletterRequest({
         newsletter: newsletter._id,
-
       })
-    )
+    );
   };
 
   const uploadPhotoHandler = () => {
+    console.log('sa');
+
     const fileInput = document.createElement('input');
 
     fileInput.setAttribute('type', 'file');
@@ -62,19 +63,21 @@ export default function PublicationsNewsletterSettings() {
   };
 
   const exportList = () => {
+    console.log('sa');
+
     dispatch(
       publicationActions.getSubscribersRequest({
         publication: publication._id,
       })
     );
+    console.log('sa');
   };
 
-  console.log(subscribers);
   return (
     <div>
       <Head>
         <title>Altogic Medium Blog App Publications Newsletter Settings</title>
-        <meta
+        <metae
           name="description"
           content="Altogic Medium Blog App Publications Newsletter Settings"
         />
@@ -188,24 +191,24 @@ export default function PublicationsNewsletterSettings() {
                 </div>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-8">
                   <div>
-                    <Button
-                      onClick={exportList}
+                    <label
+                      htmlFor="description"
                       className="block text-slate-700 mb-3 text-lg"
                     >
                       Export subscribers
-                    </Button>
+                    </label>
                     <p className="text-slate-500 text-sm">
                       Get a list of subscribers who’ve opted to share their
                       email address. So far, 23456789 of your subscribers have
                       opted in.
                     </p>
                   </div>
-                  <button
-                    type="button"
+                  <Button
+                    onClick={exportList}
                     className="inline-flex items-center justify-center flex-shrink-0 px-7 py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   >
                     Export list
-                  </button>
+                  </Button>
                 </div>
                 <div className="col-span-2">
                   <span className="inline-block text-slate-700 mb-3 text-lg tracking-sm">

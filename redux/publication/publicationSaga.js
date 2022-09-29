@@ -2,7 +2,6 @@ import PublicationService from '@/services/publication';
 import { call, put, takeEvery } from 'redux-saga/effects';
 import { publicationActions } from './publicationSlice';
 
-
 function* getPublicationFollowersSaga({ payload: publicationId }) {
   try {
     const { data, errors } = yield call(
@@ -139,14 +138,13 @@ function* updatePublicationNavigation({
 
 function* followPublicationSaga({ payload: { publication, user } }) {
   try {
-
     const { data, errors } = yield call(
       PublicationService.followPublication,
       publication,
       user
     );
     if (data) {
-      data.user = user
+      data.user = user;
       yield put(publicationActions.followPublicationSuccess(data));
     }
     if (errors) {
@@ -158,16 +156,15 @@ function* followPublicationSaga({ payload: { publication, user } }) {
 }
 function* unfollowPublicationSaga({ payload: { publication, user } }) {
   try {
-    const {data} = yield call(
+    const { data } = yield call(
       PublicationService.unfollowPublication,
       publication,
       user
     );
 
-    if (data.deleted>0) {
+    if (data.deleted > 0) {
       yield put(publicationActions.unfollowPublicationSuccess(publication));
     }
-   
   } catch (e) {
     yield put(publicationActions.unfollowPublicationFailure(e));
   }
@@ -211,7 +208,7 @@ function* deleteFeatureSaga({ payload: { publication } }) {
       publication
     );
     if (data) {
-      data.publication = publication
+      data.publication = publication;
       yield put(publicationActions.deleteFeatureSuccess(data));
     }
     if (errors) {
@@ -222,7 +219,6 @@ function* deleteFeatureSaga({ payload: { publication } }) {
   }
 }
 function* getNewslettersSaga({ payload: { publication } }) {
-  console.log(publication);
   try {
     const { data, errors } = yield call(
       PublicationService.getNewsletters,
@@ -236,6 +232,22 @@ function* getNewslettersSaga({ payload: { publication } }) {
     }
   } catch (e) {
     yield put(publicationActions.getNewslettersFailure(e));
+  }
+}
+function* getSubscribersSaga({ payload: { newsletter } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getSubscribers,
+      newsletter
+    );
+    if (data) {
+      yield put(publicationActions.getSubscribersSucces(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.getSubscribersFailure(e));
   }
 }
 
@@ -266,19 +278,19 @@ export default function* rootSaga() {
   );
   yield takeEvery(
     publicationActions.checkPublicationFollowingRequest.type,
-    checkPublicationFollowingSaga,
+    checkPublicationFollowingSaga
   );
   yield takeEvery(
     publicationActions.getPublicationFeaturesRequest.type,
-    getPublicationFeaturesSaga,
+    getPublicationFeaturesSaga
   );
   yield takeEvery(
     publicationActions.deleteFeatureRequest.type,
-    deleteFeatureSaga,
+    deleteFeatureSaga
   );
   yield takeEvery(
     publicationActions.getNewslettersRequest.type,
-    getNewslettersSaga,
+    getNewslettersSaga
   );
   yield takeEvery(
     publicationActions.getFeaturePagesByPublicationRequest.type,
@@ -295,5 +307,9 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.updatePublicationNavigationRequest.type,
     updatePublicationNavigation
+  );
+  yield takeEvery(
+    publicationActions.getSubscribersRequest.type,
+    getSubscribersSaga
   );
 }
