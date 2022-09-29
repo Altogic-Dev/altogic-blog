@@ -1,6 +1,21 @@
 import PublicationService from '@/services/publication';
-import { call, debounce, put, takeEvery } from 'redux-saga/effects';
+import { call, debounce, put, takeEvery, select } from 'redux-saga/effects';
 import { publicationActions } from './publicationSlice';
+import { publicationActions } from './publicationSlice';
+import { storyActions } from '../story/storySlice';
+// function* followPublicationSaga({ payload: { followerUser, followingUser } }) {
+//   try {
+//     const { data, error } = yield call(
+//       FollowerConnectionService.followUser,
+//       followerUser,
+//       followingUser
+//     );
+//     console.log({ data, error });
+//     // yield put(followerConnectionActions.fetchDataSuccess());
+//   } catch (e) {
+//     console.error({ e });
+//   }
+// }
 
 function* getPublicationFollowersSaga({ payload: publicationId }) {
   try {
@@ -134,6 +149,25 @@ function* updatePublicationNavigation({
   } catch (e) {
     yield put(publicationActions.updatePublicationNavigationFailure(e));
   }
+}
+function* deletePublicationSectionRequest({ payload: { sectionIndex } }) {
+  const selectedFeatureStories = yield select(
+    (state) => state.story.featureStories
+  );
+  const sections = yield select((state) => state.publications.sections);
+  const newSections = [...sections];
+  const newFeatureStories = { ...selectedFeatureStories };
+  delete newFeatureStories[`section-${sectionIndex}`];
+  newSections.splice(sectionIndex, 1);
+  yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+  yield put(publicationActions.setPublicationSectionSuccess(newSections));
+}
+function* setPublicationSectionSaga({ payload: { sectionIndex, section } }) {
+  const sections = yield select((state) => state.publication.sections);
+  const newSections = [...sections];
+  newSections[sectionIndex] = section;
+  console.log({ sectionIndex, section });
+  yield put(publicationActions.setFeaturePageSectionsSuccess(newSections));
 }
 
 function* getPublicationByIdSaga({ payload: publicationId }) {
@@ -360,7 +394,7 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getSubscribersRequest.type,
     getSubscribersSaga
-     );
+  );
   yield takeEvery(
     publicationActions.getPublicationByIdRequest.type,
     getPublicationByIdSaga
@@ -373,5 +407,13 @@ export default function* rootSaga() {
     1500,
     publicationActions.isPublicationnameExistRequest.type,
     isPublicationnameExistSaga
+  );
+  yield takeEvery(
+    publicationActions.deletePublicationSectionRequest.type,
+    deletePublicationSectionRequest
+  );
+  yield takeEvery(
+    publicationActions.setFeaturePageSectionsRequest.type,
+    setPublicationSectionSaga
   );
 }

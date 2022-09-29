@@ -1,40 +1,52 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { Listbox, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/solid';
+import { useSelector, useDispatch } from 'react-redux';
+import { DateTime } from 'luxon';
+import { storyActions } from '@/redux/story/storySlice';
+import _ from 'lodash';
 
-const stories = [
-  {
-    id: 1,
-    name: 'Euismod scelerisque scelerisque quam feugiatar...',
-    info: 'Olivia Rhye on Jully 28',
-  },
-  {
-    id: 2,
-    name: 'Rhoncus nisl mattis at orci eros morbi ut pretium.',
-    info: 'Olivia Rhye on Jully 28',
-  },
-  {
-    id: 3,
-    name: 'Nascetur pulvinar ut vel risus, faucibus.',
-    info: 'Olivia Rhye on Jully 28',
-  },
-];
+export default function PublicationsListImageCard({
+  listBox,
+  dropdown,
+  index,
+  sectionIndex,
+}) {
+  const [selectedSection, setSelectedSection] = useState();
+  const stories = useSelector((state) => state.story.publicationsStories);
+  const featStories = useSelector((state) => state.story.featureStories);
 
-export default function PublicationsListImageCard({ listBox, dropdown }) {
-  const [selectedSection, setSelectedSection] = useState(stories[0]);
+  const dispatch = useDispatch();
+  const handleSelectStory = (story) => {
+    setSelectedSection(story);
+    dispatch(
+      storyActions.selectFeatureStoriesRequest({
+        story,
+        index,
+        sectionIndex,
+      })
+    );
+  };
 
+  useEffect(() => {
+    if (featStories || stories) {
+      setSelectedSection(
+        _.get(featStories, `[section-${sectionIndex}][${index}]`) ||
+          _.get(stories, `[0]`)
+      );
+    }
+  }, [featStories, stories]);
   return (
     <div className="flex items-center gap-12 space-y-4">
       <div>
         <h2 className="text-slate-500 text-2xl font-semibold tracking-md">
-          Facilisis pellentesque massa viverra dui odio libero vitae turpis
-          pretium.
+          {selectedSection?.title}
         </h2>
         {listBox && (
-          <Listbox value={selectedSection} onChange={setSelectedSection}>
+          <Listbox value={selectedSection} onChange={handleSelectStory}>
             <div className="relative">
               <Listbox.Button className="relative min-w-[240px] max-w-[384px] w-full h-11 bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default">
-                <span className="block truncate">{selectedSection.name}</span>
+                <span className="block truncate">{selectedSection?.title}</span>
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
                   <ChevronDownIcon
                     className="h-5 w-5 text-slate-500"
@@ -49,9 +61,9 @@ export default function PublicationsListImageCard({ listBox, dropdown }) {
                 leaveTo="opacity-0"
               >
                 <Listbox.Options className="absolute mt-1 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
-                  {stories.map((storie) => (
+                  {stories.map((story) => (
                     <Listbox.Option
-                      key={storie.id}
+                      key={story._id}
                       className={({ active }) =>
                         `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
                           active
@@ -59,13 +71,14 @@ export default function PublicationsListImageCard({ listBox, dropdown }) {
                             : 'text-slate-700'
                         }`
                       }
-                      value={storie}
+                      value={story}
                     >
                       <span className="flex text-slate-700 mb-2 text-base font-medium tracking-sm text-left truncate group-hover:text-slate-900">
-                        {storie.name}
+                        {story.title}
                       </span>
                       <span className="text-slate-700 text-xs tracking-sm">
-                        {storie.info}
+                        {story?.user.name} on{' '}
+                        {DateTime.fromISO(story?.createdAt).toFormat('LLL dd')}
                       </span>
                     </Listbox.Option>
                   ))}
@@ -91,8 +104,8 @@ export default function PublicationsListImageCard({ listBox, dropdown }) {
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="absolute left-0 mt-2 w-96 origin-top-left rounded-md bg-white shadow-lg z-20 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {stories.map((storie) => (
-                  <Menu.Item key={storie.id}>
+                {stories.map((story) => (
+                  <Menu.Item key={story._id}>
                     {({ active }) => (
                       <button
                         type="button"
@@ -101,10 +114,13 @@ export default function PublicationsListImageCard({ listBox, dropdown }) {
                         } group flex flex-col w-full rounded-md p-3.5`}
                       >
                         <span className="flex text-slate-700 mb-2 text-base font-medium tracking-sm text-left truncate group-hover:text-slate-900">
-                          {storie.name}
+                          {story.name}
                         </span>
                         <span className="text-slate-700 text-xs tracking-sm">
-                          {storie.info}
+                          {story?.user.name} on{' '}
+                          {DateTime.fromISO(story?.createdAt).toFormat(
+                            'LLL dd'
+                          )}
                         </span>
                       </button>
                     )}

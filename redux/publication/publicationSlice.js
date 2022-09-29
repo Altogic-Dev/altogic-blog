@@ -16,6 +16,7 @@ const initialState = {
   userPublications: [],
   userFollowingPublication: [],
   publicationFeatures: [],
+  sections: [],
 };
 
 export const publicationSlice = createSlice({
@@ -219,7 +220,20 @@ export const publicationSlice = createSlice({
     getSubscribersFailure(state) {
       state.isLoading = false;
     },
-
+    deletePublicationSectionRequest(state) {
+      state.isLoading = true;
+    },
+    setFeaturePageSectionsRequest(state) {
+      state.isLoading = true;
+    },
+    setFeaturePageSectionsSuccess(state, action) {
+      state.sections = action.payload;
+      state.isLoading = false;
+    },
+    setFeaturePageSectionsFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
     extraReducers: {
       [HYDRATE]: (state, action) => ({
         ...state,

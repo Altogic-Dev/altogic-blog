@@ -15,12 +15,11 @@ const initialState = {
   userStoriesInfo: null,
   userDraftStories: null,
   userDraftStoriesInfo: null,
-  publicationsStories: null,
+  publicationsStories: [],
   isLoading: false,
   replies: [],
   replyCount: 0,
-
-
+  featureStories: {},
 };
 
 // Actual Slice
@@ -139,7 +138,6 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-   
 
     getStoryBySlugRequest() {},
     getStoryBySlugSuccess(state, action) {
@@ -223,6 +221,28 @@ export const storySlice = createSlice({
       state.publicationsStories = action.payload;
     },
     getPublicationsStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesByTopicRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesByTopicSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationsStories[action.payload.sectionIndex] =
+        action.payload.data;
+    },
+    getPublicationsStoriesByTopicFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    selectFeatureStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    selectFeatureStoriesSuccess(state, action) {
+      state.featureStories = action.payload;
+    },
+    selectFeatureStoriesFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

@@ -1,28 +1,262 @@
-import { useState, Fragment } from 'react';
+import React, { useState, Fragment, useEffect, createElement } from 'react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { Listbox, Transition, Tab, Switch } from '@headlessui/react';
 import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
+import { useSelector, useDispatch } from 'react-redux';
+import { storyActions } from '@/redux/story/storySlice';
+import { publicationActions } from '@/redux/publication/publicationSlice';
 import PublicationsNormalCard from './PublicationsNormalCard';
 import PublicationsFullImageVerticalCard from './PublicationsFullImageVerticalCard';
 import PublicationsStreamCard from './PublicationsStreamCard';
 import PublicationsListImageCard from './PublicationsListImageCard';
 
 const sections = [
-  { id: 1, tag: 'Stories in a tag' },
-  { id: 2, tag: 'Featured stories' },
+  { id: 1, tag: 'Stories in a tag', isTag: true },
+  { id: 2, tag: 'Featured stories', isTag: false },
 ];
+const designTypes = ['grid', 'stream', 'list'];
 
-export default function Sections() {
+export default function Sections({ index: sectionIndex, setSectionList }) {
   const [selectedSectionBar, setSelectedSectionBar] = useState(sections[0]);
+  const [selectedTopic, setSelectedTopic] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [normalCard, setNormalCard] = useState(true);
   const [imageCard, setImageCard] = useState(false);
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(3);
   const [enabled, setEnabled] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
   const [containerScreen, setContainerScreen] = useState(false);
-  const tag = useState(false);
+  const [wrappers, setWrappers] = useState([]);
+  const [children, setChildren] = useState([]);
+  const [streamCardList, setStreamCardList] = useState([]);
+  const [listImageCardList, setListImageCardList] = useState([]);
+  const tag = useState(true);
+  const dispatch = useDispatch();
+  const topics = useSelector((state) => state.topics.publicationsTopics);
+  const publication = useSelector((state) => state.publication.publication);
+
+  const handleTopicChange = (topic) => {
+    setSelectedTopic(topic);
+    dispatch(
+      storyActions.getPublicationsStoriesByTopicRequest({
+        publication: publication?._id,
+        topic: topic.topic,
+        limit: counter,
+        sectionIndex,
+      })
+    );
+  };
+
+  const handleNormalCardLayout = () => {
+    setChildren([]);
+    setWrappers([]);
+    const wrapperCount = counter > 3 ? Math.floor(counter / 3) : 1;
+    for (let index = 0; index < wrapperCount; index += 1) {
+      if (counter >= 3) {
+        for (let k = 0; k < 3; k += 1) {
+          setChildren((children) => [
+            ...children,
+            createElement(PublicationsNormalCard, {
+              index: index * 3 + k,
+              key: index * 3 + k,
+              smallSize: true,
+              listBox: !selectedSectionBar.isTag,
+              sectionIndex,
+            }),
+          ]);
+        }
+      }
+      if (index === wrapperCount - 1 && counter % 3 !== 0) {
+        for (let j = 0; j < counter % 3; j += 1) {
+          setChildren((children) => [
+            ...children,
+            createElement(PublicationsNormalCard, {
+              index: counter - (counter % 3) + j,
+              key: counter - (counter % 3) + j,
+              mediumSize: counter % 3 === 2,
+              largeSize: counter % 3 === 1,
+              listBox: !selectedSectionBar.isTag,
+              sectionIndex,
+            }),
+          ]);
+        }
+      }
+    }
+  };
+  const handleImageCardLayout = () => {
+    setChildren([]);
+    setWrappers([]);
+    const wrapperCount = counter > 3 ? Math.floor(counter / 3) : 1;
+    for (let index = 0; index < wrapperCount; index += 1) {
+      if (counter >= 3) {
+        for (let j = 0; j < 3; j += 1) {
+          setChildren((children) => [
+            ...children,
+            createElement(PublicationsFullImageVerticalCard, {
+              index: index * 3 + j,
+              key: index * 3 + j,
+              largeSize: !selectedSectionBar.isTag,
+              listBox: !selectedSectionBar.isTag,
+              sectionIndex,
+            }),
+          ]);
+        }
+      }
+      if (index === wrapperCount - 1 && counter % 3 !== 0) {
+        for (let k = 0; k < counter % 3; k += 1) {
+          setChildren((children) => [
+            ...children,
+            createElement(PublicationsFullImageVerticalCard, {
+              index: index * 3 + k,
+              key: index * 3 + k,
+              largeSize: true,
+              singleBigCard: counter % 3 === 1,
+              listBox: !selectedSectionBar.isTag,
+              sectionIndex,
+            }),
+          ]);
+        }
+      }
+    }
+  };
+  const handleStreamCardLayout = () => {
+    setStreamCardList([]);
+    for (let index = 0; index < counter; index += 1) {
+      setStreamCardList((streamCardList) => [
+        ...streamCardList,
+        createElement(PublicationsStreamCard, {
+          index,
+          key: index,
+          listBox: !selectedSectionBar.isTag,
+          sectionIndex,
+        }),
+      ]);
+    }
+  };
+  const handleListImageCardLayout = () => {
+    setListImageCardList([]);
+    for (let index = 0; index < counter; index += 1) {
+      setListImageCardList((streamCardList) => [
+        ...streamCardList,
+        createElement(PublicationsListImageCard, {
+          index,
+          key: index,
+          listBox: !selectedSectionBar.isTag,
+          sectionIndex,
+        }),
+      ]);
+    }
+  };
+  const handleSectionBar = (section) => {
+    setSelectedSectionBar(section);
+    if (section.isTag) {
+      dispatch(
+        storyActions.getPublicationsStoriesByTopicRequest({
+          publication: publication?._id,
+          topic: selectedTopic.topic,
+          limit: counter,
+          sectionIndex,
+        })
+      );
+    } else {
+      dispatch(storyActions.getPublicationsStoriesRequest(publication?._id));
+    }
+  };
+  useEffect(() => {
+    if (normalCard) {
+      handleNormalCardLayout();
+    }
+    if (imageCard) {
+      handleImageCardLayout();
+    }
+    if (selectedIndex === 1) {
+      handleStreamCardLayout();
+    }
+    if (selectedIndex === 2) {
+      handleListImageCardLayout();
+    }
+  }, [counter, imageCard, normalCard, selectedIndex, selectedSectionBar]);
+  useEffect(() => {
+    for (let index = 0; index < children.length; index += 3) {
+      const child = [children[index]];
+      if (children[index + 1]) {
+        child.push(children[index + 1]);
+      }
+      if (children[index + 2]) {
+        child.push(children[index + 2]);
+      }
+
+      setWrappers((wrappers) => [
+        ...wrappers,
+        createElement(
+          'div',
+          {
+            className: classNames(
+              'grid grid-cols-1 gap-8',
+              child.length === 3 ? 'sm:grid-cols-2 lg:grid-cols-3' : '',
+              child.length === 2 ? 'sm:grid-cols-2 lg:grid-cols-2' : ''
+            ),
+          },
+          [...child]
+        ),
+      ]);
+    }
+  }, [children]);
+  useEffect(() => {
+    if (selectedSectionBar.isTag) {
+      setSelectedTopic(topics[0]);
+    }
+  }, [selectedSectionBar, topics]);
+
+  useEffect(() => {
+    if (selectedSectionBar.isTag && publication && selectedTopic) {
+      dispatch(
+        storyActions.getPublicationsStoriesByTopicRequest({
+          publication: publication?._id,
+          topic: selectedTopic?.topic,
+          limit: counter,
+          sectionIndex,
+        })
+      );
+    }
+  }, [counter, publication, selectedTopic]);
+  const deleteSection = () => {
+    setSectionList((sectionList) => {
+      const newList = [...sectionList];
+      newList.splice(sectionIndex, 1);
+      return newList;
+    });
+    dispatch(
+      publicationActions.deletePublicationSectionRequest({ sectionIndex })
+    );
+  };
+  useEffect(() => {
+    const section = {
+      isShowTitle: enabled,
+      sectionTitle: 'text',
+      isFullContainerGrid: containerScreen,
+      isFullStoryGrid: imageCard,
+      designType: designTypes[selectedIndex],
+      sectionType: selectedSectionBar.isTag ? 'topic' : 'story',
+      storySize: counter,
+      sectionIndex,
+    };
+    dispatch(
+      publicationActions.setFeaturePageSectionsRequest({
+        sectionIndex,
+        section,
+      })
+    );
+  }, [
+    counter,
+    imageCard,
+    fullScreen,
+    containerScreen,
+    normalCard,
+    selectedIndex,
+    selectedSectionBar,
+  ]);
 
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
@@ -30,10 +264,7 @@ export default function Sections() {
         <div className="flex gap-5 justify-end">
           <div className="flex items-center gap-4 ">
             <span className="hidden sm:inline">Section: </span>
-            <Listbox
-              value={selectedSectionBar}
-              onChange={setSelectedSectionBar}
-            >
+            <Listbox value={selectedSectionBar} onChange={handleSectionBar}>
               <div className="relative">
                 <Listbox.Button
                   className={`relative ${
@@ -91,19 +322,69 @@ export default function Sections() {
               </div>
             </Listbox>
           </div>
-          {tag ? (
-            <div className="ml-4">
-              <input
-                type="text"
-                name="title"
-                id="title"
-                placeholder="#Tag"
-                className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-              />
+          {selectedSectionBar.isTag && (
+            <div className="ml-4 w-[120px]">
+              <Listbox value={selectedTopic} onChange={handleTopicChange}>
+                <div className="relative">
+                  <Listbox.Button
+                    className={`relative ${
+                      tag ? 'max-w-[220px]' : 'max-w-[240px] min-w-[240px]'
+                    } w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
+                  >
+                    <span className="block truncate">
+                      {selectedTopic?.topic}
+                    </span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
+                      <ChevronDownIcon
+                        className="h-5 w-5 text-slate-500"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Listbox.Button>
+                  <Transition
+                    as={Fragment}
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute mt-1 lg:min-w-[240px] lg:max-w-[240px] w-full bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-50 focus:outline-none">
+                      {topics.map((topic) => (
+                        <Listbox.Option
+                          key={topic._id}
+                          className={({ active }) =>
+                            `relative cursor-default select-none py-2 pl-3.5 pr-4 ${
+                              active
+                                ? 'bg-slate-50 text-slate-700'
+                                : 'text-slate-700'
+                            }`
+                          }
+                          value={topic}
+                        >
+                          {({ selected }) => (
+                            <>
+                              <span className="block truncate">
+                                {topic.topic}
+                              </span>
+                              {selected ? (
+                                <span className="absolute inset-y-0 right-3.5 flex items-center text-purple-700">
+                                  <CheckIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </Listbox>
             </div>
-          ) : null}
+          )}
         </div>
-        <div className="flex items-center flex-wrap justify-center gap-y-6">
+        <div className="flex items-center flex-wrap xl:flex-nowrap justify-center gap-y-6">
           <div className="relative inline-flex max-h-[32px] pr-5 sm:border-r border-slate-300">
             <button
               type="button"
@@ -403,6 +684,7 @@ export default function Sections() {
             <button
               type="button"
               className="inline-flex items-center justify-center"
+              onClick={deleteSection}
             >
               <svg
                 className="w-6 h-6 text-slate-400"
@@ -451,49 +733,20 @@ export default function Sections() {
       >
         <Tab.Panels>
           <Tab.Panel className="space-y-10">
-            {normalCard && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <PublicationsNormalCard smallSize listBox />
-                  <PublicationsNormalCard smallSize dropdown />
-                  <PublicationsNormalCard smallSize listBox />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
-                  <PublicationsNormalCard mediumSize listBox />
-                  <PublicationsNormalCard mediumSize listBox />
-                </div>
-                <div className="grid grid-cols-1 gap-8">
-                  <PublicationsNormalCard singleBigCard largeSize listBox />
-                </div>
-              </>
-            )}
-            {imageCard && (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                  <PublicationsFullImageVerticalCard largeSize />
-                  <PublicationsFullImageVerticalCard largeSize />
-                  <PublicationsFullImageVerticalCard largeSize />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-8">
-                  <PublicationsFullImageVerticalCard largeSize />
-                  <PublicationsFullImageVerticalCard largeSize />
-                </div>
-                <div className="grid grid-cols-1 gap-8">
-                  <PublicationsFullImageVerticalCard largeSize singleBigCard />
-                </div>
-              </>
-            )}
+            {normalCard && <>{wrappers.map((wrapper) => wrapper)}</>}
+            {imageCard && <>{wrappers.map((wrapper) => wrapper)}</>}
           </Tab.Panel>
           <Tab.Panel>
             <div className="grid grid-cols-[800px,1fr] gap-8">
               <div>
-                <PublicationsStreamCard dropdown />
-                <hr className="my-10" />
-                <PublicationsStreamCard listBox />
-                <hr className="my-10" />
-                <PublicationsStreamCard listBox />
-                <hr className="my-10" />
-                <PublicationsStreamCard listBox />
+                {streamCardList.map((streamCard, index) => (
+                  <>
+                    {streamCard}
+                    {index !== streamCard.length - 1 && (
+                      <hr className="my-10" />
+                    )}
+                  </>
+                ))}
               </div>
               <div className="lg:flex lg:flex-col lg:gap-10">
                 <Sidebar publicationProfile />
@@ -503,17 +756,14 @@ export default function Sections() {
           <Tab.Panel>
             <div className="grid grid-cols-[800px,1fr] gap-8">
               <div>
-                <PublicationsListImageCard dropdown />
-                <hr className="my-10" />
-                <PublicationsListImageCard listBox />
-                <hr className="my-10" />
-                <PublicationsListImageCard listBox />
-                <hr className="my-10" />
-                <PublicationsListImageCard listBox />
-                <hr className="my-10" />
-                <PublicationsListImageCard listBox />
-                <hr className="my-10" />
-                <PublicationsListImageCard listBox />
+                {listImageCardList.map((listImageCard, index) => (
+                  <>
+                    {listImageCard}
+                    {index !== listImageCard.length - 1 && (
+                      <hr className="my-10" />
+                    )}
+                  </>
+                ))}
               </div>
               <div className="lg:flex lg:flex-col lg:gap-10">
                 <Sidebar publicationProfile />
