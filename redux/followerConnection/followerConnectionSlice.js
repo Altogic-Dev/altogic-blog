@@ -66,6 +66,7 @@ export const followerConnectionSlice = createSlice({
       state.userFollowings.page = action.payload.page;
     },
 
+
     setIsFollowing(state, action) {
       state.isFollowing = action.payload;
     },

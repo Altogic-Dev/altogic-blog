@@ -38,7 +38,6 @@ export default function PublicationsNewFeature() {
   });
 
   const submitFunction = (data) => {
-    console.log(data)
     const publication = userPublications.find(
       (publication) => publication.name === router.query.publicationName
     );
@@ -72,7 +71,7 @@ export default function PublicationsNewFeature() {
           name="description"
           content="Altogic Medium Blog App Publications New Feature"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <form

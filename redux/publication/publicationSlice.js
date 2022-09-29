@@ -14,6 +14,8 @@ const initialState = {
   error: null,
   isLoading: false,
   userPublications: [],
+  userFollowingPublication: [],
+  publicationFeatures: [],
 };
 
 export const publicationSlice = createSlice({
@@ -40,6 +42,17 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     getPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationFeaturesRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationFeaturesSuccess(state, action) {
+      state.publicationFeatures = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationFeaturesFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -129,6 +142,62 @@ export const publicationSlice = createSlice({
     },
     setPublicationFromLocalStorage(state, action) {
       state.userPublications = action.payload;
+    },
+
+    followPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    followPublicationSuccess(state, action) {
+      state.isLoading = false;
+      state.publication.followerCount += 1;
+      state.publicationFollowers = [
+        ...state.publicationFollowers,
+        action.payload.user,
+      ];
+      state.userFollowingPublication = [
+        ...state.userFollowingPublication,
+        action.payload.publication,
+      ];
+    },
+    followPublicationFailure(state) {
+      state.isLoading = false;
+    },
+    unfollowPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    unfollowPublicationSuccess(state, action) {
+      state.isLoading = false;
+      state.publication.followerCount -= 1;
+      state.userFollowingPublication = state.userFollowingPublication.filter(
+        (item) => item !== action.payload
+      );
+    },
+    unfollowPublicationFailure(state) {
+      state.isLoading = false;
+    },
+    checkPublicationFollowingRequest(state) {
+      state.isLoading = true;
+    },
+    checkPublicationFollowingSuccess(state, action) {
+      state.isLoading = false;
+      state.userFollowingPublication = action.payload.map(
+        (item) => item.publication
+      );
+    },
+    checkPublicationFollowingFailure(state) {
+      state.isLoading = false;
+    },
+    deleteFeatureRequest(state) {
+      state.isLoading = true;
+    },
+    deleteFeatureSuccess(state, action) {
+      state.isLoading = false;
+      state.userFollowingPublication = state.userFollowingPublication.filter(
+        (item) => item._id !== action.payload._id
+      );
+    },
+    deleteFeatureFailure(state) {
+      state.isLoading = false;
     },
 
     extraReducers: {

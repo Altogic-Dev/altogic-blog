@@ -206,11 +206,7 @@ export default function Publications() {
   );
   const dispatch = useDispatch();
 
-  const getPublication = () => {
-    dispatch(
-      publicationActions.getPublicationRequest(publicationName.toLowerCase())
-    );
-  };
+
   const getLatestPublicationStories = () => {
     dispatch(
       publicationActions.getLatestPublicationStoriesRequest(
@@ -220,12 +216,10 @@ export default function Publications() {
   };
   useEffect(() => {
     if (!isNil(publicationName)) {
-      getPublication();
       getLatestPublicationStories();
     }
   }, [publicationName]);
 
-  console.log(latestPublicationStories);
   return (
     <div>
       <Head>
@@ -234,7 +228,7 @@ export default function Publications() {
           name="description"
           content="Altogic Medium Blog App Publications"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
