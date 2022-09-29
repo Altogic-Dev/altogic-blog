@@ -99,5 +99,8 @@ const AuthService = {
   getUserByUsername(username) {
     return endpoint.get('user/username', { username });
   },
+  searchUserByUsername(username) {
+    return endpoint.get('/user/searchByUsername', { username });
+  },
 };
 export default AuthService;

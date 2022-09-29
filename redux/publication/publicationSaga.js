@@ -1,7 +1,6 @@
 import PublicationService from '@/services/publication';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, debounce, put, takeEvery } from 'redux-saga/effects';
 import { publicationActions } from './publicationSlice';
-
 
 function* getPublicationFollowersSaga({ payload: publicationId }) {
   try {
@@ -137,16 +136,64 @@ function* updatePublicationNavigation({
   }
 }
 
+function* getPublicationByIdSaga({ payload: publicationId }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getPublicationById,
+      publicationId
+    );
+    if (errors) throw errors.items;
+    if (data) yield put(publicationActions.getPublicationByIdSuccess(data));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* isPublicationnameExistSaga({
+  payload: { publicationId, publicationname },
+}) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.isPublicationExist,
+      publicationId,
+      publicationname
+    );
+    if (errors) throw errors.items;
+    if (data)
+      yield put(
+        publicationActions.isPublicationnameExistSuccess({
+          isExist: data.isExist,
+          publicationname,
+        })
+      );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* updatePublicationSaga({ payload: publication }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.updatePublication,
+      publication
+    );
+    if (errors) throw errors.items;
+    if (data)
+      yield put(publicationActions.updatePublicationSuccess(publication));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 function* followPublicationSaga({ payload: { publication, user } }) {
   try {
-
     const { data, errors } = yield call(
       PublicationService.followPublication,
       publication,
       user
     );
     if (data) {
-      data.user = user
+      data.user = user;
       yield put(publicationActions.followPublicationSuccess(data));
     }
     if (errors) {
@@ -158,16 +205,15 @@ function* followPublicationSaga({ payload: { publication, user } }) {
 }
 function* unfollowPublicationSaga({ payload: { publication, user } }) {
   try {
-    const {data} = yield call(
+    const { data } = yield call(
       PublicationService.unfollowPublication,
       publication,
       user
     );
 
-    if (data.deleted>0) {
+    if (data.deleted > 0) {
       yield put(publicationActions.unfollowPublicationSuccess(publication));
     }
-   
   } catch (e) {
     yield put(publicationActions.unfollowPublicationFailure(e));
   }
@@ -211,7 +257,7 @@ function* deleteFeatureSaga({ payload: { publication } }) {
       publication
     );
     if (data) {
-      data.publication = publication
+      data.publication = publication;
       yield put(publicationActions.deleteFeatureSuccess(data));
     }
     if (errors) {
@@ -249,15 +295,15 @@ export default function* rootSaga() {
   );
   yield takeEvery(
     publicationActions.checkPublicationFollowingRequest.type,
-    checkPublicationFollowingSaga,
+    checkPublicationFollowingSaga
   );
   yield takeEvery(
     publicationActions.getPublicationFeaturesRequest.type,
-    getPublicationFeaturesSaga,
+    getPublicationFeaturesSaga
   );
   yield takeEvery(
     publicationActions.deleteFeatureRequest.type,
-    deleteFeatureSaga,
+    deleteFeatureSaga
   );
   yield takeEvery(
     publicationActions.getFeaturePagesByPublicationRequest.type,
@@ -274,5 +320,18 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.updatePublicationNavigationRequest.type,
     updatePublicationNavigation
+  );
+  yield takeEvery(
+    publicationActions.getPublicationByIdRequest.type,
+    getPublicationByIdSaga
+  );
+  yield takeEvery(
+    publicationActions.updatePublicationRequest.type,
+    updatePublicationSaga
+  );
+  yield debounce(
+    1500,
+    publicationActions.isPublicationnameExistRequest.type,
+    isPublicationnameExistSaga
   );
 }

@@ -5,6 +5,9 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   publicationFollowers: [],
   publication: null,
+  publicationStories: [],
+  isPublicationnameValid: true,
+  publicationname: null,
   latestPublicationStories: [],
   featurePages: [],
   publicationNavigation: [],
@@ -74,6 +77,25 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+
+    getPublicationByIdRequest() {},
+    getPublicationByIdSuccess(state, action) {
+      state.publication = action.payload;
+    },
+
+    isPublicationnameExistRequest() {},
+    isPublicationnameExistSuccess(state, action) {
+      state.isPublicationnameValid = !action.payload.isExist;
+      if (!action.payload.isExist) {
+        state.publicationname = action.payload.publicationname;
+      }
+    },
+
+    updatePublicationRequest() {},
+    updatePublicationSuccess(state, action) {
+      state.publication = action.payload;
+    },
+
     getFeaturePagesByPublicationRequest(state) {
       state.isLoading = true;
     },
