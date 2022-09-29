@@ -4,6 +4,7 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
 import { PlusIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +15,10 @@ import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSug
 
 export default function PublicationSettingsInfo() {
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  const { publicationName } = router.query;
+
   const userFromLocale = useSelector((state) => state.auth.user);
   const publication = useSelector((state) => state.publication.publication);
   const uploadedFileLinks = useSelector((state) => state.file.fileLinks);
@@ -117,9 +122,12 @@ export default function PublicationSettingsInfo() {
   };
 
   useEffect(() => {
-    const ID = '632ad2f2829f90d740a0f108';
-    dispatch(publicationActions.getPublicationByIdRequest(ID));
-  }, []);
+    if (publicationName) {
+      dispatch(
+        publicationActions.getPublicationRequest(publicationName.toLowerCase())
+      );
+    }
+  }, [publicationName]);
 
   useEffect(() => {
     if (publication) {
