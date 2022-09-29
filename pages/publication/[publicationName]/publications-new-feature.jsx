@@ -25,9 +25,7 @@ export default function PublicationsNewFeature() {
     file: yup.string().required('Logo is required'),
   });
 
-  const userPublications = useSelector(
-    (state) => state.publication.userPublications
-  );
+  const publication = useSelector((state) => state.publication.publication);
 
   const {
     handleSubmit,
@@ -38,19 +36,14 @@ export default function PublicationsNewFeature() {
   });
 
   const submitFunction = (data) => {
-    const publication = userPublications.find(
-      (publication) => publication.name === router.query.publicationName
-    );
     dispatch(
       fileActions.uploadFileRequest({
         file,
         name: `${publication.name}-${publication.featurePageCount}`,
       })
     );
-   // Datayı gönder title link 
+    // Datayı gönder title link
   };
-
-
 
   const uploadPhotoHandler = () => {
     const fileInput = document.createElement('input');

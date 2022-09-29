@@ -32,6 +32,9 @@ export default function ProfilePage({ About, Home, List }) {
   const { username } = router.query;
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const followLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
@@ -355,6 +358,7 @@ export default function ProfilePage({ About, Home, List }) {
                   username: _.get(userState, 'username'),
                   about: _.get(userState, 'about'),
                 }}
+                followLoading={followLoading}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
               />

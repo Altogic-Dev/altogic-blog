@@ -268,7 +268,6 @@ function* deleteFeatureSaga({ payload: { publication } }) {
   }
 }
 function* getNewslettersSaga({ payload: { publication } }) {
-  console.log(publication);
   try {
     const { data, errors } = yield call(
       PublicationService.getNewsletters,
@@ -282,6 +281,22 @@ function* getNewslettersSaga({ payload: { publication } }) {
     }
   } catch (e) {
     yield put(publicationActions.getNewslettersFailure(e));
+  }
+}
+function* getSubscribersSaga({ payload: { newsletter } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getSubscribers,
+      newsletter
+    );
+    if (data) {
+      yield put(publicationActions.getSubscribersSucces(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.getSubscribersFailure(e));
   }
 }
 
@@ -324,7 +339,7 @@ export default function* rootSaga() {
   );
   yield takeEvery(
     publicationActions.getNewslettersRequest.type,
-    getNewslettersSaga,
+    getNewslettersSaga
   );
   yield takeEvery(
     publicationActions.getFeaturePagesByPublicationRequest.type,
@@ -342,6 +357,10 @@ export default function* rootSaga() {
     publicationActions.updatePublicationNavigationRequest.type,
     updatePublicationNavigation
   );
+  yield takeEvery(
+    publicationActions.getSubscribersRequest.type,
+    getSubscribersSaga
+     );
   yield takeEvery(
     publicationActions.getPublicationByIdRequest.type,
     getPublicationByIdSaga

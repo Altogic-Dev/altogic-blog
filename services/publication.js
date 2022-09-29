@@ -40,7 +40,7 @@ const PublicationService = {
     return db
       .model('story')
       .filter(
-        `publicationName == '${publicationName}' && isPublication == true'`
+        `publicationName == '${publicationName}'  `
       )
       .get();
   },
@@ -101,6 +101,12 @@ const PublicationService = {
     return db
       .model('newsletter_stories')
       .filter(`this.publication == '${publication}'`)
+      .get();
+  },
+  getSubscribers(newsletter) {
+    return db
+      .model('newsletter')
+      .object(newsletter)
       .get();
   },
 };
