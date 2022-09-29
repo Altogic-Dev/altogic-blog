@@ -1,5 +1,5 @@
 import PublicationService from '@/services/publication';
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, debounce, put, takeEvery } from 'redux-saga/effects';
 import { publicationActions } from './publicationSlice';
 
 function* getPublicationFollowersSaga({ payload: publicationId }) {
@@ -133,6 +133,55 @@ function* updatePublicationNavigation({
     }
   } catch (e) {
     yield put(publicationActions.updatePublicationNavigationFailure(e));
+  }
+}
+
+function* getPublicationByIdSaga({ payload: publicationId }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getPublicationById,
+      publicationId
+    );
+    if (errors) throw errors.items;
+    if (data) yield put(publicationActions.getPublicationByIdSuccess(data));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* isPublicationnameExistSaga({
+  payload: { publicationId, publicationname },
+}) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.isPublicationExist,
+      publicationId,
+      publicationname
+    );
+    if (errors) throw errors.items;
+    if (data)
+      yield put(
+        publicationActions.isPublicationnameExistSuccess({
+          isExist: data.isExist,
+          publicationname,
+        })
+      );
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* updatePublicationSaga({ payload: publication }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.updatePublication,
+      publication
+    );
+    if (errors) throw errors.items;
+    if (data)
+      yield put(publicationActions.updatePublicationSuccess(publication));
+  } catch (e) {
+    console.error(e);
   }
 }
 
@@ -311,5 +360,18 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getSubscribersRequest.type,
     getSubscribersSaga
+     );
+  yield takeEvery(
+    publicationActions.getPublicationByIdRequest.type,
+    getPublicationByIdSaga
+  );
+  yield takeEvery(
+    publicationActions.updatePublicationRequest.type,
+    updatePublicationSaga
+  );
+  yield debounce(
+    1500,
+    publicationActions.isPublicationnameExistRequest.type,
+    isPublicationnameExistSaga
   );
 }

@@ -14,6 +14,12 @@ function* uploadFileSaga({ payload }) {
     );
     if (data) {
       yield put(fileActions.uploadFileSuccess(data.publicPath));
+      yield put(
+        fileActions.uploadFilesSuccess({
+          name: payload.name.split('-')[1],
+          data: data.publicPath,
+        })
+      );
     }
     if (errors) {
       throw errors.items;
