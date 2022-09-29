@@ -24,6 +24,7 @@ export default function Profile({
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(profile, 'id'),
+          notUpdate: true,
         })
       );
     }
@@ -36,6 +37,7 @@ export default function Profile({
           followingUserProfilePicture: _.get(profile, 'profilePicture'),
           followingUsername: _.get(profile, 'username'),
         },
+        notUpdate: true,
       })
     );
   };

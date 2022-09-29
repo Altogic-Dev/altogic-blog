@@ -89,6 +89,7 @@ export default function ProfilePage({ About, Home, List }) {
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(user, '_id'),
+          notUpdate: true,
         })
       );
     else {
@@ -101,6 +102,7 @@ export default function ProfilePage({ About, Home, List }) {
             followingUserProfilePicture: _.get(user, '_profilePicture'),
             followingUsername: _.get(user, '_username'),
           },
+          notUpdate: true,
         })
       );
     }
