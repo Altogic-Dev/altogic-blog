@@ -21,8 +21,8 @@ export default function PublicationsNewsletterSettings() {
 
   const [file, setFile] = useState();
 
-  const fileLink = useSelector((state) => state.file.fileLink);
-  const subscribers = useSelector((state) => state.publication.subscribers);
+  // const fileLink = useSelector((state) => state.file.fileLink);
+  // const subscribers = useSelector((state) => state.publication.subscribers);
   const publication = useSelector((state) => state.publication.publication);
   const newsletter = useSelector((state) => state.publication.newsletter);
   const {

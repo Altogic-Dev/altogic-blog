@@ -15,7 +15,6 @@ import MyStoriesDraft from './MyStoriesDraft';
 export default function MyStories({ publishedPage, draftPage }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
-  const popularStories = useSelector((state) => state.story.popularStories);
   const userDraftStoriesInfo = useSelector(
     (state) => state.story.userDraftStoriesInfo
   );

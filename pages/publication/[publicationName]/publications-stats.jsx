@@ -5,7 +5,7 @@ import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
 import { classNames } from '@/utils/utils';
 
-const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
+const ReadingBarChart = dynamic(import('@/components/ReadingBarChart'), {
   ssr: false,
 });
 
