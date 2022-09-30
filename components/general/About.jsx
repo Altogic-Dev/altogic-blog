@@ -4,6 +4,8 @@ import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Transition, Dialog } from '@headlessui/react';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import Topic from '../basic/topic';
+import Button from '../basic/button';
 
 function About(props) {
   const {
@@ -72,18 +74,14 @@ function About(props) {
         </div>
         <div className="flex flex-wrap items-center gap-4">
           {_.map(topWriterTopics, (topic) => (
-            <a href="#">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                {topic}
-              </span>
-            </a>
+            <Topic title={topic}>topic</Topic>
           ))}
         </div>
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
-        <button type="button" onClick={toggleFollowersModal}>
+        <Button className="" onClick={toggleFollowersModal}>
           {followerCount} Followers
-        </button>
+        </Button>
         <svg
           className="h-1 w-1 text-slate-500"
           fill="currentColor"
@@ -91,9 +89,9 @@ function About(props) {
         >
           <circle cx={4} cy={4} r={3} />
         </svg>
-        <button type="button" onClick={toggleFollowingsModal}>
+        <Button className="" onClick={toggleFollowingsModal}>
           {followingCount} Following
-        </button>
+        </Button>
         <Transition appear show={followersModal} as={Fragment}>
           <Dialog
             as="div"
@@ -162,13 +160,12 @@ function About(props) {
                         ))}
                       </ul>
                       <div className="text-center">
-                        <button
-                          type="button"
+                        <Button
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                           onClick={() => setFollowerPage((prev) => prev + 1)}
                         >
                           Show more
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </Dialog.Panel>

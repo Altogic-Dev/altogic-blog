@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 
 export default function PublicationCard({ publication }) {
@@ -13,12 +14,11 @@ export default function PublicationCard({ publication }) {
           {publication.name}
         </div>
       </div>
-      <a
-        href={publication.href}
-        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-      >
-        Follow
-      </a>
+      <Link href={publication.href}>
+        <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+          Follow
+        </a>
+      </Link>
     </li>
   );
 }

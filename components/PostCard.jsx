@@ -1,9 +1,11 @@
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
+import Link from 'next/link';
 import _ from 'lodash';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import CreateBookmarkList from './bookmarks/CreateBookmarkList';
 import DeleteList from './bookmarks/DeleteList';
+import Topic from './basic/topic';
 
 export default function PostCard({
   authorUrl,
@@ -58,35 +60,28 @@ export default function PostCard({
             </div>
           </a>
           <div>
-            <a
-              href={storyUrl}
-              className="group inline-flex flex-col mb-4 md:mb-11 space-y-2"
-            >
-              <div className="flex items-center gap-2">
-                {draft && (
-                  <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-50 text-purple-800">
-                    Draft
-                  </span>
-                )}
-                <h2 className="text-slate-900 text-3xl font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
-                  {title}
-                </h2>
-              </div>
-              <p className="text-slate-500 text-sm tracking-sm">{infoText}</p>
-            </a>
+            <Link href={storyUrl}>
+              <a className="group inline-flex flex-col mb-4 md:mb-11 space-y-2">
+                <div className="flex items-center gap-2">
+                  {draft && (
+                    <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-50 text-purple-800">
+                      Draft
+                    </span>
+                  )}
+                  <h2 className="text-slate-900 text-3xl font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
+                    {title}
+                  </h2>
+                </div>
+                <p className="text-slate-500 text-sm tracking-sm">{infoText}</p>
+              </a>
+            </Link>
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <a href={`/tag/${badgeName}`}>
+                <Topic title={badgeName}>
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
                     {badgeName}
                   </span>
-                </a>
-                <span
-                  className="text-slate-500 text-xl tracking-sm"
-                  aria-hidden="true"
-                >
-                  &middot;
-                </span>
+                </Topic>
                 <span className="text-slate-400 text-sm tracking-sm">
                   {min} min read
                 </span>

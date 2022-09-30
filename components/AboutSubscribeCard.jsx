@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function AboutSubscribeCard({ name, mailAddress }) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 p-6 sm:p-8 rounded-2xl bg-purple-700">
@@ -9,12 +11,11 @@ export default function AboutSubscribeCard({ name, mailAddress }) {
         <span className="text-purple-200 text-base md:text-lg tracking-sm">
           Emails will be sent to
           <br />
-          <a
-            href={`mailto:${mailAddress}`}
-            className="text-purple-50 hover:underline hover:underline-offset-2"
-          >
-            {mailAddress}
-          </a>
+          <Link href={`mailto:${mailAddress}`}>
+            <a className="text-purple-50 hover:underline hover:underline-offset-2">
+              {mailAddress}
+            </a>
+          </Link>
         </span>
       </div>
       <button
