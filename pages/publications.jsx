@@ -1,5 +1,5 @@
 import Layout from '@/layouts/Layout';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
@@ -9,7 +9,15 @@ export default function Publications() {
   const publications = useSelector(
     (state) => state.publication.userPublications
   );
+  const followedPublications = useSelector(
+    (state) => state.publication.followed_publications
+  );
+  const userFollowingPublication = useSelector(
+    (state) => state.publication.userFollowingPublication
+  );
+
   const user = useSelector((state) => state.auth.user);
+  const [publicationsFollow, setPublicationsFollow] = useState([]);
   const dispatch = useDispatch();
   const getPublications = () => {
     dispatch(publicationActions.getUserPublicationsRequest());
@@ -18,6 +26,22 @@ export default function Publications() {
   useEffect(() => {
     getPublications();
   }, []);
+  useEffect(() => {
+    if (followedPublications) {
+      setPublicationsFollow(
+        followedPublications.map((publication) => ({
+          _id: publication.publication,
+          name: publication.publicationName,
+          description: publication.publicationDescription,
+          profilePicture: publication.publicationLogo,
+          isFollowing: userFollowingPublication.some(
+            (publicationFollowing) =>
+              publicationFollowing === publication.publication
+          ),
+        }))
+      );
+    }
+  }, [followedPublications, userFollowingPublication]);
   return (
     <Layout>
       <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
@@ -52,7 +76,7 @@ export default function Publications() {
             Following
           </h2>
           <hr className="my-4" />
-          {publications?.map((publication) => (
+          {publicationsFollow?.map((publication) => (
             <PublicationCard
               key={publication._id}
               publication={publication}

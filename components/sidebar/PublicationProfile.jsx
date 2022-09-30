@@ -22,6 +22,12 @@ export default function PublicationProfile() {
       userAbout: sessionUser.about,
       userProfilePicture: sessionUser.profilePicture,
     };
+    const publicationReq = {
+      publication: _.get(publication, '_id'),
+      publicationName: _.get(publication, 'name'),
+      publicationDescription: _.get(publication, 'description'),
+      publicationLogo: _.get(publication, 'logo'),
+    };
 
     if (isFollowing && publication) {
       dispatch(
@@ -30,13 +36,16 @@ export default function PublicationProfile() {
           user,
         })
       );
-    } else if (publication)
+    } else if (publication) {
       dispatch(
         publicationActions.followPublicationRequest({
-          publication: _.get(publication, '_id'),
+          publication: {
+            ...publicationReq,
+          },
           user,
         })
       );
+    }
   };
 
   useEffect(() => {
@@ -53,9 +62,7 @@ export default function PublicationProfile() {
     <div className="space-y-6">
       <img className="w-[200px]" src={publication?.logo} alt="HiThemes" />
       <p className="text-slate-500 text-sm tracking-sm">
-        Faucibus consequat, massa risus, dignissim interdum feugiat sollicitudin
-        tortor. Volutpat, elementum diam id nunc pellentesque suspendisse
-        sagittis. Pharetra, pulvinar augue nunc ut.
+        {publication?.description}
       </p>
       <Button className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700">
         More information
