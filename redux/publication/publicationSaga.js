@@ -173,7 +173,6 @@ function* setPublicationSectionSaga({ payload: { sectionIndex, section } }) {
   const sections = yield select((state) => state.publication.sections);
   const newSections = [...sections];
   newSections[sectionIndex] = section;
-  console.log({ sectionIndex, section });
   yield put(publicationActions.setFeaturePageSectionsSuccess(newSections));
 }
 
@@ -228,6 +227,7 @@ function* updatePublicationSaga({ payload: publication }) {
 
 function* followPublicationSaga({ payload: { publication, user } }) {
   try {
+    console.log({ publication, user });
     const { data, errors } = yield call(
       PublicationService.followPublication,
       publication,
