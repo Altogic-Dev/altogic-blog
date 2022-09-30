@@ -102,6 +102,8 @@ export const bookmarkSlice = createSlice({
       state.bookmarkLists = state.bookmarkLists.filter(
         (list) => list._id !== action.payload
       );
+      window.history.back();
+      toast.success('Bookmark list deleted successfully');
     },
     deleteBookmarkListFailure(state, action) {
       state.isLoading = false;
@@ -118,6 +120,25 @@ export const bookmarkSlice = createSlice({
       toast.success('Bookmark list updated successfully');
     },
     updateBookmarkListFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    clearBookmarkListRequest(state) {
+      state.isLoading = true;
+    },
+    clearBookmarkListSuccess(state, action) {
+      state.isLoading = false;
+      state.bookmarkLists = state.bookmarkLists.map((list) => {
+        if (list._id === action.payload._id) {
+          return action.payload;
+        }
+        return list;
+      });
+      state.bookmarks = state.bookmarks.filter(
+        (bookmark) => bookmark.bookmarkList !== action.payload._id
+      );
+    },
+    clearBookmarkListFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },
@@ -156,6 +177,9 @@ export const {
   updateBookmarkListRequest,
   updateBookmarkListSuccess,
   updateBookmarkListFailure,
+  clearBookmarkListRequest,
+  clearBookmarkListSuccess,
+  clearBookmarkListFailure,
 } = bookmarkSlice.actions;
 
 export default bookmarkSlice.reducer;

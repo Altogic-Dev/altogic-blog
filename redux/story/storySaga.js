@@ -2,7 +2,10 @@ import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
-import { insertTopicsSaga } from '../topics/topicsSaga';
+import {
+  insertTopicsSaga,
+  insertTopicsWriterCountSaga,
+} from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
@@ -381,6 +384,7 @@ function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
 
     if (!_.isEmpty(story.categoryNames)) {
       yield fork(insertTopicsSaga, story);
+      yield fork(insertTopicsWriterCountSaga, story);
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
     yield put(storyActions.publishStorySuccess());
@@ -389,7 +393,98 @@ function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
     yield put(storyActions.publishStoryFailure(e));
   }
 }
+function* popularStoriesSaga() {
+  try {
+    const { data, errors } = yield call(StoryService.getPopularStories);
+    if (!_.isNil(errors)) throw errors.items;
 
+    if (!_.isNil(data)) {
+      yield put(storyActions.popularStoriesSuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.popularStoriesFailure(e));
+  }
+}
+function* getPublicationsStoriesSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getStoriesByPublication,
+      payload
+    );
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(storyActions.getPublicationsStoriesSuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.getPublicationsStoriesFailure(e));
+  }
+}
+function* selectFeatureStoriesSaga({
+  payload: { index, story, sectionIndex },
+}) {
+  debugger;
+  const selectedFeatureStories = yield select(
+    (state) => state.story.featureStories
+  );
+  let newFeatureStories = { ...selectedFeatureStories };
+  if (!(`section-${sectionIndex}` in newFeatureStories)) {
+    Object.assign(newFeatureStories, {
+      [`section-${sectionIndex}`]: [],
+    });
+  }
+  newFeatureStories = JSON.parse(JSON.stringify(newFeatureStories));
+  newFeatureStories[`section-${sectionIndex}`][index] = story;
+  yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+}
+function* selectStoriesArraySaga({ payload: { stories, sectionIndex } }) {
+  const selectedFeatureStories = yield select(
+    (state) => state.story.featureStories
+  );
+  let newFeatureStories = { ...selectedFeatureStories };
+  if (stories.length === 0) {
+    delete newFeatureStories[`section-${sectionIndex}`];
+    yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+    return;
+  }
+  stories.forEach((story, index) => {
+    if (!(`section-${sectionIndex}` in newFeatureStories)) {
+      Object.assign(newFeatureStories, {
+        [`section-${sectionIndex}`]: [],
+      });
+    }
+    newFeatureStories = JSON.parse(JSON.stringify(newFeatureStories));
+    newFeatureStories[`section-${sectionIndex}`][index] = story;
+  });
+  yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+}
+function* getPublicationStoriesByTopicSaga({
+  payload: { publication, topic, limit, sectionIndex },
+}) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getPublicationStoriesByTopic,
+      publication,
+      topic,
+      limit
+    );
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(
+        storyActions.getPublicationsStoriesByTopicSuccess({
+          data,
+          sectionIndex,
+        })
+      );
+      yield fork(selectStoriesArraySaga, {
+        payload: { stories: data, sectionIndex },
+      });
+    }
+  } catch (e) {
+    yield put(storyActions.getPublicationsStoriesByTopicFailure(e));
+  }
+}
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -427,5 +522,18 @@ export default function* rootSaga() {
     takeEvery(storyActions.cacheStoryRequest.type, cacheStorySaga),
     takeEvery(storyActions.getCacheStoryRequest.type, getCacheStorySaga),
     takeEvery(storyActions.publishStoryRequest.type, publishStorySaga),
+    takeEvery(storyActions.popularStoriesRequest.type, popularStoriesSaga),
+    takeEvery(
+      storyActions.getPublicationsStoriesRequest.type,
+      getPublicationsStoriesSaga
+    ),
+    takeEvery(
+      storyActions.selectFeatureStoriesRequest.type,
+      selectFeatureStoriesSaga
+    ),
+    takeEvery(
+      storyActions.getPublicationsStoriesByTopicRequest.type,
+      getPublicationStoriesByTopicSaga
+    ),
   ]);
 }

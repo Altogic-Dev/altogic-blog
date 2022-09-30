@@ -36,6 +36,7 @@ export default function Sidebar({
   stories,
   publications,
   publicationsMatch,
+  followLoading
 }) {
   return (
     <>
@@ -47,6 +48,7 @@ export default function Sidebar({
           profile={profile}
           isFollowing={isFollowing}
           isSubscribed={isSubscribed}
+          isLoading={followLoading}
         />
       )}
       {following && (

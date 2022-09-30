@@ -25,7 +25,7 @@ function About(props) {
   const [followerPage, setFollowerPage] = useState(1);
 
   const toggleFollowersModal = () => {
-    if (!followersModal && _.isNil(userFollowers)) {
+    if (!followersModal && _.isEmpty(userFollowers)) {
       dispatch(
         followerConnectionActions.getFollowerUsersRequest({
           userId,

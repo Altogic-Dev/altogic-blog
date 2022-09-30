@@ -19,6 +19,11 @@ export function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
 }
 
+export function removeSpaces(str) {
+  if (!str) return '';
+  return str.replace(/\s+/g, '');
+}
+
 export function formatDate(date) {
   return DateTime.fromISO(date).toLocaleString(DateTime.DATETIME_FULL);
 }
@@ -35,4 +40,12 @@ export function addDays(date, days) {
 export function timeAgo(date) {
   const time = DateTime.fromISO(date);
   return time.toRelative();
+}
+export function toMonthName(monthNumber) {
+  const date = new Date();
+  date.setMonth(monthNumber - 1);
+
+  return date.toLocaleString('en-US', {
+    month: 'long',
+  });
 }

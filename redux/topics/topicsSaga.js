@@ -159,6 +159,22 @@ export function* insertTopicsSaga(story) {
     console.error(e);
   }
 }
+export function* insertTopicsWriterCountSaga(story) {
+  try {
+    const updatedTopicWriterCounts = [];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const topic of story.categoryNames) {
+      const { data } = yield call(TopicsService.isTopicWriterExist, topic);
+      if (data && !data.isExist) {
+        updatedTopicWriterCounts.push(topic);
+      }
+      yield delay(100);
+    }
+    yield call(TopicsService.increaseWriterCounts, updatedTopicWriterCounts);
+  } catch (e) {
+    console.error(e);
+  }
+}
 export function* getTopicAnalyticsSaga({ payload: topicName }) {
   try {
     const { data, errors } = yield call(
@@ -169,8 +185,8 @@ export function* getTopicAnalyticsSaga({ payload: topicName }) {
     else if (data) {
       yield put(
         topicsActions.getTopicAnalyticsSuccess({
-          storyCount: _.size(data.storyCount),
-          authorCount: _.size(data.userCount),
+          storyCount: data.counts.storyCount,
+          authorCount: data.counts.writerCount,
           profilePictures: _.map(
             data.profilePictures,
             'groupby.profilePicture'
@@ -182,6 +198,19 @@ export function* getTopicAnalyticsSaga({ payload: topicName }) {
     console.error(e);
   }
 }
+function* publicationsTopicsSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      TopicsService.getPublicationsTopics,
+      payload
+    );
+    if (errors) throw errors;
+    else if (data) yield put(topicsActions.getPublicationsTopicsSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.getPublicationsTopicsFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getLatestsOfTopicRequest.type,
@@ -218,5 +247,9 @@ export default function* rootSaga() {
   yield takeEvery(
     topicsActions.getTopicAnalyticsRequest.type,
     getTopicAnalyticsSaga
+  );
+  yield takeEvery(
+    topicsActions.getPublicationsTopicsRequest.type,
+    publicationsTopicsSaga
   );
 }

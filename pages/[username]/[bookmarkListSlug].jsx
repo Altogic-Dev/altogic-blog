@@ -1,7 +1,13 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Menu, Transition } from '@headlessui/react';
+import { Menu, Transition, Dialog } from '@headlessui/react';
 import PostCard from '@/components/PostCard';
 import ShareButtons from '@/components/ShareButtons';
 import Avatar from '@/components/profile/Avatar';
@@ -11,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   getBookmarkListDetailRequest,
   updateBookmarkListRequest,
+  clearBookmarkListRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
 import { DateTime } from 'luxon';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -18,26 +25,115 @@ import _ from 'lodash';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import ListObserver from '@/components/ListObserver';
+import { generalActions } from '@/redux/general/generalSlice';
+import { authActions } from '@/redux/auth/authSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 export default function ListDetail() {
   const [deleteListModal, setDeleteListModal] = useState(false);
   const [editBookmarkList, setEditBookmarkList] = useState(false);
   const [user, setUser] = useState();
+  const [isMyProfileState, setIsMyProfileState] = useState(false);
   const [stories, setStories] = useState([]);
+
   const [bookmarkListLimit, setBookmarkListLimit] = useState(10);
+  const [followingPage, setFollowingPage] = useState(1);
+  const [followingModal, setFollowingModal] = useState(false);
+  const [unfollowed, setUnfollowed] = useState([]);
+  
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const profileUser = useSelector((state) => state.auth.profileUser);
+  const userFollowings = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
+  const isFollowing = useSelector(
+    (state) => state.followerConnection.isFollowing
+  );
+  const isSubscribed = useSelector(
+    (state) => state.subscribeConnection.isSubscribed
+  );
 
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const { bookmarkListSlug } = router.query;
-  useEffect(() => {
-    if (sessionUser) {
-      setUser(sessionUser);
+  const { username, bookmarkListSlug } = router.query;
+
+  const getFollowingUsers = useCallback(() => {
+    dispatch(
+      followerConnectionActions.getFollowingUsersRequest({
+        userId: _.get(user, '_id'),
+        page: followingPage,
+      })
+    );
+  }, [followingPage, _.get(user, '_id')]);
+
+  const toggleFollowingsModal = () => {
+    if (!followingModal && _.isEmpty(userFollowings)) {
+      dispatch(
+        followerConnectionActions.getFollowingUsersRequest({
+          userId: _.get(user, '_id'),
+          page: followingPage,
+        })
+      );
     }
-  }, [sessionUser]);
+    setFollowingModal((prev) => !prev);
+  };
+
+  const handleFollow = (user, index) => {
+    if (unfollowed[index] === false)
+      dispatch(
+        followerConnectionActions.unfollowRequest({
+          userId: _.get(sessionUser, '_id'),
+          followingUserId: _.get(user, '_id'),
+        })
+      );
+    else {
+      dispatch(
+        followerConnectionActions.followRequest({
+          followerUser: sessionUser,
+          followingUser: {
+            followingUser: _.get(user, '_id'),
+            followingName: _.get(user, '_name'),
+            followingUserProfilePicture: _.get(user, '_profilePicture'),
+            followingUsername: _.get(user, '_username'),
+          },
+        })
+      );
+    }
+    setUnfollowed((state) => {
+      const newState = [...state];
+      newState[index] = !newState[index];
+      return newState;
+    });
+  };
+
+  useEffect(() => {
+    if (username) {
+      setIsMyProfileState(username === _.get(sessionUser, 'username'));
+    }
+  }, [username]);
+
+  useLayoutEffect(() => {
+    if (!isMyProfileState && username) {
+      dispatch(authActions.getUserByUserNameRequest(username));
+    }
+  }, [username]);
+
+  useLayoutEffect(() => {
+    if (sessionUser) {
+      setUser(isMyProfileState ? sessionUser : profileUser);
+      if (!isMyProfileState && profileUser) {
+        dispatch(
+          generalActions.getFollowAndSubscribedInfoRequest(
+            _.get(profileUser, '_id')
+          )
+        );
+      }
+    }
+  }, [isMyProfileState, profileUser, sessionUser]);
+
   useEffect(() => {
     if (bookmarkListSlug) {
       dispatch(
@@ -56,7 +152,7 @@ export default function ListDetail() {
   }, [bookmarks]);
 
   useEffect(() => {
-    if (bookmarkListLimit > 10) {
+    if (bookmarkListSlug) {
       dispatch(
         getBookmarkListDetailRequest({
           slug: bookmarkListSlug,
@@ -66,6 +162,15 @@ export default function ListDetail() {
     }
   }, [bookmarkListLimit]);
 
+  useEffect(() => {
+    if (
+      followingPage > 1 ||
+      (_.isEmpty(userFollowings) && _.get(user, '_id'))
+    ) {
+      getFollowingUsers();
+    }
+  }, [followingPage, _.get(user, '_id')]);
+
   return (
     <div>
       <Head>
@@ -74,7 +179,7 @@ export default function ListDetail() {
           name="description"
           content="Altogic Medium Blog App List Detail"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -174,6 +279,11 @@ export default function ListDetail() {
                             <Button
                               type="button"
                               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={() =>
+                                dispatch(
+                                  clearBookmarkListRequest(bookmarkList._id)
+                                )
+                              }
                             >
                               Remove items
                             </Button>
@@ -212,7 +322,7 @@ export default function ListDetail() {
               </div>
 
               <ListObserver
-                onEnd={() => setBookmarkListLimit((prev) => prev + 10)}
+                onEnd={() => setBookmarkListLimit((prev) => prev + 5)}
               >
                 {stories.map((post) => (
                   <PostCard
@@ -235,7 +345,23 @@ export default function ListDetail() {
               </ListObserver>
             </div>
             <div className="hidden lg:block p-8 space-y-10">
-              <Sidebar following profile editButton />
+              <Sidebar
+                following={{
+                  followings: _.take(userFollowings, 5),
+                  count: _.get(user, 'followingCount'),
+                  seeAllButton: toggleFollowingsModal,
+                }}
+                profile={{
+                  id: _.get(user, '_id'),
+                  name: _.get(user, 'name'),
+                  profilePicture: _.get(user, 'profilePicture'),
+                  followerCount: _.get(user, 'followerCount'),
+                  username: _.get(user, 'username'),
+                  about: _.get(user, 'about'),
+                }}
+                isFollowing={isFollowing}
+                isSubscribed={isSubscribed}
+              />
             </div>
           </div>
         </div>
@@ -252,6 +378,89 @@ export default function ListDetail() {
           />
         )}
       </Layout>
+
+      <Transition appear show={followingModal} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={toggleFollowingsModal}
+        >
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black bg-opacity-50" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0 scale-95"
+                enterTo="opacity-100 scale-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100 scale-100"
+                leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
+                  >
+                    {_.get(user, 'followingCount')} Following
+                  </Dialog.Title>
+                  <div>
+                    <ul className="mb-6">
+                      {_.map(userFollowings, (following, index) => (
+                        <li
+                          key={following._id}
+                          className="flex items-start justify-between gap-6 py-4"
+                        >
+                          <div className="flex gap-3">
+                            <img
+                              className="w-10 h-10 rounded-full"
+                              src={following.followingUserProfilePicture}
+                              alt={following.followingName}
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
+                                {following.followingName}
+                              </span>
+                              <span className="text-slate-500 text-xs tracking-sm">
+                                {following.followingAbout}
+                              </span>
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => handleFollow(following, index)}
+                          >
+                            {unfollowed[index] === true ? 'Follow' : 'Unfollow'}
+                          </Button>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                        onClick={() => setFollowingPage((prev) => prev + 1)}
+                      >
+                        Show more
+                      </button>
+                    </div>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 }

@@ -8,15 +8,18 @@ const initialState = {
   followingStoriesInfo: null,
   recommendedStories: null,
   recommendedStoriesInfo: null,
+  popularStories: null,
   story: null,
   moreUserStories: null,
   userStories: null,
   userStoriesInfo: null,
   userDraftStories: null,
   userDraftStoriesInfo: null,
+  publicationsStories: [],
   isLoading: false,
   replies: [],
   replyCount: 0,
+  featureStories: {},
 };
 
 // Actual Slice
@@ -200,6 +203,48 @@ export const storySlice = createSlice({
 
     clearStory(state) {
       state.story = null;
+    },
+    popularStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    popularStoriesSuccess(state, action) {
+      state.popularStories = action.payload;
+    },
+    popularStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesSuccess(state, action) {
+      state.publicationsStories = action.payload;
+    },
+    getPublicationsStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesByTopicRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesByTopicSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationsStories[action.payload.sectionIndex] =
+        action.payload.data;
+    },
+    getPublicationsStoriesByTopicFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    selectFeatureStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    selectFeatureStoriesSuccess(state, action) {
+      state.featureStories = action.payload;
+    },
+    selectFeatureStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

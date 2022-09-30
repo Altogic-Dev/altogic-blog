@@ -24,6 +24,7 @@ import { classNames } from '@/utils/utils';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
+import { generalActions } from '@/redux/general/generalSlice';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
@@ -31,11 +32,20 @@ export default function ProfilePage({ About, Home, List }) {
   const { username } = router.query;
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const followLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const isFollowing = useSelector(
+    (state) => state.followerConnection.isFollowing
+  );
+  const isSubscribed = useSelector(
+    (state) => state.subscribeConnection.isSubscribed
+  );
 
   const [userState, setUserState] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -55,17 +65,17 @@ export default function ProfilePage({ About, Home, List }) {
   const getFollowingUsers = useCallback(() => {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
-        userId: _.get(sessionUser, '_id'),
+        userId: _.get(userState, '_id'),
         page: followingPage,
       })
     );
-  }, [followingPage]);
+  }, [followingPage, _.get(userState, '_id')]);
 
   const toggleFollowingsModal = () => {
-    if (!followingModal && _.isNil(userFollowings)) {
+    if (!followingModal && _.isEmpty(userFollowings)) {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
-          userId: _.get(sessionUser, '_id'),
+          userId: _.get(userState, '_id'),
           page: followingPage,
         })
       );
@@ -79,6 +89,7 @@ export default function ProfilePage({ About, Home, List }) {
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(user, '_id'),
+          notUpdate: true,
         })
       );
     else {
@@ -91,6 +102,7 @@ export default function ProfilePage({ About, Home, List }) {
             followingUserProfilePicture: _.get(user, '_profilePicture'),
             followingUsername: _.get(user, '_username'),
           },
+          notUpdate: true,
         })
       );
     }
@@ -112,8 +124,13 @@ export default function ProfilePage({ About, Home, List }) {
   }, []);
 
   useEffect(() => {
-    if (followingPage > 1 || _.isNil(userFollowings)) getFollowingUsers();
-  }, [followingPage]);
+    if (
+      followingPage > 1 ||
+      (_.isEmpty(userFollowings) && _.get(userState, '_id'))
+    ) {
+      getFollowingUsers();
+    }
+  }, [followingPage, _.get(userState, '_id')]);
 
   useEffect(() => {
     if (username) {
@@ -130,6 +147,13 @@ export default function ProfilePage({ About, Home, List }) {
   useLayoutEffect(() => {
     if (sessionUser) {
       setUserState(isMyProfileState ? sessionUser : profileUser);
+      if (!isMyProfileState && profileUser) {
+        dispatch(
+          generalActions.getFollowAndSubscribedInfoRequest(
+            _.get(profileUser, '_id')
+          )
+        );
+      }
     }
   }, [isMyProfileState, profileUser, sessionUser]);
 
@@ -167,7 +191,7 @@ export default function ProfilePage({ About, Home, List }) {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -280,7 +304,7 @@ export default function ProfilePage({ About, Home, List }) {
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <ProfilePageHome
-                      userId={_.get(sessionUser, '_id')}
+                      userId={_.get(userState, '_id')}
                       bookmarkLists={bookmarkLists}
                     />
                   </Tab.Panel>
@@ -334,6 +358,9 @@ export default function ProfilePage({ About, Home, List }) {
                   username: _.get(userState, 'username'),
                   about: _.get(userState, 'about'),
                 }}
+                followLoading={followLoading}
+                isFollowing={isFollowing}
+                isSubscribed={isSubscribed}
               />
             </div>
             {/* Mobile Sidebar */}

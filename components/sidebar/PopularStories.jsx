@@ -1,13 +1,30 @@
 import { DateTime } from 'luxon';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { storyActions } from '@/redux/story/storySlice';
+import { useDispatch, useSelector } from 'react-redux';
 import SidebarTitle from '../SidebarTitle';
 
 export default function PopularStories({ title, stories }) {
+  const popularStories = useSelector((state) => state.story.popularStories);
+  const dispatch = useDispatch();
+  const [storyList, setStoryList] = useState([]);
+
+  useEffect(() => {
+    if (!stories) {
+      dispatch(storyActions.popularStoriesRequest());
+    }
+  }, [stories]);
+
+  useEffect(() => {
+    setStoryList(stories || popularStories);
+  }, [popularStories, stories]);
+
   return (
     <div>
       <SidebarTitle title={title} spacing="mb-4" />
       <ul className="space-y-3">
-        {stories?.map((story) => (
+        {storyList?.map((story) => (
           <Link href={`/story/${story.slug}`} key={story._id}>
             <a className="flex items-center gap-3">
               <li className="flex gap-3">

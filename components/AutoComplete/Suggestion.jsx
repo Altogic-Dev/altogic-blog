@@ -34,7 +34,7 @@ export default function Suggestion({ suggestions, name, onClick }) {
         suggestions?.map((suggestion) => (
           <Popover.Button
             key={suggestion._id}
-            onClick={(e) => onClick(e, suggestion._id)}
+            onClick={(e) => onClick(e, suggestion._id, suggestion)}
             className="w-full"
           >
             <a

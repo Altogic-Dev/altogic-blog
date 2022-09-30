@@ -1,8 +1,53 @@
-import { useSelector } from 'react-redux';
+import { publicationActions } from '@/redux/publication/publicationSlice';
+import _ from 'lodash';
+import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import Button from '../basic/button';
+import FollowButton from '../basic/followbutton';
 import SocialIcons from '../publication/SocialIcons';
 
 export default function PublicationProfile() {
-  const { publication } = useSelector((state) => state.publication);
+  const publication = useSelector((state) => state.publication.publication);
+  const isLoading = useSelector((state) => state.publication.isLoading);
+  const userFollowingPublication = useSelector(
+    (state) => state.publication.userFollowingPublication
+  );
+  const dispatch = useDispatch();
+  const sessionUser = useSelector((state) => state.auth.user);
+  const [isFollowing, setIsFollowing] = useState();
+  const handleFollowButton = () => {
+    const user = {
+      _id: sessionUser._id,
+      userName: sessionUser.username,
+      userAbout: sessionUser.about,
+      userProfilePicture: sessionUser.profilePicture,
+    };
+
+    if (isFollowing && publication) {
+      dispatch(
+        publicationActions.unfollowPublicationRequest({
+          publication: _.get(publication, '_id'),
+          user,
+        })
+      );
+    } else if (publication)
+      dispatch(
+        publicationActions.followPublicationRequest({
+          publication: _.get(publication, '_id'),
+          user,
+        })
+      );
+  };
+
+  useEffect(() => {
+    if (publication) {
+      setIsFollowing(
+        userFollowingPublication.some(
+          (publicationFollowing) => publicationFollowing === publication._id
+        )
+      );
+    }
+  }, [userFollowingPublication, publication]);
 
   return (
     <div className="space-y-6">
@@ -12,10 +57,7 @@ export default function PublicationProfile() {
         tortor. Volutpat, elementum diam id nunc pellentesque suspendisse
         sagittis. Pharetra, pulvinar augue nunc ut.
       </p>
-      <button
-        type="button"
-        className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
-      >
+      <Button className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700">
         More information
         <svg
           className="w-5 h-5 text-purple-700"
@@ -31,8 +73,15 @@ export default function PublicationProfile() {
             strokeLinejoin="round"
           />
         </svg>
-      </button>
+      </Button>
       <div>
+        <div className="my-5">
+          <FollowButton
+            isLoading={isLoading}
+            isFollowing={isFollowing}
+            onClick={handleFollowButton}
+          />
+        </div>
         <h2 className="text-slate-600 mb-2 text-base tracking-sm">Followers</h2>
         <span className="text-slate-500 text-sm tracking-sm">
           {publication?.followerCount}

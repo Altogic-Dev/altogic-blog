@@ -9,6 +9,7 @@ const initialState = {
   trendingTopicsIdList: [],
   relatedTopics: [],
   popularTopics: [],
+  publicationsTopics: [],
   topWritersIdList: [],
   topWriters: [],
   topicAnalytics: null,
@@ -115,6 +116,17 @@ export const topicsSlice = createSlice({
     getTopicAnalyticsRequest() {},
     getTopicAnalyticsSuccess(state, action) {
       state.topicAnalytics = action.payload;
+    },
+    getPublicationsTopicsRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsTopicsSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationsTopics = action.payload;
+    },
+    getPublicationsTopicsFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
 
     extraReducers: {

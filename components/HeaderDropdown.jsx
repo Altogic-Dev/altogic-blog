@@ -9,11 +9,19 @@ import {
   LogoutIcon,
   QuestionMarkCircleIcon,
 } from '@heroicons/react/outline';
+import Link from 'next/link';
+import { useDispatch, useSelector } from 'react-redux';
+import { publicationActions } from '@/redux/publication/publicationSlice';
 import Avatar from './profile/Avatar';
 import Button from './basic/button';
 
 export default function HeaderDropdown({ user, logout, className }) {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const publications = useSelector((state) => state.publication.publications);
+  const selectPublication = (publication) => {
+    dispatch(publicationActions.selectPublicationRequest(publication));
+  };
   return (
     <Transition
       as={Fragment}
@@ -54,11 +62,8 @@ export default function HeaderDropdown({ user, logout, className }) {
                 Settings
               </a>
             </Menu.Item>
-            <Menu.Item>
-              <a
-                href="#"
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
-              >
+            <Menu.Item onClick={() => router.push('/stats')}>
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                 <ChartBarIcon className="w-4 h-4 text-slate-500" />
                 Stats
               </a>
@@ -68,20 +73,28 @@ export default function HeaderDropdown({ user, logout, className }) {
             <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
               Publications
             </span>
-            <Menu.Item onClick={() => router.push('/publication/Altogic')}>
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <span className="w-5 h-5 rounded-full bg-purple-500" />
-                Altogic
-              </a>
-            </Menu.Item>
-            <Menu.Item>
-              <a
-                href="#"
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+            {publications?.slice(0, 3).map((publication) => (
+              <Menu.Item
+                key={publication._id}
+                onClick={() => selectPublication(publication)}
               >
-                <ClipboardListIcon className="w-4 h-4 text-slate-500" />
-                Manage Publications
-              </a>
+                <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                  <img
+                    src={publication?.profilePicture}
+                    alt={publication?.name}
+                    className="w-5 h-5 rounded-full"
+                  />
+                  {publication?.name}
+                </a>
+              </Menu.Item>
+            ))}
+            <Menu.Item>
+              <Link href="/publications">
+                <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                  <ClipboardListIcon className="w-4 h-4 text-slate-500" />
+                  Manage Publications
+                </a>
+              </Link>
             </Menu.Item>
           </div>
           <div>

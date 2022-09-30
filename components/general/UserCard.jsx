@@ -16,6 +16,7 @@ export default function UserCard({ user, isFollowing }) {
         followerConnectionActions.unfollowRequest({
           userId: _.get(me, '_id'),
           followingUserId: _.get(user, '_id'),
+          notUpdate: true,
         })
       );
     }
@@ -28,9 +29,11 @@ export default function UserCard({ user, isFollowing }) {
           followingUserProfilePicture: _.get(user, 'profilePicture'),
           followingUsername: _.get(user, 'username'),
         },
+        notUpdate: true,
       })
     );
   };
+
   return (
     <li key={user._id} className="flex items-start justify-between gap-3 py-4">
       <Link href={`/${user.username}`}>

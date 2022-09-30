@@ -1,4 +1,6 @@
-import React from 'react';
+import { toMonthName } from '@/utils/utils';
+import _ from 'lodash';
+import React, { useState,useEffect } from 'react';
 import {
   AreaChart,
   Area,
@@ -9,76 +11,70 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const data = [
-  {
-    name: 'Jan',
-    memberReadTimes: 4000,
-  },
-  {
-    name: 'Feb',
-    memberReadTimes: 3000,
-  },
-  {
-    name: 'Mar',
-    memberReadTimes: 2000,
-  },
-  {
-    name: 'Apr',
-    memberReadTimes: 2780,
-  },
-  {
-    name: 'May',
-    memberReadTimes: 1890,
-  },
-  {
-    name: 'Jun',
-    memberReadTimes: 2390,
-  },
-  {
-    name: 'Jul',
-    memberReadTimes: 3490,
-  },
-  {
-    name: 'Aug',
-    memberReadTimes: 3490,
-  },
-  {
-    name: 'Sep',
-    memberReadTimes: 3490,
-  },
-  {
-    name: 'Oct',
-    memberReadTimes: 3490,
-  },
-  {
-    name: 'Nov',
-    memberReadTimes: 3490,
-  },
-  {
-    name: 'Dec',
-    memberReadTimes: 3490,
-  },
-];
 
-export default function MemberAreaChart() {
+export default function MemberAreaChart({rawData, type}) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    let tempData = {};
+    const tempStack = [];
+
+    if (type === '12 Months') {
+      rawData?.forEach((obj) => {
+        const monthName = toMonthName(obj.groupby.group.split('.')[1]);
+        tempData = {
+          [monthName]: {
+            ..._.get(tempData, monthName),
+            memberReadTimes: (_.get(tempData,monthName)?.memberReadTimes ?? 0) +  obj.sum,
+            name: monthName,
+          },
+        };
+      });
+    } else {
+      rawData?.forEach((obj) => {
+        tempData = {
+          ...tempData,
+          [obj.groupby.group]: {
+            ..._.get(tempData, obj.groupby.group),
+            memberReadTimes: (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +  obj.sum,
+            name: obj.groupby.group,
+          },
+        };
+      });
+    }
+    _.forEach(tempData, (obj) => {
+      tempStack.push({
+        name: obj.name,
+        memberReadTimes: obj.memberReadTimes ?? 0,
+      });
+    });
+    setData(tempStack);
+  }, [rawData]);
+
   return (
     <div className="w-full h-[280px] md:h-[550px]">
-      <ResponsiveContainer width="100%" height="100%">
-        <AreaChart width={500} height={400} data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis axisLine={false} tickLine={false} dataKey="name" />
-          <YAxis axisLine={false} tickLine={false} />
-          <Tooltip />
-          <Area
-            type="monotone"
-            dataKey="memberReadTimes"
-            stackId="1"
-            strokeWidth={2}
-            stroke="#7F56D9"
-            fill="#faf5ff"
-          />
-        </AreaChart>
-      </ResponsiveContainer>
+      {data?.length > 0 ? (
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart width={500} height={400} data={data}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis axisLine={false} tickLine={false} dataKey="name" />
+            <YAxis axisLine={false} tickLine={false} />
+            <Tooltip />
+            <Area
+              type="monotone"
+              dataKey="memberReadTimes"
+              stackId="1"
+              strokeWidth={2}
+              stroke="#7F56D9"
+              fill="#faf5ff"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      ) : (
+        <div className="flex items-center justify-center h-96">
+          No data available
+        </div>
+      )}
     </div>
   );
 }
