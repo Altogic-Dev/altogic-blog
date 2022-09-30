@@ -41,7 +41,7 @@ const makeStore = () => {
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({ thunk: false, serializableCheck: false }).prepend(
+      getDefaultMiddleware({ thunk: true, serializableCheck: false }).prepend(
         sagaMiddleware
       ),
   });

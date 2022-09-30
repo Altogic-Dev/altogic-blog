@@ -16,9 +16,11 @@ export default function PublicationsFullImageVerticalCard({
   sectionIndex,
 }) {
   const [selectedSection, setSelectedSection] = useState();
-  const stories = useSelector((state) => state.story.publicationsStories);
+  const publicationsStories = useSelector(
+    (state) => state.story.publicationsStories
+  );
   const featStories = useSelector((state) => state.story.featureStories);
-
+  const [stories, setStories] = useState([]);
   useEffect(() => {
     if (featStories || stories) {
       setSelectedSection(
@@ -39,7 +41,15 @@ export default function PublicationsFullImageVerticalCard({
       })
     );
   };
-
+  useEffect(() => {
+    if (publicationsStories) {
+      if (_.isArray(publicationsStories[sectionIndex])) {
+        setStories(publicationsStories[sectionIndex]);
+      } else {
+        setStories(publicationsStories);
+      }
+    }
+  }, [publicationsStories]);
   return (
     <div>
       <div

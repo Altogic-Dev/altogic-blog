@@ -1,8 +1,15 @@
 import PublicationService from '@/services/publication';
-import { call, debounce, put, takeEvery, select } from 'redux-saga/effects';
-import { publicationActions } from './publicationSlice';
+import {
+  call,
+  debounce,
+  put,
+  takeEvery,
+  select,
+  fork,
+} from 'redux-saga/effects';
 import { publicationActions } from './publicationSlice';
 import { storyActions } from '../story/storySlice';
+import { clearFileLink } from '../file/fileSaga';
 // function* followPublicationSaga({ payload: { followerUser, followingUser } }) {
 //   try {
 //     const { data, error } = yield call(
@@ -333,6 +340,48 @@ function* getSubscribersSaga({ payload: { newsletter } }) {
     yield put(publicationActions.getSubscribersFailure(e));
   }
 }
+function* createFeaturePage({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.createFeaturePage,
+      payload
+    );
+    if (data) {
+      yield put(publicationActions.createFeaturePageSuccess(data));
+      yield fork(clearFileLink);
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.createFeaturePageFailure(e));
+  }
+}
+function* setPublications({ payload }) {
+  const { data } = yield call(
+    PublicationService.getAllUserPublications,
+    payload
+  );
+  yield put(publicationActions.setPublicationsOnLogin(data));
+}
+function* getUserPublicationsSaga() {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getUsersPublications
+    );
+    if (data) {
+      yield put(publicationActions.getUserPublicationsSuccess(data));
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.getUserPublicationsFailure(e));
+  }
+}
+function* selectPublicationSaga({ payload }) {
+  yield put(publicationActions.selectPublicationSuccess(payload));
+}
 
 export default function* rootSaga() {
   yield takeEvery(
@@ -415,5 +464,21 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.setFeaturePageSectionsRequest.type,
     setPublicationSectionSaga
+  );
+  yield takeEvery(
+    publicationActions.createFeaturePageRequest.type,
+    createFeaturePage
+  );
+  yield takeEvery(
+    publicationActions.setPublicationsRequest.type,
+    setPublications
+  );
+  yield takeEvery(
+    publicationActions.getUserPublicationsRequest.type,
+    getUserPublicationsSaga
+  );
+  yield takeEvery(
+    publicationActions.selectPublicationRequest.type,
+    selectPublicationSaga
   );
 }

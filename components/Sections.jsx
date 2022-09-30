@@ -240,6 +240,7 @@ export default function Sections({ index: sectionIndex, setSectionList }) {
       designType: designTypes[selectedIndex],
       sectionType: selectedSectionBar.isTag ? 'topic' : 'story',
       storySize: counter,
+      isHomePage: false,
       sectionIndex,
     };
     dispatch(

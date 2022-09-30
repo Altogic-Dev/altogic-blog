@@ -1,6 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
+import FileService from '@/services/file';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
+export const uploadFile = createAsyncThunk(
+  'file/upload',
+  async (file, name) => {
+    const response = await FileService.uploadFile(file, name);
+    return response.data.publicPath;
+  }
+);
 const initialState = {
   isLoading: true,
   error: null,
@@ -33,11 +41,27 @@ export const fileSlice = createSlice({
     setUploadedFiles(state, action) {
       state.fileLinks = action.payload;
     },
-    extraReducers: {
-      [HYDRATE]: (state, action) => ({
-        ...state,
-        ...action.payload.auth,
-      }),
+    clearFileLink(state) {
+      state.fileLink = null;
+    },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action) => ({
+      ...state,
+      ...action.payload.file,
+    }),
+    [uploadFile.pending]: (state) => {
+      console.log('pending');
+      state.isLoading = true;
+    },
+    [uploadFile.fulfilled]: (state, action) => {
+      console.log('fulfilled', action.payload);
+      state.isLoading = false;
+      state.fileLink = action.payload;
+    },
+    [uploadFile.rejected]: (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
     },
   },
 });

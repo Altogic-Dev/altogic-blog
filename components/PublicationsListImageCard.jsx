@@ -13,8 +13,11 @@ export default function PublicationsListImageCard({
   sectionIndex,
 }) {
   const [selectedSection, setSelectedSection] = useState();
-  const stories = useSelector((state) => state.story.publicationsStories);
+  const publicationsStories = useSelector(
+    (state) => state.story.publicationsStories
+  );
   const featStories = useSelector((state) => state.story.featureStories);
+  const [stories, setStories] = useState([]);
 
   const dispatch = useDispatch();
   const handleSelectStory = (story) => {
@@ -36,6 +39,16 @@ export default function PublicationsListImageCard({
       );
     }
   }, [featStories, stories]);
+
+  useEffect(() => {
+    if (publicationsStories) {
+      if (_.isArray(publicationsStories[sectionIndex])) {
+        setStories(publicationsStories[sectionIndex]);
+      } else {
+        setStories(publicationsStories);
+      }
+    }
+  }, [publicationsStories]);
   return (
     <div className="flex items-center gap-12 space-y-4">
       <div>

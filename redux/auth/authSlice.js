@@ -42,7 +42,6 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.user = action.payload;
       state.isAuthenticated = true;
-      window.location.href = '/';
     },
     getAuthGrantFailure(state, action) {
       state.isLoading = false;

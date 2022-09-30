@@ -1,7 +1,6 @@
 import AuthService from '@/services/auth';
 import PublicationService from '@/services/publication';
-import _, { isArray } from 'lodash';
-import { useSelector } from 'react-redux';
+import _ from 'lodash';
 import { toast } from 'react-toastify';
 import {
   takeEvery,
@@ -67,14 +66,8 @@ function* loginSaga({ payload }) {
         PublicationService.getAllUserPublications,
         user.publications
       );
-      if (data) {
-        localStorage.setItem('publications', JSON.stringify(data));
-      }
-      yield put(
-        publicationActions.setPublicationFromLocalStorage(
-          JSON.parse(localStorage.getItem('publications'))
-        )
-      );
+
+      yield put(publicationActions.setPublicationsOnLogin(data));
       yield put(authActions.loginSuccess(user));
     }
     if (errors) {

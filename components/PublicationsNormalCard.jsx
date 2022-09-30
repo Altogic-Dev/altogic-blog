@@ -18,9 +18,11 @@ export default function PublicationsNormalCard({
   sectionIndex,
 }) {
   const [selectedSection, setSelectedSection] = useState();
-  const stories = useSelector((state) => state.story.publicationsStories);
+  const publicationsStories = useSelector(
+    (state) => state.story.publicationsStories
+  );
   const featStories = useSelector((state) => state.story.featureStories);
-  const [xstories, setXstories] = useState([]);
+  const [stories, setStories] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -43,12 +45,14 @@ export default function PublicationsNormalCard({
     );
   };
   useEffect(() => {
-    if (_.isArray(stories[sectionIndex])) {
-      setXstories(stories[sectionIndex]);
-    } else {
-      setXstories(stories);
+    if (publicationsStories) {
+      if (_.isArray(publicationsStories[sectionIndex])) {
+        setStories(publicationsStories[sectionIndex]);
+      } else {
+        setStories(publicationsStories);
+      }
     }
-  }, [stories]);
+  }, [publicationsStories]);
 
   return (
     <div
@@ -90,7 +94,7 @@ export default function PublicationsNormalCard({
                   leaveTo="opacity-0"
                 >
                   <Listbox.Options className="absolute mt-1 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
-                    {xstories?.map((story) => (
+                    {stories?.map((story) => (
                       <Listbox.Option
                         key={story._id}
                         className={({ active }) =>

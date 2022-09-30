@@ -28,6 +28,9 @@ function* uploadFileSaga({ payload }) {
     yield put(fileActions.uploadFileFailure(e));
   }
 }
+export function* clearFileLink() {
+  yield put(fileActions.clearFileLink());
+}
 
 export default function* fileSaga() {
   yield all([takeEvery(fileActions.uploadFileRequest.type, uploadFileSaga)]);

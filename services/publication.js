@@ -39,9 +39,7 @@ const PublicationService = {
   getLatestPublicationStories(publicationName) {
     return db
       .model('story')
-      .filter(
-        `publicationName == '${publicationName}'  `
-      )
+      .filter(`publicationName == '${publicationName}'  `)
       .get();
   },
   getFeaturePagesByPublication(publicationId) {
@@ -104,10 +102,13 @@ const PublicationService = {
       .get();
   },
   getSubscribers(newsletter) {
-    return db
-      .model('newsletter')
-      .object(newsletter)
-      .get();
+    return db.model('newsletter').object(newsletter).get();
+  },
+  createFeaturePage(feature) {
+    return endpoint.post('/feature', feature);
+  },
+  getUsersPublications() {
+    return endpoint.get('/user/publications');
   },
 };
 export default PublicationService;
