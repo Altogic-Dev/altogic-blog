@@ -1,14 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Link from 'next/link';
 import { topicsActions } from '@/redux/topics/topicsSlice';
-import { parseHtml } from '@/utils/utils';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
 import UserCard from '../general/UserCard';
-import Avatar from '../profile/Avatar';
 
 export default function WhoToFollow({ isTopWriters, Tag }) {
   const userFollowings = useSelector(
@@ -73,6 +70,14 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
     if (!isTopWriters) {
       getWhoToFollowMinimized();
     }
+    document.body.addEventListener('click', (e) => {
+      if (e.target.id !== 'who-to-follow-modal' && whoToFollowModal) {
+        setWhoToFollowModal(false);
+      }
+    });
+    return () => {
+      document.body.removeEventListener('click', () => {});
+    };
   }, []);
 
   useEffect(() => {
@@ -137,7 +142,8 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
             <Dialog
               as="div"
               className="relative z-10"
-              onClose={handleSeeMoreSuggestions}
+              onClose={setWhoToFollowModal}
+              id="who-to-follow-modal"
             >
               <Transition.Child
                 as={Fragment}
@@ -172,31 +178,13 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                       <div>
                         <ul className="mb-6">
                           {people?.map((person) => (
-                            <li
+                            <UserCard
                               key={person._id}
-                              className="flex items-start justify-between gap-6 py-4"
-                            >
-                              <div className="flex gap-3">
-                                <Avatar
-                                  className="w-10 h-10 rounded-full"
-                                  src={person.profilePicture}
-                                  alt={person.name}
-                                />
-                                <div className="flex flex-col">
-                                  <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                    {person.name}
-                                  </span>
-                                  <span className="text-slate-500 text-xs tracking-sm">
-                                    {parseHtml(person.about)}
-                                  </span>
-                                </div>
-                              </div>
-                              <Link href={`/${person.username}`}>
-                                <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                                  Follow
-                                </a>
-                              </Link>
-                            </li>
+                              user={person}
+                              isFollowing={userFollowings.some(
+                                (u) => u.followingUser === person._id
+                              )}
+                            />
                           ))}
                         </ul>
                         <div className="text-center">
