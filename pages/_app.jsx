@@ -20,6 +20,7 @@ function MyApp({ Component, pageProps }) {
   const { publicationName } = router.query;
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const publications = useSelector((state) => state.publication.publications);
   const [isMounted, setIsMounted] = useState(false);
 
   const visitPublicationRequest = (publicationName) => {
@@ -79,6 +80,15 @@ function MyApp({ Component, pageProps }) {
       getPublication(publicationName);
     }
   }, [publicationName]);
+
+  useEffect(() => {
+    if (_.isEmpty(publications)) {
+      dispatch(
+        publicationActions.setPublicationsRequest(sessionUser.publications)
+      );
+    }
+  }, [publications]);
+
   return (
     <>
       <ToastContainer

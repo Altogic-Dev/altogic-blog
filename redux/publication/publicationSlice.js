@@ -4,6 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
 const initialState = {
   publicationFollowers: [],
+  publications: [],
   publication: null,
   publicationStories: [],
   isPublicationnameValid: true,
@@ -14,8 +15,11 @@ const initialState = {
   error: null,
   isLoading: false,
   userPublications: [],
+  followed_publications: [],
   userFollowingPublication: [],
   publicationFeatures: [],
+  sections: [],
+  selectedPublication: null,
 };
 
 export const publicationSlice = createSlice({
@@ -140,8 +144,9 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    setPublicationFromLocalStorage(state, action) {
-      state.userPublications = action.payload;
+    setPublicationsOnLogin(state, action) {
+      console.log(action.payload);
+      state.publications = action.payload;
     },
 
     followPublicationRequest(state) {
@@ -220,6 +225,67 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     
+    deletePublicationSectionRequest(state) {
+      state.isLoading = true;
+    },
+    setFeaturePageSectionsRequest(state) {
+      state.isLoading = true;
+    },
+    setFeaturePageSectionsSuccess(state, action) {
+      state.sections = action.payload;
+      state.isLoading = false;
+    },
+    setFeaturePageSectionsFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    createFeaturePageRequest(state) {
+      state.isLoading = true;
+    },
+    createFeaturePageSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationFeatures = [
+        ...state.publicationFeatures,
+        action.payload,
+      ];
+    },
+    createFeaturePageFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    updateFeaturePageRequest(state) {
+      state.isLoading = true;
+    },
+    updateFeaturePageSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationFeatures = state.publicationFeatures.map((item) =>
+        item._id === action.payload._id ? action.payload : item
+      );
+    },
+    updateFeaturePageFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    setPublicationsRequest(state, action) {
+      state.publications = action.payload;
+    },
+    getUserPublicationsRequest(state) {
+      state.isLoading = true;
+    },
+    getUserPublicationsSuccess(state, action) {
+      state.isLoading = false;
+      state.userPublications = action.payload.publications;
+      state.followed_publications = action.payload.followed_publications;
+    },
+    getUserPublicationsFailure(state) {
+      state.isLoading = false;
+    },
+    selectPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    selectPublicationSuccess(state, action) {
+      state.selectedPublication = action.payload;
+    },
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({

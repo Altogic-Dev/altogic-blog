@@ -20,12 +20,16 @@ import Notifications from './Notifications/Notifications';
 import HeaderDropdown from './HeaderDropdown';
 import { authActions } from '../redux/auth/authSlice';
 import Search from './AutoComplete/Search';
+import PublicationDropdown from './publication/PublicationDropdown';
 
 export default function HeaderMenu() {
   const router = useRouter();
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.auth.user);
   const searchResults = useSelector((state) => state.general.searchPreview);
+  const selectedPublication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   const loading = useSelector((state) => state.general.isLoading);
   const [user, setUser] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -172,6 +176,25 @@ export default function HeaderMenu() {
                 className="origin-top-right absolute top-10 w-56"
               />
             </Menu>
+            {selectedPublication && (
+              <Menu
+                as="div"
+                className="relative hidden lg:inline-flex items-center"
+              >
+                <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+                  <Avatar
+                    className="inline-block w-10 h-10 rounded-full"
+                    src={selectedPublication?.profilePicture}
+                    alt={selectedPublication?.name}
+                  />
+                </Menu.Button>
+
+                <PublicationDropdown
+                  publication={selectedPublication}
+                  className="origin-top-right absolute top-10 w-56"
+                />
+              </Menu>
+            )}
           </div>
         </div>
       </div>
@@ -205,7 +228,7 @@ export default function HeaderMenu() {
             <Avatar
               className="inline-block w-10 h-10 rounded-full"
               src={user?.profilePicture}
-              alt={user?.username}
+              alt={user?.name}
             />
           </Menu.Button>
 
@@ -215,6 +238,25 @@ export default function HeaderMenu() {
             className="fixed bottom-20 w-full"
           />
         </Menu>
+        {selectedPublication && (
+          <Menu
+            as="div"
+            className="relative inline-flex lg:hidden items-center"
+          >
+            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+              <Avatar
+                className="inline-block w-10 h-10 rounded-full"
+                src={selectedPublication?.profilePicture}
+                alt={selectedPublication?.name}
+              />
+            </Menu.Button>
+
+            <PublicationDropdown
+              publication={selectedPublication}
+              className="origin-top-right absolute top-10 w-56"
+            />
+          </Menu>
+        )}
       </div>
     </div>
   );

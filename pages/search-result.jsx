@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import UserCard from '@/components/general/UserCard';
 import { DateTime } from 'luxon';
 import Topic from '@/components/basic/topic';
-import PublicationCard from '@/components/PublicationCard';
+import PublicationCard from '@/components/Publications/PublicationCard';
 import ListObserver from '@/components/ListObserver';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
@@ -186,6 +186,7 @@ export default function SearchResult() {
                           <PublicationCard
                             key={publication._id}
                             publication={publication}
+                            isFollow
                           />
                         ))}
                       </ListObserver>

@@ -31,6 +31,7 @@ module.exports = {
     'import/extensions': 'off',
     'no-underscore-dangle': 'off',
     'no-shadow': 'off',
+    'no-array-index-key': 'off',
   },
   settings: {
     'import/resolver': {

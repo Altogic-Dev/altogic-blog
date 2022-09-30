@@ -1,5 +1,5 @@
 import React from 'react';
-import PublicationCard from '../PublicationCard';
+import PublicationCard from '../Publications/PublicationCard';
 import SidebarTitle from '../SidebarTitle';
 
 export default function PublicationMatch({ publications, query }) {

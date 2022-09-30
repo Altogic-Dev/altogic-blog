@@ -50,14 +50,13 @@ export default function PublicationsFeature() {
           <div className="flex flex-col gap-4 mt-8 mb-[80px] md:mt-[60px]">
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full mb-[60px]">
               <h1 className="text-slate-700 mb-8 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
-                HiThemes feature pages
+                {publication?.name} feature pages
               </h1>
-              <button
-                type="button"
-                className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              >
-                New feature page
-              </button>
+              <Link href={`/publication/${publication?.name}/new-feature`}>
+                <a className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                  New feature page
+                </a>
+              </Link>
             </div>
             <h2 className="text-slate-500 tracking-sm">
               Use feature pages to build custom landing pages for your

@@ -57,7 +57,6 @@ const StoryService = {
     return endpoint.get(`/story/bySlug`, { storySlug });
   },
 
-
   getMoreUserStories(authorId, storyId, page = 1, limit = 5) {
     return db
       .model('story')
@@ -152,8 +151,20 @@ const StoryService = {
       .filter(
         `publication == '${publicationId}' && !isDeleted && isPublished && !isPrivate`
       )
+      .lookup({ field: 'user' })
       .sort('createdAt', 'desc')
       .page(page)
+      .limit(limit)
+      .get();
+  },
+  getPublicationStoriesByTopic(publication, topic, limit) {
+    return db
+      .model('story')
+      .filter(
+        `publication == '${publication}' && isPublished == true && IN(this.categoryNames, '${topic}')`
+      )
+      .lookup({ field: 'user' })
+      .sort('createdAt', 'desc')
       .limit(limit)
       .get();
   },

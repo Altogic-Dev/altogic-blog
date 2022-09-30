@@ -27,7 +27,9 @@ export default function WriteAStory() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
-
+  const selectedPublication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   useEffect(() => {
     if (user) {
       setUsername(user.name);
@@ -82,7 +84,10 @@ export default function WriteAStory() {
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
         <div className="flex items-center justify-between gap-4 md:mb-28 w-full">
           <span className="text-slate-800 text-lg tracking-sm">
-            Draft in <span className="font-semibold">{username}</span>
+            Draft in{' '}
+            <span className="font-semibold">
+              {selectedPublication ? selectedPublication.name : username}
+            </span>
           </span>
           <p className="text-slate-500">{minRead} min read</p>
 

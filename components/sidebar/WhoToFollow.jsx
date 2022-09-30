@@ -11,6 +11,9 @@ import UserCard from '../general/UserCard';
 import Avatar from '../profile/Avatar';
 
 export default function WhoToFollow({ isTopWriters, Tag }) {
+  const userFollowings = useSelector(
+    (state) => state.followerConnection.userFollowings
+  );
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
   const [people, setPeople] = useState([]);
   const [peopleMinimized, setPeopleMinimized] = useState([]);
@@ -100,8 +103,13 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
         <div>
           <ul className="divide-y divide-gray-200">
             {peopleMinimized?.map((person) => (
-
-              <UserCard key={person._id} user={person} />
+              <UserCard
+                key={person._id}
+                user={person}
+                isFollowing={userFollowings.some(
+                  (u) => u.followingUser === person._id
+                )}
+              />
             ))}
           </ul>
           <Button

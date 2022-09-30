@@ -420,7 +420,71 @@ function* getPublicationsStoriesSaga({ payload }) {
     yield put(storyActions.getPublicationsStoriesFailure(e));
   }
 }
+function* selectFeatureStoriesSaga({
+  payload: { index, story, sectionIndex },
+}) {
+  debugger;
+  const selectedFeatureStories = yield select(
+    (state) => state.story.featureStories
+  );
+  let newFeatureStories = { ...selectedFeatureStories };
+  if (!(`section-${sectionIndex}` in newFeatureStories)) {
+    Object.assign(newFeatureStories, {
+      [`section-${sectionIndex}`]: [],
+    });
+  }
+  newFeatureStories = JSON.parse(JSON.stringify(newFeatureStories));
+  newFeatureStories[`section-${sectionIndex}`][index] = story;
+  yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+}
+function* selectStoriesArraySaga({ payload: { stories, sectionIndex } }) {
+  const selectedFeatureStories = yield select(
+    (state) => state.story.featureStories
+  );
+  let newFeatureStories = { ...selectedFeatureStories };
+  if (stories.length === 0) {
+    delete newFeatureStories[`section-${sectionIndex}`];
+    yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+    return;
+  }
+  stories.forEach((story, index) => {
+    if (!(`section-${sectionIndex}` in newFeatureStories)) {
+      Object.assign(newFeatureStories, {
+        [`section-${sectionIndex}`]: [],
+      });
+    }
+    newFeatureStories = JSON.parse(JSON.stringify(newFeatureStories));
+    newFeatureStories[`section-${sectionIndex}`][index] = story;
+  });
+  yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+}
+function* getPublicationStoriesByTopicSaga({
+  payload: { publication, topic, limit, sectionIndex },
+}) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getPublicationStoriesByTopic,
+      publication,
+      topic,
+      limit
+    );
+    if (!_.isNil(errors)) throw errors.items;
 
+    if (!_.isNil(data)) {
+      yield put(
+        storyActions.getPublicationsStoriesByTopicSuccess({
+          data,
+          sectionIndex,
+        })
+      );
+      yield fork(selectStoriesArraySaga, {
+        payload: { stories: data, sectionIndex },
+      });
+    }
+  } catch (e) {
+    yield put(storyActions.getPublicationsStoriesByTopicFailure(e));
+  }
+}
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -462,6 +526,14 @@ export default function* rootSaga() {
     takeEvery(
       storyActions.getPublicationsStoriesRequest.type,
       getPublicationsStoriesSaga
+    ),
+    takeEvery(
+      storyActions.selectFeatureStoriesRequest.type,
+      selectFeatureStoriesSaga
+    ),
+    takeEvery(
+      storyActions.getPublicationsStoriesByTopicRequest.type,
+      getPublicationStoriesByTopicSaga
     ),
   ]);
 }
