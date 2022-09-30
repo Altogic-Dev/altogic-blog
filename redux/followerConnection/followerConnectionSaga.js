@@ -22,7 +22,7 @@ function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
       followingCount: user.followingCount - 1,
     });
   } catch (e) {
-    console.error({ e });
+    yield put(followerConnectionActions.unfollowFailure(e));
   }
 }
 
@@ -42,23 +42,10 @@ function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
       followingCount: followerUser.followingCount + 1,
     });
   } catch (e) {
-    console.error({ e });
+    yield put(followerConnectionActions.followFailure(e));
   }
 }
 
-function* followUserSaga({ payload: { followerUser, followingUser } }) {
-  try {
-    const { data, error } = yield call(
-      FollowerConnectionService.followUser,
-      followerUser,
-      followingUser
-    );
-    console.log({ data, error });
-    // yield put(followerConnectionActions.fetchDataSuccess());
-  } catch (e) {
-    console.error({ e });
-  }
-}
 
 function* getFollowerUsersSaga({ payload: { userId, page } }) {
   try {
@@ -100,8 +87,6 @@ export default function* rootSaga() {
   yield all([
     takeEvery(followerConnectionActions.unfollowRequest.type, unfollowSaga),
     takeEvery(followerConnectionActions.followRequest.type, followSaga),
-
-    takeEvery(followerConnectionActions.followUserRequest.type, followUserSaga),
     takeEvery(
       followerConnectionActions.getFollowerUsersRequest.type,
       getFollowerUsersSaga

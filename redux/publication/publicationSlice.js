@@ -224,6 +224,7 @@ export const publicationSlice = createSlice({
     getSubscribersFailure(state) {
       state.isLoading = false;
     },
+    
     deletePublicationSectionRequest(state) {
       state.isLoading = true;
     },

@@ -10,7 +10,6 @@ import ListObserver from '@/components/ListObserver';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 
-
 export default function Notifications() {
   const dispatch = useDispatch();
   const [notificationLimit, setNotificationLimit] = useState(20);
@@ -147,12 +146,7 @@ export default function Notifications() {
               </Tab.Group>
             </div>
             <div className="hidden lg:block p-8 space-y-10">
-              <Sidebar
-                storiesYouFollow
-                whoToFollow
-                popularTopics
-                popularStories
-              />
+              <Sidebar whoToFollow popularTopics popularStories />
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ const PublicationService = {
   },
 
   getPublication(publicationName) {
-    return db.model('publication').filter(`name == '${publicationName}'`).get();
+    return endpoint.get('/publication/get-publication-by-name', { publicationName });
   },
 
   getPublicationStories(publicationName) {

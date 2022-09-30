@@ -34,11 +34,13 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
+  const followingStoriesPage = useSelector(
+    (state) => state.followerConnection.followingStoriesPage
+  );
   const userFromStorage = useSelector((state) => state.auth.user);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const popularStories = useSelector((state) => state.story.popularStories);
-
   const [user, setUser] = useState();
   const dispatch = useDispatch();
 
@@ -77,21 +79,21 @@ export default function Home() {
     (state) => state.followerConnection.userFollowings
   );
 
-  const getFollowingRequest = (page) => {
+  const getFollowingUsers = () => {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(user, '_id'),
-        page,
+        page: followingStoriesPage,
       })
     );
   };
 
   useEffect(() => {
-    if (storiesYouFollow?.length === 0) {
-      getFollowingRequest(1);
-    }
     dispatch(storyActions.popularStoriesRequest());
   }, []);
+  useEffect(() => {
+    if (user) getFollowingUsers();
+  }, [followingStoriesPage, user]);
 
   useEffect(() => {
     getFollowingStories(followingListPage);
@@ -273,8 +275,8 @@ export default function Home() {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 storiesYouFollow={storiesYouFollow}
-                getFollowingRequest={getFollowingRequest}
                 whoToFollow
+                followingStoriesPage={storiesYouFollow.page}
                 popularTopics
                 popularStories
               />
@@ -283,8 +285,8 @@ export default function Home() {
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
               <Sidebar
                 mobilePopularStories
-                getFollowingRequest={getFollowingRequest}
                 storiesYouFollow={storiesYouFollow}
+                followingStoriesPage={storiesYouFollow.page}
                 stories={popularStories}
               />
             </div>
