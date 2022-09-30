@@ -219,6 +219,7 @@ export const publicationSlice = createSlice({
     getSubscribersFailure(state) {
       state.isLoading = false;
     },
+    
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({

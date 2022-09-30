@@ -8,6 +8,7 @@ import { recommendationsActions } from '@/redux/recommendations/recommendationsS
 import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
 import UserCard from '../general/UserCard';
+import Avatar from '../profile/Avatar';
 
 export default function WhoToFollow({ isTopWriters, Tag }) {
   const [whoToFollowModal, setWhoToFollowModal] = useState(false);
@@ -168,7 +169,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                               className="flex items-start justify-between gap-6 py-4"
                             >
                               <div className="flex gap-3">
-                                <img
+                                <Avatar
                                   className="w-10 h-10 rounded-full"
                                   src={person.profilePicture}
                                   alt={person.name}
@@ -193,7 +194,6 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                         <div className="text-center">
                           <Button
                             onClick={handleShowMore}
-                            type="button"
                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                           >
                             Show more
