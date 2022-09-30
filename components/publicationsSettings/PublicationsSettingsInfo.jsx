@@ -133,7 +133,7 @@ export default function PublicationSettingsInfo() {
     if (publication) {
       dispatch(
         fileActions.setUploadedFiles({
-          profilePicture: publication?.profilePicture,
+          profilePicture: publication?.logo,
           coverImage: publication?.coverImage,
           logo: publication?.logo,
         })
@@ -287,10 +287,7 @@ export default function PublicationSettingsInfo() {
                   type="button"
                   className="text-purple-700 text-sm font-medium tracking-sm"
                   onClick={() =>
-                    handleUploadPhoto(
-                      'profilePicture',
-                      publication?.profilePicture
-                    )
+                    handleUploadPhoto('profilePicture', publication?.logo)
                   }
                 >
                   Change Avatar

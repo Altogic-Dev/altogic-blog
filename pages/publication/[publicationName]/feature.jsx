@@ -30,6 +30,7 @@ export default function PublicationsFeature() {
   };
 
   useEffect(() => {
+    console.log(publication);
     if (publication) {
       getPublicationFeatures();
     }

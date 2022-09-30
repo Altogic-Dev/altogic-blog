@@ -9,7 +9,9 @@ const PublicationService = {
   },
 
   getPublication(publicationName) {
-    return endpoint.get('/publication/get-publication-by-name', { publicationName });
+    return endpoint.get('/publication/get-publication-by-name', {
+      publicationName,
+    });
   },
 
   getPublicationStories(publicationName) {
@@ -78,7 +80,7 @@ const PublicationService = {
   },
   followPublication(publication, user) {
     return endpoint.post(`/publication/follow`, {
-      publication,
+      ...publication,
       userAbout: user.userAbout,
       userName: user.userName,
       user: user._id,

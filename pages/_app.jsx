@@ -82,7 +82,7 @@ function MyApp({ Component, pageProps }) {
   }, [publicationName]);
 
   useEffect(() => {
-    if (_.isEmpty(publications)) {
+    if (_.isEmpty(publications) && !_.isEmpty(sessionUser)) {
       dispatch(
         publicationActions.setPublicationsRequest(sessionUser.publications)
       );
