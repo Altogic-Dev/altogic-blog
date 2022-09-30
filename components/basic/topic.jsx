@@ -1,4 +1,5 @@
 import Link from 'next/link';
+
 export default function Topic({ title, className }) {
   return (
     <Link href={`/tag/${title?.replace(' ', '-')}`}>

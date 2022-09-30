@@ -195,6 +195,7 @@ export default function PublicationsNavigation() {
           </div>
           <div className="flex flex-col gap-4">
             {navigationList.map((navigationForm, index) => (
+              // eslint-disable-next-line react/no-array-index-key
               <div className="flex items-center gap-4" key={index}>
                 {/* <div className="flex flex-col">
                   <span className="block text-slate-700 mb-4 text-lg font-semibold opacity-0">

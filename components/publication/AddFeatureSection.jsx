@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState } from 'react';
 import Sections from '@/components/Sections';
 import { PlusIcon } from '@heroicons/react/outline';
