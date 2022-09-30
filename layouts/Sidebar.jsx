@@ -13,7 +13,6 @@ import PublicationMatch from '@/components/sidebar/PublicationMatch';
 import Footer from './Footer';
 
 export default function Sidebar({
-  getFollowingRequest,
   personalFullStatistic,
   topicMatch,
   peopleMatch,
@@ -36,7 +35,8 @@ export default function Sidebar({
   stories,
   publications,
   publicationsMatch,
-  followLoading
+  followLoading,
+  followingStoriesPage
 }) {
   return (
     <>
@@ -59,7 +59,7 @@ export default function Sidebar({
         />
       )}
       {mobilePopularStories && <MobilePopularStories />}
-      {storiesYouFollow && <StoriesYouFollow />}
+      {storiesYouFollow && <StoriesYouFollow storiesYouFollow={storiesYouFollow} page={followingStoriesPage} />}
       {(whoToFollow || topWriters) && (
         <WhoToFollow isTopWriters={topWriters} Tag={Tag} />
       )}
