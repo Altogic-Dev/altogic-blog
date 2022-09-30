@@ -26,7 +26,7 @@ function* getPublicationSaga({ payload: publicationName }) {
       publicationName
     );
     if (data) {
-      yield put(publicationActions.getPublicationSuccess(data[0]));
+      yield put(publicationActions.getPublicationSuccess(data));
     }
     if (errors) {
       throw errors.items;

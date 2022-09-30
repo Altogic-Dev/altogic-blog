@@ -22,7 +22,6 @@ function* getWhoToFollowSaga({ payload: { page, limit } }) {
       page,
       limit
     );
-
     if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.getWhoToFollowSuccess(data));
   } catch (e) {
@@ -36,10 +35,7 @@ export default function* rootSaga() {
     recommendationsActions.getWhoToFollowRequest.type,
     getWhoToFollowSaga
   );
-  yield takeEvery(
-    recommendationsActions.getWhoToFollowRequest.type,
-    getWhoToFollowSaga
-  );
+
   yield takeEvery(
     recommendationsActions.getWhoToFollowMinimizedRequest.type,
     getWhoToFollowMinimizedSaga
