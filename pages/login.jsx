@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import SocialProviders from '@/components/login/SocialProviders';
+import { useRouter } from 'next/router';
 
 export default function Login() {
   const loginSchema = new yup.ObjectSchema({
@@ -14,7 +15,9 @@ export default function Login() {
     password: yup.string().required('Password is required'),
   });
   const dispatch = useDispatch();
+  const router = useRouter();
   const error = useSelector((state) => state.auth.loginError);
+  const user = useSelector((state) => state.auth.user);
   const {
     handleSubmit,
     register,
@@ -44,6 +47,11 @@ export default function Login() {
     },
     []
   );
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+    }
+  }, [user]);
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">

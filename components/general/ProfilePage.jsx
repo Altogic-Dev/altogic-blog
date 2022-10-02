@@ -32,6 +32,9 @@ export default function ProfilePage({ About, Home, List }) {
   const { username } = router.query;
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const followLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
@@ -86,6 +89,7 @@ export default function ProfilePage({ About, Home, List }) {
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(user, '_id'),
+          notUpdate: true,
         })
       );
     else {
@@ -98,6 +102,7 @@ export default function ProfilePage({ About, Home, List }) {
             followingUserProfilePicture: _.get(user, '_profilePicture'),
             followingUsername: _.get(user, '_username'),
           },
+          notUpdate: true,
         })
       );
     }
@@ -186,7 +191,7 @@ export default function ProfilePage({ About, Home, List }) {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -353,6 +358,7 @@ export default function ProfilePage({ About, Home, List }) {
                   username: _.get(userState, 'username'),
                   about: _.get(userState, 'about'),
                 }}
+                followLoading={followLoading}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
               />

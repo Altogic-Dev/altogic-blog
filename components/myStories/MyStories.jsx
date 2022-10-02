@@ -15,7 +15,6 @@ import MyStoriesDraft from './MyStoriesDraft';
 export default function MyStories({ publishedPage, draftPage }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
-  const popularStories = useSelector((state) => state.story.popularStories);
   const userDraftStoriesInfo = useSelector(
     (state) => state.story.userDraftStoriesInfo
   );
@@ -44,7 +43,7 @@ export default function MyStories({ publishedPage, draftPage }) {
       <Head>
         <title>Altogic Medium Blog App My Stories</title>
         <meta name="description" content="Altogic Medium Blog App My Stories" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">

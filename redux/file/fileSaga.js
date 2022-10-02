@@ -14,6 +14,12 @@ function* uploadFileSaga({ payload }) {
     );
     if (data) {
       yield put(fileActions.uploadFileSuccess(data.publicPath));
+      yield put(
+        fileActions.uploadFilesSuccess({
+          name: payload.name.split('-')[1],
+          data: data.publicPath,
+        })
+      );
     }
     if (errors) {
       throw errors.items;
@@ -21,6 +27,9 @@ function* uploadFileSaga({ payload }) {
   } catch (e) {
     yield put(fileActions.uploadFileFailure(e));
   }
+}
+export function* clearFileLink() {
+  yield put(fileActions.clearFileLink());
 }
 
 export default function* fileSaga() {

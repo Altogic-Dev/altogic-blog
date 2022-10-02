@@ -10,7 +10,6 @@ import ListObserver from '@/components/ListObserver';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 
-
 export default function Notifications() {
   const dispatch = useDispatch();
   const [notificationLimit, setNotificationLimit] = useState(20);
@@ -42,7 +41,7 @@ export default function Notifications() {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
@@ -147,12 +146,7 @@ export default function Notifications() {
               </Tab.Group>
             </div>
             <div className="hidden lg:block p-8 space-y-10">
-              <Sidebar
-                storiesYouFollow
-                whoToFollow
-                popularTopics
-                popularStories
-              />
+              <Sidebar whoToFollow popularTopics popularStories />
             </div>
           </div>
         </div>

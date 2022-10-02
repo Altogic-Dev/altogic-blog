@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import UserCard from '@/components/general/UserCard';
 import { DateTime } from 'luxon';
 import Topic from '@/components/basic/topic';
-import PublicationCard from '@/components/PublicationCard';
+import PublicationCard from '@/components/Publications/PublicationCard';
 import ListObserver from '@/components/ListObserver';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
@@ -71,7 +71,7 @@ export default function SearchResult() {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -186,6 +186,7 @@ export default function SearchResult() {
                           <PublicationCard
                             key={publication._id}
                             publication={publication}
+                            isFollow
                           />
                         ))}
                       </ListObserver>

@@ -16,6 +16,7 @@ const initialState = {
   isMuted: false,
   isAuthenticated: false,
   sessions: [],
+  foundUsers: [],
 };
 
 export const authSlice = createSlice({
@@ -41,7 +42,6 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.user = action.payload;
       state.isAuthenticated = true;
-      window.location.href = '/';
     },
     getAuthGrantFailure(state, action) {
       state.isLoading = false;
@@ -231,6 +231,17 @@ export const authSlice = createSlice({
     },
     updateUser(state, action) {
       state.user = action.payload;
+    },
+
+    searchUserByUsernameRequest(state) {
+      state.isLoading = true;
+    },
+    searchUserByUsernameSuccess(state, action) {
+      state.foundUsers = action.payload;
+      state.isLoading = false;
+    },
+    searchUserByUsernameFailure(state) {
+      state.isLoading = false;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

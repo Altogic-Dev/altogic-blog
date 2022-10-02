@@ -5,7 +5,7 @@ import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
 import { classNames } from '@/utils/utils';
 
-const ReadingBarChart = dynamic(import('../components/ReadingBarChart'), {
+const ReadingBarChart = dynamic(import('@/components/ReadingBarChart'), {
   ssr: false,
 });
 
@@ -76,7 +76,7 @@ export default function PublicationsStats() {
           name="description"
           content="Altogic Medium Blog App Publications Story Page Published"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
