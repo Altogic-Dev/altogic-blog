@@ -150,6 +150,23 @@ function* updatePublicationNavigation({
   }
 }
 
+function* getFeaturePageSaga({ payload: featureId }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getFeaturePage,
+      featureId
+    );
+    if (errors) {
+      throw errors.items;
+    }
+    if (data) {
+      yield put(publicationActions.getFeaturePageSuccess(data));
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getPublicationFollowersRequest.type,
@@ -182,5 +199,9 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.updatePublicationNavigationRequest.type,
     updatePublicationNavigation
+  );
+  yield takeEvery(
+    publicationActions.getFeaturePageRequest.type,
+    getFeaturePageSaga
   );
 }

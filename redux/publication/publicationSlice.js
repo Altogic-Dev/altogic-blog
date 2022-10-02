@@ -7,6 +7,7 @@ const initialState = {
   publication: null,
   latestPublicationStories: [],
   featurePages: [],
+  featurePage: null,
   publicationNavigation: [],
   error: null,
   isLoading: false,
@@ -107,8 +108,11 @@ export const publicationSlice = createSlice({
     },
     setPublicationFromLocalStorage(state, action) {
       state.userPublications = action.payload;
+    },
 
-      
+    getFeaturePageRequest() {},
+    getFeaturePageSuccess(state, action) {
+      state.featurePage = action.payload;
     },
 
     extraReducers: {

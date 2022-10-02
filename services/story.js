@@ -50,13 +50,13 @@ const StoryService = {
       .model('story')
       .filter(`_id == '${id}'`)
       .lookup({ field: 'publication' })
+      .lookup({ field: 'user' })
       .get();
   },
 
   getStoryBySlug(storySlug) {
     return endpoint.get(`/story/bySlug`, { storySlug });
   },
-
 
   getMoreUserStories(authorId, storyId, page = 1, limit = 5) {
     return db
