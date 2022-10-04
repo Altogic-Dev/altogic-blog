@@ -20,6 +20,7 @@ const initialState = {
   userFollowingPublication: [],
   publicationFeatures: [],
   sections: [],
+  homeLayout: null,
   selectedPublication: null,
 };
 
@@ -293,6 +294,30 @@ export const publicationSlice = createSlice({
     },
     selectPublicationSuccess(state, action) {
       state.selectedPublication = action.payload;
+    },
+
+    getPublicationHomeLayoutRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationHomeLayoutSuccess(state, action) {
+      state.homeLayout = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationHomeLayoutFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    updatePublicationHomeLayoutRequest(state) {
+      state.isLoading = true;
+    },
+    updatePublicationHomeLayoutSuccess(state, action) {
+      state.homeLayout = action.payload;
+      state.isLoading = false;
+    },
+    updatePublicationHomeLayoutFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
     },
 
     extraReducers: {

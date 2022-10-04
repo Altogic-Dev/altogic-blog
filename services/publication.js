@@ -114,5 +114,14 @@ const PublicationService = {
   getUsersPublications() {
     return endpoint.get('/user/publications');
   },
+  getPublicationHomeLayout(publicationId) {
+    return db
+      .model('publication_homepage')
+      .filter(`publication == '${publicationId}'`)
+      .get();
+  },
+  updatePublicationHomeLayout(layout) {
+    return db.model('publication_homepage').object(layout?._id).update(layout);
+  },
 };
 export default PublicationService;

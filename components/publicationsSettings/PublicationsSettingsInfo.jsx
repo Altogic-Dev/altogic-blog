@@ -4,7 +4,6 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
 import { PlusIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,9 +14,6 @@ import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSug
 
 export default function PublicationSettingsInfo() {
   const dispatch = useDispatch();
-  const router = useRouter();
-
-  const { publicationName } = router.query;
 
   const userFromLocale = useSelector((state) => state.auth.user);
   const publication = useSelector((state) => state.publication.publication);
@@ -120,14 +116,6 @@ export default function PublicationSettingsInfo() {
     };
     dispatch(publicationActions.updatePublicationRequest(editedPublication));
   };
-
-  useEffect(() => {
-    if (publicationName) {
-      dispatch(
-        publicationActions.getPublicationRequest(publicationName.toLowerCase())
-      );
-    }
-  }, [publicationName]);
 
   useEffect(() => {
     if (publication) {
