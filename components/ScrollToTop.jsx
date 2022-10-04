@@ -28,10 +28,10 @@ function ScrollToTop() {
         disabled={!showBtn}
         className={`${
           showBtn ? 'opacity-1 ' : 'opacity-0 '
-        }transition ease-in-out delay-150 fixed z-90 bottom-20 right-12 border-0 w-16 h-16 rounded-full drop-shadow-sm bg-slate-100 p-4 shadow-md z-[99]`}
+        }transition ease-in-out delay-150 inline-flex items-center justify-center fixed z-90 bottom-20 right-6 border-0 w-12 h-12 rounded-full drop-shadow-sm bg-slate-100 p-4 shadow-md z-[99]`}
         onClick={() => scrollUp()}
       >
-        <ChevronUpIcon className="text-purple-700  " />
+        <ChevronUpIcon className="w-5 h-5 text-purple-700  " />
       </button>
     </div>
   );
