@@ -13,16 +13,21 @@ export default function PublicationsSettings() {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const [isInfo, setIsInfo] = useState(true);
   const [doHomeSave, setDoHomeSave] = useState(false);
   const [doHomeClear, setDoHomeClear] = useState(false);
+  const [doInfoSave, setDoInfoSave] = useState(false);
+  const [doInfoClear, setDoInfoClear] = useState(false);
 
   const { publicationName } = router.query;
 
   const handleSave = () => {
+    if (isInfo) setDoInfoSave(true);
     setDoHomeSave(true);
   };
 
   const handleClear = () => {
+    if (isInfo) setDoInfoClear(true);
     setDoHomeClear(true);
   };
 
@@ -74,6 +79,7 @@ export default function PublicationsSettings() {
           <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
             <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
               <Tab
+                onClick={() => setIsInfo(true)}
                 className={({ selected }) =>
                   classNames(
                     'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -86,6 +92,7 @@ export default function PublicationsSettings() {
                 Info
               </Tab>
               <Tab
+                onClick={() => setIsInfo(false)}
                 className={({ selected }) =>
                   classNames(
                     'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -101,7 +108,12 @@ export default function PublicationsSettings() {
           </div>
           <Tab.Panels>
             <Tab.Panel>
-              <PublicationSettingsInfo />
+              <PublicationSettingsInfo
+                doSave={doInfoSave}
+                setDoSave={setDoInfoSave}
+                doClear={doInfoClear}
+                setDoClear={setDoInfoClear}
+              />
             </Tab.Panel>
             <Tab.Panel>
               <PublicationsSettingsHome

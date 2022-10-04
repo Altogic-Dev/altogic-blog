@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AligmentPublicationLayout from '../AligmentPublicationLayout';
 import ColorPicker from '../ColorPicker';
-import Sections from '../Sections';
+import AddFeatureSection from '../publication/AddFeatureSection';
 
 export default function PublicationsSettingsHome({
   doSave,
@@ -19,11 +19,18 @@ export default function PublicationsSettingsHome({
   const publication = useSelector((state) => state.publication.publication);
   const homeLayout = useSelector((state) => state.publication.homeLayout);
   const uploadedFileLink = useSelector((state) => state.file.fileLink);
+  const navigations = useSelector(
+    (state) => state.publication.publicationNavigation
+  );
+  const featurePage = useSelector((state) => state.publication.featurePage);
 
   const [layout, setLayout] = useState('title');
   const [isCentered, setIsCentered] = useState(false);
   const [textColor, setTextColor] = useState('#000');
   const [bgColor, setBgColor] = useState('#fff');
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+
+  const sections = featurePage?.sections;
 
   const handleSave = () => {
     dispatch(
@@ -57,12 +64,22 @@ export default function PublicationsSettingsHome({
       dispatch(
         publicationActions.getPublicationHomeLayoutRequest(publication._id)
       );
+      dispatch(
+        publicationActions.getPublicationNavigationRequest(publication._id)
+      );
     }
   }, [publication?._id]);
 
   useEffect(() => {
     dispatch(fileActions.clearFileLink());
   }, [bgColor]);
+
+  useEffect(() => {
+    const tab = navigations[selectedTabIndex];
+    if (_.get(tab, 'tabType') === 'feature') {
+      dispatch(publicationActions.getFeaturePageRequest(tab.contents));
+    }
+  }, [selectedTabIndex]);
 
   useEffect(() => {
     fillFields();
@@ -316,144 +333,24 @@ export default function PublicationsSettingsHome({
               </button>
             </div>
           </div>
-          <AligmentPublicationLayout
-            layout={layout}
-            bgColor={bgColor}
-            color={textColor}
-            logo={publication?.logo}
-            isCentered={isCentered}
-            title={publication?.name}
-            content={publication?.description}
-            bgImage={uploadedFileLink}
-          />
         </div>
-        <div>
-          <div
-            className="relative w-full h-[230px] bg-no-repeat bg-cover bg-center"
-            // style={{
-            //   backgroundImage:
-            //     "url('https://images.unsplash.com/photo-1660239006153-788e6d91a271?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3174&q=80')",
-            // }}
-          >
-            <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
-              <div className="flex items-center justify-between gap-4 py-3 border-b border-gray-200">
-                <ul className="flex items-center gap-4">
-                  <li className="flex items-center justify-center">
-                    <a
-                      href="#"
-                      className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-100"
-                    >
-                      Navigation One
-                    </a>
-                  </li>
-                  <li className="flex items-center justify-center">
-                    <a
-                      href="#"
-                      className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-100"
-                    >
-                      Navigation Two
-                    </a>
-                  </li>
-                </ul>
-                <ul className="flex items-center">
-                  <li>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-                    >
-                      <svg
-                        className="w-6 h-6 text-slate-400"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M20.8513 7.47974C20.8592 7.67764 20.8618 7.87546 20.8618 8.07336C20.8618 14.0734 16.5286 21 8.60453 21C6.1704 21 3.90702 20.2444 2 18.958C2.3371 18.994 2.67946 19.021 3.02706 19.021C5.04528 19.021 6.90415 18.2922 8.37863 17.0689C6.4935 17.0419 4.90169 15.7195 4.3527 13.9204C4.61625 13.9744 4.88767 14.0015 5.16523 14.0015C5.55661 14.0015 5.93661 13.9476 6.30085 13.8396C4.32817 13.4258 2.84232 11.5908 2.84232 9.38689C2.84232 9.3599 2.84232 9.35086 2.84232 9.33287C3.4237 9.6657 4.08914 9.87249 4.79573 9.89948C3.63821 9.08089 2.87732 7.68662 2.87732 6.11241C2.87732 5.28482 3.08921 4.50218 3.46221 3.82752C5.58637 6.58014 8.76214 8.38826 12.3424 8.57716C12.2689 8.24433 12.2312 7.89359 12.2312 7.54277C12.2312 5.03303 14.1601 3 16.5399 3C17.7789 3 18.8979 3.5488 19.6833 4.43036C20.6665 4.23246 21.5877 3.85468 22.4212 3.33294C22.0981 4.39441 21.416 5.28478 20.5247 5.8425C21.3968 5.73455 22.2286 5.49186 23 5.13204C22.4212 6.04058 21.6927 6.84106 20.8513 7.47974Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-                    >
-                      <svg
-                        className="w-6 h-6 text-slate-400"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M0.888672 12.0118C0.888672 17.5059 4.90124 22.074 10.1484 23L10.2104 22.9505C10.1897 22.9465 10.1691 22.9424 10.1485 22.9383V15.0984H7.37054V12.0118H10.1485V9.5425C10.1485 6.76457 11.9387 5.22127 14.4697 5.22127C15.2722 5.22127 16.1365 5.34474 16.939 5.4682V8.30786H15.5191C14.161 8.30786 13.8524 8.98691 13.8524 9.85116V12.0118H16.8155L16.3217 15.0984H13.8524V22.9383C13.8317 22.9424 13.8111 22.9465 13.7904 22.9505L13.8524 23C19.0996 22.074 23.1121 17.5059 23.1121 12.0118C23.1121 5.9003 18.1119 0.900024 12.0004 0.900024C5.88895 0.900024 0.888672 5.9003 0.888672 12.0118Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-                    >
-                      <svg
-                        className="w-6 h-6 text-slate-400"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          clipRule="evenodd"
-                          d="M3.41961 2C2.63558 2 2 2.63558 2 3.41961V20.5804C2 21.3644 2.63558 22 3.41961 22H20.5804C21.3644 22 22 21.3644 22 20.5804V3.41961C22 2.63558 21.3644 2 20.5804 2H3.41961ZM6.48908 8.21103C7.44729 8.21103 8.22408 7.43424 8.22408 6.47603C8.22408 5.51781 7.44729 4.74102 6.48908 4.74102C5.53087 4.74102 4.75409 5.51781 4.75409 6.47603C4.75409 7.43424 5.53087 8.21103 6.48908 8.21103ZM9.81304 9.49324H12.6885V10.8105C12.6885 10.8105 13.4688 9.24991 15.5918 9.24991C17.4857 9.24991 19.0546 10.1829 19.0546 13.0266V19.0233H16.0748V13.7533C16.0748 12.0757 15.1792 11.8912 14.4967 11.8912C13.0804 11.8912 12.8379 13.1129 12.8379 13.9721V19.0233H9.81304V9.49324ZM8.00152 9.49325H4.97664V19.0233H8.00152V9.49325Z"
-                          fill="currentColor"
-                        />
-                      </svg>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+        <AligmentPublicationLayout
+          layout={layout}
+          bgColor={bgColor}
+          color={textColor}
+          logo={publication?.logo}
+          isCentered={isCentered}
+          title={publication?.name}
+          content={publication?.description}
+          bgImage={uploadedFileLink}
+          navigations={navigations}
+          twitter={publication?.twitter}
+          facebook={publication?.facebook}
+          linkedin={publication?.linkedin}
+          setSelectedTabIndex={setSelectedTabIndex}
+        />
       </div>
-      <div className="mt-12 mb-20">
-        <div className="relative max-w-screen-xl mx-auto mb-6">
-          <div
-            className="absolute inset-0 flex items-center px-4 lg:px-8"
-            aria-hidden="true"
-          >
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <button
-              type="button"
-              className="inline-flex items-center justify-center gap-2 px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-500 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            >
-              <svg
-                className="w-5 h-5 text-slate-500"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M10.8346 4.16667C10.8346 3.70643 10.4615 3.33333 10.0013 3.33333C9.54106 3.33333 9.16797 3.70643 9.16797 4.16667H10.8346ZM9.16797 15.8333C9.16797 16.2936 9.54106 16.6667 10.0013 16.6667C10.4615 16.6667 10.8346 16.2936 10.8346 15.8333H9.16797ZM4.16797 9.16667C3.70773 9.16667 3.33464 9.53976 3.33464 10C3.33464 10.4602 3.70773 10.8333 4.16797 10.8333V9.16667ZM15.8346 10.8333C16.2949 10.8333 16.668 10.4602 16.668 10C16.668 9.53976 16.2949 9.16667 15.8346 9.16667V10.8333ZM9.16797 4.16667V15.8333H10.8346V4.16667H9.16797ZM4.16797 10.8333H15.8346V9.16667H4.16797V10.8333Z"
-                  fill="#64748B"
-                />
-              </svg>
-              Add Section
-            </button>
-          </div>
-        </div>
-        <div>
-          <Sections />
-        </div>
-      </div>
+      <AddFeatureSection sections={sections} />
     </>
   );
 }

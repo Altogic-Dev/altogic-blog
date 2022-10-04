@@ -12,7 +12,12 @@ import TagInput from '../TagInput';
 import UserInput from '../UserInput';
 import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSuggestions';
 
-export default function PublicationSettingsInfo() {
+export default function PublicationSettingsInfo({
+  doSave,
+  setDoSave,
+  doClear,
+  setDoClear,
+}) {
   const dispatch = useDispatch();
 
   const userFromLocale = useSelector((state) => state.auth.user);
@@ -117,7 +122,7 @@ export default function PublicationSettingsInfo() {
     dispatch(publicationActions.updatePublicationRequest(editedPublication));
   };
 
-  useEffect(() => {
+  const fillFields = () => {
     if (publication) {
       dispatch(
         fileActions.setUploadedFiles({
@@ -137,6 +142,10 @@ export default function PublicationSettingsInfo() {
       setEditors(_.filter(publication.users, (user) => user.role === 'editor'));
       setWriters(_.filter(publication.users, (user) => user.role === 'writer'));
     }
+  };
+
+  useEffect(() => {
+    fillFields();
   }, [publication]);
 
   useEffect(() => {
@@ -167,6 +176,20 @@ export default function PublicationSettingsInfo() {
       clearErrors('name');
     }
   }, [isValid]);
+
+  useEffect(() => {
+    if (doSave === true) {
+      handleSave();
+      setDoSave(false);
+    }
+  }, [doSave]);
+
+  useEffect(() => {
+    if (doClear === true) {
+      fillFields();
+      setDoClear(false);
+    }
+  }, [doClear]);
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20">

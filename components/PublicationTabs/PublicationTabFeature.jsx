@@ -47,9 +47,11 @@ function PublicationTabFeature({ tab }) {
         if (section?.designType === 'grid') {
           return (
             <>
-              <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
-                {_.get(section, 'sectionTitle')}
-              </h2>
+              {_.get(section, 'sectionTitle') && (
+                <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
+                  {_.get(section, 'sectionTitle')}
+                </h2>
+              )}
               {_.map(getSlicedStories(section?.stories), (stories) => (
                 <div
                   key={_.first(stories)?._id}
