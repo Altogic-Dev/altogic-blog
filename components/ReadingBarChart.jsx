@@ -1,4 +1,6 @@
-import React from 'react';
+import { toMonthName } from '@/utils/utils';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const getIntroOfPage = (count) => {
@@ -25,7 +27,48 @@ function CustomTooltip({ active, payload, label }) {
   return null;
 }
 
-export default function ReadingBarChart({ data }) {
+export default function ReadingBarChart({ rawData, type }) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    let tempData = {};
+    const tempStack = [];
+
+    if (type === '12 Months') {
+      rawData?.forEach((obj) => {
+        const monthName = toMonthName(obj.groupby.group.split('.')[1]);
+        tempData = {
+          [monthName]: {
+            ..._.get(tempData, monthName),
+            memberReadTimes:
+              (_.get(tempData, monthName)?.memberReadTimes ?? 0) + obj.sum,
+            name: monthName,
+          },
+        };
+      });
+    } else {
+      rawData?.forEach((obj) => {
+        tempData = {
+          ...tempData,
+          [obj.groupby.group]: {
+            ..._.get(tempData, obj.groupby.group),
+            memberReadTimes:
+              (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +
+              obj.sum,
+            name: obj.groupby.group,
+          },
+        };
+      });
+    }
+    _.forEach(tempData, (obj) => {
+      tempStack.push({
+        name: obj.name,
+        memberReadTimes: obj.memberReadTimes ?? 0,
+      });
+    });
+    setData(tempStack);
+  }, [rawData]);
+
   return (
     <>
       <div className="hidden md:block w-full h-[280px] md:h-[550px]">

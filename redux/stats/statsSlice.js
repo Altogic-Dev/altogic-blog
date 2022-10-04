@@ -19,10 +19,17 @@ const initialState = {
   internalViewsPeriodically: [],
   externalViewsPeriodically: [],
   storyTotalReadTimePeriodically: [],
+  likesPeriodically: [],
+  viewsPeriodically: [],
+  readsPeriodically: [],
+  likesDateType: '30 Days',
+  viewsDateType: '30 Days',
+  readsDateType: '30 Days',
   storyCreatedAt: null,
   readingDateType: '30 Days',
   viewDateType: '30 Days',
   storyName: null,
+  publicationStories: [],
 };
 
 // Actual Slice
@@ -93,10 +100,11 @@ export const statsSlice = createSlice({
     getStoryStatisticsSuccess(state, action) {
       state.storyCreatedAt = action.payload.story.createdAt;
       state.storyName = action.payload.story.title;
-      state.internalViews= _.first(action.payload.internalViews)?.count ?? 0
-      state.externalViews= _.first(action.payload.externalViews)?.count ?? 0
-      state.totalLikes = _.first(action.payload.totalLikes)?.count ?? 0
-      state.storyTotalReadTime= _.first(action.payload.totalReadTime)?.sum ?? 0
+      state.internalViews = _.first(action.payload.internalViews)?.count ?? 0;
+      state.externalViews = _.first(action.payload.externalViews)?.count ?? 0;
+      state.totalLikes = _.first(action.payload.totalLikes)?.count ?? 0;
+      state.storyTotalReadTime =
+        _.first(action.payload.totalReadTime)?.sum ?? 0;
       state.error = null;
       state.isLoading = false;
     },
@@ -108,9 +116,15 @@ export const statsSlice = createSlice({
       state.isLoading = true;
     },
     getStoryStatisticsPeriodicallySuccess(state, action) {
-      state.internalViewsPeriodically= {...state.internalViewsPeriodically, [action.payload.type]: action.payload.internalPeriodically }
-      state.externalViewsPeriodically= {...state.externalViewsPeriodically, [action.payload.type]: action.payload.externalPeriodically }
-      state.viewDateType= action.payload.type
+      state.internalViewsPeriodically = {
+        ...state.internalViewsPeriodically,
+        [action.payload.type]: action.payload.internalPeriodically,
+      };
+      state.externalViewsPeriodically = {
+        ...state.externalViewsPeriodically,
+        [action.payload.type]: action.payload.externalPeriodically,
+      };
+      state.viewDateType = action.payload.type;
 
       state.error = null;
       state.isLoading = false;
@@ -119,16 +133,85 @@ export const statsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+
+    getPublicationLikesPeriodicallyRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationLikesPeriodicallySuccess(state, action) {
+      state.likesPeriodically = {
+        ...state.likesPeriodically,
+        [action.payload.type]: action.payload.likesPeriodically,
+      };
+
+      state.likesDateType = action.payload.type;
+
+      state.error = null;
+      state.isLoading = false;
+    },
+    getPublicationLikesPeriodicallyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationViewsPeriodicallyRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationViewsPeriodicallySuccess(state, action) {
+      state.viewsPeriodically = {
+        ...state.viewsPeriodically,
+        [action.payload.type]: action.payload.viewsPeriodically,
+      };
+      state.viewsDateType = action.payload.type;
+
+      state.error = null;
+      state.isLoading = false;
+    },
+    getPublicationViewsPeriodicallyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationReadsPeriodicallyRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationReadsPeriodicallySuccess(state, action) {
+      state.readsPeriodically = {
+        ...state.readsPeriodically,
+        [action.payload.type]: action.payload.readsPeriodically,
+      };
+
+      state.readsDateType = action.payload.type;
+
+      state.error = null;
+      state.isLoading = false;
+    },
+    getPublicationReadsPeriodicallyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
     getStoryReadingTimePeriodicallyRequest(state) {
       state.isLoading = true;
     },
     getStoryReadingTimePeriodicallySuccess(state, action) {
-      state.storyTotalReadTimePeriodically= {...state.storyTotalReadTimePeriodically, [action.payload.type]:  action.payload}
-      state.readingDateType= action.payload.type
+      state.storyTotalReadTimePeriodically = {
+        ...state.storyTotalReadTimePeriodically,
+        [action.payload.type]: action.payload,
+      };
+      state.readingDateType = action.payload.type;
       state.error = null;
       state.isLoading = false;
     },
     getStoryReadingTimePeriodicallyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesStatsRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesStatsSuccess(state, action) {
+     state.publicationStories = action.payload
+      state.isLoading = false;
+    },
+    getPublicationsStoriesStatsFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

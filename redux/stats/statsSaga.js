@@ -133,12 +133,12 @@ export function* getStoryReadingTimePeriodicallySaga({
   }
 }
 export function* getStoryStatisticsPeriodicallySaga({
-  payload: { storySlug, date, type },
+  payload: { publicationName, date, type },
 }) {
   try {
     const { data, errors } = yield call(
       StatsService.getStoryStatisticsPeriodically,
-      storySlug,
+      publicationName,
       date
     );
     if (errors) throw errors;
@@ -149,6 +149,81 @@ export function* getStoryStatisticsPeriodicallySaga({
   } catch (e) {
     console.error({ e });
     yield put(statsActions.getStoryStatisticsPeriodicallyFailure(e));
+  }
+}
+
+export function* getPublicationViewsPeriodicallySaga({
+  payload: { publication, date, type },
+}) {
+  try {
+    const { data, errors } = yield call(
+      StatsService.getPublicationViewsPeriodically,
+      publication,
+      date
+    );
+    if (errors) throw errors;
+    if (data) {
+      data.type = type;
+      yield put(statsActions.getPublicationViewsPeriodicallySuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(statsActions.getPublicationViewsPeriodicallyFailure(e));
+  }
+}
+
+export function* getPublicationLikesPeriodicallySaga({
+  payload: { publication, date, type },
+}) {
+  try {
+    const { data, errors } = yield call(
+      StatsService.getPublicationLikesPeriodically,
+      publication,
+      date
+    );
+    if (errors) throw errors;
+    if (data) {
+      data.type = type;
+      yield put(statsActions.getPublicationLikesPeriodicallySuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(statsActions.getPublicationLikesPeriodicallyFailure(e));
+  }
+}
+
+export function* getPublicationReadsPeriodicallySaga({
+  payload: { publication, date, type },
+}) {
+  try {
+    const { data, errors } = yield call(
+      StatsService.getPublicationReadsPeriodically,
+      publication,
+      date
+    );
+    if (errors) throw errors;
+    if (data) {
+      data.type = type;
+      yield put(statsActions.getPublicationReadsPeriodicallySuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(statsActions.getPublicationReadsPeriodicallyFailure(e));
+  }
+}
+export function* getPublicationsStoriesStatsSaga({ payload: { publication } }) {
+  try {
+    const { data, errors } = yield call(
+      StatsService.getPublicationsStoriesStats,
+      publication
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(statsActions.getPublicationsStoriesStatsSuccess(data));
+    }
+  } catch (e) {
+    console.error({ e });
+    yield put(statsActions.getPublicationsStoriesStatsFailure(e));
   }
 }
 
@@ -182,6 +257,22 @@ export default function* rootSaga() {
     takeEvery(
       statsActions.getStoryReadingTimePeriodicallyRequest.type,
       getStoryReadingTimePeriodicallySaga
+    ),
+    takeEvery(
+      statsActions.getPublicationViewsPeriodicallyRequest.type,
+      getPublicationViewsPeriodicallySaga
+    ),
+    takeEvery(
+      statsActions.getPublicationLikesPeriodicallyRequest.type,
+      getPublicationLikesPeriodicallySaga
+    ),
+    takeEvery(
+      statsActions.getPublicationReadsPeriodicallyRequest.type,
+      getPublicationReadsPeriodicallySaga
+    ),
+    takeEvery(
+      statsActions.getPublicationsStoriesStatsRequest.type,
+      getPublicationsStoriesStatsSaga
     ),
   ]);
 }

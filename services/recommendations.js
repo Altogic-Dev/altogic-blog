@@ -13,6 +13,7 @@ const RecommendationsService = {
     return db
       .model('users')
       .sort('storyCount', 'desc')
+      // lookup + field not existing
       .limit(limit)
       .page(page)
       .getRandom(10);

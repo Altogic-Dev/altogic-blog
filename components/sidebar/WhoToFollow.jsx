@@ -173,7 +173,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                         as="h3"
                         className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                       >
-                        Who to follow
+                        {isTopWriters ? 'Top Writers' : 'Who To Follow'}
                       </Dialog.Title>
                       <div>
                         <ul className="mb-6">

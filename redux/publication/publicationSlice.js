@@ -145,7 +145,6 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     setPublicationsOnLogin(state, action) {
-      console.log(action.payload);
       state.publications = action.payload;
     },
 
@@ -285,6 +284,11 @@ export const publicationSlice = createSlice({
     },
     selectPublicationSuccess(state, action) {
       state.selectedPublication = action.payload;
+      state.isLoading = false
+    },
+    selectPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false
     },
 
     extraReducers: {

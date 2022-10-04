@@ -61,6 +61,31 @@ const StatsService = {
       date,
     });
   },
+  getPublicationReadsPeriodically(publication, date) {
+    return endpoint.get(`/publication/reads`, {
+      publication,
+      date,
+    });
+  },
+  getPublicationViewsPeriodically(publication, date) {
+    return endpoint.get(`/publication/views`, {
+      publication,
+      date,
+    });
+  },
+  getPublicationLikesPeriodically(publication, date) {
+    return endpoint.get(`/publication//likes`, {
+      publication,
+      date,
+    });
+  },
+  getPublicationsStoriesStats(publication) {
+    return db
+      .model('story')
+      .filter(`this.publication == '${publication}`)
+      .sort({ fieldName: 'createdAt' }, 'desc')
+      .get();
+  },
 };
 
 export default StatsService;
