@@ -31,7 +31,7 @@ export default function PostCard({
   const [deleteListModal, setDeleteListModal] = useState(false);
   return (
     <>
-      <div className="flex flex-col-reverse justify-between sm:flex-row items-center gap-4 md:gap-6 py-8 md:py-10">
+      <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 py-8 md:py-10">
         <div>
           <a href={authorUrl} className="flex items-center gap-3 mb-4 md:mb-8">
             <div className="flex-shrink-0">
