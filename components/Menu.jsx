@@ -144,7 +144,7 @@ export default function HeaderMenu() {
               onClick={() => {
                 router.push('/write-a-story');
               }}
-              className="inline-flex items-center justify-center w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             >
               <PencilIcon className="w-5 h-5" />
             </Button>
