@@ -14,12 +14,17 @@ const PublicationService = {
     });
   },
 
+  getAllUserPublications(publications) {
+    return db
+      .model('publication')
+      .filter(`IN(${JSON.stringify(publications)}, this._id)`)
+      .get();
+  },
+
   getPublicationStories(publicationName) {
     return db
       .model('story')
-      .filter(
-        `publicationName == '${publicationName}' && isPublication == true'`
-      )
+      .filter(`publicationName == '${publicationName}'`)
       .get();
   },
   getPublicationFeatures(publication) {
@@ -30,12 +35,6 @@ const PublicationService = {
   },
   deleteFeature(publication) {
     return db.model('feature_page').delete(publication).get();
-  },
-  getAllUserPublications(publications) {
-    return db
-      .model('publication')
-      .filter(`IN(${JSON.stringify(publications)}, this._id)`)
-      .get();
   },
 
   getLatestPublicationStories(publicationName) {
@@ -62,6 +61,9 @@ const PublicationService = {
   },
   updatePublicationNavigation(publicationId, navigation) {
     return endpoint.put(`publication/navigation/${publicationId}`, navigation);
+  },
+  getFeaturePage(featureId) {
+    return db.model('feature_page').object(featureId).get();
   },
 
   getPublicationById(publicationId) {
@@ -111,6 +113,15 @@ const PublicationService = {
   },
   getUsersPublications() {
     return endpoint.get('/user/publications');
+  },
+  getPublicationHomeLayout(publicationId) {
+    return db
+      .model('publication_homepage')
+      .filter(`publication == '${publicationId}'`)
+      .get();
+  },
+  updatePublicationHomeLayout(layout) {
+    return db.model('publication_homepage').object(layout?._id).update(layout);
   },
 };
 export default PublicationService;

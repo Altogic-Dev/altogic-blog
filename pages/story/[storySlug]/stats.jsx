@@ -78,11 +78,6 @@ export default function StatsBlogPost() {
   const getStoryStatistics = () => {
     dispatch(statsActions.getStoryStatisticsRequest(storySlug));
   };
-  useEffect(() => {
-    if (storySlug) {
-      getStoryStatistics();
-    }
-  }, [storySlug]);
 
   useEffect(() => {
     let periodicalExternalViews = 0;
@@ -125,9 +120,9 @@ export default function StatsBlogPost() {
   ]);
 
   const getDataByTime = (date, dateType, dataType) => {
-    if (dataType === 'View') {
+    if (dataType !== 'Read') {
       getStoryStatisticsPeriodically(date, dateType);
-    } else if (dataType === 'Read') {
+    } if (dataType !== 'View') {
       getStoryReadingTimePeriodically(date, dateType);
     }
   };
@@ -172,14 +167,10 @@ export default function StatsBlogPost() {
     ) {
       getDataByTime(
         DateTime.local().plus({ month: -1 }).toISODate(),
-        '30 Days',
-        'View'
+        '30 Days'
       );
-      getDataByTime(
-        DateTime.local().plus({ month: -1 }).toISODate(),
-        '30 Days',
-        'Read'
-      );
+
+      getStoryStatistics();
     }
   }, [storySlug]);
 
@@ -327,9 +318,10 @@ export default function StatsBlogPost() {
                   number={periodialTotalReadingTime}
                 />
               </div>
-              <MemberAreaChart  
+              <MemberAreaChart
                 type={readingDateTypeState}
-                rawData={storyTotalReadTimePeriodically[readingDateTypeState]} />
+                rawData={storyTotalReadTimePeriodically[readingDateTypeState]}
+              />
             </div>
           </div>
         </div>

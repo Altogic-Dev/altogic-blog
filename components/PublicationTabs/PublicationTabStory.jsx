@@ -1,0 +1,106 @@
+import { authActions } from '@/redux/auth/authSlice';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { generalActions } from '@/redux/general/generalSlice';
+import { storyActions } from '@/redux/story/storySlice';
+import _ from 'lodash';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import CreateBookmarkList from '../bookmarks/CreateBookmarkList';
+import StoryContent from '../StoryContent';
+
+function PublicationTabStory({ tab, publication }) {
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.auth.user);
+  const story = useSelector((state) => state.story.story);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const isFollowing = useSelector(
+    (state) => state.followerConnection.isFollowing
+  );
+  const isMuted = useSelector((state) => state.auth.isMuted);
+  const isReported = useSelector((state) => state.report.isReported);
+
+  const [createNewList, setCreateNewList] = useState(false);
+  const [didMount, setDidMount] = useState(false);
+
+  const toggleFollow = () => {
+    if (isFollowing) {
+      return dispatch(
+        followerConnectionActions.unfollowRequest({
+          userId: _.get(user, '_id'),
+          followingUserId: _.get(story, 'user._id'),
+        })
+      );
+    }
+    return dispatch(
+      followerConnectionActions.followRequest({
+        followerUser: user,
+        followingUser: {
+          followingUser: _.get(story, 'user._id'),
+          followingName: _.get(story, 'user.name'),
+          followingUserProfilePicture: _.get(story, 'user.profilePicture'),
+          followingUsername: _.get(story, 'user.username'),
+        },
+      })
+    );
+  };
+
+  useEffect(() => {
+    if (publication) {
+      dispatch(storyActions.getStoryRequest(tab.contents));
+    }
+  }, [publication]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: _.get(user, 'username'),
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!_.isNil(story) && didMount) {
+      dispatch(
+        generalActions.getConnectInformationStoryRequest({
+          storyId: _.get(story, '_id'),
+          authorId: _.get(story, 'user._id'),
+        })
+      );
+      dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
+      setDidMount(false);
+    }
+  }, [story]);
+
+  return (
+    <div>
+      <StoryContent
+        bookmarkLists={bookmarkLists}
+        setCreateNewList={setCreateNewList}
+        bookmarks={bookmarks}
+        toggleFollow={toggleFollow}
+        isFollowing={isFollowing}
+        isMuted={isMuted}
+        isReported={isReported}
+      />
+      {createNewList && (
+        <CreateBookmarkList setCreateNewList={setCreateNewList} />
+      )}
+    </div>
+  );
+}
+
+export default PublicationTabStory;

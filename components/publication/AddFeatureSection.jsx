@@ -1,13 +1,29 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
 import Sections from '@/components/Sections';
 import { PlusIcon } from '@heroicons/react/outline';
 import Button from '../basic/button';
 
-export default function AddFeatureSection() {
+export default function AddFeatureSection({ sections }) {
   const [sectionList, setSectionList] = useState([
     <Sections key={0} index={0} />,
   ]);
+
+  useEffect(() => {
+    if (sections) {
+      setSectionList(
+        _.map(sections, (section, index) => (
+          <Sections
+            section={section}
+            key={index}
+            index={index}
+            setSectionList={setSectionList}
+          />
+        ))
+      );
+    }
+  }, [sections]);
 
   return (
     <div className="mb-20">

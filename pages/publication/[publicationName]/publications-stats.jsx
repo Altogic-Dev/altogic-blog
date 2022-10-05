@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
 import { classNames } from '@/utils/utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { statsActions } from '@/redux/stats/statsSlice';
+import { DateTime } from 'luxon';
+import _ from 'lodash';
+import PeriodButtons from '@/components/stats/PeriodButtons';
 
 const ReadingBarChart = dynamic(import('@/components/ReadingBarChart'), {
   ssr: false,
@@ -68,6 +73,123 @@ const statistics = [
 ];
 
 export default function PublicationsStats() {
+  const dispatch = useDispatch();
+
+  const likesPeriodically = useSelector(
+    (state) => state.stats.likesPeriodically
+  );
+  const viewsPeriodically = useSelector(
+    (state) => state.stats.viewsPeriodically
+  );
+  const readsPeriodically = useSelector(
+    (state) => state.stats.readsPeriodically
+  );
+  const publication = useSelector((state) =>
+    _.get(state.publication.publication, '_id')
+  );
+
+  const viewsDateType = useSelector((state) => state.stats.viewsDateType);
+  const readsDateType = useSelector((state) => state.stats.readsDateType);
+  const likesDateType = useSelector((state) => state.stats.likesDateType);
+
+
+  const publicationStories = useSelector((state) => state.stats.publicationStories);
+
+  const [viewsDateTypeState, setViewsDateTypeState] = useState();
+  const [readsDateTypeState, setReadsDateTypeState] = useState();
+  const [likesDateTypeState, setLikesDateTypeState] = useState();
+
+  console.log(likesPeriodically, viewsPeriodically, readsPeriodically);
+
+  const getPublicationViewsPeriodically = (date, type) => {
+    if (viewsPeriodically[type] === undefined) {
+      dispatch(
+        statsActions.getPublicationViewsPeriodicallyRequest({
+          publication,
+          date,
+          type,
+        })
+      );
+    } else {
+      setViewsDateTypeState(type);
+    }
+  };
+  const getPublicationLikesPeriodically = (date, type) => {
+    if (viewsPeriodically[type] === undefined) {
+      dispatch(
+        statsActions.getPublicationLikesPeriodicallyRequest({
+          publication,
+          date,
+          type,
+        })
+      );
+    } else {
+      setLikesDateTypeState(type);
+    }
+  };
+  const getPublicationReadsPeriodically = (date, type) => {
+    if (readsPeriodically[type] === undefined) {
+      dispatch(
+        statsActions.getPublicationReadsPeriodicallyRequest({
+          publication,
+          date,
+          type,
+        })
+      );
+    } else {
+      setReadsDateTypeState(type);
+    }
+  };
+
+  useEffect(() => {
+    if (
+      !_.get(readsPeriodically, 'readsDaysToShow') &&
+      !_.get(viewsPeriodically, 'viewDaysToShow') &&
+      !_.get(likesPeriodically, 'likesDaysToShow') &&
+      publication
+    ) {
+      getPublicationReadsPeriodically(
+        DateTime.local().plus({ month: -1 }).toISODate(),
+        '30 Days'
+      );
+      getPublicationLikesPeriodically(
+        DateTime.local().plus({ month: -1 }).toISODate(),
+        '30 Days'
+      );
+      getPublicationViewsPeriodically(
+        DateTime.local().plus({ month: -1 }).toISODate(),
+        '30 Days'
+      );
+    }
+  }, [publication]);
+
+  const getPublicationsStoriesStats = () => {
+    dispatch(
+      statsActions.getPublicationsStoriesStatsRequest({
+        publication,
+      })
+    );
+  };
+
+  useEffect(() => {
+    getPublicationsStoriesStats()
+    if (readsDateType) {
+      setReadsDateTypeState(readsDateType);
+    }
+  }, [readsDateType]);
+  useEffect(() => {
+    if (viewsDateType) {
+      setViewsDateTypeState(viewsDateType);
+    }
+  }, [viewsDateType]);
+  useEffect(() => {
+    if (likesDateType) {
+      setLikesDateTypeState(likesDateType);
+    }
+  }, [likesDateType]);
+
+
+  console.log(publicationStories);
   return (
     <div>
       <Head>
@@ -114,7 +236,7 @@ export default function PublicationsStats() {
               <Tab.Panel>
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
-                    <p className="text-3xl font-semibold tracking-md">3,453</p>
+                    <p className="text-3xl font-semibold tracking-md">0</p>
                     <h2 className="text-slate-700 text-xl tracking-md">
                       Minutes read{' '}
                       <span className="font-semibold">12 Months</span>
@@ -125,40 +247,20 @@ export default function PublicationsStats() {
                   </div>
                   <div className="w-full">
                     <div className="mb-7 text-right">
-                      <div className="relative z-0 inline-flex shadow-sm rounded-md">
-                        <button
-                          type="button"
-                          className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          24 Hours
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          7 Days
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          30 Days
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          12 Months
-                        </button>
-                      </div>
+                      <PeriodButtons
+                        onClick={getPublicationReadsPeriodically}
+                      />
                     </div>
-                    <ReadingBarChart />
+                    <ReadingBarChart
+                      rawData={readsPeriodically[readsDateTypeState]}
+                      type={readsDateTypeState}
+                    />
                   </div>
                 </div>
                 <hr className="my-10" />
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
-                    <p className="text-3xl font-semibold tracking-md">45,452</p>
+                    <p className="text-3xl font-semibold tracking-md">0</p>
                     <h2 className="text-slate-700 text-xl tracking-md">
                       View <span className="font-semibold">12 Months</span>
                     </h2>
@@ -169,82 +271,38 @@ export default function PublicationsStats() {
                   </div>
                   <div className="w-full">
                     <div className="mb-7 text-right">
-                      <div className="relative z-0 inline-flex shadow-sm rounded-md">
-                        <button
-                          type="button"
-                          className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          24 Hours
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          7 Days
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          30 Days
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          12 Months
-                        </button>
-                      </div>
+                      <PeriodButtons
+                        onClick={getPublicationReadsPeriodically}
+                      />
                     </div>
-                    <ReadingBarChart />
+                    <ReadingBarChart
+                      rawData={viewsPeriodically[viewsDateTypeState]}
+                      type={viewsDateTypeState}
+                    />
                   </div>
                 </div>
                 <hr className="my-10" />
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
-                    <p className="text-3xl font-semibold tracking-md">
-                      123,452
-                    </p>
+                    <p className="text-3xl font-semibold tracking-md">0</p>
                     <h2 className="text-slate-700 text-xl tracking-md">
-                      Visitors <span className="font-semibold">12 Months</span>
+                      Likes <span className="font-semibold">12 Months</span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">
-                      The average number of unique daily visitors who have
-                      visited your publication. Each visitor is counted once per
-                      day, even if they view multiple pages or the same page
-                      multiple times.
+                      The total number of likes your publication has received on
+                      all posts and pages.
                     </span>
                   </div>
                   <div className="w-full">
                     <div className="mb-7 text-right">
-                      <div className="relative z-0 inline-flex shadow-sm rounded-md">
-                        <button
-                          type="button"
-                          className="relative inline-flex items-center px-4 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          24 Hours
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          7 Days
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          30 Days
-                        </button>
-                        <button
-                          type="button"
-                          className="-ml-px relative inline-flex items-center px-4 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium tracking-sm text-slate-500 hover:bg-gray-50 hover:text-slate-800 focus:z-10 focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
-                        >
-                          12 Months
-                        </button>
-                      </div>
+                      <PeriodButtons
+                        onClick={getPublicationReadsPeriodically}
+                      />
                     </div>
-                    <ReadingBarChart />
+                    <ReadingBarChart
+                      rawData={likesPeriodically[likesDateTypeState]}
+                      type={likesDateTypeState}
+                    />
                   </div>
                 </div>
               </Tab.Panel>
