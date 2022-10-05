@@ -7,6 +7,7 @@ import {
   select,
   fork,
 } from 'redux-saga/effects';
+import _ from 'lodash';
 import { publicationActions } from './publicationSlice';
 import { storyActions } from '../story/storySlice';
 import { clearFileLink } from '../file/fileSaga';
@@ -383,6 +384,59 @@ function* selectPublicationSaga({ payload }) {
   yield put(publicationActions.selectPublicationSuccess(payload));
 }
 
+function* getFeaturePageSaga({ payload: featureId }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getFeaturePage,
+      featureId
+    );
+    if (errors) {
+      throw errors.items;
+    }
+    if (data) {
+      yield put(publicationActions.getFeaturePageSuccess(data));
+    }
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* getPublicationHomeLayoutSaga({ payload: publicationId }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.getPublicationHomeLayout,
+      publicationId
+    );
+    if (errors) {
+      throw errors.items;
+    }
+    if (data) {
+      yield put(
+        publicationActions.getPublicationHomeLayoutSuccess(_.first(data))
+      );
+    }
+  } catch (e) {
+    yield put(publicationActions.getPublicationHomeLayoutFailure());
+  }
+}
+
+function* updatePublicationHomeLayoutSaga({ payload: layout }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.updatePublicationHomeLayout,
+      layout
+    );
+    if (errors) {
+      throw errors.items;
+    }
+    if (data) {
+      yield put(publicationActions.updatePublicationHomeLayoutSuccess(layout));
+    }
+  } catch (e) {
+    yield put(publicationActions.updatePublicationHomeLayoutFailure());
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getPublicationFollowersRequest.type,
@@ -441,6 +495,10 @@ export default function* rootSaga() {
     updatePublicationNavigation
   );
   yield takeEvery(
+    publicationActions.getFeaturePageRequest.type,
+    getFeaturePageSaga
+  );
+  yield takeEvery(
     publicationActions.getSubscribersRequest.type,
     getSubscribersSaga
   );
@@ -480,5 +538,13 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.selectPublicationRequest.type,
     selectPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.getPublicationHomeLayoutRequest.type,
+    getPublicationHomeLayoutSaga
+  );
+  yield takeEvery(
+    publicationActions.updatePublicationHomeLayoutRequest.type,
+    updatePublicationHomeLayoutSaga
   );
 }

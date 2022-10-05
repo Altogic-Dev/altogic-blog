@@ -11,6 +11,7 @@ const initialState = {
   publicationname: null,
   latestPublicationStories: [],
   featurePages: [],
+  featurePage: null,
   publicationNavigation: [],
   error: null,
   isLoading: false,
@@ -19,6 +20,7 @@ const initialState = {
   userFollowingPublication: [],
   publicationFeatures: [],
   sections: [],
+  homeLayout: null,
   selectedPublication: null,
 };
 
@@ -144,6 +146,14 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    setPublicationFromLocalStorage(state, action) {
+      state.userPublications = action.payload;
+    },
+
+    getFeaturePageRequest() {},
+    getFeaturePageSuccess(state, action) {
+      state.featurePage = action.payload;
+    },
     setPublicationsOnLogin(state, action) {
       state.publications = action.payload;
     },
@@ -223,7 +233,7 @@ export const publicationSlice = createSlice({
     getSubscribersFailure(state) {
       state.isLoading = false;
     },
-    
+
     deletePublicationSectionRequest(state) {
       state.isLoading = true;
     },
@@ -289,6 +299,30 @@ export const publicationSlice = createSlice({
     selectPublicationFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false
+    },
+
+    getPublicationHomeLayoutRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationHomeLayoutSuccess(state, action) {
+      state.homeLayout = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationHomeLayoutFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    updatePublicationHomeLayoutRequest(state) {
+      state.isLoading = true;
+    },
+    updatePublicationHomeLayoutSuccess(state, action) {
+      state.homeLayout = action.payload;
+      state.isLoading = false;
+    },
+    updatePublicationHomeLayoutFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
     },
 
     extraReducers: {

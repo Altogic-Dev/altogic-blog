@@ -12,6 +12,7 @@ const initialState = {
   publicationsTopics: [],
   topWritersIdList: [],
   topWriters: [],
+  publicationStoriesByTopic: [],
   topicAnalytics: null,
   isLoading: false,
   error: null,
@@ -127,6 +128,11 @@ export const topicsSlice = createSlice({
     getPublicationsTopicsFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
+    },
+
+    getPublicationsStoriesByTopicRequest() {},
+    getPublicationsStoriesByTopicSuccess(state, action) {
+      state.publicationStoriesByTopic = action.payload;
     },
 
     extraReducers: {

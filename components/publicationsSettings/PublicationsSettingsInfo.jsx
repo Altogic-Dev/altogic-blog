@@ -4,7 +4,6 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
 import { PlusIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,11 +12,13 @@ import TagInput from '../TagInput';
 import UserInput from '../UserInput';
 import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSuggestions';
 
-export default function PublicationSettingsInfo() {
+export default function PublicationSettingsInfo({
+  doSave,
+  setDoSave,
+  doClear,
+  setDoClear,
+}) {
   const dispatch = useDispatch();
-  const router = useRouter();
-
-  const { publicationName } = router.query;
 
   const userFromLocale = useSelector((state) => state.auth.user);
   const publication = useSelector((state) => state.publication.publication);
@@ -121,15 +122,7 @@ export default function PublicationSettingsInfo() {
     dispatch(publicationActions.updatePublicationRequest(editedPublication));
   };
 
-  useEffect(() => {
-    if (publicationName) {
-      dispatch(
-        publicationActions.getPublicationRequest(publicationName.toLowerCase())
-      );
-    }
-  }, [publicationName]);
-
-  useEffect(() => {
+  const fillFields = () => {
     if (publication) {
       dispatch(
         fileActions.setUploadedFiles({
@@ -149,6 +142,10 @@ export default function PublicationSettingsInfo() {
       setEditors(_.filter(publication.users, (user) => user.role === 'editor'));
       setWriters(_.filter(publication.users, (user) => user.role === 'writer'));
     }
+  };
+
+  useEffect(() => {
+    fillFields();
   }, [publication]);
 
   useEffect(() => {
@@ -179,6 +176,20 @@ export default function PublicationSettingsInfo() {
       clearErrors('name');
     }
   }, [isValid]);
+
+  useEffect(() => {
+    if (doSave === true) {
+      handleSave();
+      setDoSave(false);
+    }
+  }, [doSave]);
+
+  useEffect(() => {
+    if (doClear === true) {
+      fillFields();
+      setDoClear(false);
+    }
+  }, [doClear]);
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20">

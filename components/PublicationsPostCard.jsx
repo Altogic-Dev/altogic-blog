@@ -20,7 +20,10 @@ export default function PublicationPostCard({
   return (
     <>
       <div className={classNames(firstPadding ? 'py-8 first:pt-0' : 'py-8')}>
-        <a href="#" className="inline-flex items-center gap-3 mb-4">
+        <a
+          href={`/${personName}`}
+          className="inline-flex items-center gap-3 mb-4"
+        >
           <img
             className="w-[50px] h-[50px] rounded-full object-cover"
             src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -43,7 +46,7 @@ export default function PublicationPostCard({
             </div>
           </div>
         </a>
-        <a href="#" className="group mb-4 md:mb-8 flex flex-col">
+        <a href={readMoreUrl} className="group mb-4 md:mb-8 flex flex-col">
           <img
             className={classNames(
               bigImage

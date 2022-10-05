@@ -50,6 +50,7 @@ const StoryService = {
       .model('story')
       .filter(`_id == '${id}'`)
       .lookup({ field: 'publication' })
+      .lookup({ field: 'user' })
       .get();
   },
 

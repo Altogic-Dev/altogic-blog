@@ -81,6 +81,13 @@ const TopicsService = {
       .filter(`publication == '${publicationId}'`)
       .get();
   },
+  getPublicationsStoriesByTopic(publicationId, topicName) {
+    return db
+      .model('topic_writers')
+      .filter(`publication == '${publicationId}' && topic == '${topicName}'`)
+      .lookup({ field: 'story' })
+      .get();
+  },
 };
 
 export default TopicsService;

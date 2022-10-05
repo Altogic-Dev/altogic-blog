@@ -3,6 +3,7 @@ import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { Listbox, Transition, Tab, Switch } from '@headlessui/react';
 import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
+import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
@@ -17,7 +18,11 @@ const sections = [
 ];
 const designTypes = ['grid', 'stream', 'list'];
 
-export default function Sections({ index: sectionIndex, setSectionList }) {
+export default function Sections({
+  index: sectionIndex,
+  setSectionList,
+  section,
+}) {
   const [selectedSectionBar, setSelectedSectionBar] = useState(sections[0]);
   const [selectedTopic, setSelectedTopic] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -231,6 +236,20 @@ export default function Sections({ index: sectionIndex, setSectionList }) {
       publicationActions.deletePublicationSectionRequest({ sectionIndex })
     );
   };
+
+  useEffect(() => {
+    if (section) {
+      setEnabled(section?.isShowTitle);
+      setContainerScreen(section?.isFullContainerGrid);
+      setImageCard(section?.isFullStoryGrid);
+      setSelectedIndex(_.indexOf(designTypes, section?.designType));
+      setSelectedSectionBar(
+        section?.sectionType === 'topic' ? sections[0] : sections[1]
+      );
+      setCounter(section?.storySize);
+    }
+  }, [section]);
+
   useEffect(() => {
     const section = {
       isShowTitle: enabled,
