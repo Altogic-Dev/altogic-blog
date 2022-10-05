@@ -60,6 +60,9 @@ export default function WriteAStory() {
         title: inpTitle,
         estimatedReadingTime: minRead,
         isPublished: false,
+        publication: !_.isNil(selectedPublication)
+          ? selectedPublication._id
+          : undefined,
       };
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));

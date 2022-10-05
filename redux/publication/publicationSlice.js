@@ -22,6 +22,7 @@ const initialState = {
   sections: [],
   homeLayout: null,
   selectedPublication: null,
+  isFollowingPublication: false,
 };
 
 export const publicationSlice = createSlice({
@@ -163,6 +164,8 @@ export const publicationSlice = createSlice({
     },
     followPublicationSuccess(state, action) {
       state.isLoading = false;
+      state.isFollowingPublication = true;
+      console.log(state.isFollowingPublication);
       state.publication.followerCount += 1;
       state.publicationFollowers = [
         ...state.publicationFollowers,
@@ -181,6 +184,7 @@ export const publicationSlice = createSlice({
     },
     unfollowPublicationSuccess(state, action) {
       state.isLoading = false;
+      state.isFollowingPublication = false;
       state.publication.followerCount -= 1;
       state.userFollowingPublication = state.userFollowingPublication.filter(
         (item) => item !== action.payload
@@ -316,6 +320,18 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     updatePublicationHomeLayoutFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    isFollowingPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    isFollowingPublicationSuccess(state, action) {
+      state.isFollowingPublication = action.payload;
+      state.isLoading = false;
+    },
+    isFollowingPublicationFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },
