@@ -123,5 +123,8 @@ const PublicationService = {
   updatePublicationHomeLayout(layout) {
     return db.model('publication_homepage').object(layout?._id).update(layout);
   },
+  createPublication(publication) {
+    return endpoint.post('/publication', publication);
+  },
 };
 export default PublicationService;
