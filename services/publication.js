@@ -126,5 +126,11 @@ const PublicationService = {
   createPublication(publication) {
     return endpoint.post('/publication', publication);
   },
+  isFollowingPublication(publicationId, userId) {
+    return db
+      .model('publication_follower_connection')
+      .filter(`this.user == '${userId}' && publication == '${publicationId}'`)
+      .get();
+  },
 };
 export default PublicationService;

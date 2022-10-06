@@ -460,6 +460,24 @@ function* createPublicationSaga({ payload: { publication, onSuccess } }) {
   }
 }
 
+function* isFollowingPublicationSaga({ payload: { publicationId, userId } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.isFollowingPublication,
+      publicationId,
+      userId
+    );
+    if (errors) throw errors.items;
+    if (_.isEmpty(data)) {
+      yield put(publicationActions.isFollowingPublicationSuccess(false));
+    } else {
+      yield put(publicationActions.isFollowingPublicationSuccess(true));
+    }
+  } catch (e) {
+    yield put(publicationActions.isFollowingPublicationFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield takeEvery(
     publicationActions.getPublicationFollowersRequest.type,
@@ -573,5 +591,9 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.createPublicationRequest.type,
     createPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.isFollowingPublicationRequest.type,
+    isFollowingPublicationSaga
   );
 }
