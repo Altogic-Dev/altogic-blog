@@ -123,5 +123,11 @@ const PublicationService = {
   updatePublicationHomeLayout(layout) {
     return db.model('publication_homepage').object(layout?._id).update(layout);
   },
+  isFollowingPublication(publicationId, userId) {
+    return db
+      .model('publication_follower_connection')
+      .filter(`this.user == '${userId}' && publication == '${publicationId}'`)
+      .get();
+  },
 };
 export default PublicationService;

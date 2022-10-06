@@ -18,6 +18,7 @@ import { generalActions } from '@/redux/general/generalSlice';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import Sidebar from '@/layouts/Sidebar';
 import StoryContent from '@/components/StoryContent';
+import { publicationActions } from '@/redux/publication/publicationSlice';
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -32,6 +33,9 @@ export default function BlogDetail() {
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
   );
+  const isFollowingPublication = useSelector(
+    (state) => state.publication.isFollowingPublication
+  );
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
@@ -43,6 +47,11 @@ export default function BlogDetail() {
   const [createNewList, setCreateNewList] = useState(false);
   const [didMount, setDidMount] = useState(true);
   const [morePage, setMorePage] = useState(1);
+
+  const isPublication = !_.isNil(_.get(story, 'publication._id'));
+  const moreFromFollowing = isPublication
+    ? isFollowingPublication
+    : isFollowing;
 
   const toggleFollow = () => {
     if (isFollowing) {
@@ -66,6 +75,39 @@ export default function BlogDetail() {
     );
   };
 
+  const togglePublicationFollow = () => {
+    if (isFollowingPublication) {
+      return dispatch(
+        publicationActions.unfollowPublicationRequest({
+          publication: _.get(story, 'publication._id'),
+          user: {
+            _id: user._id,
+            userName: user.username,
+            userAbout: user.about,
+            userProfilePicture: user.profilePicture,
+          },
+        })
+      );
+    }
+    return dispatch(
+      publicationActions.followPublicationRequest({
+        publication: {
+          publication: _.get(story, 'publication._id'),
+          publicationName: _.get(story, 'publication.name'),
+          publicationDescription: _.get(story, 'publication.description'),
+          publicationProfilePicture: _.get(story, 'publication.profilePicture'),
+          publicationLogo: _.get(story, 'publication.logo'),
+        },
+        user: {
+          _id: user._id,
+          userName: user.username,
+          userAbout: user.about,
+          userProfilePicture: user.profilePicture,
+        },
+      })
+    );
+  };
+
   useEffect(() => {
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -75,6 +117,14 @@ export default function BlogDetail() {
         })
       );
       dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
+      if (isPublication) {
+        dispatch(
+          publicationActions.isFollowingPublicationRequest({
+            publicationId: _.get(story, 'publication._id'),
+            userId: user?._id,
+          })
+        );
+      }
       setDidMount(false);
     }
   }, [story]);
@@ -119,7 +169,22 @@ export default function BlogDetail() {
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
-            <div className="pt-8 lg:py-10 lg:px-8">
+            <div className="pt-8 lg:py-5 lg:px-8">
+              {isPublication && (
+                <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200">
+                  <img
+                    className="w-20"
+                    src={_.get(story, 'publication.logo')}
+                    alt=""
+                  />
+                  <span className="text-slate-500 text-sm tracking-sm">
+                    Published in{' '}
+                    <span className="text-slate-700 font-semibold">
+                      {_.get(story, 'publication.name')}
+                    </span>
+                  </span>
+                </div>
+              )}
               <StoryContent
                 bookmarkLists={bookmarkLists}
                 setCreateNewList={setCreateNewList}
@@ -135,12 +200,15 @@ export default function BlogDetail() {
                     <p className="text-slate-600 mb-1 text-xl tracking-md">
                       More from{' '}
                       <span className="text-slate-700 font-semibold">
-                        {_.get(story, 'user.name')}
+                        {_.get(story, 'publication.name') ||
+                          _.get(story, 'user.name')}
                       </span>
                     </p>
                     <p
                       dangerouslySetInnerHTML={{
-                        __html: _.get(story, 'user.about'),
+                        __html:
+                          _.get(story, 'publication.description') ||
+                          _.get(story, 'user.about'),
                       }}
                       className="max-w-xl text-slate-600 text-xs tracking-sm"
                     />
@@ -148,9 +216,11 @@ export default function BlogDetail() {
                   <button
                     type="button"
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                    onClick={toggleFollow}
+                    onClick={
+                      isPublication ? togglePublicationFollow : toggleFollow
+                    }
                   >
-                    {isFollowing ? 'Unfollow' : 'Follow'}
+                    {moreFromFollowing ? 'Unfollow' : 'Follow'}
                   </button>
                 </div>
                 <div className="divide-y divide-gray-200">
