@@ -18,6 +18,7 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
   useEffect(() => {
     let tempData = {};
     const tempStack = [];
+
     if (type === '12 Months') {
       firstData?.forEach((obj) => {
         const monthName = toMonthName(obj.groupby.group.split('.')[1]);
@@ -70,6 +71,7 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
       });
     });
     setData(tempStack);
+
   }, [firstData, secondData]);
 
   return (

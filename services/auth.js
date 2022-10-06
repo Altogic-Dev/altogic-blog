@@ -67,6 +67,7 @@ const AuthService = {
   async authenticateWithProvider(provider) {
     return auth.signInWithProvider(provider);
   },
+
   updateFollowingTopics(followingTopicsUpdated) {
     return db.model('users').object(auth.getUser()._id).update({
       followingTopics: followingTopicsUpdated,

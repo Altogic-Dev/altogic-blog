@@ -185,6 +185,7 @@ export default function StatsBlogPost() {
     }
   }, [viewDateType]);
 
+  
   return (
     <div>
       <Head>

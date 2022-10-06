@@ -9,68 +9,12 @@ import { statsActions } from '@/redux/stats/statsSlice';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import PeriodButtons from '@/components/stats/PeriodButtons';
+import MonthlyStatsCard from '@/components/publication/MonthlyStatsCard';
+import ListObserver from '@/components/ListObserver';
 
 const ReadingBarChart = dynamic(import('@/components/ReadingBarChart'), {
   ssr: false,
 });
-
-const statistics = [
-  {
-    title:
-      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
-    description:
-      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
-    description:
-      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Tincidunt rhoncus, sit dolor mollis feugiat. Nibh nulla tristique ante fermentum tellus aliqu...',
-    description:
-      'In tempus vestibulum nulla integer diam vitae, velit, interdum feugiat. Volutpat, mattis donec non...',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
-    description:
-      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-  {
-    title:
-      'Amet, sapien enim morbi nibh. Sit morbi velit aliquam turpis viverra diam at. Tortor elit.',
-    description:
-      'Urna vestibulum in vel vitae dictum. Vel vivamus nunc malesuada egestas et egestas. Nam.',
-    views: '431',
-    reads: '33',
-    readRatio: '33',
-    fans: '33',
-    href: '#',
-  },
-];
 
 export default function PublicationsStats() {
   const dispatch = useDispatch();
@@ -92,14 +36,16 @@ export default function PublicationsStats() {
   const readsDateType = useSelector((state) => state.stats.readsDateType);
   const likesDateType = useSelector((state) => state.stats.likesDateType);
 
+  const publicationStories = useSelector(
+    (state) => state.stats.publicationStories
+  );
 
-  const publicationStories = useSelector((state) => state.stats.publicationStories);
-
+  const [totalViewsCount, setTotalViewsCount] = useState(0);
+  const [totalReadsCount, setTotalReadsCount] = useState(0);
+  const [totalLikesCount, setTotalLikesCount] = useState(0);
   const [viewsDateTypeState, setViewsDateTypeState] = useState();
   const [readsDateTypeState, setReadsDateTypeState] = useState();
   const [likesDateTypeState, setLikesDateTypeState] = useState();
-
-  console.log(likesPeriodically, viewsPeriodically, readsPeriodically);
 
   const getPublicationViewsPeriodically = (date, type) => {
     if (viewsPeriodically[type] === undefined) {
@@ -110,9 +56,8 @@ export default function PublicationsStats() {
           type,
         })
       );
-    } else {
-      setViewsDateTypeState(type);
     }
+    setViewsDateTypeState(type);
   };
   const getPublicationLikesPeriodically = (date, type) => {
     if (viewsPeriodically[type] === undefined) {
@@ -123,9 +68,8 @@ export default function PublicationsStats() {
           type,
         })
       );
-    } else {
-      setLikesDateTypeState(type);
     }
+    setLikesDateTypeState(type);
   };
   const getPublicationReadsPeriodically = (date, type) => {
     if (readsPeriodically[type] === undefined) {
@@ -136,9 +80,16 @@ export default function PublicationsStats() {
           type,
         })
       );
-    } else {
-      setReadsDateTypeState(type);
     }
+    setReadsDateTypeState(type);
+  };
+  const getPublicationsStoriesStats = (page) => {
+    dispatch(
+      statsActions.getPublicationsStoriesStatsRequest({
+        publication,
+        page,
+      })
+    );
   };
 
   useEffect(() => {
@@ -160,36 +111,41 @@ export default function PublicationsStats() {
         DateTime.local().plus({ month: -1 }).toISODate(),
         '30 Days'
       );
+      getPublicationsStoriesStats(0);
     }
   }, [publication]);
 
-  const getPublicationsStoriesStats = () => {
-    dispatch(
-      statsActions.getPublicationsStoriesStatsRequest({
-        publication,
-      })
-    );
-  };
-
   useEffect(() => {
-    getPublicationsStoriesStats()
+    let temp = 0;
     if (readsDateType) {
       setReadsDateTypeState(readsDateType);
+      readsPeriodically[readsDateType].forEach((item) => {
+        temp += item.count;
+      });
+      setTotalReadsCount(temp);
     }
   }, [readsDateType]);
   useEffect(() => {
+    let temp = 0;
     if (viewsDateType) {
       setViewsDateTypeState(viewsDateType);
+      viewsPeriodically[viewsDateType].forEach((item) => {
+        temp += item.count;
+      });
+      setTotalViewsCount(temp);
     }
   }, [viewsDateType]);
   useEffect(() => {
+    let temp = 0;
     if (likesDateType) {
       setLikesDateTypeState(likesDateType);
+      likesPeriodically[likesDateType].forEach((item) => {
+        temp += item.count;
+      });
+      setTotalLikesCount(temp);
     }
   }, [likesDateType]);
 
-
-  console.log(publicationStories);
   return (
     <div>
       <Head>
@@ -236,10 +192,12 @@ export default function PublicationsStats() {
               <Tab.Panel>
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
-                    <p className="text-3xl font-semibold tracking-md">0</p>
+                    <p className="text-3xl font-semibold tracking-md">
+                      {totalReadsCount}
+                    </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
                       Minutes read{' '}
-                      <span className="font-semibold">12 Months</span>
+                      <span className="font-semibold">{readsDateType}</span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">
                       The total amount of time spent reading your publication.
@@ -252,7 +210,7 @@ export default function PublicationsStats() {
                       />
                     </div>
                     <ReadingBarChart
-                      rawData={readsPeriodically[readsDateTypeState]}
+                      data={readsPeriodically[readsDateTypeState]}
                       type={readsDateTypeState}
                     />
                   </div>
@@ -260,9 +218,14 @@ export default function PublicationsStats() {
                 <hr className="my-10" />
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
-                    <p className="text-3xl font-semibold tracking-md">0</p>
+                    <p className="text-3xl font-semibold tracking-md">
+                      {totalViewsCount}
+                    </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
-                      View <span className="font-semibold">12 Months</span>
+                      View{' '}
+                      <span className="font-semibold">
+                        {viewsDateTypeState}
+                      </span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">
                       The total number of views your publication has received on
@@ -272,11 +235,11 @@ export default function PublicationsStats() {
                   <div className="w-full">
                     <div className="mb-7 text-right">
                       <PeriodButtons
-                        onClick={getPublicationReadsPeriodically}
+                        onClick={getPublicationViewsPeriodically}
                       />
                     </div>
                     <ReadingBarChart
-                      rawData={viewsPeriodically[viewsDateTypeState]}
+                      data={viewsPeriodically[viewsDateTypeState]}
                       type={viewsDateTypeState}
                     />
                   </div>
@@ -284,9 +247,14 @@ export default function PublicationsStats() {
                 <hr className="my-10" />
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
-                    <p className="text-3xl font-semibold tracking-md">0</p>
+                    <p className="text-3xl font-semibold tracking-md">
+                      {totalLikesCount}
+                    </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
-                      Likes <span className="font-semibold">12 Months</span>
+                      Likes{' '}
+                      <span className="font-semibold">
+                        {likesDateTypeState}
+                      </span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">
                       The total number of likes your publication has received on
@@ -296,478 +264,32 @@ export default function PublicationsStats() {
                   <div className="w-full">
                     <div className="mb-7 text-right">
                       <PeriodButtons
-                        onClick={getPublicationReadsPeriodically}
+                        onClick={getPublicationLikesPeriodically}
                       />
                     </div>
                     <ReadingBarChart
-                      rawData={likesPeriodically[likesDateTypeState]}
+                      data={likesPeriodically[likesDateTypeState]}
                       type={likesDateTypeState}
                     />
                   </div>
                 </div>
               </Tab.Panel>
               <Tab.Panel>
-                {/* Desktop Statistics */}
-                <div className="hidden lg:block mt-12 mb-14 border border-gray-200 rounded-lg overflow-hidden">
-                  <div>
-                    <div className="overflow-x-auto">
-                      <div className="inline-block min-w-full align-middle">
-                        <div className="overflow-hidden ring-1 ring-black ring-opacity-5">
-                          <table className="min-w-full divide-y divide-gray-300">
-                            <thead className="bg-gray-50">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className="py-3.5 pl-4 pr-3 text-left text-xs font-medium text-slate-500 sm:pl-6 uppercase"
-                                >
-                                  June 2022
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  View
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Reads
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Read Ratio
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Fans
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="relative py-3.5 pl-3 pr-4 sm:pr-6 text-center text-xs font-medium text-slate-600"
-                                >
-                                  See Details
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 bg-white">
-                              {statistics.map((statistic) => (
-                                <tr key={statistic.email}>
-                                  <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
-                                    <p className="text-slate-800 text-base font-medium tracking-sm">
-                                      {statistic.title}
-                                    </p>
-                                    <p className="text-slate-500 text-sm tracking-sm">
-                                      {statistic.description}
-                                    </p>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.views}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.reads}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    %{statistic.readRatio}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.fans}
-                                  </td>
-                                  <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium tracking-sm sm:pr-6">
-                                    <a
-                                      href={statistic.href}
-                                      className="text-purple-600 hover:text-purple-900"
-                                    >
-                                      Detail
-                                    </a>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Mobile Statistics */}
-                <div className="lg:hidden">
-                  <span className="inline-block text-slate-700 mb-4 text-lg font-medium tracking-sm uppercase">
-                    June 2022
-                  </span>
-                  <ul className="divide-y divide-gray-200">
-                    {statistics.map((statistic) => (
-                      <li key={statistic.title} className="py-4">
-                        <div className="p-4">
-                          <p className="text-slate-800 text-base font-medium tracking-sm">
-                            {statistic.title}
-                          </p>
-                          <p className="text-slate-500 text-sm tracking-sm">
-                            {statistic.description}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            View
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.views}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Reads
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.reads}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Read Ratio
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.readRatio}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Fans
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.fans}
-                            </span>
-                          </span>
-                          <a
-                            href={statistic.href}
-                            className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg"
-                          >
-                            Detail
-                            <svg
-                              className="w-6 h-6 text-purple-700"
-                              viewBox="0 0 25 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M4.89941 12H20.8994M20.8994 12L14.8994 6M20.8994 12L14.8994 18"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </a>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <hr className="my-10" />
-                {/* Desktop Statistics */}
-                <div className="hidden lg:block mt-12 mb-14 border border-gray-200 rounded-lg overflow-hidden">
-                  <div>
-                    <div className="overflow-x-auto">
-                      <div className="inline-block min-w-full align-middle">
-                        <div className="overflow-hidden ring-1 ring-black ring-opacity-5">
-                          <table className="min-w-full divide-y divide-gray-300">
-                            <thead className="bg-gray-50">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className="py-3.5 pl-4 pr-3 text-left text-xs font-medium text-slate-500 sm:pl-6 uppercase"
-                                >
-                                  June 2022
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  View
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Reads
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Read Ratio
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Fans
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="relative py-3.5 pl-3 pr-4 sm:pr-6 text-center text-xs font-medium text-slate-600"
-                                >
-                                  See Details
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 bg-white">
-                              {statistics.map((statistic) => (
-                                <tr key={statistic.email}>
-                                  <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
-                                    <p className="text-slate-800 text-base font-medium tracking-sm">
-                                      {statistic.title}
-                                    </p>
-                                    <p className="text-slate-500 text-sm tracking-sm">
-                                      {statistic.description}
-                                    </p>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.views}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.reads}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    %{statistic.readRatio}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.fans}
-                                  </td>
-                                  <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium tracking-sm sm:pr-6">
-                                    <a
-                                      href={statistic.href}
-                                      className="text-purple-600 hover:text-purple-900"
-                                    >
-                                      Detail
-                                    </a>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Mobile Statistics */}
-                <div className="lg:hidden">
-                  <span className="inline-block text-slate-700 mb-4 text-lg font-medium tracking-sm uppercase">
-                    June 2022
-                  </span>
-                  <ul className="divide-y divide-gray-200">
-                    {statistics.map((statistic) => (
-                      <li key={statistic.title} className="py-4">
-                        <div className="p-4">
-                          <p className="text-slate-800 text-base font-medium tracking-sm">
-                            {statistic.title}
-                          </p>
-                          <p className="text-slate-500 text-sm tracking-sm">
-                            {statistic.description}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            View
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.views}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Reads
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.reads}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Read Ratio
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.readRatio}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Fans
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.fans}
-                            </span>
-                          </span>
-                          <a
-                            href={statistic.href}
-                            className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg"
-                          >
-                            Detail
-                            <svg
-                              className="w-6 h-6 text-purple-700"
-                              viewBox="0 0 25 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M4.89941 12H20.8994M20.8994 12L14.8994 6M20.8994 12L14.8994 18"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </a>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <hr className="my-10" />
-                {/* Desktop Statistics */}
-                <div className="hidden lg:block mt-12 mb-14 border border-gray-200 rounded-lg overflow-hidden">
-                  <div>
-                    <div className="overflow-x-auto">
-                      <div className="inline-block min-w-full align-middle">
-                        <div className="overflow-hidden ring-1 ring-black ring-opacity-5">
-                          <table className="min-w-full divide-y divide-gray-300">
-                            <thead className="bg-gray-50">
-                              <tr>
-                                <th
-                                  scope="col"
-                                  className="py-3.5 pl-4 pr-3 text-left text-xs font-medium text-slate-500 sm:pl-6 uppercase"
-                                >
-                                  June 2022
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  View
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Reads
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Read Ratio
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="px-3 py-3.5 text-center text-xs font-medium text-slate-600"
-                                >
-                                  Fans
-                                </th>
-                                <th
-                                  scope="col"
-                                  className="relative py-3.5 pl-3 pr-4 sm:pr-6 text-center text-xs font-medium text-slate-600"
-                                >
-                                  See Details
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-gray-200 bg-white">
-                              {statistics.map((statistic) => (
-                                <tr key={statistic.email}>
-                                  <td className="whitespace-nowrap py-4 pl-4 pr-3 sm:pl-6">
-                                    <p className="text-slate-800 text-base font-medium tracking-sm">
-                                      {statistic.title}
-                                    </p>
-                                    <p className="text-slate-500 text-sm tracking-sm">
-                                      {statistic.description}
-                                    </p>
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.views}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.reads}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    %{statistic.readRatio}
-                                  </td>
-                                  <td className="whitespace-nowrap px-3 py-4 text-base font-semibold text-slate-600 tracking-sm">
-                                    {statistic.fans}
-                                  </td>
-                                  <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-center text-sm font-medium tracking-sm sm:pr-6">
-                                    <a
-                                      href={statistic.href}
-                                      className="text-purple-600 hover:text-purple-900"
-                                    >
-                                      Detail
-                                    </a>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {/* Mobile Statistics */}
-                <div className="lg:hidden">
-                  <span className="inline-block text-slate-700 mb-4 text-lg font-medium tracking-sm uppercase">
-                    June 2022
-                  </span>
-                  <ul className="divide-y divide-gray-200">
-                    {statistics.map((statistic) => (
-                      <li key={statistic.title} className="py-4">
-                        <div className="p-4">
-                          <p className="text-slate-800 text-base font-medium tracking-sm">
-                            {statistic.title}
-                          </p>
-                          <p className="text-slate-500 text-sm tracking-sm">
-                            {statistic.description}
-                          </p>
-                        </div>
-                        <div className="flex items-center justify-center gap-2">
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            View
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.views}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Reads
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.reads}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Read Ratio
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.readRatio}
-                            </span>
-                          </span>
-                          <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
-                            Fans
-                            <span className="text-purple-700 text-lg font-semibold">
-                              {statistic.fans}
-                            </span>
-                          </span>
-                          <a
-                            href={statistic.href}
-                            className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg"
-                          >
-                            Detail
-                            <svg
-                              className="w-6 h-6 text-purple-700"
-                              viewBox="0 0 25 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M4.89941 12H20.8994M20.8994 12L14.8994 6M20.8994 12L14.8994 18"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </a>
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ListObserver
+                  onEnd={() =>
+                    getPublicationsStoriesStats(
+                      _.get(_.last(publicationStories), 'page') + 1
+                    )
+                  }
+                >
+                  {publicationStories.map((item) => (
+                    <MonthlyStatsCard
+                      key={item}
+                      name={item.name}
+                      statistics={item.data}
+                    />
+                  ))}
+                </ListObserver>
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
