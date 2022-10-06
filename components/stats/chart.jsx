@@ -3,7 +3,6 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
-import { toMonthName } from '@/utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import StatisticsButton from '@/components/stats/StatisticsButton';
 import PeriodButtons from './PeriodButtons';
@@ -28,7 +27,6 @@ export default function Chart() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const [data, setData] = useState();
-  const [dataManipulated, setDataManipulated] = useState();
   const [selectedChart, setSelectedChart] = useState('Views');
 
   const totalViewsLastXDays = useSelector(
@@ -89,51 +87,6 @@ export default function Chart() {
     }
   }, [totalReadsLastXDays, totalViewsLastXDays, totalLikesLastXDays]);
 
-  useEffect(() => {
-    let tempData;
-    const tempDataManipulated = [];
-
-    if (data?.dateType === '24 Hours') {
-      data?.forEach((obj) => {
-        const hour = obj.groupby.group.split(':')[0];
-        const minute = obj.groupby.group.split(':')[1];
-        tempData = {
-          ...tempData,
-          [`${hour}:${minute}`]: {
-            name: `${hour}:${minute}`,
-            count: _.get(tempData, `${hour}:${minute}`.count) ?? 0 + obj.count,
-          },
-        };
-      });
-    } else if (data?.dateType === '12 Months') {
-      data?.forEach((obj) => {
-        const monthText = toMonthName(obj.groupby.group.split('-')[1]);
-        tempData = {
-          ...tempData,
-          [monthText]: {
-            name: monthText,
-            count: _.get(tempData, monthText.count) ?? 0 + obj.count,
-          },
-        };
-      });
-    } else {
-      data?.forEach((obj) => {
-        const day = obj.groupby.group.split('-')[0];
-        const month = obj.groupby.group.split('-')[1];
-        tempData = {
-          ...tempData,
-          [`${day}-${month}`]: {
-            name: `${day}-${month}`,
-            count: _.get(tempData, `${day}-${month}`.count) ?? 0 + obj.count,
-          },
-        };
-      });
-    }
-    _.forEach(tempData, (obj) => {
-      tempDataManipulated.push(obj);
-    });
-    setDataManipulated(tempDataManipulated);
-  }, [data]);
 
   useEffect(() => {
     getDataByTime(DateTime.local().plus({ year: -1 }).toISODate(), '12 Months');
@@ -160,7 +113,7 @@ export default function Chart() {
         Total {`${selectedChart} `}
         <span className="font-medium">{_.first(data)?.text}</span>
       </h2>
-      <ReadingBarChart data={dataManipulated} />
+      <ReadingBarChart type={data?.dateType} data={data} />
     </div>
   );
 }
