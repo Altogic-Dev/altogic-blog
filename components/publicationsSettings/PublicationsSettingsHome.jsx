@@ -16,7 +16,9 @@ export default function PublicationsSettingsHome({
   setDoClear,
 }) {
   const dispatch = useDispatch();
-  const publication = useSelector((state) => state.publication.publication);
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   const homeLayout = useSelector((state) => state.publication.homeLayout);
   const uploadedFileLink = useSelector((state) => state.file.fileLink);
   const navigations = useSelector(
@@ -350,7 +352,7 @@ export default function PublicationsSettingsHome({
           setSelectedTabIndex={setSelectedTabIndex}
         />
       </div>
-      <AddFeatureSection sections={sections} />
+      {featurePage && <AddFeatureSection sections={sections} />}
     </>
   );
 }

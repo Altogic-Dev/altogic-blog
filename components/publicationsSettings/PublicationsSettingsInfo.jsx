@@ -4,6 +4,7 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
 import { PlusIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -17,11 +18,15 @@ export default function PublicationSettingsInfo({
   setDoSave,
   doClear,
   setDoClear,
+  isCreate,
 }) {
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const userFromLocale = useSelector((state) => state.auth.user);
-  const publication = useSelector((state) => state.publication.publication);
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   const uploadedFileLinks = useSelector((state) => state.file.fileLinks);
   const isValid = useSelector(
     (state) => state.publication.isPublicationnameValid
@@ -98,32 +103,74 @@ export default function PublicationSettingsInfo({
     dispatch(authActions.searchUserByUsernameRequest(value));
   };
 
+  const checkKeyDown = (e) => {
+    if (e.code === 'Enter') e.preventDefault();
+  };
+
   const handleSave = (formValues) => {
-    const writerList = _.map(writers, (writer) => ({
-      user: writer._id,
-      name: writer.name,
-      role: 'writer',
-    }));
-    const editorList = _.map(editors, (editor) => ({
-      user: editor._id,
-      name: editor.name,
-      role: 'editor',
-    }));
-    const editedPublication = {
-      ...publication,
-      ...formValues,
-      profilePicture: uploadedFileLinks?.profilePicture,
-      coverImage: uploadedFileLinks?.coverImage,
-      logo: uploadedFileLinks?.logo,
-      tags,
-      users: [...writerList, ...editorList],
-      publicationName: publicationname,
-    };
-    dispatch(publicationActions.updatePublicationRequest(editedPublication));
+    if (
+      isValid &&
+      _.get(uploadedFileLinks, 'profilePicture') &&
+      _.get(uploadedFileLinks, 'logo')
+    ) {
+      const writerList = _.map(writers, (writer) => ({
+        user: writer._id,
+        name: writer.name,
+        role: 'writer',
+      }));
+      const editorList = _.map(editors, (editor) => ({
+        user: editor._id,
+        name: editor.name,
+        role: 'editor',
+      }));
+
+      if (isCreate) {
+        const adminUser = {
+          user: user._id,
+          name: user.name,
+          role: 'admin',
+        };
+        const createdPublication = {
+          ...formValues,
+          profilePicture: uploadedFileLinks?.profilePicture,
+          coverImage: uploadedFileLinks?.coverImage,
+          logo: uploadedFileLinks?.logo,
+          tags,
+          users: [adminUser, ...writerList, ...editorList],
+          publicationName: publicationname,
+        };
+        dispatch(
+          publicationActions.createPublicationRequest({
+            publication: createdPublication,
+            onSuccess: router.push(
+              `/publication/${publicationname}/publications-settings?isHome=true`
+            ),
+          })
+        );
+      } else {
+        const adminUsers = _.filter(
+          publication.users,
+          (user) => user.role === 'admin'
+        );
+        const editedPublication = {
+          ...publication,
+          ...formValues,
+          profilePicture: uploadedFileLinks?.profilePicture,
+          coverImage: uploadedFileLinks?.coverImage,
+          logo: uploadedFileLinks?.logo,
+          tags,
+          users: [...adminUsers, ...writerList, ...editorList],
+          publicationName: publicationname,
+        };
+        dispatch(
+          publicationActions.updatePublicationRequest(editedPublication)
+        );
+      }
+    }
   };
 
   const fillFields = () => {
-    if (publication) {
+    if (!isCreate && publication) {
       dispatch(
         fileActions.setUploadedFiles({
           profilePicture: publication?.logo,
@@ -193,7 +240,12 @@ export default function PublicationSettingsInfo({
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20">
-      <form onSubmit={handleSubmit(handleSave)} className="mb-24">
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
+      <form
+        onSubmit={handleSubmit(handleSave)}
+        onKeyDown={checkKeyDown}
+        className="mb-24"
+      >
         <div className="pb-2 mb-8 border-b border-gray-200">
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
             General
@@ -213,7 +265,7 @@ export default function PublicationSettingsInfo({
                 name="name"
                 id="name"
                 placeholder="Type your publication name"
-                register={register('name')}
+                register={register('name', { required: true })}
                 className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                 error={errors.name}
               />
@@ -236,7 +288,7 @@ export default function PublicationSettingsInfo({
                 id="description"
                 placeholder="Type your description"
                 className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                {...register('description')}
+                {...register('description', { required: true })}
               />
               <p className="mt-1.5 text-sm text-slate-500">
                 The description is longer, and appears in story footers, search
@@ -258,7 +310,7 @@ export default function PublicationSettingsInfo({
                 id="tagline"
                 placeholder="Type a short tagline"
                 className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                {...register('tagline')}
+                {...register('tagline', { required: true })}
               />
               <p className="mt-1.5 text-sm text-slate-500">
                 The tagline is short and appears on your publication’s homepage.
@@ -315,7 +367,7 @@ export default function PublicationSettingsInfo({
                 htmlFor="description"
                 className="block text-slate-700 mb-3 text-lg"
               >
-                Publication logo
+                Publication logo*
               </label>
               <p className="text-slate-500 text-sm">
                 The logo is displayed at the top of your publication. We
@@ -426,7 +478,7 @@ export default function PublicationSettingsInfo({
                   id="email"
                   placeholder="info@hithemes.io"
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                  {...register('email')}
+                  {...register('email', { required: true })}
                 />
               </div>
               <div className="relative rounded-md shadow-sm">
@@ -620,11 +672,12 @@ export default function PublicationSettingsInfo({
             type="submit"
             className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
           >
-            Save
+            {isCreate ? 'Create' : 'Save'}
           </button>
           <button
             type="button"
             className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            onClick={isCreate ? router.back : _.noop}
           >
             Cancel
           </button>
