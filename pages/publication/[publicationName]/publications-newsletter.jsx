@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Layout from '@/layouts/Layout';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
+import Link from 'next/link';
 
 const options = [
   { id: 1, tag: 'Draft' },
@@ -148,14 +149,16 @@ export default function PublicationsNewsletter() {
                     key={newsletter.id}
                     className="flex sm:items-center justify-between gap-5 py-8"
                   >
-                    <a href={newsletter.href} title={newsletter.title}>
-                      <h6 className="text-slate-800 text-lg font-semibold tracking-sm">
-                        {newsletter.title}
-                      </h6>
-                      <p className="text-slate-500 text-sm tracking-sm">
-                        {newsletter.description}
-                      </p>
-                    </a>
+                    <Link href={newsletter.href}>
+                      <a title={newsletter.title}>
+                        <h6 className="text-slate-800 text-lg font-semibold tracking-sm">
+                          {newsletter.title}
+                        </h6>
+                        <p className="text-slate-500 text-sm tracking-sm">
+                          {newsletter.description}
+                        </p>
+                      </a>
+                    </Link>
                     <span className="flex-shrink-0 text-slate-500 tracking-sm">
                       {newsletter.date}
                     </span>

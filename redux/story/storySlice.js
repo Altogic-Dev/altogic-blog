@@ -153,14 +153,20 @@ export const storySlice = createSlice({
       }
     },
 
-    getUserStoriesRequest() {},
+    getUserStoriesRequest(state) {
+      state.isLoading = true;
+    },
     getUserStoriesSuccess(state, action) {
+      state.isLoading = false;
       state.userStories = action.payload.data;
       state.userStoriesInfo = action.payload.info;
     },
 
-    getUserDraftStoriesRequest() {},
+    getUserDraftStoriesRequest(state) {
+      state.isLoading = true;
+    },
     getUserDraftStoriesSuccess(state, action) {
+      state.isLoading = false;
       state.userDraftStories = action.payload.data;
       state.userDraftStoriesInfo = action.payload.info;
     },

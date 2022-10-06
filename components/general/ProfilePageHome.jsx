@@ -32,7 +32,9 @@ function ProfilePageHome({ userId, bookmarkLists }) {
   };
 
   useEffect(() => {
-    if (page > 1 || (_.isNil(userStories) && userId)) getUserStories();
+    if (page > 1 || (_.isNil(userStories) && userId)) {
+      getUserStories();
+    }
   }, [page, userId]);
 
   return (

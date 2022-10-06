@@ -22,7 +22,8 @@ export default function PublishSettings() {
     (state) => state.publication.selectedPublication
   );
 
-  const { storySlug, isEdited } = router.query;
+  const { storySlug, isEdited, topic } = router.query;
+
   const [user, setUser] = useState();
   const [authors, setAuthors] = useState([]);
   const [inpSelectedAuthor, setInpSelectedAuthor] = useState();
@@ -57,7 +58,6 @@ export default function PublishSettings() {
       setInpCategoryNames((prev) => [...prev, categoryName]);
     }
   };
-
   const handlePublish = () => {
     dispatch(
       storyActions.publishStoryRequest({
@@ -79,7 +79,9 @@ export default function PublishSettings() {
   };
 
   useEffect(() => {
-    if (storySlug) dispatch(storyActions.getCacheStoryRequest(storySlug));
+    if (storySlug) {
+      dispatch(storyActions.getCacheStoryRequest(storySlug));
+    }
   }, [storySlug]);
 
   useEffect(() => {
@@ -92,6 +94,11 @@ export default function PublishSettings() {
       setInpRestrictComments(story.isRestrictedComments);
     }
   }, [story]);
+  useEffect(() => {
+    if (topic) {
+      setInpCategoryNames((prev) => [...prev, topic]);
+    }
+  }, [topic, story]);
 
   useEffect(() => {
     const userAuthor = {

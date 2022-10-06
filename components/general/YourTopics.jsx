@@ -1,12 +1,14 @@
 import { authActions } from '@/redux/auth/authSlice';
 import { GlobeAltIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from '../basic/button';
 import Topic from '../basic/topic';
 
 export default function YourTopics({ Tag }) {
+  const router = useRouter();
   const followingTopics = useSelector((state) =>
     _.get(state.auth.user, 'followingTopics')
   );
@@ -77,7 +79,13 @@ export default function YourTopics({ Tag }) {
               <Button primaryColor onClick={() => handleClick(followed)}>
                 {followed ? 'Unfollow' : 'Follow'}
               </Button>
-              <Button onClick={() => {}}>Start Writing</Button>
+              <Button
+                onClick={() =>
+                  router.push(`/write-a-story?topic=${Tag.replace('-', ' ')}`)
+                }
+              >
+                Start Writing
+              </Button>
             </div>
           </>
         )}

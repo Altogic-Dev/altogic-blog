@@ -2,13 +2,22 @@ import React from 'react';
 import ScrollToTop from '@/components/ScrollToTop';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '../components/Header';
+import Header from '@/components/Header';
+import { ClipLoader } from 'react-spinners';
 
-export default function Layout({ children }) {
+export default function Layout({ children, loading }) {
   return (
     <div>
       <Header />
-      <main>{children}</main>
+      <main className="main">
+        {loading ? (
+          <div className="flex justify-center items-center h-full">
+            <ClipLoader color="#9333ea" loading={loading} size={80} />
+          </div>
+        ) : (
+          children
+        )}
+      </main>
       <Link href="https://www.altogic.com/" target="_blank">
         <button
           type="button"

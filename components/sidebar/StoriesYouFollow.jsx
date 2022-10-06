@@ -1,6 +1,4 @@
-import {
-  followerConnectionActions,
-} from '@/redux/followerConnection/followerConnectionSlice';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import dynamic from 'next/dynamic';
 import { useDispatch } from 'react-redux';
 import Avatar from '../profile/Avatar';
@@ -10,10 +8,7 @@ const ListObserver = dynamic(import('../ListObserver'), {
   ssr: false,
 });
 
-export default function StoriesYouFollow({
-  storiesYouFollow,
-
-}) {
+export default function StoriesYouFollow({ storiesYouFollow }) {
   const dispatch = useDispatch();
 
   const handleListEnd = () => {
@@ -26,7 +21,7 @@ export default function StoriesYouFollow({
         <ListObserver onEnd={handleListEnd}>
           {storiesYouFollow.map((storiesFollow) => (
             <a
-              key={storiesFollow.followingUser}
+              key={storiesFollow._id}
               href={`/${storiesFollow.followingUsername}`}
               className="group relative flex-shrink-0"
             >

@@ -33,7 +33,7 @@ export const bookmarkSlice = createSlice({
     },
     getBookmarkListsSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarkLists = action.payload;
+      state.bookmarkLists = action.payload.result;
     },
     getBookmarkListsFailure(state, action) {
       state.isLoading = false;
@@ -51,6 +51,7 @@ export const bookmarkSlice = createSlice({
       state.error = action.payload;
     },
     isBookmarkedSuccess(state, action) {
+      state.isLoading = false;
       state.isStoryBookmarked = action.payload;
     },
     addBookmarkRequest(state) {

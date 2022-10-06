@@ -10,7 +10,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
+import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/react';
 import { wrapper } from '../redux/store';
+import '@icon-park/react/styles/index.css';
 
 config.autoAddCss = false;
 
@@ -18,7 +20,7 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { publicationName } = router.query;
-
+  const IconConfig = { ...DEFAULT_ICON_CONFIGS, prefix: 'icon' };
   const sessionUser = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
   const [isMounted, setIsMounted] = useState(false);
@@ -82,9 +84,9 @@ function MyApp({ Component, pageProps }) {
   }, [publicationName]);
 
   useEffect(() => {
-    if (_.isEmpty(publications) && !_.isEmpty(sessionUser)) {
+    if (_.isEmpty(publications) && !_.isNil(sessionUser?.publications)) {
       dispatch(
-        publicationActions.setPublicationsRequest(sessionUser.publications)
+        publicationActions.setPublicationsRequest(sessionUser?.publications)
       );
     }
   }, [publications]);
@@ -104,7 +106,9 @@ function MyApp({ Component, pageProps }) {
         theme="dark"
         width="500px"
       />
-      <Component {...pageProps} />
+      <IconProvider value={IconConfig}>
+        <Component {...pageProps} />
+      </IconProvider>
     </>
   );
 }
