@@ -25,7 +25,7 @@ export default function PopularStories({ title, stories }) {
       <SidebarTitle title={title} spacing="mb-4" />
       <ul className="space-y-3">
         {storyList?.map((story) => (
-          <Link href={`/story/${story.slug}`} key={story._id}>
+          <Link href={`/story/${story.storySlug}`} key={story._id}>
             <a className="flex items-center gap-3">
               <li className="flex gap-3">
                 <img
