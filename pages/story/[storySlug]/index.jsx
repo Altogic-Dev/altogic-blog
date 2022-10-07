@@ -22,7 +22,18 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
 
-export default function BlogDetail() {
+
+export async function getServerSideProps({ req }) {
+  const ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
+  return {
+    props: {
+      ip,
+    },
+  }
+}
+
+
+export default function BlogDetail({ip}) {
   const router = useRouter();
   const { storySlug } = router.query;
 
@@ -78,8 +89,8 @@ export default function BlogDetail() {
       })
     );
   };
-
-  const visitStory = (enterTime, isRead) => {
+ 
+  const visitStory = () => {
     dispatch(
       storyActions.visitStoryRequest({
         story: story._id,
@@ -87,9 +98,15 @@ export default function BlogDetail() {
         readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
           .minutes,
         isRead,
+        publication: _.get(story, 'publication._id'),
+        isExternal: false,
+        author: story.user,
+        categoryNames: story.categoryNames,
+
       })
     );
   };
+  console.log(ip);
 
   const togglePublicationFollow = () => {
     if (isFollowingPublication) {
@@ -138,7 +155,7 @@ export default function BlogDetail() {
   }, []);
 
   useUnload((e) => {
-    visitStory(enterTime, isRead);
+    // visitStory();
     e.preventDefault();
   });
 
@@ -165,7 +182,7 @@ export default function BlogDetail() {
     }
     return () => {
       if (story) {
-        visitStory(enterTime, isRead);
+        // visitStory()
         window.removeEventListener('scroll', onScroll, { passive: true });
         clearInterval();
       }

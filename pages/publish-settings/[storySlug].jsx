@@ -136,10 +136,6 @@ export default function PublishSettings() {
       <Head>
         <title>Altogic Medium Blog App Publish Settings</title>
         <meta
-          name="twitter:image"
-          content="https://altogic-stripe-payment.vercel.app/og-image.png"
-        />
-        <meta
           name="description"
           content="Altogic Medium Blog App Publish Settings"
         />
