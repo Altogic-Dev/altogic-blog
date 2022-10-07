@@ -440,7 +440,6 @@ function* getPublicationsStoriesSaga({ payload }) {
 function* selectFeatureStoriesSaga({
   payload: { index, story, sectionIndex },
 }) {
-  debugger;
   const selectedFeatureStories = yield select(
     (state) => state.story.featureStories
   );
