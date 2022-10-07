@@ -209,9 +209,12 @@ export default function WriteAStorySettings() {
                       <span className="inline-block mb-3 text-slate-500 text-sm">
                         {_.get(userState, 'followerCount')} Followers
                       </span>
-                      <p className="text-slate-500 text-xs mb-8">
-                        {_.get(userState, 'about')}
-                      </p>
+                      <p
+                        className="text-slate-500 text-xs mb-8"
+                        dangerouslySetInnerHTML={{
+                          __html: _.get(userState, 'about'),
+                        }}
+                      />
                     </div>
                   </div>
                 </div>

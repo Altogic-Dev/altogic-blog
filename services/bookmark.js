@@ -1,10 +1,11 @@
 import { db, endpoint } from '@/utils/altogic';
 
 const BookmarkService = {
-  getBookmarkList: ({ username, includePrivates, limit }) =>
+  getBookmarkList: ({ username, includePrivates, page, limit }) =>
     endpoint.get('/bookmark/list/', {
       username,
       includePrivates,
+      page,
       limit,
     }),
   createBookmarkList: (list) => db.model('bookmark_list').create(list),

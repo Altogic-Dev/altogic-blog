@@ -1,4 +1,4 @@
-import { call, takeEvery, put, all } from 'redux-saga/effects';
+import { call, takeEvery, put, all, select } from 'redux-saga/effects';
 import BookmarkService from '@/services/bookmark';
 import {
   getBookmarkListsRequest,
@@ -29,16 +29,26 @@ import {
   clearBookmarkListSuccess,
   clearBookmarkListFailure,
 } from '@/redux/bookmarks/bookmarkSlice';
+import _ from 'lodash';
 
 // Get bookmark lists
 function* getBookmarkListsSaga({ payload }) {
   try {
-    const { data, errors } = yield call(
-      BookmarkService.getBookmarkList,
-      payload
-    );
-    if (errors) throw errors.items;
-    yield put(getBookmarkListsSuccess(data));
+    const info = yield select((state) => state.bookmark.bookmarkListsInfo);
+
+    if (_.isNil(info) || payload.page <= info.totalPages) {
+      const { data, errors } = yield call(
+        BookmarkService.getBookmarkList,
+        payload
+      );
+      if (errors) throw errors.items;
+      yield put(
+        getBookmarkListsSuccess({
+          data: data.result,
+          info: data.countInfo,
+        })
+      );
+    }
   } catch (error) {
     yield put(getBookmarkListsFailure(error));
   }

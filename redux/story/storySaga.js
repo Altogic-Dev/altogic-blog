@@ -10,19 +10,23 @@ import {
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const { data, errors } = yield call(
-      StoryService.getFollowingStories,
-      userId,
-      _.get(user, 'mutedUser'),
-      page
-    );
-    if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(
-        storyActions.getFollowingStoriesSuccess({
-          data: data.data,
-          info: data.info,
-        })
+    const info = yield select((state) => state.story.followingStoriesInfo);
+
+    if (_.isNil(info) || page <= info.totalPages) {
+      const { data, errors } = yield call(
+        StoryService.getFollowingStories,
+        userId,
+        _.get(user, 'mutedUser'),
+        page
       );
+      if (!_.isNil(data) && _.isNil(errors)) {
+        yield put(
+          storyActions.getFollowingStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
@@ -90,36 +94,39 @@ function* createReplyComment({ payload: comment }) {
 function* getRecommendedStoriesSaga({ payload: { page } }) {
   try {
     const user = yield select((state) => state.auth.user);
+    const info = yield select((state) => state.story.recommendedStoriesInfo);
 
-    if (!_.isNil(user) && !_.isEmpty(user.recommendedTopics)) {
-      const { data, errors } = yield call(
-        StoryService.GetRecommendedStoriesByUser,
-        {
-          recommendedTopics: user.recommendedTopics,
-          mutedUsers: _.get(user, 'mutedUser'),
-          page,
+    if (_.isNil(info) || page <= info.totalPages) {
+      if (!_.isNil(user) && !_.isEmpty(user.recommendedTopics)) {
+        const { data, errors } = yield call(
+          StoryService.GetRecommendedStoriesByUser,
+          {
+            recommendedTopics: user.recommendedTopics,
+            mutedUsers: _.get(user, 'mutedUser'),
+            page,
+          }
+        );
+        if (!_.isNil(data) && _.isNil(errors)) {
+          yield put(
+            storyActions.getRecommendedStoriesSuccess({
+              data: data.data,
+              info: data.info,
+            })
+          );
         }
-      );
-      if (!_.isNil(data) && _.isNil(errors)) {
-        yield put(
-          storyActions.getRecommendedStoriesSuccess({
-            data: data.data,
-            info: data.info,
-          })
+      } else {
+        const { data, errors } = yield call(
+          StoryService.getRecommendedStories,
+          page
         );
-      }
-    } else {
-      const { data, errors } = yield call(
-        StoryService.getRecommendedStories,
-        page
-      );
-      if (!_.isNil(data) && _.isNil(errors)) {
-        yield put(
-          storyActions.getRecommendedStoriesSuccess({
-            data: data.data,
-            info: data.info,
-          })
-        );
+        if (!_.isNil(data) && _.isNil(errors)) {
+          yield put(
+            storyActions.getRecommendedStoriesSuccess({
+              data: data.data,
+              info: data.info,
+            })
+          );
+        }
       }
     }
   } catch (e) {
@@ -240,17 +247,24 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const { data, errors } = yield call(
-      StoryService.getUserStories,
-      userID,
-      page,
-      limit
-    );
-    if (errors) throw errors;
-    if (data) {
-      yield put(
-        storyActions.getUserStoriesSuccess({ data: data.data, info: data.info })
+    const info = yield select((state) => state.story.userStoriesInfo);
+
+    if (_.isNil(info) || page <= info.totalPages) {
+      const { data, errors } = yield call(
+        StoryService.getUserStories,
+        userID,
+        page,
+        limit
       );
+      if (errors) throw errors;
+      if (data) {
+        yield put(
+          storyActions.getUserStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
@@ -518,7 +532,6 @@ export default function* rootSaga() {
       storyActions.getUserDraftStoriesRequest.type,
       getUserDraftStoriesSaga
     ),
-    takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
     takeEvery(storyActions.createReplyRequest.type, createReply),
     takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),
