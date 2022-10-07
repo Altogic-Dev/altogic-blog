@@ -58,6 +58,7 @@ export const bookmarkSlice = createSlice({
       state.error = action.payload;
     },
     isBookmarkedSuccess(state, action) {
+      state.isLoading = false;
       state.isStoryBookmarked = action.payload;
     },
     addBookmarkRequest(state) {

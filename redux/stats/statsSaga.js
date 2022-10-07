@@ -133,12 +133,12 @@ export function* getStoryReadingTimePeriodicallySaga({
   }
 }
 export function* getStoryStatisticsPeriodicallySaga({
-  payload: { publicationName, date, type },
+  payload: { storySlug, date, type },
 }) {
   try {
     const { data, errors } = yield call(
       StatsService.getStoryStatisticsPeriodically,
-      publicationName,
+      storySlug,
       date
     );
     if (errors) throw errors;
@@ -199,7 +199,7 @@ export function* getPublicationReadsPeriodicallySaga({
     const { data, errors } = yield call(
       StatsService.getPublicationReadsPeriodically,
       publication,
-      date
+      date,
     );
     if (errors) throw errors;
     if (data) {
@@ -211,14 +211,16 @@ export function* getPublicationReadsPeriodicallySaga({
     yield put(statsActions.getPublicationReadsPeriodicallyFailure(e));
   }
 }
-export function* getPublicationsStoriesStatsSaga({ payload: { publication } }) {
+export function* getPublicationsStoriesStatsSaga({ payload: { publication , page} }) {
   try {
     const { data, errors } = yield call(
       StatsService.getPublicationsStoriesStats,
-      publication
+      publication,
+      page
     );
     if (errors) throw errors;
     if (data) {
+      data.page = page
       yield put(statsActions.getPublicationsStoriesStatsSuccess(data));
     }
   } catch (e) {

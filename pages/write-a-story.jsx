@@ -27,6 +27,7 @@ export default function WriteAStory() {
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
+  const { topic } = router.query;
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
@@ -50,7 +51,7 @@ export default function WriteAStory() {
   }, [id]);
 
   useEffect(() => {
-    if (content && inpTitle) {
+    if (content) {
       const story = {
         user: user._id,
         username: user.username,
@@ -78,7 +79,6 @@ export default function WriteAStory() {
         );
       }
     }
-
     setMinRead(Math.ceil(content.split(' ').length / 200));
   }, [content, inpTitle]);
 
@@ -111,7 +111,7 @@ export default function WriteAStory() {
                   `/publish-settings/${_.get(
                     newStory,
                     'storySlug'
-                  )}?isEdited=${!_.isNil(id)}`
+                  )}?isEdited=${!_.isNil(id)}${topic ? `&topic=${topic}` : ''}`
                 );
               }}
               className="inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"

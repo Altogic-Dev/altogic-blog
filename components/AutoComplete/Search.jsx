@@ -54,8 +54,8 @@ export default function Search({
           <input
             className="search-input"
             value={input}
-            name="email"
-            id="email"
+            name="search"
+            id="search"
             placeholder="Search"
             onKeyDown={onKeyDown}
             onChange={onChange}

@@ -1,11 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, {
-  Fragment,
-  useState,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-} from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import _ from 'lodash';
@@ -32,6 +26,7 @@ export default function ProfilePage({ About, Home, List }) {
   const { username } = router.query;
 
   const sessionUser = useSelector((state) => state.auth.user);
+  const userStories = useSelector((state) => state.story.userStories);
   const followLoading = useSelector(
     (state) => state.followerConnection.isLoading
   );
@@ -46,6 +41,9 @@ export default function ProfilePage({ About, Home, List }) {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
+  const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
+  const storyLoading = useSelector((state) => state.story.isLoading);
+  const authLoading = useSelector((state) => state.auth.isLoading);
 
   const [userState, setUserState] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -55,7 +53,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [isMyProfileState, setIsMyProfileState] = useState(false);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [unfollowed, setUnfollowed] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(true);
   const copyToClipboard = () => {
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
@@ -138,13 +136,13 @@ export default function ProfilePage({ About, Home, List }) {
     }
   }, [username]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isMyProfileState && username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
   }, [username]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (sessionUser) {
       setUserState(isMyProfileState ? sessionUser : profileUser);
       if (!isMyProfileState && profileUser) {
@@ -185,6 +183,18 @@ export default function ProfilePage({ About, Home, List }) {
       );
     }
   }, [bookmarkListPage]);
+
+  useEffect(() => {
+    if (!storyLoading && _.isNil(userStories) && Home) {
+      setIsLoading(storyLoading);
+    }
+    if (!bookmarkLoading && !_.isEmpty(bookmarkLists) && List) {
+      setIsLoading(bookmarkLoading);
+    }
+    if (!authLoading && !_.isEmpty(profileUser) && About) {
+      setIsLoading(authLoading);
+    }
+  }, [storyLoading, bookmarkLoading, authLoading, userStories, bookmarkLists]);
   return (
     <div>
       <Head>
@@ -314,7 +324,7 @@ export default function ProfilePage({ About, Home, List }) {
                     <ListObserver onEnd={handleBookmarkListEnd}>
                       {bookmarkLists?.map((list) => (
                         <PostList
-                          key={list.id}
+                          key={list._id}
                           title={list.name}
                           storiesNumber={list.storyCount}
                           url={`/${username}/${list.slug}`}
@@ -512,9 +522,12 @@ export default function ProfilePage({ About, Home, List }) {
                               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
                                 {following.followingName}
                               </span>
-                              <span className="text-slate-500 text-xs tracking-sm">
-                                {following.followingAbout}
-                              </span>
+                              <span
+                                className="text-slate-500 text-xs tracking-sm"
+                                dangerouslySetInnerHTML={{
+                                  __html: following.followingAbout,
+                                }}
+                              />
                             </div>
                           </div>
                           <Button

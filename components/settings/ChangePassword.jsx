@@ -95,6 +95,7 @@ export default function ChangePassword() {
                     register={register('currentPassword')}
                     error={errors.currentPassword}
                     className="flex-1 min-w-0"
+                    autoComplete="off"
                   />
                 </div>
               </div>
@@ -114,6 +115,7 @@ export default function ChangePassword() {
                       register={register('newPassword')}
                       className="flex-1 min-w-0"
                       error={errors.newPassword}
+                      autoComplete="off"
                     />
                     <p className="mt-1.5 text-sm text-slate-500">
                       Your new password must be more than 8 characters.
@@ -136,6 +138,7 @@ export default function ChangePassword() {
                     register={register('confirmNewPassword')}
                     className="flex-1 min-w-0"
                     error={errors.confirmNewPassword}
+                    autoComplete="off"
                   />
                 </div>
               </div>

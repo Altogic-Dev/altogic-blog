@@ -63,10 +63,7 @@ export default function PublicationsFeature() {
               Use feature pages to build custom landing pages for your
               publication. These pages can contain a custom header and featured
               and tagged story sections. After you create a feature page you can
-              also link to it from your{' '}
-              <a href="#" className="text-purple-700">
-                navigation.
-              </a>
+              also link to it from your navigation.
             </h2>
           </div>
           <div>

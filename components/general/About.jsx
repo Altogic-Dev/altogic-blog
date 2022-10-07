@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Transition, Dialog } from '@headlessui/react';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import Topic from '../basic/topic';
 
 function About(props) {
   const {
@@ -20,7 +21,6 @@ function About(props) {
   const userFollowers = useSelector(
     (state) => state.followerConnection.userFollowers
   );
-
   const [followersModal, setFollowersModal] = useState(false);
   const [followerPage, setFollowerPage] = useState(1);
 
@@ -72,11 +72,7 @@ function About(props) {
         </div>
         <div className="flex flex-wrap items-center gap-4">
           {_.map(topWriterTopics, (topic) => (
-            <a href="#">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                {topic}
-              </span>
-            </a>
+            <Topic title={topic.name} key={topic} />
           ))}
         </div>
       </div>

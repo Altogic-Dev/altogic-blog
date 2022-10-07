@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useState,
-  useEffect,
-  useLayoutEffect,
-  useCallback,
-} from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { Menu, Transition, Dialog } from '@headlessui/react';
@@ -40,11 +34,13 @@ export default function ListDetail() {
   const [followingPage, setFollowingPage] = useState(1);
   const [followingModal, setFollowingModal] = useState(false);
   const [unfollowed, setUnfollowed] = useState([]);
-  
+  const [isLoading, setIsLoading] = useState(true);
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const loading = useSelector((state) => state.bookmark.isLoading);
   const profileUser = useSelector((state) => state.auth.profileUser);
+
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
@@ -54,7 +50,6 @@ export default function ListDetail() {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
-
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -115,13 +110,13 @@ export default function ListDetail() {
     }
   }, [username]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!isMyProfileState && username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
   }, [username]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (sessionUser) {
       setUser(isMyProfileState ? sessionUser : profileUser);
       if (!isMyProfileState && profileUser) {
@@ -161,6 +156,11 @@ export default function ListDetail() {
       );
     }
   }, [bookmarkListLimit]);
+  useEffect(() => {
+    if (!loading && !_.isEmpty(bookmarkList)) {
+      setIsLoading(loading);
+    }
+  }, [loading]);
 
   useEffect(() => {
     if (
@@ -174,14 +174,14 @@ export default function ListDetail() {
   return (
     <div>
       <Head>
-        <title>Altogic Medium Blog App List Detail</title>
+        <title>Altogic Medium Blog App Bookmark List Detail</title>
         <meta
           name="description"
           content="Altogic Medium Blog App List Detail"
         />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-      <Layout>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">

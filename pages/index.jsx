@@ -119,6 +119,7 @@ export default function Home() {
 
   useEffect(() => {
     if (user) {
+      console.log({ user });
       dispatch(
         getBookmarkListsRequest({
           username: user.username,
@@ -181,9 +182,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
-                        {_.map(followingStories, (story, index) => (
+                        {_.map(followingStories, (story) => (
                           <PostCard
-                            key={story._id + index}
+                            key={story._id}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}

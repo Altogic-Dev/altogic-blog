@@ -37,7 +37,7 @@ function* getAuthGrantSaga({ payload }) {
   try {
     yield call(AuthService.authStateChange, payload.session, payload.user);
     const res = yield call(AuthService.setUsernameForProvider, {
-      userId: payload.user._id,
+      email: payload.user,
       name: payload.user.name,
       provider: payload.user.provider,
     });
@@ -62,12 +62,13 @@ function* loginSaga({ payload }) {
       payload.password
     );
     if (user) {
-      const { data } = yield call(
-        PublicationService.getAllUserPublications,
-        user.publications
-      );
-
-      yield put(publicationActions.setPublicationsOnLogin(data));
+      if (user.publications) {
+        const { data } = yield call(
+          PublicationService.getAllUserPublications,
+          user.publications
+        );
+        yield put(publicationActions.setPublicationsOnLogin(data));
+      }
       yield put(authActions.loginSuccess(user));
     }
     if (errors) {

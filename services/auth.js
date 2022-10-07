@@ -16,11 +16,11 @@ const AuthService = {
     auth.setSession(newSession);
     auth.setUser(newUser);
   },
-  async setUsernameForProvider({ userId, name, provider }) {
+  async setUsernameForProvider({ email, name, provider }) {
     let username = '';
     const req = {
       name,
-      userId,
+      email,
       provider,
       color: `#${randomInt(0, 16777215).toString(16)}`,
     };
@@ -67,6 +67,7 @@ const AuthService = {
   async authenticateWithProvider(provider) {
     return auth.signInWithProvider(provider);
   },
+
   updateFollowingTopics(followingTopicsUpdated) {
     return db.model('users').object(auth.getUser()._id).update({
       followingTopics: followingTopicsUpdated,

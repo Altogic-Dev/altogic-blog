@@ -142,7 +142,10 @@ export default function BlogDetail() {
   }, [story, morePage]);
 
   useEffect(() => {
-    if (storySlug) dispatch(storyActions.getStoryBySlugRequest(storySlug));
+    console.log(story?.storySlug !== storySlug, story?.storySlug, storySlug);
+    if (storySlug && story?.storySlug !== storySlug) {
+      dispatch(storyActions.getStoryBySlugRequest(storySlug));
+    }
   }, [storySlug]);
   useEffect(() => {
     if (user) {

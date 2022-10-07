@@ -80,6 +80,10 @@ export const publicationSlice = createSlice({
     visitPublicationSuccess(state) {
       state.isLoading = false;
     },
+    visitPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
     getPublicationStoriesailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
@@ -157,6 +161,9 @@ export const publicationSlice = createSlice({
     },
     setPublicationsOnLogin(state, action) {
       state.publications = action.payload;
+    },
+    addPublicationsToUser(state, action) {
+      state.publications = [...state.publications, action.payload];
     },
 
     followPublicationRequest(state) {
@@ -298,11 +305,11 @@ export const publicationSlice = createSlice({
     },
     selectPublicationSuccess(state, action) {
       state.selectedPublication = action.payload;
-      state.isLoading = false
+      state.isLoading = false;
     },
     selectPublicationFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false
+      state.isLoading = false;
     },
 
     getPublicationHomeLayoutRequest(state) {
@@ -329,6 +336,17 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
 
+    createPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    createPublicationSuccess(state, action) {
+      state.publication = action.payload;
+      state.isLoading = false;
+    },
+    createPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
     isFollowingPublicationRequest(state) {
       state.isLoading = true;
     },

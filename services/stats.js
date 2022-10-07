@@ -74,17 +74,17 @@ const StatsService = {
     });
   },
   getPublicationLikesPeriodically(publication, date) {
-    return endpoint.get(`/publication//likes`, {
+    return endpoint.get(`/publication/likes`, {
       publication,
       date,
     });
   },
-  getPublicationsStoriesStats(publication) {
-    return db
-      .model('story')
-      .filter(`this.publication == '${publication}`)
-      .sort({ fieldName: 'createdAt' }, 'desc')
-      .get();
+  getPublicationsStoriesStats(publication,page) {
+    return endpoint.get(`/publication/stories-stats`, {
+      publication,
+      page
+    });
+    
   },
 };
 
