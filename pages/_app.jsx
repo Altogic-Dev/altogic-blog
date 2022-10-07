@@ -24,7 +24,6 @@ function MyApp({ Component, pageProps }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
   const [isMounted, setIsMounted] = useState(false);
-
   const visitPublicationRequest = (publicationName) => {
     dispatch(
       publicationActions.visitPublicationRequest({

@@ -19,6 +19,9 @@ const ReactQuill = dynamic(() => import('react-quill'), {
 });
 
 export default function MyDetails({ user }) {
+  const [profilePicture, setProfilePicture] = useState();
+  const [file, setFile] = useState();
+  const [profileRequest, setProfileRequest] = useState();
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -54,13 +57,24 @@ export default function MyDetails({ user }) {
     if (!data.website || urlRegex.test(data.website)) {
       req._id = user._id;
       req.about = about;
-      req.profilePicture = userAvatarLink ?? user?.profilePicture;
-      dispatch(authActions.updateUserRequest(req));
     } else {
       setError('website', {
         type: 'url',
         message: 'Please enter a valid url',
       });
+    }
+    req.profilePicture = profilePicture;
+    if (file) {
+      dispatch(
+        fileActions.uploadFileRequest({
+          file,
+          name: user?.username,
+          existingFile: user?.profilePicture,
+        })
+      );
+      setProfileRequest(req);
+    } else {
+      dispatch(authActions.updateProfileRequest(req));
     }
   };
 
@@ -80,7 +94,8 @@ export default function MyDetails({ user }) {
     }
   }, [isUsernameAvailable]);
 
-  const uploadPhotoHandler = () => {
+  const uploadPhotoHandler = (e) => {
+    e.stopPropagation();
     const fileInput = document.createElement('input');
 
     fileInput.setAttribute('type', 'file');
@@ -89,13 +104,7 @@ export default function MyDetails({ user }) {
 
     fileInput.onchange = async () => {
       const file = fileInput.files[0];
-      dispatch(
-        fileActions.uploadFileRequest({
-          file,
-          name: user?.username,
-          existingFile: user?.profilePicture,
-        })
-      );
+      setFile(file);
     };
   };
   const checkUsername = (e) => {
@@ -116,6 +125,21 @@ export default function MyDetails({ user }) {
   useEffect(() => {
     setAbout(user?.about);
   }, [user]);
+  useEffect(() => {
+    setProfilePicture(userAvatarLink || user?.profilePicture);
+    if (userAvatarLink) {
+      dispatch(
+        authActions.updateProfileRequest({
+          ...profileRequest,
+          profilePicture: userAvatarLink,
+        })
+      );
+      setFile();
+    }
+  }, [userAvatarLink]);
+  const deleteProfilePicture = () => {
+    setFile();
+  };
   return (
     <div id="my-details" className="mb-16">
       <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
@@ -167,17 +191,20 @@ export default function MyDetails({ user }) {
             </div>
             <div className="flex items-start justify-between">
               <Avatar
-                src={userAvatarLink ?? user?.profilePicture}
+                src={file ? URL.createObjectURL(file) : user?.profilePicture}
                 alt={user?.name}
                 className="w-16 h-16 object-cover"
               />
               <div className="flex items-center gap-4">
-                <Button
-                  type="button"
-                  className="text-slate-600 text-sm tracking-sm"
-                >
-                  Delete
-                </Button>
+                {file && (
+                  <Button
+                    onClick={deleteProfilePicture}
+                    type="button"
+                    className="text-slate-600 text-sm tracking-sm"
+                  >
+                    Delete
+                  </Button>
+                )}
                 <Button
                   onClick={uploadPhotoHandler}
                   type="button"
@@ -202,7 +229,7 @@ export default function MyDetails({ user }) {
               </span>
             </div>
             <div>
-              <EditorToolbar />
+              {/* <EditorToolbar />
               <ReactQuill
                 theme="snow"
                 value={about}
@@ -210,7 +237,7 @@ export default function MyDetails({ user }) {
                 placeholder="You can start typing the forum you want to start."
                 modules={modules}
                 formats={formats}
-              />
+              /> */}
             </div>
           </div>
         </div>

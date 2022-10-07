@@ -324,14 +324,7 @@ export default function BlogDetail() {
 
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar
-                profile={{
-                  id: _.get(story, 'user._id'),
-                  name: _.get(story, 'user.name'),
-                  profilePicture: _.get(story, 'user.profilePicture'),
-                  followerCount: _.get(story, 'user.followerCount'),
-                  username: _.get(story, 'user.username'),
-                  about: _.get(story, 'user.about'),
-                }}
+                profile={_.get(story, 'user')}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
                 whoToFollow

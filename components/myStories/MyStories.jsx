@@ -244,16 +244,7 @@ export default function MyStories({ publishedPage, draftPage }) {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar
-                profile={{
-                  id: _.get(user, '_id'),
-                  name: _.get(user, 'name'),
-                  profilePicture: _.get(user, 'profilePicture'),
-                  followerCount: _.get(user, 'followerCount'),
-                  username: _.get(user, 'username'),
-                  about: _.get(user, 'about'),
-                }}
-              />
+              <Sidebar profile={user} />
             </div>
           </div>
         </div>
