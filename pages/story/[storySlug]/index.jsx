@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -88,21 +89,21 @@ export default function BlogDetail({ ip }) {
     );
   };
 
-  // const visitStory = () => {
-  //   dispatch(
-  //     storyActions.visitStoryRequest({
-  //       story: story._id,
-  //       user: user._id,
-  //       readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
-  //         .minutes,
-  //       isRead,
-  //       publication: _.get(story, 'publication._id'),
-  //       isExternal: false,
-  //       author: story.user,
-  //       categoryNames: story.categoryNames,
-  //     })
-  //   );
-  // };
+  const visitStory = () => {
+    dispatch(
+      storyActions.visitStoryRequest({
+        story: story._id,
+        user: user._id,
+        readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
+          .minutes,
+        isRead,
+        publication: _.get(story, 'publication._id'),
+        isExternal: false,
+        author: story.user,
+        categoryNames: story.categoryNames,
+      })
+    );
+  };
   console.log(ip);
 
   const togglePublicationFollow = () => {
