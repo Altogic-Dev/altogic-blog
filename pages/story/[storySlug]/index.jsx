@@ -22,18 +22,16 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
 
-
 export async function getServerSideProps({ req }) {
-  const ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
+  const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
       ip,
     },
-  }
+  };
 }
 
-
-export default function BlogDetail({ip}) {
+export default function BlogDetail({ ip }) {
   const router = useRouter();
   const { storySlug } = router.query;
 
@@ -89,23 +87,22 @@ export default function BlogDetail({ip}) {
       })
     );
   };
- 
-  const visitStory = () => {
-    dispatch(
-      storyActions.visitStoryRequest({
-        story: story._id,
-        user: user._id,
-        readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
-          .minutes,
-        isRead,
-        publication: _.get(story, 'publication._id'),
-        isExternal: false,
-        author: story.user,
-        categoryNames: story.categoryNames,
 
-      })
-    );
-  };
+  // const visitStory = () => {
+  //   dispatch(
+  //     storyActions.visitStoryRequest({
+  //       story: story._id,
+  //       user: user._id,
+  //       readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
+  //         .minutes,
+  //       isRead,
+  //       publication: _.get(story, 'publication._id'),
+  //       isExternal: false,
+  //       author: story.user,
+  //       categoryNames: story.categoryNames,
+  //     })
+  //   );
+  // };
   console.log(ip);
 
   const togglePublicationFollow = () => {
@@ -280,7 +277,7 @@ export default function BlogDetail({ip}) {
                     />
                   </div>
                   <Button
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                    className="inline-flex itemvisitStorys-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                     onClick={
                       isPublication ? togglePublicationFollow : toggleFollow
                     }
