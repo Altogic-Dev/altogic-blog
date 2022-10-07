@@ -151,6 +151,9 @@ export const authSlice = createSlice({
     updateUserRequest(state) {
       state.isLoading = true;
     },
+    updateProfileRequest(state) {
+      state.isLoading = true;
+    },
     updateUserSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;

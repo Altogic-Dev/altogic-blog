@@ -16,9 +16,6 @@ const FollowerConnectionService = {
     });
   },
 
-
- 
-
   getFollowerUsers(userId, page = 1, limit = 5) {
     return db
       .model('follower_connection')

@@ -18,7 +18,10 @@ export default function Settings() {
       setUser(_user);
     }
   }, [_user]);
-
+  const currentSubscription = useSelector(
+    (state) => state.payment.currentSubscription
+  );
+  const invoices = useSelector((state) => state.payment.invoices);
   return (
     <div>
       <Head>
@@ -59,7 +62,14 @@ export default function Settings() {
               {/* My Sessions */}
               <MySessions id="my-sessions" className="mb-16" />
               {/* My Plans */}
-              <MyPlans id="my-plans" className="mb-16" />
+              {(currentSubscription || invoices.length > 0) && (
+                <MyPlans
+                  id="my-plans"
+                  className="mb-16"
+                  currentSubscription={currentSubscription}
+                  invoices={invoices}
+                />
+              )}
             </div>
           </div>
         </div>

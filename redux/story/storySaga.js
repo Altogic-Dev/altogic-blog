@@ -3,6 +3,7 @@ import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 import {
+  deleteTopicWritersSaga,
   insertTopicsSaga,
   insertTopicsWriterCountSaga,
 } from '../topics/topicsSaga';
@@ -10,19 +11,23 @@ import {
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const { data, errors } = yield call(
-      StoryService.getFollowingStories,
-      userId,
-      _.get(user, 'mutedUser'),
-      page
-    );
-    if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(
-        storyActions.getFollowingStoriesSuccess({
-          data: data.data,
-          info: data.info,
-        })
+    const info = yield select((state) => state.story.followingStoriesInfo);
+
+    if (_.isNil(info) || page <= info.totalPages) {
+      const { data, errors } = yield call(
+        StoryService.getFollowingStories,
+        userId,
+        _.get(user, 'mutedUser'),
+        page
       );
+      if (!_.isNil(data) && _.isNil(errors)) {
+        yield put(
+          storyActions.getFollowingStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
@@ -90,36 +95,39 @@ function* createReplyComment({ payload: comment }) {
 function* getRecommendedStoriesSaga({ payload: { page } }) {
   try {
     const user = yield select((state) => state.auth.user);
+    const info = yield select((state) => state.story.recommendedStoriesInfo);
 
-    if (!_.isNil(user) && !_.isEmpty(user.recommendedTopics)) {
-      const { data, errors } = yield call(
-        StoryService.GetRecommendedStoriesByUser,
-        {
-          recommendedTopics: user.recommendedTopics,
-          mutedUsers: _.get(user, 'mutedUser'),
-          page,
+    if (_.isNil(info) || page <= info.totalPages) {
+      if (!_.isNil(user) && !_.isEmpty(user.recommendedTopics)) {
+        const { data, errors } = yield call(
+          StoryService.GetRecommendedStoriesByUser,
+          {
+            recommendedTopics: user.recommendedTopics,
+            mutedUsers: _.get(user, 'mutedUser'),
+            page,
+          }
+        );
+        if (!_.isNil(data) && _.isNil(errors)) {
+          yield put(
+            storyActions.getRecommendedStoriesSuccess({
+              data: data.data,
+              info: data.info,
+            })
+          );
         }
-      );
-      if (!_.isNil(data) && _.isNil(errors)) {
-        yield put(
-          storyActions.getRecommendedStoriesSuccess({
-            data: data.data,
-            info: data.info,
-          })
+      } else {
+        const { data, errors } = yield call(
+          StoryService.getRecommendedStories,
+          page
         );
-      }
-    } else {
-      const { data, errors } = yield call(
-        StoryService.getRecommendedStories,
-        page
-      );
-      if (!_.isNil(data) && _.isNil(errors)) {
-        yield put(
-          storyActions.getRecommendedStoriesSuccess({
-            data: data.data,
-            info: data.info,
-          })
-        );
+        if (!_.isNil(data) && _.isNil(errors)) {
+          yield put(
+            storyActions.getRecommendedStoriesSuccess({
+              data: data.data,
+              info: data.info,
+            })
+          );
+        }
       }
     }
   } catch (e) {
@@ -199,12 +207,15 @@ function* getStoryBySlugSaga({ payload: slug }) {
   }
 }
 
-function* getMoreUserStoriesSaga({ payload: { authorId, storyId, page } }) {
+function* getMoreUserStoriesSaga({
+  payload: { authorId, storyId, publicationId, page },
+}) {
   try {
     const { data, errors } = yield call(
       StoryService.getMoreUserStories,
       authorId,
       storyId,
+      publicationId,
       page
     );
     if (!_.isNil(data) && _.isNil(errors)) {
@@ -240,17 +251,24 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const { data, errors } = yield call(
-      StoryService.getUserStories,
-      userID,
-      page,
-      limit
-    );
-    if (errors) throw errors;
-    if (data) {
-      yield put(
-        storyActions.getUserStoriesSuccess({ data: data.data, info: data.info })
+    const info = yield select((state) => state.story.userStoriesInfo);
+
+    if (_.isNil(info) || page <= info.totalPages) {
+      const { data, errors } = yield call(
+        StoryService.getUserStories,
+        userID,
+        page,
+        limit
       );
+      if (errors) throw errors;
+      if (data) {
+        yield put(
+          storyActions.getUserStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
@@ -283,11 +301,18 @@ function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
   }
 }
 
-function* deleteStorySaga({ payload: { storyId, onSuccess } }) {
+function* deleteStorySaga({
+  payload: { storyId, isPublished, categoryNames, onSuccess },
+}) {
   try {
     const { errors } = yield call(StoryService.deleteStory, storyId);
     if (errors) throw errors;
-    yield put(storyActions.deleteStorySuccess(storyId));
+
+    if (!_.isEmpty(categoryNames)) {
+      yield fork(deleteTopicWritersSaga, storyId);
+    }
+
+    yield put(storyActions.deleteStorySuccess({ storyId, isPublished }));
     if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     console.error({ e });
@@ -423,7 +448,6 @@ function* getPublicationsStoriesSaga({ payload }) {
 function* selectFeatureStoriesSaga({
   payload: { index, story, sectionIndex },
 }) {
-  debugger;
   const selectedFeatureStories = yield select(
     (state) => state.story.featureStories
   );
@@ -518,7 +542,6 @@ export default function* rootSaga() {
       storyActions.getUserDraftStoriesRequest.type,
       getUserDraftStoriesSaga
     ),
-    takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
     takeEvery(storyActions.createReplyRequest.type, createReply),
     takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),

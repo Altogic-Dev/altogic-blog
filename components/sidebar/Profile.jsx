@@ -1,11 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import FollowButton from '../basic/followbutton';
 import Button from '../basic/button';
+import Avatar from '../profile/Avatar';
 
 export default function Profile({
   profile,
@@ -14,10 +14,8 @@ export default function Profile({
   isLoading,
 }) {
   const sessionUser = useSelector((state) => state.auth.user);
-  const isMyProfile = _.get(sessionUser, '_id') === _.get(profile, 'id');
-  const dispatch = useDispatch();
-  const [isMyProfileState, setIsMyProfileState] = useState();
 
+  const dispatch = useDispatch();
   const toggleFollow = () => {
     if (isFollowing) {
       return dispatch(
@@ -60,15 +58,12 @@ export default function Profile({
     );
   };
 
-  useEffect(() => {
-    setIsMyProfileState(isMyProfile);
-  }, [isMyProfile]);
   return (
     <div>
-      <img
+      <Avatar
         className="w-20 h-20 mb-3 rounded-full"
         src={_.get(profile, 'profilePicture')}
-        alt=""
+        alt={_.get(profile, 'name')}
       />
       <div className="tracking-sm">
         <h2 className="text-slate-700 text-base font-medium">
@@ -82,15 +77,19 @@ export default function Profile({
           dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
         />
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
-          {!isMyProfileState && (
+          {!_.isEqual(profile, sessionUser) && (
             <FollowButton
               isLoading={isLoading}
               isFollowing={isFollowing}
               onClick={toggleFollow}
             />
           )}
-          {!isMyProfileState && (
-            <Button primaryColor extraClasses="inline-flex gap-2" onClick={toggleSubscribe}>
+          {!_.isEqual(profile, sessionUser) && (
+            <Button
+              primaryColor
+              extraClasses="inline-flex gap-2"
+              onClick={toggleSubscribe}
+            >
               <svg
                 className="w-5 h-5"
                 viewBox="0 0 20 20"
@@ -121,7 +120,7 @@ export default function Profile({
             </Button>
           )}
 
-          {isMyProfileState && (
+          {_.isEqual(profile, sessionUser) && (
             <Link href="/settings">
               <button
                 type="button"

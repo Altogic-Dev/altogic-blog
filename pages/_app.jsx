@@ -24,7 +24,6 @@ function MyApp({ Component, pageProps }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
   const [isMounted, setIsMounted] = useState(false);
-
   const visitPublicationRequest = (publicationName) => {
     dispatch(
       publicationActions.visitPublicationRequest({
@@ -84,7 +83,7 @@ function MyApp({ Component, pageProps }) {
   }, [publicationName]);
 
   useEffect(() => {
-    if (_.isEmpty(publications) && !_.isNil(sessionUser?.publications)) {
+    if (_.isEmpty(publications) && !_.isEmpty(sessionUser?.publications)) {
       dispatch(
         publicationActions.setPublicationsRequest(sessionUser?.publications)
       );

@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
 import { toast } from 'react-toastify';
 
@@ -7,6 +8,7 @@ const initialState = {
   bookmarks: null,
   bookmarkLists: null,
   bookmarkList: null,
+  bookmarkListsInfo: null,
   isLoading: false,
   error: null,
   isStoryBookmarked: null,
@@ -33,7 +35,12 @@ export const bookmarkSlice = createSlice({
     },
     getBookmarkListsSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarkLists = action.payload.result;
+      if (_.isArray(state.bookmarkLists)) {
+        state.bookmarkLists = [...state.bookmarkLists, ...action.payload.data];
+      } else {
+        state.bookmarkLists = action.payload.data;
+      }
+      state.bookmarkListsInfo = action.payload.info;
     },
     getBookmarkListsFailure(state, action) {
       state.isLoading = false;

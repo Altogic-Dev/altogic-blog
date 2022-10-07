@@ -351,14 +351,7 @@ export default function ListDetail() {
                   count: _.get(user, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
-                profile={{
-                  id: _.get(user, '_id'),
-                  name: _.get(user, 'name'),
-                  profilePicture: _.get(user, 'profilePicture'),
-                  followerCount: _.get(user, 'followerCount'),
-                  username: _.get(user, 'username'),
-                  about: _.get(user, 'about'),
-                }}
+                profile={user}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
               />

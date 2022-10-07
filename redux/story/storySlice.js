@@ -19,6 +19,7 @@ const initialState = {
   isLoading: false,
   replies: [],
   replyCount: 0,
+  replyPageSize: null,
   featureStories: {},
 };
 
@@ -157,8 +158,11 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getUserStoriesSuccess(state, action) {
-      state.isLoading = false;
-      state.userStories = action.payload.data;
+      if (_.isArray(state.userStories)) {
+        state.userStories = [...state.userStories, ...action.payload.data];
+      } else {
+        state.userStories = action.payload.data;
+      }
       state.userStoriesInfo = action.payload.info;
     },
 
@@ -173,10 +177,19 @@ export const storySlice = createSlice({
 
     deleteStoryRequest() {},
     deleteStorySuccess(state, action) {
-      state.userStories = _.reject(
-        state.userStories,
-        (story) => story._id === action.payload
-      );
+      if (action.payload.isPublished) {
+        state.userStories = _.reject(
+          state.userStories,
+          (story) => story._id === action.payload.storyId
+        );
+        state.userStoriesInfo.count = state.userStoriesInfo.count - 1;
+      } else {
+        state.userDraftStories = _.reject(
+          state.userDraftStories,
+          (story) => story._id === action.payload.storyId
+        );
+        state.userDraftStoriesInfo.count = state.userDraftStoriesInfo.count - 1;
+      }
     },
 
     updateCategoryNamesRequest() {},

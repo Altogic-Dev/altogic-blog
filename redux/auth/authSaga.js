@@ -35,17 +35,17 @@ function* setUserFromLocalStorage() {
 }
 function* getAuthGrantSaga({ payload }) {
   try {
-    yield call(AuthService.authStateChange, payload.session, payload.user);
+    yield call(AuthService.authStateChange, payload.user, payload.session);
     const res = yield call(AuthService.setUsernameForProvider, {
-      email: payload.user,
+      email: payload.user.email,
       name: payload.user.name,
       provider: payload.user.provider,
     });
     if (!res.errors) {
-      setUserFromLocalStorage();
+      yield call(AuthService.authStateChange, res.data, payload.session);
     }
     if (payload.user && payload.session) {
-      yield put(authActions.loginSuccess(payload.user));
+      yield put(authActions.loginSuccess(res.data));
     }
     if (payload.error) {
       throw payload.error.items;
@@ -222,13 +222,12 @@ function* changePasswordSaga({ payload }) {
 }
 function* updateUserProfileSaga({ payload }) {
   try {
-    const { errors } = yield call(AuthService.updateUserProfile, payload);
+    const { data, errors } = yield call(AuthService.updateUserProfile, payload);
     if (errors) {
       throw errors.items;
     } else {
-      yield call(AuthService.getUserFromDb);
-      setUserFromLocalStorage();
-      yield put(authActions.updateUserSuccess());
+      yield call(AuthService.authStateChange, data);
+      yield put(authActions.updateUserSuccess(data));
     }
   } catch (e) {
     yield put(authActions.updateUserFailure(e));
@@ -362,7 +361,7 @@ export default function* rootSaga() {
     ),
     takeEvery(authActions.resetErrorsRequest.type, errorResetSaga),
     takeEvery(authActions.changePasswordRequest.type, changePasswordSaga),
-    takeEvery(authActions.updateUserRequest.type, updateUserProfileSaga),
+    takeEvery(authActions.updateProfileRequest.type, updateUserProfileSaga),
     takeEvery(authActions.updateUserRequest.type, updateUserSaga),
     takeEvery(authActions.checkUsernameRequest.type, checkUsernameSaga),
     takeEvery(authActions.getSessionsRequest.type, getSessionsSaga),

@@ -3,14 +3,17 @@ import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { Menu, Transition } from '@headlessui/react';
+import { storyActions } from '@/redux/story/storySlice';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { Fragment, useState } from 'react';
+import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import Replies from './story/Replies';
+import DeleteStoryModal from './DeleteStoryModal';
 
 function StoryContent(props) {
   const {
@@ -25,11 +28,15 @@ function StoryContent(props) {
   } = props;
 
   const dispatch = useDispatch();
+  const router = useRouter();
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const story = useSelector((state) => state.story.story);
   const user = useSelector((state) => state.auth.user);
 
+  const isMyProfile = _.get(user, '_id') === _.get(story, 'user._id');
+
   const [slideOvers, setSlideOvers] = useState(false);
+  const [deleteStoryModal, setDeleteStoryModal] = useState(false);
 
   const sendNotification = (type) => {
     dispatch(
@@ -41,8 +48,133 @@ function StoryContent(props) {
         type,
         targetSlug: story.slug,
         sentUserProfilePicture: user.profilePicture,
-        user: story.user,
+        user: story.user._id,
       })
+    );
+  };
+
+  const handleLikeStory = () => {
+    if (isLiked) {
+      dispatch(
+        storyLikesActions.unlikeStoryRequest({
+          userId: _.get(user, '_id'),
+          storyId: _.get(story, '_id'),
+        })
+      );
+    } else {
+      dispatch(
+        storyLikesActions.likeStoryRequest({
+          userId: _.get(user, '_id'),
+          storyId: _.get(story, '_id'),
+          authorId: _.get(story, 'user._id'),
+          publicationId: _.get(story, 'publication._id'),
+          categoryNames: _.get(story, 'categoryNames'),
+        })
+      );
+      sendNotification('story_like');
+    }
+  };
+
+  const getMenuItems = () => {
+    if (isMyProfile) {
+      return (
+        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+          <Menu.Item>
+            <button
+              type="button"
+              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+              onClick={() => {
+                router.push(`/write-a-story?id=${story._id}`);
+              }}
+            >
+              Edit Story
+            </button>
+          </Menu.Item>
+
+          <Menu.Item>
+            <button
+              type="button"
+              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+              onClick={() => {
+                router.push(`/write-a-story-settings?id=${story._id}`);
+              }}
+            >
+              Story Settings
+            </button>
+          </Menu.Item>
+
+          <Menu.Item>
+            <button
+              type="button"
+              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+              onClick={() => {
+                router.push(`stats-blog-post?id=${story._id}`);
+              }}
+            >
+              Story Stats
+            </button>
+          </Menu.Item>
+
+          <Menu.Item>
+            <button
+              type="button"
+              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+              onClick={() => {
+                setDeleteStoryModal(true);
+              }}
+            >
+              Delete Story
+            </button>
+          </Menu.Item>
+        </Menu.Items>
+      );
+    }
+    return (
+      <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+        <div>
+          <button
+            type="button"
+            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+            onClick={toggleFollow}
+          >
+            {isFollowing ? 'Unfollow' : 'Follow'} this author
+          </button>
+        </div>
+        <div>
+          {!isMuted && (
+            <button
+              type="button"
+              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+              onClick={() =>
+                dispatch(
+                  authActions.muteAuthorRequest(_.get(story, 'user._id'))
+                )
+              }
+            >
+              Mute this author
+            </button>
+          )}
+        </div>
+        <div>
+          {!isReported && (
+            <button
+              type="button"
+              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+              onClick={() =>
+                dispatch(
+                  reportActions.reportStoryRequest({
+                    userId: _.get(user, '_id'),
+                    storyId: _.get(story, '_id'),
+                    reportedUserId: _.get(story, 'user._id'),
+                  })
+                )
+              }
+            >
+              Report
+            </button>
+          )}
+        </div>
+      </Menu.Items>
     );
   };
 
@@ -73,7 +205,6 @@ function StoryContent(props) {
               >
                 <circle cx={4} cy={4} r={3} />
               </svg>
-              {/* <span>{_.get(user, 'storyCount')} stories</span> */}
             </div>
           </div>
         </div>
@@ -128,53 +259,7 @@ function StoryContent(props) {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                  <div>
-                    <button
-                      type="button"
-                      className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                      onClick={toggleFollow}
-                    >
-                      {isFollowing ? 'Unfollow' : 'Follow'} this author
-                    </button>
-                  </div>
-                  <div>
-                    {!isMuted && (
-                      <button
-                        type="button"
-                        className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                        onClick={() =>
-                          dispatch(
-                            authActions.muteAuthorRequest(
-                              _.get(story, 'user._id')
-                            )
-                          )
-                        }
-                      >
-                        Mute this author
-                      </button>
-                    )}
-                  </div>
-                  <div>
-                    {!isReported && (
-                      <button
-                        type="button"
-                        className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                        onClick={() =>
-                          dispatch(
-                            reportActions.reportStoryRequest({
-                              userId: _.get(user, '_id'),
-                              storyId: _.get(story, '_id'),
-                              reportedUserId: _.get(story, 'user._id'),
-                            })
-                          )
-                        }
-                      >
-                        Report
-                      </button>
-                    )}
-                  </div>
-                </Menu.Items>
+                {getMenuItems()}
               </Transition>
             </Menu>
           </div>
@@ -189,25 +274,7 @@ function StoryContent(props) {
             <button
               type="button"
               className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-              onClick={() => {
-                if (!isLiked) {
-                  dispatch(
-                    authActions.likeStoryRequest({
-                      userId: _.get(user, '_id'),
-                      storyId: _.get(story, '_id'),
-                    })
-                  );
-                } else {
-                  dispatch(
-                    authActions.unlikeStoryRequest({
-                      userId: _.get(user, '_id'),
-                      storyId: _.get(story, '_id'),
-                      authorId: _.get(story, 'user._id'),
-                    })
-                  );
-                }
-                sendNotification('story_like');
-              }}
+              onClick={handleLikeStory}
             >
               <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
                 <svg
@@ -378,82 +445,19 @@ function StoryContent(props) {
                   leaveFrom="transform opacity-100 scale-100"
                   leaveTo="transform opacity-0 scale-95"
                 >
-                  <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                    <div>
-                      <button
-                        type="button"
-                        className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                        onClick={toggleFollow}
-                      >
-                        {isFollowing ? 'Unfollow' : 'Follow'} this author
-                      </button>
-                    </div>
-                    <div>
-                      {!isMuted && (
-                        <button
-                          type="button"
-                          className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          onClick={() =>
-                            dispatch(
-                              authActions.muteAuthorRequest(
-                                _.get(story, 'user._id')
-                              )
-                            )
-                          }
-                        >
-                          Mute this author
-                        </button>
-                      )}
-                    </div>
-                    <div>
-                      {!isReported && (
-                        <button
-                          type="button"
-                          className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          onClick={() =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: _.get(user, '_id'),
-                                storyId: _.get(story, '_id'),
-                                reportedUserId: _.get(story, 'user._id'),
-                              })
-                            )
-                          }
-                        >
-                          Report
-                        </button>
-                      )}
-                    </div>
-                  </Menu.Items>
+                  {getMenuItems()}
                 </Transition>
               </Menu>
             </div>
           </div>
         </div>
-
         {/* Post sticky menu */}
         <div className="fixed bottom-24 sm:bottom-10 max-w-[257px]">
           <div className="flex items-center justify-center gap-7 max-w-[257px] bg-white px-4 py-2 rounded-[200px] shadow-md">
             <div className="flex items-center gap-8">
               <Button
                 className="flex items-center gap-3 text-slate-400 text-sm tracking-sm hover transition ease-in-out duration-200 hover:text-slate-700"
-                onClick={() =>
-                  isLiked
-                    ? dispatch(
-                        storyLikesActions.unlikeStoryRequest({
-                          userId: _.get(user, '_id'),
-                          storyId: _.get(story, '_id'),
-                        })
-                      )
-                    : dispatch(
-                        storyLikesActions.likeStoryRequest({
-                          userId: _.get(user, '_id'),
-                          storyId: _.get(story, '_id'),
-                          authorId: _.get(story, 'user._id'),
-                          categoryNames: _.get(story, 'categoryNames'),
-                        })
-                      )
-                }
+                onClick={handleLikeStory}
               >
                 <svg
                   className="w-6 h-6"
@@ -539,52 +543,7 @@ function StoryContent(props) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute -top-56 right-0 mt-2 w-56 origin-top divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                      <div>
-                        <button
-                          type="button"
-                          className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                          onClick={toggleFollow}
-                        >
-                          {isFollowing ? 'Unfollow' : 'Follow'} this author
-                        </button>
-                      </div>
-                      <div>
-                        {!isMuted && (
-                          <button
-                            type="button"
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            onClick={() =>
-                              dispatch(
-                                authActions.muteAuthorRequest(
-                                  _.get(story, 'user._id')
-                                )
-                              )
-                            }
-                          >
-                            Mute this author
-                          </button>
-                        )}
-                      </div>
-                      <div>
-                        {!isReported && (
-                          <Button
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            onClick={() =>
-                              dispatch(
-                                reportActions.reportStoryRequest({
-                                  userId: _.get(user, '_id'),
-                                  storyId: _.get(story, '_id'),
-                                  reportedUserId: _.get(story, 'user._id'),
-                                })
-                              )
-                            }
-                          >
-                            Report
-                          </Button>
-                        )}
-                      </div>
-                    </Menu.Items>
+                    {getMenuItems()}
                   </Transition>
                 </Menu>
               </div>
@@ -597,6 +556,21 @@ function StoryContent(props) {
           story={story}
         />
       </div>
+      {deleteStoryModal && (
+        <DeleteStoryModal
+          setDeleteStoryModal={setDeleteStoryModal}
+          clickDelete={() => {
+            dispatch(
+              storyActions.deleteStoryRequest({
+                storyId: _.get(story, '_id'),
+                categoryNames: _.get(story, 'categoryNames'),
+                isPublished: story.isPublished,
+                onSuccess: () => router.back(),
+              })
+            );
+          }}
+        />
+      )}
     </div>
   );
 }

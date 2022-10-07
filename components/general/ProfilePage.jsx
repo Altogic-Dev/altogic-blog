@@ -24,9 +24,8 @@ export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const { username } = router.query;
-
+  const tabNames = ['Home', 'Lists', 'About'];
   const sessionUser = useSelector((state) => state.auth.user);
-  const userStories = useSelector((state) => state.story.userStories);
   const followLoading = useSelector(
     (state) => state.followerConnection.isLoading
   );
@@ -41,19 +40,15 @@ export default function ProfilePage({ About, Home, List }) {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
-  const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
-  const storyLoading = useSelector((state) => state.story.isLoading);
+
   const authLoading = useSelector((state) => state.auth.isLoading);
 
-  const [userState, setUserState] = useState();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
-  const [isMyProfileState, setIsMyProfileState] = useState(false);
-  const [bookmarkListLimit, setBookmarkListLimit] = useState(3);
+  const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [unfollowed, setUnfollowed] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const copyToClipboard = () => {
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
@@ -63,17 +58,17 @@ export default function ProfilePage({ About, Home, List }) {
   const getFollowingUsers = useCallback(() => {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
-        userId: _.get(userState, '_id'),
+        userId: _.get(profileUser, '_id'),
         page: followingPage,
       })
     );
-  }, [followingPage, _.get(userState, '_id')]);
+  }, [followingPage, _.get(profileUser, '_id')]);
 
   const toggleFollowingsModal = () => {
     if (!followingModal && _.isEmpty(userFollowings)) {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
-          userId: _.get(userState, '_id'),
+          userId: _.get(profileUser, '_id'),
           page: followingPage,
         })
       );
@@ -124,75 +119,57 @@ export default function ProfilePage({ About, Home, List }) {
   useEffect(() => {
     if (
       followingPage > 1 ||
-      (_.isEmpty(userFollowings) && _.get(userState, '_id'))
+      (_.isEmpty(userFollowings) && _.get(profileUser, '_id'))
     ) {
       getFollowingUsers();
     }
-  }, [followingPage, _.get(userState, '_id')]);
+  }, [followingPage, _.get(profileUser, '_id')]);
 
   useEffect(() => {
-    if (username) {
-      setIsMyProfileState(username === _.get(sessionUser, 'username'));
-    }
-  }, [username]);
-
-  useEffect(() => {
-    if (!isMyProfileState && username) {
+    if (profileUser?.username !== username && username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
   }, [username]);
 
   useEffect(() => {
-    if (sessionUser) {
-      setUserState(isMyProfileState ? sessionUser : profileUser);
-      if (!isMyProfileState && profileUser) {
-        dispatch(
-          generalActions.getFollowAndSubscribedInfoRequest(
-            _.get(profileUser, '_id')
-          )
-        );
-      }
+    if (profileUser) {
+      dispatch(
+        generalActions.getFollowAndSubscribedInfoRequest(
+          _.get(profileUser, '_id')
+        )
+      );
     }
-  }, [isMyProfileState, profileUser, sessionUser]);
+  }, [profileUser]);
 
   useEffect(() => {
-    if (username && selectedIndex === 1) {
+    if (username && selectedIndex === 1 && _.isNil(bookmarkLists)) {
       dispatch(
         getBookmarkListsRequest({
           username,
           includePrivates: username === sessionUser?.username,
-          limit: bookmarkListLimit,
+          page: bookmarkListPage,
+          limit: 10,
         })
       );
     }
   }, [username]);
 
-  const handleBookmarkListEnd = useCallback(() => {
-    setBookmarkListLimit((prev) => prev + 10);
-  }, []);
+  const handleBookmarkListEnd = () => {
+    setBookmarkListPage((prev) => prev + 1);
+  };
   useEffect(() => {
     if (username) {
       dispatch(
         getBookmarkListsRequest({
           username,
           includePrivates: username === sessionUser?.username,
-          limit: bookmarkListLimit,
+          page: bookmarkListPage,
+          limit: 10,
         })
       );
     }
-  }, [bookmarkListLimit]);
+  }, [bookmarkListPage]);
 
-  useEffect(() => {
-    if (!storyLoading && _.isNil(userStories) && Home) {
-      setIsLoading(storyLoading);
-    }
-    if (!bookmarkLoading && !_.isEmpty(bookmarkLists) && List) {
-      setIsLoading(bookmarkLoading);
-    }
-    if (!authLoading && !_.isEmpty(profileUser) && About) {
-      setIsLoading(authLoading);
-    }
-  }, [storyLoading, bookmarkLoading, authLoading, userStories, bookmarkLists]);
   return (
     <div>
       <Head>
@@ -201,26 +178,16 @@ export default function ProfilePage({ About, Home, List }) {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        
       </Head>
-      <Layout>
+      <Layout loading={authLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="lg:py-10 lg:px-8">
               <div className="flex items-center justify-between gap-4 mb-8 md:mb-14">
-                {selectedIndex === 0 ? (
-                  <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    {userState?.name}&apos;s Stories
-                  </h1>
-                ) : selectedIndex === 1 ? (
-                  <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    {userState?.name}&apos;s Lists
-                  </h1>
-                ) : (
-                  <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                    {userState?.name}&apos;s About
-                  </h1>
-                )}
+                <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
+                  {profileUser?.name}&apos;s {tabNames[selectedIndex]}
+                </h1>
+
                 <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                   <Menu as="div" className="relative inline-block text-left">
                     <div>
@@ -272,7 +239,7 @@ export default function ProfilePage({ About, Home, List }) {
               <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
-                    onClick={() => router.push(`/${userState.username}`)}
+                    onClick={() => router.push(`/${profileUser.username}`)}
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -285,7 +252,9 @@ export default function ProfilePage({ About, Home, List }) {
                     Home
                   </Tab>
                   <Tab
-                    onClick={() => router.push(`/${userState.username}/lists`)}
+                    onClick={() =>
+                      router.push(`/${profileUser.username}/lists`)
+                    }
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -298,7 +267,9 @@ export default function ProfilePage({ About, Home, List }) {
                     Lists
                   </Tab>
                   <Tab
-                    onClick={() => router.push(`/${userState.username}/about`)}
+                    onClick={() =>
+                      router.push(`/${profileUser.username}/about`)
+                    }
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -314,7 +285,7 @@ export default function ProfilePage({ About, Home, List }) {
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <ProfilePageHome
-                      userId={_.get(userState, '_id')}
+                      userId={_.get(profileUser, '_id')}
                       bookmarkLists={bookmarkLists}
                     />
                   </Tab.Panel>
@@ -334,18 +305,18 @@ export default function ProfilePage({ About, Home, List }) {
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
-                      userId={_.get(userState, '_id')}
-                      about={_.get(userState, 'about')}
-                      signUpAt={_.get(userState, 'signUpAt')}
-                      topWriterTopics={_.get(userState, 'topWriterTopics')}
-                      followerCount={_.get(userState, 'followerCount')}
-                      followingCount={_.get(userState, 'followingCount')}
+                      userId={_.get(profileUser, '_id')}
+                      about={_.get(profileUser, 'about')}
+                      signUpAt={_.get(profileUser, 'signUpAt')}
+                      topWriterTopics={_.get(profileUser, 'topWriterTopics')}
+                      followerCount={_.get(profileUser, 'followerCount')}
+                      followingCount={_.get(profileUser, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfileState && (
+                    {!_.isEqual(profileUser, sessionUser) && (
                       <AboutSubscribeCard
-                        name={_.get(userState, 'name')}
-                        mailAddress={_.get(userState, 'mailAddress')}
+                        name={_.get(profileUser, 'name')}
+                        mailAddress={_.get(profileUser, 'mailAddress')}
                       />
                     )}
                   </Tab.Panel>
@@ -357,17 +328,10 @@ export default function ProfilePage({ About, Home, List }) {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(userState, 'followingCount'),
+                  count: _.get(profileUser, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
-                profile={{
-                  id: _.get(userState, '_id'),
-                  name: _.get(userState, 'name'),
-                  profilePicture: _.get(userState, 'profilePicture'),
-                  followerCount: _.get(userState, 'followerCount'),
-                  username: _.get(userState, 'username'),
-                  about: _.get(userState, 'about'),
-                }}
+                profile={profileUser}
                 followLoading={followLoading}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
@@ -378,17 +342,10 @@ export default function ProfilePage({ About, Home, List }) {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(userState, 'followingCount'),
+                  count: _.get(profileUser, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
-                profile={{
-                  id: _.get(userState, '_id'),
-                  name: _.get(userState, 'name'),
-                  profilePicture: _.get(userState, 'profilePicture'),
-                  followerCount: _.get(userState, 'followerCount'),
-                  username: _.get(userState, 'username'),
-                  about: _.get(userState, 'about'),
-                }}
+                profile={profileUser}
               />
             </div>
           </div>
@@ -501,7 +458,7 @@ export default function ProfilePage({ About, Home, List }) {
                     as="h3"
                     className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                   >
-                    {_.get(userState, 'followingCount')} Following
+                    {_.get(profileUser, 'followingCount')} Following
                   </Dialog.Title>
                   <div>
                     <ul className="mb-6">
