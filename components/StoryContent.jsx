@@ -7,6 +7,7 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { Fragment, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import Replies from './story/Replies';
@@ -20,6 +21,7 @@ function StoryContent(props) {
     isFollowing,
     isMuted,
     isReported,
+    forwardedRef,
   } = props;
 
   const dispatch = useDispatch();
@@ -45,7 +47,7 @@ function StoryContent(props) {
   };
 
   return (
-    <div>
+    <div ref={forwardedRef}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
         <div className="flex items-center gap-3">
           <img
@@ -433,8 +435,7 @@ function StoryContent(props) {
         <div className="fixed bottom-24 sm:bottom-10 max-w-[257px]">
           <div className="flex items-center justify-center gap-7 max-w-[257px] bg-white px-4 py-2 rounded-[200px] shadow-md">
             <div className="flex items-center gap-8">
-              <button
-                type="button"
+              <Button
                 className="flex items-center gap-3 text-slate-400 text-sm tracking-sm hover transition ease-in-out duration-200 hover:text-slate-700"
                 onClick={() =>
                   isLiked
@@ -466,7 +467,7 @@ function StoryContent(props) {
                     fill="currentColor"
                   />
                 </svg>
-              </button>
+              </Button>
               {!_.get(story, 'isRestrictedComments') && (
                 <button
                   type="button"
@@ -567,8 +568,7 @@ function StoryContent(props) {
                       </div>
                       <div>
                         {!isReported && (
-                          <button
-                            type="button"
+                          <Button
                             className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             onClick={() =>
                               dispatch(
@@ -581,7 +581,7 @@ function StoryContent(props) {
                             }
                           >
                             Report
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </Menu.Items>

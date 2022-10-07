@@ -485,6 +485,13 @@ function* getPublicationStoriesByTopicSaga({
     yield put(storyActions.getPublicationsStoriesByTopicFailure(e));
   }
 }
+function* visitStorySaga({ payload: { story, user } }) {
+  try {
+    yield call(StoryService.visitStory, story, user);
+  } catch (e) {
+    yield put(storyActions.getPublicationsStoriesByTopicFailure(e));
+  }
+}
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -535,5 +542,6 @@ export default function* rootSaga() {
       storyActions.getPublicationsStoriesByTopicRequest.type,
       getPublicationStoriesByTopicSaga
     ),
+    takeEvery(storyActions.visitStoryRequest.type, visitStorySaga),
   ]);
 }

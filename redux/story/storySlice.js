@@ -252,6 +252,16 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    visitStoryRequest(state) {
+      state.isLoading = true;
+    },
+    visitStorySuccess(state) {
+      state.isLoading = true;
+    },
+    visitStoryFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

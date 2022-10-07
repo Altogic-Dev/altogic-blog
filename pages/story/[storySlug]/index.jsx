@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { storyActions } from '@/redux/story/storySlice';
@@ -19,6 +19,8 @@ import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import Sidebar from '@/layouts/Sidebar';
 import StoryContent from '@/components/StoryContent';
 import { publicationActions } from '@/redux/publication/publicationSlice';
+import Button from '@/components/basic/button';
+import useUnload from '@/hooks/useUnload';
 
 export default function BlogDetail() {
   const router = useRouter();
@@ -44,10 +46,12 @@ export default function BlogDetail() {
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
+  const contentRef = useRef();
   const [createNewList, setCreateNewList] = useState(false);
   const [didMount, setDidMount] = useState(true);
   const [morePage, setMorePage] = useState(1);
-
+  const [isRead, setIsRead] = useState(false);
+  const [enterTime, setEnterTime] = useState();
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -71,6 +75,18 @@ export default function BlogDetail() {
           followingUserProfilePicture: _.get(story, 'user.profilePicture'),
           followingUsername: _.get(story, 'user.username'),
         },
+      })
+    );
+  };
+
+  const visitStory = (enterTime, isRead) => {
+    dispatch(
+      storyActions.visitStoryRequest({
+        story: story._id,
+        user: user._id,
+        readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
+          .minutes,
+        isRead,
       })
     );
   };
@@ -108,7 +124,27 @@ export default function BlogDetail() {
     );
   };
 
+  const onScroll = useCallback(() => {
+    const { pageYOffset } = window;
+    if (
+      (pageYOffset /
+        (contentRef.current.scrollHeight - 100 - (isPublication ? 0 : 100))) *
+        100 >
+        40 ||
+      _.get(story, 'estimatedReadingTime') < 3
+    ) {
+      setIsRead(true);
+    }
+  }, []);
+
+  useUnload((e) => {
+    visitStory(enterTime, isRead);
+    e.preventDefault();
+  });
+
   useEffect(() => {
+    setEnterTime(DateTime.now());
+    window.addEventListener('scroll', onScroll, { passive: true });
     if (!_.isNil(story) && didMount) {
       dispatch(
         generalActions.getConnectInformationStoryRequest({
@@ -127,6 +163,13 @@ export default function BlogDetail() {
       }
       setDidMount(false);
     }
+    return () => {
+      if (story) {
+        visitStory(enterTime, isRead);
+        window.removeEventListener('scroll', onScroll, { passive: true });
+        clearInterval();
+      }
+    };
   }, [story]);
 
   useEffect(() => {
@@ -142,7 +185,6 @@ export default function BlogDetail() {
   }, [story, morePage]);
 
   useEffect(() => {
-    console.log(story?.storySlug !== storySlug, story?.storySlug, storySlug);
     if (storySlug && story?.storySlug !== storySlug) {
       dispatch(storyActions.getStoryBySlugRequest(storySlug));
     }
@@ -162,6 +204,7 @@ export default function BlogDetail() {
       );
     }
   }, [user]);
+
   return (
     <div>
       <Head>
@@ -169,8 +212,9 @@ export default function BlogDetail() {
         <meta name="description" content="Altogic Medium Blog App Detail" />
         <link rel="icon" href="/favicon.svg" />
       </Head>
+
       <Layout>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
+        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0 ">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-5 lg:px-8">
               {isPublication && (
@@ -189,6 +233,7 @@ export default function BlogDetail() {
                 </div>
               )}
               <StoryContent
+                forwardedRef={contentRef}
                 bookmarkLists={bookmarkLists}
                 setCreateNewList={setCreateNewList}
                 bookmarks={bookmarks}
@@ -216,15 +261,14 @@ export default function BlogDetail() {
                       className="max-w-xl text-slate-600 text-xs tracking-sm"
                     />
                   </div>
-                  <button
-                    type="button"
+                  <Button
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                     onClick={
                       isPublication ? togglePublicationFollow : toggleFollow
                     }
                   >
                     {moreFromFollowing ? 'Unfollow' : 'Follow'}
-                  </button>
+                  </Button>
                 </div>
                 <div className="divide-y divide-gray-200">
                   {_.map(moreUserStories, (moreStory) => (
@@ -268,13 +312,12 @@ export default function BlogDetail() {
                   ))}
                 </div>
                 <div className="pt-10 border-t border-gray-200 text-center">
-                  <button
-                    type="button"
+                  <Button
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                     onClick={() => setMorePage((prev) => prev + 1)}
                   >
                     Read more from {_.get(story, 'user.name')}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
