@@ -15,7 +15,7 @@ export default function PublicationsNewsletterSettings() {
   const formSchema = new yup.ObjectSchema({
     title: yup.string().required('Title is required'),
     description: yup.string().required('Description is required'),
-    link: yup.string().url("Url is not valid'").required('Url is required'),
+    link: yup.string().url('Url is not valid').required('Url is required'),
     file: yup.string().required('Logo is required'),
   });
 
@@ -81,7 +81,6 @@ export default function PublicationsNewsletterSettings() {
           name="description"
           content="Altogic Medium Blog App Publications Newsletter Settings"
         />
-        
       </Head>
       <Layout>
         <form

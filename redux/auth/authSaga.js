@@ -37,15 +37,15 @@ function* getAuthGrantSaga({ payload }) {
   try {
     yield call(AuthService.authStateChange, payload.user, payload.session);
     const res = yield call(AuthService.setUsernameForProvider, {
-      email: payload.user,
+      email: payload.user.email,
       name: payload.user.name,
       provider: payload.user.provider,
     });
     if (!res.errors) {
-      setUserFromLocalStorage();
+      yield call(AuthService.authStateChange, res.data, payload.session);
     }
     if (payload.user && payload.session) {
-      yield put(authActions.loginSuccess(payload.user));
+      yield put(authActions.loginSuccess(res.data));
     }
     if (payload.error) {
       throw payload.error.items;

@@ -18,13 +18,16 @@ export default function Settings() {
       setUser(_user);
     }
   }, [_user]);
-
+  const currentSubscription = useSelector(
+    (state) => state.payment.currentSubscription
+  );
+  const invoices = useSelector((state) => state.payment.invoices);
   return (
     <div>
       <Head>
         <title>Altogic Medium Blog App Settings</title>
         <meta name="description" content="Altogic Medium Blog App Settings" />
-        
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0">
@@ -59,7 +62,14 @@ export default function Settings() {
               {/* My Sessions */}
               <MySessions id="my-sessions" className="mb-16" />
               {/* My Plans */}
-              <MyPlans id="my-plans" className="mb-16" />
+              {(currentSubscription || invoices.length > 0) && (
+                <MyPlans
+                  id="my-plans"
+                  className="mb-16"
+                  currentSubscription={currentSubscription}
+                  invoices={invoices}
+                />
+              )}
             </div>
           </div>
         </div>

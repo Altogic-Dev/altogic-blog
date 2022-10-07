@@ -3,6 +3,7 @@ import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 import {
+  deleteTopicWritersSaga,
   insertTopicsSaga,
   insertTopicsWriterCountSaga,
 } from '../topics/topicsSaga';
@@ -206,12 +207,15 @@ function* getStoryBySlugSaga({ payload: slug }) {
   }
 }
 
-function* getMoreUserStoriesSaga({ payload: { authorId, storyId, page } }) {
+function* getMoreUserStoriesSaga({
+  payload: { authorId, storyId, publicationId, page },
+}) {
   try {
     const { data, errors } = yield call(
       StoryService.getMoreUserStories,
       authorId,
       storyId,
+      publicationId,
       page
     );
     if (!_.isNil(data) && _.isNil(errors)) {
@@ -297,11 +301,18 @@ function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
   }
 }
 
-function* deleteStorySaga({ payload: { storyId, onSuccess } }) {
+function* deleteStorySaga({
+  payload: { storyId, isPublished, categoryNames, onSuccess },
+}) {
   try {
     const { errors } = yield call(StoryService.deleteStory, storyId);
     if (errors) throw errors;
-    yield put(storyActions.deleteStorySuccess(storyId));
+
+    if (!_.isEmpty(categoryNames)) {
+      yield fork(deleteTopicWritersSaga, storyId);
+    }
+
+    yield put(storyActions.deleteStorySuccess({ storyId, isPublished }));
     if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     console.error({ e });
@@ -437,7 +448,6 @@ function* getPublicationsStoriesSaga({ payload }) {
 function* selectFeatureStoriesSaga({
   payload: { index, story, sectionIndex },
 }) {
-  debugger;
   const selectedFeatureStories = yield select(
     (state) => state.story.featureStories
   );

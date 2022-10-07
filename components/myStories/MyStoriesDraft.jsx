@@ -7,7 +7,7 @@ import PostCard from '@/components/PostCard';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
 
-function MyStoriesDraft() {
+function MyStoriesDraft({ setDeletedStory }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
@@ -62,7 +62,11 @@ function MyStoriesDraft() {
               router.push(`stats-blog-post?id=${story._id}`);
             },
             deleteStory: () => {
-              dispatch(storyActions.deleteStoryRequest(story._id));
+              setDeletedStory({
+                storyId: story._id,
+                categoryNames: story.categoryNames,
+                isPublished: story.isPublished,
+              });
             },
           }}
           actionMenu

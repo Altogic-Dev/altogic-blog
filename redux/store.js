@@ -35,7 +35,10 @@ const makeStore = () => {
       [reportSlice.name]: reportSlice.reducer,
       [recommendationsSlice.name]: recommendationsSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
-      [storyLikesSlice.name]: persistReducer(persistConfig, storySlice.reducer),
+      [storyLikesSlice.name]: persistReducer(
+        persistConfig,
+        storyLikesSlice.reducer
+      ),
       [topicsSlice.name]: topicsSlice.reducer,
       [subscribeSlice.name]: subscribeSlice.reducer,
       [publicationSlice.name]: publicationSlice.reducer,
