@@ -49,7 +49,7 @@ export default function PublicationsNewsletter() {
           name="description"
           content="Altogic Medium Blog App Publications Newsletter"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto md:h-screen px-4 lg:px-8 pb-16">

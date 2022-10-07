@@ -81,7 +81,7 @@ export default function PublicationsNewsletterSettings() {
           name="description"
           content="Altogic Medium Blog App Publications Newsletter Settings"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <form

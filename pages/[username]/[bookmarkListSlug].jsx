@@ -179,7 +179,7 @@ export default function ListDetail() {
           name="description"
           content="Altogic Medium Blog App List Detail"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -351,14 +351,7 @@ export default function ListDetail() {
                   count: _.get(user, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
-                profile={{
-                  id: _.get(user, '_id'),
-                  name: _.get(user, 'name'),
-                  profilePicture: _.get(user, 'profilePicture'),
-                  followerCount: _.get(user, 'followerCount'),
-                  username: _.get(user, 'username'),
-                  about: _.get(user, 'about'),
-                }}
+                profile={user}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
               />

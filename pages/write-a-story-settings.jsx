@@ -100,7 +100,7 @@ export default function WriteAStorySettings() {
           name="description"
           content="Altogic Medium Blog App Write A Story Settings"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-10 mb-20">
