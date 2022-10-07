@@ -206,12 +206,15 @@ function* getStoryBySlugSaga({ payload: slug }) {
   }
 }
 
-function* getMoreUserStoriesSaga({ payload: { authorId, storyId, page } }) {
+function* getMoreUserStoriesSaga({
+  payload: { authorId, storyId, publicationId, page },
+}) {
   try {
     const { data, errors } = yield call(
       StoryService.getMoreUserStories,
       authorId,
       storyId,
+      publicationId,
       page
     );
     if (!_.isNil(data) && _.isNil(errors)) {
