@@ -22,6 +22,7 @@ const initialState = {
   sections: [],
   homeLayout: null,
   selectedPublication: null,
+  isFollowingPublication: false,
 };
 
 export const publicationSlice = createSlice({
@@ -77,6 +78,10 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     visitPublicationSuccess(state) {
+      state.isLoading = false;
+    },
+    visitPublicationFailure(state, action) {
+      state.error = action.payload;
       state.isLoading = false;
     },
     getPublicationStoriesailure(state, action) {
@@ -157,12 +162,17 @@ export const publicationSlice = createSlice({
     setPublicationsOnLogin(state, action) {
       state.publications = action.payload;
     },
+    addPublicationsToUser(state, action) {
+      state.publications = [...state.publications, action.payload];
+    },
 
     followPublicationRequest(state) {
       state.isLoading = true;
     },
     followPublicationSuccess(state, action) {
       state.isLoading = false;
+      state.isFollowingPublication = true;
+      console.log(state.isFollowingPublication);
       state.publication.followerCount += 1;
       state.publicationFollowers = [
         ...state.publicationFollowers,
@@ -181,6 +191,7 @@ export const publicationSlice = createSlice({
     },
     unfollowPublicationSuccess(state, action) {
       state.isLoading = false;
+      state.isFollowingPublication = false;
       state.publication.followerCount -= 1;
       state.userFollowingPublication = state.userFollowingPublication.filter(
         (item) => item !== action.payload
@@ -294,11 +305,11 @@ export const publicationSlice = createSlice({
     },
     selectPublicationSuccess(state, action) {
       state.selectedPublication = action.payload;
-      state.isLoading = false
+      state.isLoading = false;
     },
     selectPublicationFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false
+      state.isLoading = false;
     },
 
     getPublicationHomeLayoutRequest(state) {
@@ -321,6 +332,29 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     updatePublicationHomeLayoutFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    createPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    createPublicationSuccess(state, action) {
+      state.publication = action.payload;
+      state.isLoading = false;
+    },
+    createPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    isFollowingPublicationRequest(state) {
+      state.isLoading = true;
+    },
+    isFollowingPublicationSuccess(state, action) {
+      state.isFollowingPublication = action.payload;
+      state.isLoading = false;
+    },
+    isFollowingPublicationFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

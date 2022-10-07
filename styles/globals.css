@@ -95,6 +95,21 @@
     text-decoration: underline;
     cursor: pointer;
   }
+  #editor-container button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 18px;
+    padding: 0;
+    height: 32px;
+    width: 32px;
+    text-align: center;
+  }
+  #editor-container button:active,
+  #editor-container button:focus {
+    outline: none;
+  }
 
   #tooltip-controls {
     background-color: #111;
@@ -256,6 +271,9 @@
 }
 .main-menu {
   display: none !important;
+}
+.main {
+  height: 90vh;
 }
 * {
   box-sizing: border-box;

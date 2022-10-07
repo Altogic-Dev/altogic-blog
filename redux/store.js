@@ -1,6 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { createWrapper } from 'next-redux-wrapper';
 import createSagaMiddleware from 'redux-saga';
+import storage from 'redux-persist/lib/storage';
+import { persistReducer } from 'redux-persist';
 import rootSaga from './rootSaga';
 import { authSlice } from './auth/authSlice';
 import { followerConnectionSlice } from './followerConnection/followerConnectionSlice';
@@ -17,9 +19,13 @@ import { fileSlice } from './file/fileSlice';
 import { bookmarkSlice } from './bookmarks/bookmarkSlice';
 import { notificationsSlice } from './notifications/notificationsSlice';
 import { statsSlice } from './stats/statsSlice';
+import { paymentSlice } from './payment/paymentSlice';
 
 const sagaMiddleware = createSagaMiddleware();
-
+const persistConfig = {
+  key: 'root',
+  storage,
+};
 const makeStore = () => {
   const store = configureStore({
     reducer: {
@@ -29,7 +35,7 @@ const makeStore = () => {
       [reportSlice.name]: reportSlice.reducer,
       [recommendationsSlice.name]: recommendationsSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
-      [storyLikesSlice.name]: storyLikesSlice.reducer,
+      [storyLikesSlice.name]: persistReducer(persistConfig, storySlice.reducer),
       [topicsSlice.name]: topicsSlice.reducer,
       [subscribeSlice.name]: subscribeSlice.reducer,
       [publicationSlice.name]: publicationSlice.reducer,
@@ -38,6 +44,7 @@ const makeStore = () => {
       [bookmarkSlice.name]: bookmarkSlice.reducer,
       [notificationsSlice.name]: notificationsSlice.reducer,
       [statsSlice.name]: statsSlice.reducer,
+      [paymentSlice.name]: persistReducer(persistConfig, paymentSlice.reducer),
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>

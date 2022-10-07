@@ -19,6 +19,7 @@ const initialState = {
   isLoading: false,
   replies: [],
   replyCount: 0,
+  replyPageSize: null,
   featureStories: {},
 };
 
@@ -153,14 +154,23 @@ export const storySlice = createSlice({
       }
     },
 
-    getUserStoriesRequest() {},
+    getUserStoriesRequest(state) {
+      state.isLoading = true;
+    },
     getUserStoriesSuccess(state, action) {
-      state.userStories = action.payload.data;
+      if (_.isArray(state.userStories)) {
+        state.userStories = [...state.userStories, ...action.payload.data];
+      } else {
+        state.userStories = action.payload.data;
+      }
       state.userStoriesInfo = action.payload.info;
     },
 
-    getUserDraftStoriesRequest() {},
+    getUserDraftStoriesRequest(state) {
+      state.isLoading = true;
+    },
     getUserDraftStoriesSuccess(state, action) {
+      state.isLoading = false;
       state.userDraftStories = action.payload.data;
       state.userDraftStoriesInfo = action.payload.info;
     },
@@ -243,6 +253,16 @@ export const storySlice = createSlice({
       state.featureStories = action.payload;
     },
     selectFeatureStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    visitStoryRequest(state) {
+      state.isLoading = true;
+    },
+    visitStorySuccess(state) {
+      state.isLoading = true;
+    },
+    visitStoryFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

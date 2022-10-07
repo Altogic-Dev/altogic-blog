@@ -1,6 +1,7 @@
 import { toMonthName } from '@/utils/utils';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
+
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const getIntroOfPage = (count) => {
@@ -27,68 +28,83 @@ function CustomTooltip({ active, payload, label }) {
   return null;
 }
 
-export default function ReadingBarChart({ rawData, type }) {
-  const [data, setData] = useState([]);
+export default function ReadingBarChart({ type, data }) {
+  const [dataManipulated, setDataManipulated] = useState();
 
   useEffect(() => {
-    let tempData = {};
-    const tempStack = [];
-
-    if (type === '12 Months') {
-      rawData?.forEach((obj) => {
-        const monthName = toMonthName(obj.groupby.group.split('.')[1]);
+    let tempData;
+    const tempDataManipulated = [];
+    if (type === '24 Hours') {
+      data?.forEach((obj) => {
+        const hour = obj.groupby.group.split(':')[0];
+        const minute = obj.groupby.group.split(':')[1];
         tempData = {
-          [monthName]: {
-            ..._.get(tempData, monthName),
-            memberReadTimes:
-              (_.get(tempData, monthName)?.memberReadTimes ?? 0) + obj.sum,
-            name: monthName,
+          ...tempData,
+          [`${hour}:${minute}`]: {
+            name: `${hour}:${minute}`,
+            count: _.get(tempData, `${hour}:${minute}`.count) ?? 0 + obj.count,
+          },
+        };
+      });
+    } else if (type === '12 Months') {
+      data?.forEach((obj) => {
+        const monthText = toMonthName(obj.groupby.group.split('-')[1]);
+        tempData = {
+          ...tempData,
+          [monthText]: {
+            name: monthText,
+            count: _.get(tempData, monthText.count) ?? 0 + obj.count,
           },
         };
       });
     } else {
-      rawData?.forEach((obj) => {
+      data?.forEach((obj) => {
+        const day = obj.groupby.group.split('-')[0];
+        const monthText = toMonthName(obj.groupby.group.split('-')[1]);
+
         tempData = {
           ...tempData,
-          [obj.groupby.group]: {
-            ..._.get(tempData, obj.groupby.group),
-            memberReadTimes:
-              (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +
-              obj.sum,
-            name: obj.groupby.group,
+          [`${day} ${monthText}`]: {
+            name: `${day} ${monthText}`,
+            count:
+              _.get(tempData, `${day} ${monthText}`.count) ?? 0 + obj.count,
           },
         };
       });
     }
     _.forEach(tempData, (obj) => {
-      tempStack.push({
-        name: obj.name,
-        memberReadTimes: obj.memberReadTimes ?? 0,
-      });
+      tempDataManipulated.push(obj);
     });
-    setData(tempStack);
-  }, [rawData]);
+    setDataManipulated(tempDataManipulated);
+  }, [data]);
 
+  if (data?.length > 0) {
+    return (
+      <>
+        <div className="hidden md:block w-full h-[280px] md:h-[550px]">
+          <ResponsiveContainer>
+            <BarChart id="bar-chart" data={dataManipulated}>
+              <Bar dataKey="count" barSize={32} fill="#6D28D9" />
+              <XAxis axisLine={false} tickLine={false} dataKey="name" />
+              <Tooltip cursor={false} content={<CustomTooltip />} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div className="md:hidden w-full h-[280px] md:h-[550px]">
+          <ResponsiveContainer>
+            <BarChart id="bar-chart" data={dataManipulated}>
+              <Bar dataKey="count" barSize={16} fill="#6D28D9" />
+              <XAxis axisLine={false} tickLine={false} dataKey="name" />
+              <Tooltip cursor={false} content={<CustomTooltip />} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </>
+    );
+  }
   return (
-    <>
-      <div className="hidden md:block w-full h-[280px] md:h-[550px]">
-        <ResponsiveContainer>
-          <BarChart id="bar-chart" data={data}>
-            <Bar dataKey="count" barSize={32} fill="#6D28D9" />
-            <XAxis axisLine={false} tickLine={false} dataKey="name" />
-            <Tooltip cursor={false} content={<CustomTooltip />} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="md:hidden w-full h-[280px] md:h-[550px]">
-        <ResponsiveContainer>
-          <BarChart id="bar-chart" data={data}>
-            <Bar dataKey="count" barSize={16} fill="#6D28D9" />
-            <XAxis axisLine={false} tickLine={false} dataKey="name" />
-            <Tooltip cursor={false} content={<CustomTooltip />} />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </>
+    <div className="flex items-center justify-center h-96">
+      No data available
+    </div>
   );
 }

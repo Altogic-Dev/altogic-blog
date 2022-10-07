@@ -5,7 +5,7 @@ import { fileActions } from './fileSlice';
 function* uploadFileSaga({ payload }) {
   try {
     if (payload.existingFile) {
-      yield call(FileService.deleteFile, payload.name);
+      yield call(FileService.deleteFile, payload.existingFile);
     }
     const { data, errors } = yield call(
       FileService.uploadFile,
@@ -28,10 +28,17 @@ function* uploadFileSaga({ payload }) {
     yield put(fileActions.uploadFileFailure(e));
   }
 }
+function* deleteFileSaga({ payload }) {
+  yield call(FileService.deleteFile, payload);
+  yield put(fileActions.clearFileLink());
+}
 export function* clearFileLink() {
   yield put(fileActions.clearFileLink());
 }
 
 export default function* fileSaga() {
-  yield all([takeEvery(fileActions.uploadFileRequest.type, uploadFileSaga)]);
+  yield all([
+    takeEvery(fileActions.uploadFileRequest.type, uploadFileSaga),
+    takeEvery(fileActions.deleteFileRequest.type, deleteFileSaga),
+  ]);
 }

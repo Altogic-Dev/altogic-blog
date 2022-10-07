@@ -17,8 +17,13 @@ export default function PublishSettings() {
 
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
+  const publications = useSelector((state) => state.publication.publications);
+  const selectedPublication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
 
-  const { storySlug, isEdited } = router.query;
+  const { storySlug, isEdited, topic } = router.query;
+
   const [user, setUser] = useState();
   const [authors, setAuthors] = useState([]);
   const [inpSelectedAuthor, setInpSelectedAuthor] = useState();
@@ -53,7 +58,6 @@ export default function PublishSettings() {
       setInpCategoryNames((prev) => [...prev, categoryName]);
     }
   };
-
   const handlePublish = () => {
     dispatch(
       storyActions.publishStoryRequest({
@@ -63,10 +67,7 @@ export default function PublishSettings() {
             inpSelectedAuthor.type === 'publication'
               ? inpSelectedAuthor.id
               : undefined,
-          user:
-            inpSelectedAuthor.type === 'user'
-              ? inpSelectedAuthor.id
-              : undefined,
+          user: user?._id,
           isPublished: true,
           categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,
@@ -78,7 +79,9 @@ export default function PublishSettings() {
   };
 
   useEffect(() => {
-    if (storySlug) dispatch(storyActions.getCacheStoryRequest(storySlug));
+    if (storySlug) {
+      dispatch(storyActions.getCacheStoryRequest(storySlug));
+    }
   }, [storySlug]);
 
   useEffect(() => {
@@ -89,35 +92,53 @@ export default function PublishSettings() {
     if (!_.isNil(story)) {
       setInpCategoryNames(story.categoryNames || []);
       setInpRestrictComments(story.isRestrictedComments);
-      const userAuthor = {
-        id: userFromStorage?._id,
-        name: userFromStorage?.name,
-        userName: userFromStorage?.username,
-        avatar: userFromStorage?.profilePicture,
-        type: 'user',
-      };
-      setAuthors([
-        userAuthor,
-        ...(story.publication
-          ? [
-              {
-                id: story.publication?._id,
-                name: story.publication?.name,
-                userName: story.publication?.publicationname,
-                avatar: story.publication?.logo,
-                type: 'publication',
-              },
-            ]
-          : []),
-      ]);
-      setInpSelectedAuthor(userAuthor);
     }
   }, [story]);
+  useEffect(() => {
+    if (topic) {
+      setInpCategoryNames((prev) => [...prev, topic]);
+    }
+  }, [topic, story]);
+
+  useEffect(() => {
+    const userAuthor = {
+      id: userFromStorage?._id,
+      name: userFromStorage?.name,
+      userName: userFromStorage?.username,
+      avatar: userFromStorage?.profilePicture,
+      type: 'user',
+    };
+    const publicationAuthors = _.map(publications, (publication) => ({
+      id: publication._id,
+      name: publication.name,
+      userName: publication.publicationname,
+      avatar: publication.logo,
+      type: 'publication',
+    }));
+
+    if (!_.isEmpty(publicationAuthors))
+      setAuthors([userAuthor, ...publicationAuthors]);
+    else setAuthors([userAuthor]);
+
+    if (selectedPublication) {
+      const selected = _.find(
+        publicationAuthors,
+        (publication) => publication.id === selectedPublication?._id
+      );
+      setInpSelectedAuthor(selected);
+    } else {
+      setInpSelectedAuthor(userAuthor);
+    }
+  }, [publications]);
 
   return (
     <div>
       <Head>
         <title>Altogic Medium Blog App Publish Settings</title>
+        <meta
+          name="twitter:image"
+          content="https://altogic-stripe-payment.vercel.app/og-image.png"
+        />
         <meta
           name="description"
           content="Altogic Medium Blog App Publish Settings"

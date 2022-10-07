@@ -43,7 +43,7 @@ export default function MyStories({ publishedPage, draftPage }) {
       <Head>
         <title>Altogic Medium Blog App My Stories</title>
         <meta name="description" content="Altogic Medium Blog App My Stories" />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -244,16 +244,7 @@ export default function MyStories({ publishedPage, draftPage }) {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar
-                profile={{
-                  id: _.get(user, '_id'),
-                  name: _.get(user, 'name'),
-                  profilePicture: _.get(user, 'profilePicture'),
-                  followerCount: _.get(user, 'followerCount'),
-                  username: _.get(user, 'username'),
-                  about: _.get(user, 'about'),
-                }}
-              />
+              <Sidebar profile={user} />
             </div>
           </div>
         </div>

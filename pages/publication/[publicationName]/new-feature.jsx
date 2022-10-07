@@ -108,7 +108,7 @@ export default function PublicationsNewFeature() {
           name="description"
           content="Altogic Medium Blog App Publications New Feature"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <form

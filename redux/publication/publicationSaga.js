@@ -365,6 +365,9 @@ function* setPublications({ payload }) {
   );
   yield put(publicationActions.setPublicationsOnLogin(data));
 }
+function* addPublicationToUser({ payload: publication }) {
+  yield put(publicationActions.addPublicationsToUser(publication));
+}
 function* getUserPublicationsSaga() {
   try {
     const { data, errors } = yield call(
@@ -434,6 +437,44 @@ function* updatePublicationHomeLayoutSaga({ payload: layout }) {
     }
   } catch (e) {
     yield put(publicationActions.updatePublicationHomeLayoutFailure());
+  }
+}
+
+function* createPublicationSaga({ payload: { publication, onSuccess } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.createPublication,
+      publication
+    );
+    if (errors) {
+      throw errors.items;
+    }
+    if (data) {
+      yield put(publicationActions.createPublicationSuccess(data));
+      if (_.isFunction(onSuccess)) onSuccess();
+      yield fork(selectPublicationSaga, { payload: data });
+      yield fork(addPublicationToUser, { payload: data });
+    }
+  } catch (e) {
+    yield put(publicationActions.createPublicationFailure());
+  }
+}
+
+function* isFollowingPublicationSaga({ payload: { publicationId, userId } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.isFollowingPublication,
+      publicationId,
+      userId
+    );
+    if (errors) throw errors.items;
+    if (_.isEmpty(data)) {
+      yield put(publicationActions.isFollowingPublicationSuccess(false));
+    } else {
+      yield put(publicationActions.isFollowingPublicationSuccess(true));
+    }
+  } catch (e) {
+    yield put(publicationActions.isFollowingPublicationFailure(e));
   }
 }
 
@@ -546,5 +587,13 @@ export default function* rootSaga() {
   yield takeEvery(
     publicationActions.updatePublicationHomeLayoutRequest.type,
     updatePublicationHomeLayoutSaga
+  );
+  yield takeEvery(
+    publicationActions.createPublicationRequest.type,
+    createPublicationSaga
+  );
+  yield takeEvery(
+    publicationActions.isFollowingPublicationRequest.type,
+    isFollowingPublicationSaga
   );
 }

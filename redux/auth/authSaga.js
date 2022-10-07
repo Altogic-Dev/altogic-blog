@@ -35,9 +35,9 @@ function* setUserFromLocalStorage() {
 }
 function* getAuthGrantSaga({ payload }) {
   try {
-    yield call(AuthService.authStateChange, payload.session, payload.user);
+    yield call(AuthService.authStateChange, payload.user, payload.session);
     const res = yield call(AuthService.setUsernameForProvider, {
-      userId: payload.user._id,
+      email: payload.user,
       name: payload.user.name,
       provider: payload.user.provider,
     });
@@ -62,12 +62,13 @@ function* loginSaga({ payload }) {
       payload.password
     );
     if (user) {
-      const { data } = yield call(
-        PublicationService.getAllUserPublications,
-        user.publications
-      );
-
-      yield put(publicationActions.setPublicationsOnLogin(data));
+      if (user.publications) {
+        const { data } = yield call(
+          PublicationService.getAllUserPublications,
+          user.publications
+        );
+        yield put(publicationActions.setPublicationsOnLogin(data));
+      }
       yield put(authActions.loginSuccess(user));
     }
     if (errors) {
@@ -221,13 +222,12 @@ function* changePasswordSaga({ payload }) {
 }
 function* updateUserProfileSaga({ payload }) {
   try {
-    const { errors } = yield call(AuthService.updateUserProfile, payload);
+    const { data, errors } = yield call(AuthService.updateUserProfile, payload);
     if (errors) {
       throw errors.items;
     } else {
-      yield call(AuthService.getUserFromDb);
-      setUserFromLocalStorage();
-      yield put(authActions.updateUserSuccess());
+      yield call(AuthService.authStateChange, data);
+      yield put(authActions.updateUserSuccess(data));
     }
   } catch (e) {
     yield put(authActions.updateUserFailure(e));
@@ -361,7 +361,7 @@ export default function* rootSaga() {
     ),
     takeEvery(authActions.resetErrorsRequest.type, errorResetSaga),
     takeEvery(authActions.changePasswordRequest.type, changePasswordSaga),
-    takeEvery(authActions.updateUserRequest.type, updateUserProfileSaga),
+    takeEvery(authActions.updateProfileRequest.type, updateUserProfileSaga),
     takeEvery(authActions.updateUserRequest.type, updateUserSaga),
     takeEvery(authActions.checkUsernameRequest.type, checkUsernameSaga),
     takeEvery(authActions.getSessionsRequest.type, getSessionsSaga),

@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react';
 import { Transition, Menu } from '@headlessui/react';
-import { useRouter } from 'next/router';
 import {
   CogIcon,
   UserIcon,
@@ -13,10 +12,8 @@ import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import Avatar from './profile/Avatar';
-import Button from './basic/button';
 
 export default function HeaderDropdown({ user, logout, className }) {
-  const router = useRouter();
   const dispatch = useDispatch();
   const publications = useSelector((state) => state.publication.publications);
   const selectPublication = (publication) => {
@@ -50,24 +47,26 @@ export default function HeaderDropdown({ user, logout, className }) {
         </div>
         <div className="divide-y divide-gray-200">
           <div>
-            <Menu.Item onClick={() => router.push(`/${user?.username}/about`)}>
+            <Link href={`/${user?.username}/about`}>
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                 <UserIcon className="w-4 h-4 text-slate-500" />
                 View profile
               </a>
-            </Menu.Item>
-            <Menu.Item onClick={() => router.push('/settings')}>
+            </Link>
+
+            <Link href="/settings">
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                 <CogIcon className="w-4 h-4 text-slate-500" />
                 Settings
               </a>
-            </Menu.Item>
-            <Menu.Item onClick={() => router.push('/stats')}>
+            </Link>
+
+            <Link href="/stats">
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                 <ChartBarIcon className="w-4 h-4 text-slate-500" />
                 Stats
               </a>
-            </Menu.Item>
+            </Link>
           </div>
           <div>
             <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
@@ -78,43 +77,36 @@ export default function HeaderDropdown({ user, logout, className }) {
                 key={publication._id}
                 onClick={() => selectPublication(publication)}
               >
-                <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                   <img
                     src={publication?.logo}
                     alt={publication?.name}
                     className="w-5 h-5 rounded-full"
                   />
                   {publication?.name}
-                </a>
+                </span>
               </Menu.Item>
             ))}
-            <Menu.Item>
-              <Link href="/publications">
-                <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                  <ClipboardListIcon className="w-4 h-4 text-slate-500" />
-                  Manage Publications
-                </a>
-              </Link>
-            </Menu.Item>
+
+            <Link href="/publications">
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                <ClipboardListIcon className="w-4 h-4 text-slate-500" />
+                Manage Publications
+              </a>
+            </Link>
           </div>
           <div>
-            <Menu.Item>
-              <a
-                href="#"
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
-              >
+            <Link href="/help">
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                 <QuestionMarkCircleIcon className="w-4 h-4 text-slate-500" />
                 Help
               </a>
-            </Menu.Item>
-            <Menu.Item>
-              <Button
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
-                onClick={logout}
-              >
+            </Link>
+            <Menu.Item onClick={logout}>
+              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                 <LogoutIcon className="w-4 h-4 text-slate-500" />
                 Logout
-              </Button>
+              </span>
             </Menu.Item>
           </div>
         </div>

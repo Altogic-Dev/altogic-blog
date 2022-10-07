@@ -185,6 +185,7 @@ export default function StatsBlogPost() {
     }
   }, [viewDateType]);
 
+  
   return (
     <div>
       <Head>
@@ -193,7 +194,7 @@ export default function StatsBlogPost() {
           name="description"
           content="Altogic Medium Blog App Stats Blog Post"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">

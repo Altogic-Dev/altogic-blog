@@ -44,7 +44,7 @@ function MyStoriesDraft() {
           authorUrl={`/${story.username}`}
           authorName={story.username}
           authorImage={story.userProfilePicture}
-          storyUrl={`/story/${story.storySlug}`}
+          storyUrl={`/write-a-story?id=${story._id}`}
           timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
           title={story.title}
           infoText={story.excerpt}

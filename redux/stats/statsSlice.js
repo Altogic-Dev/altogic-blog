@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
+import { DateTime } from 'luxon';
 import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
@@ -140,7 +141,7 @@ export const statsSlice = createSlice({
     getPublicationLikesPeriodicallySuccess(state, action) {
       state.likesPeriodically = {
         ...state.likesPeriodically,
-        [action.payload.type]: action.payload.likesPeriodically,
+        [action.payload.type]: action.payload,
       };
 
       state.likesDateType = action.payload.type;
@@ -158,7 +159,7 @@ export const statsSlice = createSlice({
     getPublicationViewsPeriodicallySuccess(state, action) {
       state.viewsPeriodically = {
         ...state.viewsPeriodically,
-        [action.payload.type]: action.payload.viewsPeriodically,
+        [action.payload.type]: action.payload,
       };
       state.viewsDateType = action.payload.type;
 
@@ -175,7 +176,7 @@ export const statsSlice = createSlice({
     getPublicationReadsPeriodicallySuccess(state, action) {
       state.readsPeriodically = {
         ...state.readsPeriodically,
-        [action.payload.type]: action.payload.readsPeriodically,
+        [action.payload.type]: action.payload,
       };
 
       state.readsDateType = action.payload.type;
@@ -208,7 +209,37 @@ export const statsSlice = createSlice({
       state.isLoading = true;
     },
     getPublicationsStoriesStatsSuccess(state, action) {
-     state.publicationStories = action.payload
+      const dateFirst = DateTime.fromISO(action.payload.oneMonth[0]?.createdAt);
+      const oneMonthName = `${dateFirst.monthLong} ${dateFirst.year}`;
+
+      const dateSecond = DateTime.fromISO(
+        action.payload.twoMonths[0]?.createdAt
+      );
+      const twoMonthsName = `${dateSecond.monthLong} ${dateSecond.year}`;
+
+      const dateThird = DateTime.fromISO(
+        action.payload.threeMonths[0]?.createdAt
+      );
+      const threeMonthsName = `${dateThird.monthLong} ${dateThird.year}`;
+      if (action.payload.oneMonth.length > 0)
+        state.publicationStories.push({
+          data: action.payload.twoMonths,
+          name: oneMonthName,
+          page: action.payload.page,
+        });
+      if (action.payload.twoMonths.length > 0)
+        state.publicationStories.push({
+          data: action.payload.twoMonths,
+          name: twoMonthsName,
+          page: action.payload.page,
+        });
+      if (action.payload.threeMonths.length > 0)
+        state.publicationStories.push({
+          data: action.payload.threeMonths,
+          name: threeMonthsName,
+          page: action.payload.page,
+        });
+
       state.isLoading = false;
     },
     getPublicationsStoriesStatsFailure(state, action) {

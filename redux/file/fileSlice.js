@@ -44,6 +44,7 @@ export const fileSlice = createSlice({
     clearFileLink(state) {
       state.fileLink = null;
     },
+    deleteFileRequest() {},
   },
   extraReducers: {
     [HYDRATE]: (state, action) => ({

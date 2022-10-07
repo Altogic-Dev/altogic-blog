@@ -184,7 +184,7 @@ export default function HeaderMenu() {
                 <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
                   <Avatar
                     className="inline-block w-10 h-10 rounded-full"
-                    src={selectedPublication?.profilePicture}
+                    src={selectedPublication?.logo}
                     alt={selectedPublication?.name}
                   />
                 </Menu.Button>
@@ -246,7 +246,7 @@ export default function HeaderMenu() {
             <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
               <Avatar
                 className="inline-block w-10 h-10 rounded-full"
-                src={selectedPublication?.profilePicture}
+                src={selectedPublication?.logo}
                 alt={selectedPublication?.name}
               />
             </Menu.Button>

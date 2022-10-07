@@ -9,18 +9,18 @@ const AuthService = {
   register(user) {
     return auth.signUpWithEmail(user.email, user.password, user);
   },
-  async getAuthGrant(token) {
+  getAuthGrant(token) {
     return auth.getAuthGrant(token);
   },
-  authStateChange(newSession, newUser) {
-    auth.setSession(newSession);
-    auth.setUser(newUser);
+  authStateChange(newUser, newSession = null) {
+    if (newSession) auth.setSession(newSession);
+    if (newUser) auth.setUser(newUser);
   },
-  async setUsernameForProvider({ userId, name, provider }) {
+  setUsernameForProvider({ email, name, provider }) {
     let username = '';
     const req = {
       name,
-      userId,
+      email,
       provider,
       color: `#${randomInt(0, 16777215).toString(16)}`,
     };
@@ -42,31 +42,32 @@ const AuthService = {
     }
     return data;
   },
-  async login(email, password) {
+  login(email, password) {
     return auth.signInWithEmail(email, password);
   },
   getUser() {
     return auth.getUser();
   },
-  async forgotPassword({ email }) {
+  forgotPassword({ email }) {
     return auth.sendResetPwdEmail(email);
   },
-  async resendVerificationEmail(email) {
+  resendVerificationEmail(email) {
     return auth.resendVerificationEmail(email);
   },
   setUserFromLocal(user) {
     auth.setUser(user);
   },
-  async updateUser(newUser) {
+  updateUser(newUser) {
     return db.model('users').object(auth.getUser()._id).update(newUser);
   },
 
-  async resetPassword({ accessToken, newPassword }) {
+  resetPassword({ accessToken, newPassword }) {
     return auth.resetPwdWithToken(accessToken, newPassword);
   },
-  async authenticateWithProvider(provider) {
+  authenticateWithProvider(provider) {
     return auth.signInWithProvider(provider);
   },
+
   updateFollowingTopics(followingTopicsUpdated) {
     return db.model('users').object(auth.getUser()._id).update({
       followingTopics: followingTopicsUpdated,
@@ -81,7 +82,7 @@ const AuthService = {
   checkUsernameAvailability(username) {
     return endpoint.post('/user/username', { username });
   },
-  async getAllSession() {
+  getAllSession() {
     return auth.getAllSessions();
   },
   deleteSession(session) {

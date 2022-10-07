@@ -25,14 +25,18 @@ export default function PopularStories({ title, stories }) {
       <SidebarTitle title={title} spacing="mb-4" />
       <ul className="space-y-3">
         {storyList?.map((story) => (
-          <Link href={`/story/${story.slug}`} key={story._id}>
+          <Link href={`/story/${story.storySlug}`} key={story._id}>
             <a className="flex items-center gap-3">
               <li className="flex gap-3">
-                <img
-                  className="rounded-full w-[30px] h-[30px]"
-                  src={story.storyImages[0]}
-                  alt={story.title}
-                />
+                {story.storyImages && story.storyImages.length > 0 ? (
+                  <img
+                    className="rounded-full w-[30px] h-[30px]"
+                    src={story.storyImages[0]}
+                    alt={story.title}
+                  />
+                ) : (
+                  <div className="rounded-full w-[30px] h-[30px] bg-slate-200" />
+                )}
                 <div className="flex justify-center">
                   <div className="flex flex-col text-sm font-light tracking-sm">
                     <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">

@@ -119,6 +119,7 @@ export default function Home() {
 
   useEffect(() => {
     if (user) {
+      console.log({ user });
       dispatch(
         getBookmarkListsRequest({
           username: user.username,
@@ -139,7 +140,7 @@ export default function Home() {
       <Head>
         <title>Altogic Medium Blog App</title>
         <meta name="description" content="Altogic Medium Blog App" />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
@@ -181,9 +182,9 @@ export default function Home() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(followingStories) && (
                       <ListObserver onEnd={handleFollowingEndOfList}>
-                        {_.map(followingStories, (story, index) => (
+                        {_.map(followingStories, (story) => (
                           <PostCard
-                            key={story._id + index}
+                            key={story._id}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}

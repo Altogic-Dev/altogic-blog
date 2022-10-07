@@ -17,7 +17,7 @@ function* likeNormalizeStorySaga(likeNormalizedBody) {
 }
 
 function* likeStorySaga({
-  payload: { userId, storyId, authorId, categoryNames },
+  payload: { userId, storyId, authorId, publicationId, categoryNames },
 }) {
   try {
     const likeNormalizedBody = _.map(categoryNames, (category) => ({
@@ -30,10 +30,13 @@ function* likeStorySaga({
       userId,
       storyId,
       authorId,
+      publicationId,
       categoryNames
     );
     if (errors) throw errors;
-    yield fork(likeNormalizeStorySaga, likeNormalizedBody);
+    if (!_.isEmpty(categoryNames)) {
+      yield fork(likeNormalizeStorySaga, likeNormalizedBody);
+    }
     yield put(storyLikesActions.likeStorySuccess());
     yield fork(updateStoryLikeCountSaga, true);
   } catch (e) {

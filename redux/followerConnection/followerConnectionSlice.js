@@ -89,7 +89,6 @@ export const followerConnectionSlice = createSlice({
       state.isFollowing = action.payload;
     },
     increaseFollowingStoriesPage(state) {
-      console.log(state.userFollowings);
       if (state.userFollowings?.length > 0) state.followingStoriesPage += 1;
     },
 

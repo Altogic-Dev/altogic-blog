@@ -99,7 +99,7 @@ export default function WriteAStorySettings() {
           name="description"
           content="Altogic Medium Blog App Write A Story Settings"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-10 mb-20">
@@ -209,9 +209,12 @@ export default function WriteAStorySettings() {
                       <span className="inline-block mb-3 text-slate-500 text-sm">
                         {_.get(userState, 'followerCount')} Followers
                       </span>
-                      <p className="text-slate-500 text-xs mb-8">
-                        {_.get(userState, 'about')}
-                      </p>
+                      <p
+                        className="text-slate-500 text-xs mb-8"
+                        dangerouslySetInnerHTML={{
+                          __html: _.get(userState, 'about'),
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
