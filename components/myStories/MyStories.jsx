@@ -11,6 +11,7 @@ import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
 import MyStoriesPublished from './MyStoriesPublished';
 import MyStoriesDraft from './MyStoriesDraft';
+import DeleteStoryModal from '../DeleteStoryModal';
 
 export default function MyStories({ publishedPage, draftPage }) {
   const sessionUser = useSelector((state) => state.auth.user);
@@ -23,6 +24,7 @@ export default function MyStories({ publishedPage, draftPage }) {
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user, setUser] = useState();
+  const [deletedStory, setDeletedStory] = useState(null);
 
   const copyToClipboard = () => {
     const basePath = window.location.origin;
@@ -231,10 +233,10 @@ export default function MyStories({ publishedPage, draftPage }) {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <MyStoriesPublished />
+                    <MyStoriesPublished setDeletedStory={setDeletedStory} />
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <MyStoriesDraft />
+                    <MyStoriesDraft setDeletedStory={setDeletedStory} />
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
@@ -322,6 +324,14 @@ export default function MyStories({ publishedPage, draftPage }) {
           </div>
         )}
       </Layout>
+      {deletedStory && (
+        <DeleteStoryModal
+          setDeleteStoryModal={() => setDeletedStory(null)}
+          clickDelete={() => {
+            dispatch(storyActions.deleteStoryRequest(deletedStory));
+          }}
+        />
+      )}
     </div>
   );
 }

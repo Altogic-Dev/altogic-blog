@@ -136,6 +136,7 @@ function* insertTopicWritersSaga(story) {
     username: user.username,
     profilePicture: user.profilePicture,
     user: user._id,
+    publication: story.publication,
     story: story._id,
   }));
   yield call(TopicsService.insertTopicWriters, topicWriters);
@@ -159,6 +160,15 @@ export function* insertTopicsSaga(story) {
     console.error(e);
   }
 }
+
+export function* deleteTopicWritersSaga(storyId) {
+  try {
+    yield call(TopicsService.deleteTopicWriters, storyId);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 export function* insertTopicsWriterCountSaga(story) {
   try {
     const updatedTopicWriterCounts = [];

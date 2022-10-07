@@ -63,6 +63,9 @@ const TopicsService = {
   insertTopics(topics) {
     return db.model('topics').create(topics);
   },
+  deleteTopicWriters(storyId) {
+    return endpoint.delete(`/topic_writers/${storyId}`);
+  },
   insertTopicWriters(topics) {
     return endpoint.put('/topic_writers', topics);
   },
