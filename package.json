@@ -38,6 +38,7 @@
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.32.2",
+    "react-quill": "^2.0.0",
     "react-redux": "^8.0.2",
     "react-share": "^4.4.0",
     "react-spinners": "^0.13.1",
