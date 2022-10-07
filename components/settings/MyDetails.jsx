@@ -229,7 +229,7 @@ export default function MyDetails({ user }) {
               </span>
             </div>
             <div>
-              {/* <EditorToolbar />
+              <EditorToolbar />
               <ReactQuill
                 theme="snow"
                 value={about}
@@ -237,7 +237,7 @@ export default function MyDetails({ user }) {
                 placeholder="You can start typing the forum you want to start."
                 modules={modules}
                 formats={formats}
-              /> */}
+              />
             </div>
           </div>
         </div>
