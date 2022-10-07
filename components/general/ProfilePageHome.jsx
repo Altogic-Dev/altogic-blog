@@ -1,21 +1,31 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
+import ListObserver from '@/components/ListObserver';
 import PostCard from '../PostCard';
-import ListObserver from '../ListObserver';
 
 function ProfilePageHome({ userId, bookmarkLists }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
   const userStories = useSelector((state) => state.story.userStories);
+  const firstUpdate = useRef(true);
 
   const [page, setPage] = useState(1);
   const PAGE_LIMIT = 6;
-  const getUserStories = useCallback(() => {
+
+  const handleEndOfList = () => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    setPage((prev) => prev + 1);
+  };
+
+  const getUserStoriesRequest = () => {
     dispatch(
       storyActions.getUserStoriesRequest({
         userId,
@@ -23,17 +33,13 @@ function ProfilePageHome({ userId, bookmarkLists }) {
         limit: PAGE_LIMIT,
       })
     );
-  }, [page, userId]);
-
-  const handleEndOfList = () => {
-    if (!_.isNil(userStories) && _.size(userStories) >= PAGE_LIMIT) {
-      setPage((prev) => prev + 1);
-    }
   };
 
   useEffect(() => {
-    if (page > 1 || (_.isNil(userStories) && userId)) getUserStories();
-  }, [page, userId]);
+    if (userId) {
+      getUserStoriesRequest();
+    }
+  }, [userId, page]);
 
   return (
     <ListObserver onEnd={handleEndOfList}>

@@ -19,6 +19,7 @@ const initialState = {
   isLoading: false,
   replies: [],
   replyCount: 0,
+  replyPageSize: null,
   featureStories: {},
 };
 
@@ -155,7 +156,11 @@ export const storySlice = createSlice({
 
     getUserStoriesRequest() {},
     getUserStoriesSuccess(state, action) {
-      state.userStories = action.payload.data;
+      if (_.isArray(state.userStories)) {
+        state.userStories = [...state.userStories, ...action.payload.data];
+      } else {
+        state.userStories = action.payload.data;
+      }
       state.userStoriesInfo = action.payload.info;
     },
 

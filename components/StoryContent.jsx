@@ -44,6 +44,28 @@ function StoryContent(props) {
     );
   };
 
+  const handleLikeStory = () => {
+    if (isLiked) {
+      dispatch(
+        storyLikesActions.unlikeStoryRequest({
+          userId: _.get(user, '_id'),
+          storyId: _.get(story, '_id'),
+        })
+      );
+    } else {
+      dispatch(
+        storyLikesActions.likeStoryRequest({
+          userId: _.get(user, '_id'),
+          storyId: _.get(story, '_id'),
+          authorId: _.get(story, 'user._id'),
+          publicationId: _.get(story, 'publication._id'),
+          categoryNames: _.get(story, 'categoryNames'),
+        })
+      );
+      sendNotification('story_like');
+    }
+  };
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
@@ -71,7 +93,6 @@ function StoryContent(props) {
               >
                 <circle cx={4} cy={4} r={3} />
               </svg>
-              {/* <span>{_.get(user, 'storyCount')} stories</span> */}
             </div>
           </div>
         </div>
@@ -187,25 +208,7 @@ function StoryContent(props) {
             <button
               type="button"
               className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
-              onClick={() => {
-                if (!isLiked) {
-                  dispatch(
-                    authActions.likeStoryRequest({
-                      userId: _.get(user, '_id'),
-                      storyId: _.get(story, '_id'),
-                    })
-                  );
-                } else {
-                  dispatch(
-                    authActions.unlikeStoryRequest({
-                      userId: _.get(user, '_id'),
-                      storyId: _.get(story, '_id'),
-                      authorId: _.get(story, 'user._id'),
-                    })
-                  );
-                }
-                sendNotification('story_like');
-              }}
+              onClick={handleLikeStory}
             >
               <span className="inline-flex items-center justify-center p-3 rounded-md group-hover:bg-slate-100">
                 <svg
@@ -428,7 +431,6 @@ function StoryContent(props) {
             </div>
           </div>
         </div>
-
         {/* Post sticky menu */}
         <div className="fixed bottom-24 sm:bottom-10 max-w-[257px]">
           <div className="flex items-center justify-center gap-7 max-w-[257px] bg-white px-4 py-2 rounded-[200px] shadow-md">
@@ -436,23 +438,7 @@ function StoryContent(props) {
               <button
                 type="button"
                 className="flex items-center gap-3 text-slate-400 text-sm tracking-sm hover transition ease-in-out duration-200 hover:text-slate-700"
-                onClick={() =>
-                  isLiked
-                    ? dispatch(
-                        storyLikesActions.unlikeStoryRequest({
-                          userId: _.get(user, '_id'),
-                          storyId: _.get(story, '_id'),
-                        })
-                      )
-                    : dispatch(
-                        storyLikesActions.likeStoryRequest({
-                          userId: _.get(user, '_id'),
-                          storyId: _.get(story, '_id'),
-                          authorId: _.get(story, 'user._id'),
-                          categoryNames: _.get(story, 'categoryNames'),
-                        })
-                      )
-                }
+                onClick={handleLikeStory}
               >
                 <svg
                   className="w-6 h-6"

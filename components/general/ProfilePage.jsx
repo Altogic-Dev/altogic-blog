@@ -53,7 +53,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [isMyProfileState, setIsMyProfileState] = useState(false);
-  const [bookmarkListLimit, setBookmarkListLimit] = useState(3);
+  const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [unfollowed, setUnfollowed] = useState([]);
 
   const copyToClipboard = () => {
@@ -163,26 +163,28 @@ export default function ProfilePage({ About, Home, List }) {
         getBookmarkListsRequest({
           username,
           includePrivates: username === sessionUser?.username,
-          limit: bookmarkListLimit,
+          page: bookmarkListPage,
+          limit: 10,
         })
       );
     }
   }, [username]);
 
-  const handleBookmarkListEnd = useCallback(() => {
-    setBookmarkListLimit((prev) => prev + 10);
-  }, []);
+  const handleBookmarkListEnd = () => {
+    setBookmarkListPage((prev) => prev + 1);
+  };
   useEffect(() => {
     if (username) {
       dispatch(
         getBookmarkListsRequest({
           username,
           includePrivates: username === sessionUser?.username,
-          limit: bookmarkListLimit,
+          page: bookmarkListPage,
+          limit: 10,
         })
       );
     }
-  }, [bookmarkListLimit]);
+  }, [bookmarkListPage]);
   return (
     <div>
       <Head>

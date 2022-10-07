@@ -46,7 +46,6 @@ function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
   }
 }
 
-
 function* getFollowerUsersSaga({ payload: { userId, page } }) {
   try {
     const { data, errors } = yield call(
