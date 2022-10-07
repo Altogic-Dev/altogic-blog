@@ -270,7 +270,7 @@ export default function PublicationSettingsInfo({
                 error={errors.name}
               />
               <p className="mt-1.5 text-sm text-slate-500">
-                Link: medium.com/{publicationname}
+                Link: opinate.com/{publicationname}
               </p>
             </div>
           </div>
@@ -335,7 +335,7 @@ export default function PublicationSettingsInfo({
             </div>
             <div className="flex flex-col items-center gap-4">
               <img
-                className="w-16 h-16 rounded-full"
+                className="w-16 h-16 rounded-full object-contain"
                 src={_.get(uploadedFileLinks, 'profilePicture')}
                 alt=""
               />
@@ -379,7 +379,7 @@ export default function PublicationSettingsInfo({
             </div>
             <div className="flex flex-col items-center gap-4">
               <img
-                className="w-16 h-16 rounded-full"
+                className="w-full h-16 rounded-full object-contain"
                 src={_.get(uploadedFileLinks, 'logo')}
                 alt=""
               />
@@ -414,7 +414,7 @@ export default function PublicationSettingsInfo({
             </div>
             <div className="flex flex-col items-center gap-4">
               <img
-                className="w-16 h-16 rounded-full"
+                className="w-full h-16 rounded-full object-contain"
                 src={_.get(uploadedFileLinks, 'coverImage')}
                 alt=""
               />

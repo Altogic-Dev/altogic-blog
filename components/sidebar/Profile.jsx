@@ -62,8 +62,8 @@ export default function Profile({
     <div>
       <Avatar
         className="w-20 h-20 mb-3 rounded-full"
-        src={profile.profilePicture}
-        alt={profile.name}
+        src={_.get(profile, 'profilePicture')}
+        alt={_.get(profile, 'name')}
       />
       <div className="tracking-sm">
         <h2 className="text-slate-700 text-base font-medium">

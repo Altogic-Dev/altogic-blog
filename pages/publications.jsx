@@ -50,7 +50,7 @@ export default function Publications() {
             <h1 className="text-slate-700 mb-8 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
               Publications
             </h1>
-            <Link href="/publication/new-pub">
+            <Link href="/publication/new-publication">
               <a className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                 New Publication
               </a>
