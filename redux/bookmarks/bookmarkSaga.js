@@ -85,6 +85,7 @@ function* deleteBookmarkSaga({ payload }) {
       payload
     );
     if (data) {
+      console.log({ data });
       yield put(deleteBookmarkSuccess(data));
     }
     if (errors) throw errors.items;
@@ -114,7 +115,7 @@ function* deleteBookmarkListSaga({ payload }) {
       payload
     );
     if (data) {
-      yield put(deleteBookmarkListSuccess(...payload));
+      yield put(deleteBookmarkListSuccess(payload));
     }
     if (errors) throw errors.items;
   } catch (error) {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { deleteBookmarkListRequest } from '@/redux/bookmarks/bookmarkSlice';
+import Router from 'next/router';
 import Button from '../basic/button';
 
 export default function DeleteList({ setDeleteList, listId }) {
@@ -70,6 +71,7 @@ export default function DeleteList({ setDeleteList, listId }) {
                 onClick={() => {
                   dispatch(deleteBookmarkListRequest(listId));
                   setDeleteList(false);
+                  Router.back();
                 }}
               >
                 Delete

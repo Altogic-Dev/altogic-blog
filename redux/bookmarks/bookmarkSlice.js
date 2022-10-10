@@ -110,7 +110,7 @@ export const bookmarkSlice = createSlice({
       state.bookmarkLists = state.bookmarkLists.filter(
         (list) => list._id !== action.payload
       );
-      window.history.back();
+      state.bookmarkList = null;
       toast.success('Bookmark list deleted successfully');
     },
     deleteBookmarkListFailure(state, action) {

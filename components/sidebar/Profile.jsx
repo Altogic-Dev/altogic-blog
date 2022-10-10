@@ -120,7 +120,6 @@ export default function Profile({
               {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
             </Button>
           )}
-          {console.log({ profile, sessionUser })}
           {_.isEqual(profile, sessionUser) && (
             <Link href="/settings">
               <button
