@@ -22,18 +22,16 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
 
-
 export async function getServerSideProps({ req }) {
-  const ip = req.headers["x-real-ip"] || req.connection.remoteAddress;
+  const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
       ip,
     },
-  }
+  };
 }
 
-
-export default function BlogDetail({ip}) {
+export default function BlogDetail({ ip }) {
   const router = useRouter();
   const { storySlug } = router.query;
 
@@ -62,7 +60,7 @@ export default function BlogDetail({ip}) {
   const [didMount, setDidMount] = useState(true);
   const [morePage, setMorePage] = useState(1);
   const [isRead, setIsRead] = useState(false);
-  const [enterTime, setEnterTime] = useState();
+  const [enterTime, setEnterTime] = useState(0);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -89,24 +87,22 @@ export default function BlogDetail({ip}) {
       })
     );
   };
- 
+
   const visitStory = () => {
     dispatch(
       storyActions.visitStoryRequest({
         story: story._id,
         user: user._id,
-        readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
-          .minutes,
+        readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
         isRead,
         publication: _.get(story, 'publication._id'),
         isExternal: false,
-        author: story.user,
+        author: story.user._id,
         categoryNames: story.categoryNames,
-
+        ip,
       })
     );
   };
-  console.log(ip);
 
   const togglePublicationFollow = () => {
     if (isFollowingPublication) {
@@ -145,7 +141,7 @@ export default function BlogDetail({ip}) {
     const { pageYOffset } = window;
     if (
       (pageYOffset /
-        (contentRef.current.scrollHeight - 100 - (isPublication ? 0 : 100))) *
+        (contentRef.current.scrollHeight - 100 - (_.isNil(isPublication) ? 0 : 100))) *
         100 >
         40 ||
       _.get(story, 'estimatedReadingTime') < 3
@@ -155,7 +151,7 @@ export default function BlogDetail({ip}) {
   }, []);
 
   useUnload((e) => {
-    // visitStory();
+    visitStory();
     e.preventDefault();
   });
 
@@ -182,7 +178,7 @@ export default function BlogDetail({ip}) {
     }
     return () => {
       if (story) {
-        // visitStory()
+        visitStory()
         window.removeEventListener('scroll', onScroll, { passive: true });
         clearInterval();
       }

@@ -182,13 +182,13 @@ export const storySlice = createSlice({
           state.userStories,
           (story) => story._id === action.payload.storyId
         );
-        state.userStoriesInfo.count = state.userStoriesInfo.count - 1;
+        state.userStoriesInfo.count -= 1;
       } else {
         state.userDraftStories = _.reject(
           state.userDraftStories,
           (story) => story._id === action.payload.storyId
         );
-        state.userDraftStoriesInfo.count = state.userDraftStoriesInfo.count - 1;
+        state.userDraftStoriesInfo.count -=  1;
       }
     },
 

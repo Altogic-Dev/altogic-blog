@@ -94,7 +94,7 @@ export default function PublicationsNewsletterPublishSettings() {
           name="description"
           content="Altogic Medium Blog App Publish Settings"
         />
-        
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-8 pb-[72px] lg:pb-36">

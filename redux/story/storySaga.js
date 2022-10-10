@@ -509,11 +509,17 @@ function* getPublicationStoriesByTopicSaga({
     yield put(storyActions.getPublicationsStoriesByTopicFailure(e));
   }
 }
-function* visitStorySaga({ payload: { story, user } }) {
+function* visitStorySaga({ payload: visit }) {
   try {
-    yield call(StoryService.visitStory, story, user);
+    const { data, errors } = yield call(StoryService.visitStory,visit);
+
+    if (!_.isNil(errors)) throw errors.items;
+
+    if (!_.isNil(data)) {
+      yield put(storyActions.visitStorySuccess(data));
+    }
   } catch (e) {
-    yield put(storyActions.getPublicationsStoriesByTopicFailure(e));
+    yield put(storyActions.visitStoryFailure(e));
   }
 }
 export default function* rootSaga() {
