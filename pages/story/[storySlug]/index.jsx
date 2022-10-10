@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -99,7 +100,10 @@ export default function BlogDetail({ ip }) {
         isExternal: false,
         author: story.user._id,
         categoryNames: story.categoryNames,
+<<<<<<< HEAD
         ip,
+=======
+>>>>>>> 83b96c55b0ca3886b1a4eb57c7ab71711805196e
       })
     );
   };
@@ -276,7 +280,7 @@ export default function BlogDetail({ ip }) {
                     />
                   </div>
                   <Button
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                    className="inline-flex itemvisitStorys-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                     onClick={
                       isPublication ? togglePublicationFollow : toggleFollow
                     }
