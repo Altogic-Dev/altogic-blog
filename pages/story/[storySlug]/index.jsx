@@ -100,10 +100,6 @@ export default function BlogDetail({ ip }) {
         isExternal: false,
         author: story.user._id,
         categoryNames: story.categoryNames,
-<<<<<<< HEAD
-        ip,
-=======
->>>>>>> 83b96c55b0ca3886b1a4eb57c7ab71711805196e
       })
     );
   };
