@@ -6,6 +6,7 @@ import {
   LinkedinShareButton,
   TwitterShareButton,
 } from 'react-share';
+import Button from './basic/button';
 
 function ShareButtons() {
   const router = useRouter();
@@ -24,10 +25,8 @@ function ShareButtons() {
   return (
     <ul className="flex items-center">
       <li>
-        <TwitterShareButton url={shareUrl}>
-          <a
-            className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-          >
+        <TwitterShareButton url={`${shareUrl}?twitter=true`}>
+          <a className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100">
             <svg
               className="w-6 h-6 text-slate-400"
               viewBox="0 0 24 24"
@@ -45,10 +44,8 @@ function ShareButtons() {
         </TwitterShareButton>
       </li>
       <li>
-        <FacebookShareButton url={shareUrl}>
-          <a
-            className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-          >
+        <FacebookShareButton url={`${shareUrl}?facebook=true`}>
+          <a className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100">
             <svg
               className="w-6 h-6 text-slate-400"
               viewBox="0 0 24 24"
@@ -66,10 +63,8 @@ function ShareButtons() {
         </FacebookShareButton>
       </li>
       <li>
-        <LinkedinShareButton url={shareUrl}>
-          <a
-            className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-          >
+        <LinkedinShareButton url={`${shareUrl}?linkedin=true`}>
+          <a className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100">
             <svg
               className="w-6 h-6 text-slate-400"
               viewBox="0 0 24 24"
@@ -87,8 +82,7 @@ function ShareButtons() {
         </LinkedinShareButton>
       </li>
       <li>
-        <button
-          type="button"
+        <Button
           onClick={copyToClipboard}
           className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
         >
@@ -103,7 +97,7 @@ function ShareButtons() {
               fill="currentColor"
             />
           </svg>
-        </button>
+        </Button>
       </li>
     </ul>
   );

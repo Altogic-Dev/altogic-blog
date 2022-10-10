@@ -404,11 +404,11 @@ function* getFeaturePageSaga({ payload: featureId }) {
   }
 }
 
-function* getPublicationHomeLayoutSaga({ payload: publicationId }) {
+function* getPublicationHomeLayoutSaga({ payload: publication }) {
   try {
     const { data, errors } = yield call(
       PublicationService.getPublicationHomeLayout,
-      publicationId
+      publication
     );
     if (errors) {
       throw errors.items;
