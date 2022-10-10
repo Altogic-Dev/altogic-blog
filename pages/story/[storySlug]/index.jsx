@@ -22,6 +22,7 @@ import StoryContent from '@/components/StoryContent';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
+import Link from 'next/link';
 
 export async function getServerSideProps({ req }) {
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
@@ -243,9 +244,11 @@ export default function BlogDetail({ ip }) {
                   />
                   <span className="text-slate-500 text-sm tracking-sm">
                     Published in{' '}
-                    <span className="text-slate-700 font-semibold">
-                      {_.get(story, 'publication.name')}
-                    </span>
+                    <Link href={`/publication/${_.get(story, 'publication.name')}`}>
+                      <a className="text-slate-700 font-semibold">
+                        {_.get(story, 'publication.name')}
+                      </a>
+                    </Link>
                   </span>
                 </div>
               )}
