@@ -26,6 +26,8 @@ export default function ProfilePage({ About, Home, List }) {
   const dispatch = useDispatch();
   const { username } = router.query;
   const tabNames = ['Home', 'Lists', 'About'];
+  const [isLoading, setIsLoading] = useState(true);
+  const userStories = useSelector((state) => state.story.userStories);
   const sessionUser = useSelector((state) => state.auth.user);
   const followLoading = useSelector(
     (state) => state.followerConnection.isLoading
@@ -43,6 +45,8 @@ export default function ProfilePage({ About, Home, List }) {
   );
 
   const authLoading = useSelector((state) => state.auth.isLoading);
+  const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
+  const storyLoading = useSelector((state) => state.story.isLoading);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
@@ -149,7 +153,7 @@ export default function ProfilePage({ About, Home, List }) {
         getBookmarkListsRequest({
           username,
           includePrivates: username === sessionUser?.username,
-          page: bookmarkListPage,
+          page: 1,
           limit: 10,
         })
       );
@@ -171,6 +175,17 @@ export default function ProfilePage({ About, Home, List }) {
       );
     }
   }, [bookmarkListPage]);
+  useEffect(() => {
+    if (!bookmarkLoading && !_.isNil(bookmarkLists)) {
+      setIsLoading(false);
+    }
+    if (!storyLoading && !_.isNil(userStories)) {
+      setIsLoading(false);
+    }
+    if (!authLoading && !_.isNil(profileUser)) {
+      setIsLoading(false);
+    }
+  }, [bookmarkLoading, authLoading, storyLoading]);
   return (
     <div>
       <Head>
@@ -180,7 +195,7 @@ export default function ProfilePage({ About, Home, List }) {
           content="Altogic Medium Blog App Notifications"
         />
       </Head>
-      <Layout loading={authLoading}>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="lg:py-10 lg:px-8">
@@ -239,7 +254,7 @@ export default function ProfilePage({ About, Home, List }) {
               </div>
               <Tab.Group
                 selectedIndex={selectedIndex}
-                onChange={setSelectedIndex}
+                onChange={(index) => setSelectedIndex(index)}
               >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
@@ -288,10 +303,7 @@ export default function ProfilePage({ About, Home, List }) {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <ProfilePageHome
-                      userId={_.get(profileUser, '_id')}
-                      selectedTab={selectedIndex}
-                    />
+                    <ProfilePageHome userId={_.get(profileUser, '_id')} />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
                     <ListObserver onEnd={handleBookmarkListEnd}>

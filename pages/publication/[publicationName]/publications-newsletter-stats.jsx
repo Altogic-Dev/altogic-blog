@@ -77,7 +77,6 @@ export default function PublicationsNewsletterStats() {
     }
   }, [publication]);
 
-  console.log(newsletters);
   return (
     <div>
       <Head>
