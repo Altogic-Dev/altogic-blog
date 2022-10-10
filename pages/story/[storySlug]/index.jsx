@@ -45,6 +45,9 @@ export default function BlogDetail({ ip }) {
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
   );
+  const followLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const isFollowingPublication = useSelector(
     (state) => state.publication.isFollowingPublication
   );
@@ -141,7 +144,9 @@ export default function BlogDetail({ ip }) {
     const { pageYOffset } = window;
     if (
       (pageYOffset /
-        (contentRef.current.scrollHeight - 100 - (_.isNil(isPublication) ? 0 : 100))) *
+        (contentRef.current.scrollHeight -
+          100 -
+          (_.isNil(isPublication) ? 0 : 100))) *
         100 >
         40 ||
       _.get(story, 'estimatedReadingTime') < 3
@@ -178,7 +183,7 @@ export default function BlogDetail({ ip }) {
     }
     return () => {
       if (story) {
-        visitStory()
+        visitStory();
         window.removeEventListener('scroll', onScroll, { passive: true });
         clearInterval();
       }
@@ -342,7 +347,9 @@ export default function BlogDetail({ ip }) {
               <Sidebar
                 profile={_.get(story, 'user')}
                 isFollowing={isFollowing}
+                toggleFollow={toggleFollow}
                 isSubscribed={isSubscribed}
+                followLoading={followLoading}
                 whoToFollow
                 popularTopics
                 popularStories
