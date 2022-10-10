@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import FollowButton from '../basic/followbutton';
+import Button from '../basic/button';
 
 export default function PublicationCard({
   publication,
@@ -47,6 +48,11 @@ export default function PublicationCard({
       );
     }
   };
+
+  const handleSelectPublication = () => {
+    dispatch(publicationActions.selectPublicationRequest(publication));
+  };
+
   return (
     <div className="my-12">
       <div className="flex items-center justify-between w-full mb-4">
@@ -85,6 +91,13 @@ export default function PublicationCard({
                 ) || 'Owner'}
               </span>
             </div>
+            <Button
+              loading={isLoading}
+              extraClasses="gap-2 px-[14px] "
+              onClick={handleSelectPublication}
+            >
+              Select
+            </Button>
           </div>
         )}
       </div>
