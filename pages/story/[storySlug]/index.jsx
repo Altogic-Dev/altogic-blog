@@ -22,6 +22,7 @@ import StoryContent from '@/components/StoryContent';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
+import Link from 'next/link';
 
 export async function getServerSideProps({ req }) {
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
@@ -34,7 +35,7 @@ export async function getServerSideProps({ req }) {
 
 export default function BlogDetail({ ip }) {
   const router = useRouter();
-  const { storySlug } = router.query;
+  const { storySlug, facebook, twitter, linkedin } = router.query;
 
   const dispatch = useDispatch();
 
@@ -100,7 +101,7 @@ export default function BlogDetail({ ip }) {
         readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
         isRead,
         publication: _.get(story, 'publication._id'),
-        isExternal: false,
+        isExternal: facebook || twitter || linkedin,
         author: story.user._id,
         categoryNames: story.categoryNames,
       })
@@ -143,12 +144,13 @@ export default function BlogDetail({ ip }) {
   const onScroll = useCallback(() => {
     const { pageYOffset } = window;
     if (
-      (pageYOffset /
-        (contentRef.current.scrollHeight -
-          100 -
-          (_.isNil(isPublication) ? 0 : 100))) *
-        100 >
-        40 ||
+      (contentRef.current.scrollHeightpageYOffset &&
+        (pageYOffset /
+          (contentRef.current.scrollHeight -
+            100 -
+            (_.isNil(isPublication) ? 0 : 100))) *
+          100 >
+          40) ||
       _.get(story, 'estimatedReadingTime') < 3
     ) {
       setIsRead(true);
@@ -245,9 +247,13 @@ export default function BlogDetail({ ip }) {
                   />
                   <span className="text-slate-500 text-sm tracking-sm">
                     Published in{' '}
-                    <span className="text-slate-700 font-semibold">
-                      {_.get(story, 'publication.name')}
-                    </span>
+                    <Link
+                      href={`/publication/${_.get(story, 'publication.name')}`}
+                    >
+                      <a className="text-slate-700 font-semibold">
+                        {_.get(story, 'publication.name')}
+                      </a>
+                    </Link>
                   </span>
                 </div>
               )}
