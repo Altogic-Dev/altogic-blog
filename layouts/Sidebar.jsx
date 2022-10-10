@@ -23,6 +23,7 @@ export default function Sidebar({
   popularStories,
   mobilePopularStories,
   profile,
+  toggleFollow,
   following,
   relatedTopics,
   publicationProfile,
@@ -36,7 +37,7 @@ export default function Sidebar({
   publications,
   publicationsMatch,
   followLoading,
-  followingStoriesPage
+  followingStoriesPage,
 }) {
   return (
     <>
@@ -46,6 +47,7 @@ export default function Sidebar({
       {profile && (
         <Profile
           profile={profile}
+          toggleFollowProp={toggleFollow}
           isFollowing={isFollowing}
           isSubscribed={isSubscribed}
           isLoading={followLoading}
@@ -59,7 +61,12 @@ export default function Sidebar({
         />
       )}
       {mobilePopularStories && <MobilePopularStories />}
-      {storiesYouFollow && <StoriesYouFollow storiesYouFollow={storiesYouFollow} page={followingStoriesPage} />}
+      {storiesYouFollow && (
+        <StoriesYouFollow
+          storiesYouFollow={storiesYouFollow}
+          page={followingStoriesPage}
+        />
+      )}
       {(whoToFollow || topWriters) && (
         <WhoToFollow isTopWriters={topWriters} Tag={Tag} />
       )}

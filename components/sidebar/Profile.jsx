@@ -10,6 +10,7 @@ import Avatar from '../profile/Avatar';
 export default function Profile({
   profile,
   isFollowing,
+  toggleFollowProp,
   isSubscribed,
   isLoading,
 }) {
@@ -21,7 +22,7 @@ export default function Profile({
       return dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
-          followingUserId: _.get(profile, 'id'),
+          followingUserId: _.get(profile, '_id'),
           notUpdate: true,
         })
       );
@@ -30,7 +31,7 @@ export default function Profile({
       followerConnectionActions.followRequest({
         followerUser: sessionUser,
         followingUser: {
-          followingUser: _.get(profile, 'id'),
+          followingUser: _.get(profile, '_id'),
           followingName: _.get(profile, 'name'),
           followingUserProfilePicture: _.get(profile, 'profilePicture'),
           followingUsername: _.get(profile, 'username'),
@@ -45,7 +46,7 @@ export default function Profile({
       return dispatch(
         subscribeConnectionActions.unSubscribeRequest({
           userId: _.get(sessionUser, '_id'),
-          subscribingUserId: _.get(profile, 'id'),
+          subscribingUserId: _.get(profile, '_id'),
         })
       );
     }
@@ -53,7 +54,7 @@ export default function Profile({
       subscribeConnectionActions.subscribeRequest({
         userId: _.get(sessionUser, '_id'),
         userEmail: _.get(sessionUser, 'email'),
-        subscribingUserId: _.get(profile, 'id'),
+        subscribingUserId: _.get(profile, '_id'),
       })
     );
   };
@@ -76,12 +77,13 @@ export default function Profile({
           className="text-slate-500 text-xs mb-8"
           dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
         />
+        {console.log({ profile, sessionUser })}
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
           {!_.isEqual(profile, sessionUser) && (
             <FollowButton
               isLoading={isLoading}
               isFollowing={isFollowing}
-              onClick={toggleFollow}
+              onClick={toggleFollowProp || toggleFollow}
             />
           )}
           {!_.isEqual(profile, sessionUser) && (

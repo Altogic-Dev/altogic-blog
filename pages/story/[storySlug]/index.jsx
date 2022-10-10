@@ -46,6 +46,9 @@ export default function BlogDetail({ ip }) {
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
   );
+  const followLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const isFollowingPublication = useSelector(
     (state) => state.publication.isFollowingPublication
   );
@@ -244,7 +247,9 @@ export default function BlogDetail({ ip }) {
                   />
                   <span className="text-slate-500 text-sm tracking-sm">
                     Published in{' '}
-                    <Link href={`/publication/${_.get(story, 'publication.name')}`}>
+                    <Link
+                      href={`/publication/${_.get(story, 'publication.name')}`}
+                    >
                       <a className="text-slate-700 font-semibold">
                         {_.get(story, 'publication.name')}
                       </a>
@@ -348,7 +353,9 @@ export default function BlogDetail({ ip }) {
               <Sidebar
                 profile={_.get(story, 'user')}
                 isFollowing={isFollowing}
+                toggleFollow={toggleFollow}
                 isSubscribed={isSubscribed}
+                followLoading={followLoading}
                 whoToFollow
                 popularTopics
                 popularStories

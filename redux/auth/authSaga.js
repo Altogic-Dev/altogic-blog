@@ -291,6 +291,15 @@ export function* updateUserSaga(newUser) {
     })
   );
 }
+export function* updateProfileUserSaga(newUser) {
+  const user = yield select((state) => state.auth.profileUser);
+  yield put(
+    authActions.updateProfileUser({
+      ...user,
+      ...newUser,
+    })
+  );
+}
 function* logoutSaga() {
   yield call(AuthService.logout);
   yield put(authActions.logoutSuccess());
