@@ -108,7 +108,11 @@ export default function MyDetails({ user }) {
     };
   };
   const checkUsername = (e) => {
-    dispatch(authActions.checkUsernameRequest(e.target.value));
+    if (e.target.value !== user.username) {
+      dispatch(authActions.checkUsernameRequest(e.target.value));
+    } else {
+      clearErrors('username');
+    }
   };
   if (typeof window !== 'undefined') {
     const Quill = require('quill');
@@ -134,11 +138,11 @@ export default function MyDetails({ user }) {
           profilePicture: userAvatarLink,
         })
       );
-      setFile();
     }
   }, [userAvatarLink]);
   const deleteProfilePicture = () => {
     setFile();
+    delete profileRequest.profilePicture;
   };
   return (
     <div id="my-details" className="mb-16">
@@ -190,11 +194,13 @@ export default function MyDetails({ user }) {
               </span>
             </div>
             <div className="flex items-start justify-between">
-              <Avatar
-                src={file ? URL.createObjectURL(file) : user?.profilePicture}
-                alt={user?.name}
-                className="w-16 h-16 object-cover"
-              />
+              {(file || user?.profilePicture) && (
+                <Avatar
+                  src={file ? URL.createObjectURL(file) : user?.profilePicture}
+                  alt={user?.name}
+                  className="w-16 h-16 object-cover"
+                />
+              )}
               <div className="flex items-center gap-4">
                 {file && (
                   <Button

@@ -123,7 +123,7 @@ export default function TagPage({ Home, Latest, Best }) {
       <Head>
         <title>Altogic Medium Blog App</title>
         <meta name="description" content="Altogic Medium Blog App" />
-        
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 py-4 lg:py-0">

@@ -235,6 +235,9 @@ export const authSlice = createSlice({
     updateUser(state, action) {
       state.user = action.payload;
     },
+    updateProfileUser(state, action) {
+      state.profileUser = action.payload;
+    },
 
     searchUserByUsernameRequest(state) {
       state.isLoading = true;

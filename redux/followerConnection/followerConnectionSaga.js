@@ -3,7 +3,7 @@ import _ from 'lodash';
 import FollowerConnectionService from '@/services/followerConnection';
 import { followerConnectionActions } from './followerConnectionSlice';
 import { updateFollowerCountSaga } from '../story/storySaga';
-import { updateUserSaga } from '../auth/authSaga';
+import { updateProfileUserSaga, updateUserSaga } from '../auth/authSaga';
 
 function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
   try {
@@ -21,6 +21,10 @@ function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
     yield fork(updateUserSaga, {
       followingCount: user.followingCount - 1,
     });
+    const userProfile = yield select((state) => state.auth.profileUser);
+    yield fork(updateProfileUserSaga, {
+      followerCount: userProfile.followerCount - 1,
+    });
   } catch (e) {
     yield put(followerConnectionActions.unfollowFailure(e));
   }
@@ -34,12 +38,16 @@ function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
       followingUser
     );
     if (errors) throw errors;
-    yield put(followerConnectionActions.followSuccess(followingUser));
+    yield put(followerConnectionActions.followSuccess());
     if (!notUpdate) {
       yield fork(updateFollowerCountSaga, true);
     }
     yield fork(updateUserSaga, {
       followingCount: followerUser.followingCount + 1,
+    });
+    const userProfile = yield select((state) => state.auth.profileUser);
+    yield fork(updateProfileUserSaga, {
+      followerCount: userProfile.followerCount + 1,
     });
   } catch (e) {
     yield put(followerConnectionActions.followFailure(e));

@@ -22,6 +22,7 @@ import StoryContent from '@/components/StoryContent';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
+import Link from 'next/link';
 
 export async function getServerSideProps({ req }) {
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
@@ -34,16 +35,20 @@ export async function getServerSideProps({ req }) {
 
 export default function BlogDetail({ ip }) {
   const router = useRouter();
-  const { storySlug } = router.query;
+  const { storySlug, facebook, twitter, linkedin } = router.query;
 
   const dispatch = useDispatch();
 
   const story = useSelector((state) => state.story.story);
+  const loading = useSelector((state) => state.story.isLoading);
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
   const user = useSelector((state) => state.auth.user);
   const isMuted = useSelector((state) => state.auth.isMuted);
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
+  );
+  const followLoading = useSelector(
+    (state) => state.followerConnection.isLoading
   );
   const isFollowingPublication = useSelector(
     (state) => state.publication.isFollowingPublication
@@ -61,7 +66,8 @@ export default function BlogDetail({ ip }) {
   const [didMount, setDidMount] = useState(true);
   const [morePage, setMorePage] = useState(1);
   const [isRead, setIsRead] = useState(false);
-  const [enterTime, setEnterTime] = useState();
+  const [enterTime, setEnterTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -94,17 +100,15 @@ export default function BlogDetail({ ip }) {
       storyActions.visitStoryRequest({
         story: story._id,
         user: user._id,
-        readingTime: DateTime.now().diff(enterTime, 'seconds').toObject()
-          .minutes,
+        readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
         isRead,
         publication: _.get(story, 'publication._id'),
-        isExternal: false,
-        author: story.user,
+        isExternal: facebook || twitter || linkedin,
+        author: story.user._id,
         categoryNames: story.categoryNames,
       })
     );
   };
-  console.log(ip);
 
   const togglePublicationFollow = () => {
     if (isFollowingPublication) {
@@ -143,7 +147,9 @@ export default function BlogDetail({ ip }) {
     const { pageYOffset } = window;
     if (
       (pageYOffset /
-        (contentRef.current.scrollHeight - 100 - (isPublication ? 0 : 100))) *
+        (contentRef.current.scrollHeight -
+          100 -
+          (_.isNil(isPublication) ? 0 : 100))) *
         100 >
         40 ||
       _.get(story, 'estimatedReadingTime') < 3
@@ -153,7 +159,7 @@ export default function BlogDetail({ ip }) {
   }, []);
 
   useUnload((e) => {
-    // visitStory();
+    visitStory();
     e.preventDefault();
   });
 
@@ -180,7 +186,7 @@ export default function BlogDetail({ ip }) {
     }
     return () => {
       if (story) {
-        // visitStory()
+        visitStory();
         window.removeEventListener('scroll', onScroll, { passive: true });
         clearInterval();
       }
@@ -203,6 +209,8 @@ export default function BlogDetail({ ip }) {
   useEffect(() => {
     if (storySlug && story?.storySlug !== storySlug) {
       dispatch(storyActions.getStoryBySlugRequest(storySlug));
+    } else {
+      setIsLoading(false);
     }
   }, [storySlug]);
   useEffect(() => {
@@ -220,6 +228,11 @@ export default function BlogDetail({ ip }) {
       );
     }
   }, [user]);
+  useEffect(() => {
+    if (!loading && !_.isNil(story)) {
+      setIsLoading(false);
+    }
+  }, [loading]);
 
   return (
     <div>
@@ -228,8 +241,7 @@ export default function BlogDetail({ ip }) {
         <meta name="description" content="Altogic Medium Blog App Detail" />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-
-      <Layout>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0 ">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-5 lg:px-8">
@@ -242,9 +254,13 @@ export default function BlogDetail({ ip }) {
                   />
                   <span className="text-slate-500 text-sm tracking-sm">
                     Published in{' '}
-                    <span className="text-slate-700 font-semibold">
-                      {_.get(story, 'publication.name')}
-                    </span>
+                    <Link
+                      href={`/publication/${_.get(story, 'publication.name')}`}
+                    >
+                      <a className="text-slate-700 font-semibold">
+                        {_.get(story, 'publication.name')}
+                      </a>
+                    </Link>
                   </span>
                 </div>
               )}
@@ -344,7 +360,9 @@ export default function BlogDetail({ ip }) {
               <Sidebar
                 profile={_.get(story, 'user')}
                 isFollowing={isFollowing}
+                toggleFollow={toggleFollow}
                 isSubscribed={isSubscribed}
+                followLoading={followLoading}
                 whoToFollow
                 popularTopics
                 popularStories

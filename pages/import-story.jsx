@@ -10,7 +10,7 @@ export default function ImportStory() {
           name="description"
           content="Altogic Medium Blog App Import a Story"
         />
-        
+        <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
         <div className="flex flex-col justify-center items-center h-[500px] gap-8">

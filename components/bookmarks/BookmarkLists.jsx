@@ -8,15 +8,11 @@ import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';
 
-export default function BookmarkLists({
-  bookmarkLists,
-  setCreateNewList,
-  className,
-  story,
-  bookmarks,
-}) {
+export default function BookmarkLists({ setCreateNewList, className, story }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const handleAddBookmark = (e, list) => {
     let { coverImages } = list;
     const storyImages = _.map(story.storyImages, (image) => image);

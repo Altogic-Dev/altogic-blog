@@ -39,10 +39,9 @@ export const followerConnectionSlice = createSlice({
     followRequest(state) {
       state.isLoading = true;
     },
-    followSuccess(state, action) {
+    followSuccess(state) {
       state.isFollowing = true;
       state.isLoading = false;
-      state.userFollowings = [...state.userFollowings, action.payload];
     },
     followFailure(state, action) {
       state.isLoading = false;

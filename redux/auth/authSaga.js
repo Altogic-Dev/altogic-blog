@@ -36,16 +36,17 @@ function* setUserFromLocalStorage() {
 function* getAuthGrantSaga({ payload }) {
   try {
     yield call(AuthService.authStateChange, payload.user, payload.session);
-    const res = yield call(AuthService.setUsernameForProvider, {
+    const { data, errors } = yield call(AuthService.setUsernameForProvider, {
       email: payload.user.email,
       name: payload.user.name,
       provider: payload.user.provider,
+      username: payload.user.username,
     });
-    if (!res.errors) {
-      yield call(AuthService.authStateChange, res.data, payload.session);
+    if (!errors) {
+      yield call(AuthService.authStateChange, data, payload.session);
     }
     if (payload.user && payload.session) {
-      yield put(authActions.loginSuccess(res.data));
+      yield put(authActions.loginSuccess(data));
     }
     if (payload.error) {
       throw payload.error.items;
@@ -286,6 +287,15 @@ export function* updateUserSaga(newUser) {
   });
   yield put(
     authActions.updateUser({
+      ...user,
+      ...newUser,
+    })
+  );
+}
+export function* updateProfileUserSaga(newUser) {
+  const user = yield select((state) => state.auth.profileUser);
+  yield put(
+    authActions.updateProfileUser({
       ...user,
       ...newUser,
     })

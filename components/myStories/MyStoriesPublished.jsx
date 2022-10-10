@@ -39,7 +39,6 @@ function MyStoriesPublished({ setDeletedStory }) {
       {_.map(userStories, (story) => (
         <PostCard
           key={story._id}
-          noActiveBookmark
           normalMenu
           authorUrl={`/${story.username}`}
           authorName={story.username}
@@ -70,6 +69,7 @@ function MyStoriesPublished({ setDeletedStory }) {
             },
           }}
           actionMenu
+          story={story}
         />
       ))}
     </ListObserver>

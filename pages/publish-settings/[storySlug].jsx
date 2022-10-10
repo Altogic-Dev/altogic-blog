@@ -7,9 +7,10 @@ import _ from 'lodash';
 import { storyActions } from '@/redux/story/storySlice';
 import Category from '@/components/Category';
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/react/solid';
-import { classNames } from '@/utils/utils';
+import { classNames, parseHtml } from '@/utils/utils';
 import { Listbox, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
+import Button from '@/components/basic/button';
 
 export default function PublishSettings() {
   const router = useRouter();
@@ -18,6 +19,7 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
+  const loading = useSelector((state) => state.story.isLoading);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
@@ -71,6 +73,7 @@ export default function PublishSettings() {
           isPublished: true,
           categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,
+          excerpt: parseHtml(story.content).slice(0, 300),
         },
         isEdited: isEdited === 'true',
         onSuccess: () => router.push(`/story/${story.storySlug}`),
@@ -142,12 +145,12 @@ export default function PublishSettings() {
         <link rel="icon" href="/favicon.svg" />
       </Head>
       <Layout>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-8 pb-[72px] lg:pb-36">
-          <div className="max-w-[800px] mx-auto">
+        <div className="max-w-screen-xl mx-auto px-4 lg:px-12 pt-8 pb-[72px] lg:pb-36">
+          <div className="w-full">
             <h1 className="text-slate-800 mb-12 text-lg tracking-sm">
               Publish Settings
             </h1>
-            <div className="flex flex-col-reverse md:grid md:grid-cols-2 gap-8">
+            <div className="flex flex-col-reverse md:grid md:grid-cols-[2fr,1fr] gap-12">
               <div>
                 <span className="text-slate-600 text-sm tracking-sm">
                   Story Preview
@@ -348,13 +351,14 @@ export default function PublishSettings() {
                     </div>
                   </div>
                 </div>
-                <button
-                  type="button"
+                <Button
                   className="hidden md:flex items-center justify-center gap-2 w-full px-3.5 py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  type="button"
                   onClick={handlePublish}
+                  loading={loading}
                 >
                   Publish Now
-                </button>
+                </Button>
               </div>
             </div>
           </div>

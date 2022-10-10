@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon';
+import { convert } from 'html-to-text';
 
 export function lowerCaseFirstLetter(string) {
   return string.charAt(0).toLowerCase() + string.slice(1);
@@ -29,7 +30,17 @@ export function formatDate(date) {
 }
 
 export function parseHtml(html) {
-  return html?.replace(/<\s*[^>]*>/gi, '');
+  return convert(html, {
+    wordwrap: 130,
+    selectors: [
+      { selector: 'h1', options: { uppercase: false } },
+      { selector: 'h2', options: { uppercase: false } },
+      { selector: 'h3', options: { uppercase: false } },
+      { selector: 'h4', options: { uppercase: false } },
+      { selector: 'h5', options: { uppercase: false } },
+      { selector: 'h6', options: { uppercase: false } },
+    ],
+  });
 }
 
 export function addDays(date, days) {

@@ -57,7 +57,7 @@ export default function WriteAStory() {
         username: user.username,
         userProfilePicture: user.profilePicture,
         content,
-        storyImages: storyImages.filter(Boolean),
+        storyImages: storyImages.filter((item) => item && item !== 'undefined'),
         title: inpTitle,
         estimatedReadingTime: minRead,
         isPublished: false,
@@ -125,13 +125,13 @@ export default function WriteAStory() {
           <input
             type="text"
             name="story-title"
-            className="block w-2/3 text-slate-500 px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+            className="block w-full text-slate-500 px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
             placeholder="Story Title"
             required
             onChange={(e) => setInpTitle(e.currentTarget.value)}
             value={inpTitle}
           />
-          <div className="mt-4 w-2/3">
+          <div className="mt-4 w-full">
             <Editor
               setMinRead={setMinRead}
               onChange={setContent}
