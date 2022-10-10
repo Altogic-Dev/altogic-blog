@@ -49,8 +49,6 @@ export default function PublicationsNewsletterSettings() {
   };
 
   const uploadPhotoHandler = () => {
-    console.log('sa');
-
     const fileInput = document.createElement('input');
 
     fileInput.setAttribute('type', 'file');
@@ -63,14 +61,11 @@ export default function PublicationsNewsletterSettings() {
   };
 
   const exportList = () => {
-    console.log('sa');
-
     dispatch(
       publicationActions.getSubscribersRequest({
         publication: publication._id,
       })
     );
-    console.log('sa');
   };
 
   return (

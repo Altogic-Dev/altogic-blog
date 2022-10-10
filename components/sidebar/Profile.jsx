@@ -77,7 +77,6 @@ export default function Profile({
           className="text-slate-500 text-xs mb-8"
           dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
         />
-        {console.log({ profile, sessionUser })}
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
           {!_.isEqual(profile, sessionUser) && (
             <FollowButton
@@ -121,7 +120,7 @@ export default function Profile({
               {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
             </Button>
           )}
-
+          {console.log({ profile, sessionUser })}
           {_.isEqual(profile, sessionUser) && (
             <Link href="/settings">
               <button

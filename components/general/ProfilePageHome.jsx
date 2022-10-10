@@ -39,8 +39,12 @@ function ProfilePageHome({ userId, selectedTab }) {
   };
 
   useEffect(() => {
-    console.log(selectedTab);
-    if (userId && selectedTab === 0) {
+    console.log(userId, selectedTab);
+    if (
+      userId &&
+      !router.asPath.includes('lists') &&
+      !router.asPath.includes('about')
+    ) {
       getUserStoriesRequest();
     }
   }, [userId, page]);

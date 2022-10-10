@@ -107,7 +107,6 @@ export default function Editor({ onChange, setImages, value }) {
           // eslint-disable-next-line array-callback-return, consistent-return
           quill.getContents().map((item) => {
             if (item.insert && item.insert.image && item.insert.image.url) {
-              console.log(item.insert.image.url);
               return item.insert.image.url;
             }
           })
