@@ -19,6 +19,7 @@ import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import { generalActions } from '@/redux/general/generalSlice';
+import usePrevious from '@/hooks/usePrevious';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
@@ -49,6 +50,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingPage, setFollowingPage] = useState(1);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [unfollowed, setUnfollowed] = useState([]);
+  const previousPage = usePrevious(bookmarkListPage);
   const copyToClipboard = () => {
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
@@ -158,7 +160,7 @@ export default function ProfilePage({ About, Home, List }) {
     setBookmarkListPage((prev) => prev + 1);
   };
   useEffect(() => {
-    if (username) {
+    if (selectedIndex === 1 && username && previousPage !== bookmarkListPage) {
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -169,7 +171,6 @@ export default function ProfilePage({ About, Home, List }) {
       );
     }
   }, [bookmarkListPage]);
-
   return (
     <div>
       <Head>
@@ -236,7 +237,10 @@ export default function ProfilePage({ About, Home, List }) {
                   </Menu>
                 </div>
               </div>
-              <Tab.Group selectedIndex={selectedIndex}>
+              <Tab.Group
+                selectedIndex={selectedIndex}
+                onChange={setSelectedIndex}
+              >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
                     onClick={() => router.push(`/${profileUser.username}`)}
@@ -286,7 +290,7 @@ export default function ProfilePage({ About, Home, List }) {
                   <Tab.Panel className="divide-y divide-gray-200">
                     <ProfilePageHome
                       userId={_.get(profileUser, '_id')}
-                      bookmarkLists={bookmarkLists}
+                      selectedTab={selectedIndex}
                     />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">

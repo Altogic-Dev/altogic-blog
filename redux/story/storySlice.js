@@ -43,8 +43,11 @@ export const storySlice = createSlice({
       }
       state.followingStoriesInfo = action.payload.info;
     },
-    getRecommendedStoriesRequest() {},
+    getRecommendedStoriesRequest(state) {
+      state.isLoading = true;
+    },
     getRecommendedStoriesSuccess(state, action) {
+      state.isLoading = false;
       if (_.isArray(state.recommendedStories)) {
         state.recommendedStories = [
           ...state.recommendedStories,
@@ -56,9 +59,12 @@ export const storySlice = createSlice({
       state.recommendedStoriesInfo = action.payload.info;
     },
 
-    getStoryRequest() {},
+    getStoryRequest(state) {
+      state.isLoading = true;
+    },
     getStorySuccess(state, action) {
       state.story = action.payload;
+      state.isLoading = false;
     },
     createStoryRequest(state) {
       state.isLoading = true;
@@ -140,13 +146,19 @@ export const storySlice = createSlice({
       state.isLoading = false;
     },
 
-    getStoryBySlugRequest() {},
+    getStoryBySlugRequest(state) {
+      state.isLoading = true;
+    },
     getStoryBySlugSuccess(state, action) {
+      state.isLoading = false;
       state.story = action.payload;
     },
 
-    getMoreUserStoriesRequest() {},
+    getMoreUserStoriesRequest(state) {
+      state.isLoading = true;
+    },
     getMoreUserStoriesSuccess(state, action) {
+      state.isLoading = false;
       if (_.isArray(state.moreUserStories)) {
         state.moreUserStories = [...state.moreUserStories, ...action.payload];
       } else {
@@ -175,8 +187,11 @@ export const storySlice = createSlice({
       state.userDraftStoriesInfo = action.payload.info;
     },
 
-    deleteStoryRequest() {},
+    deleteStoryRequest(state) {
+      state.isLoading = true;
+    },
     deleteStorySuccess(state, action) {
+      state.isLoading = false;
       if (action.payload.isPublished) {
         state.userStories = _.reject(
           state.userStories,
@@ -188,31 +203,43 @@ export const storySlice = createSlice({
           state.userDraftStories,
           (story) => story._id === action.payload.storyId
         );
-        state.userDraftStoriesInfo.count -=  1;
+        state.userDraftStoriesInfo.count -= 1;
       }
     },
 
-    updateCategoryNamesRequest() {},
+    updateCategoryNamesRequest(state) {
+      state.isLoading = true;
+    },
     updateCategoryNamesSuccess(state, action) {
+      state.isLoading = false;
       state.story = {
         ...state.story,
         categoryNames: action.payload,
       };
     },
 
-    updateStoryFieldRequest() {},
+    updateStoryFieldRequest(state) {
+      state.isLoading = true;
+    },
     updateStoryFieldSuccess(state, action) {
+      state.isLoading = false;
       state.story = action.payload;
     },
     cacheStoryRequest() {},
 
-    getCacheStoryRequest() {},
+    getCacheStoryRequest(state) {
+      state.isLoading = true;
+    },
     getCacheStorySuccess(state, action) {
+      state.isLoading = false;
       state.story = action.payload;
     },
 
-    publishStoryRequest() {},
+    publishStoryRequest(state) {
+      state.isLoading = true;
+    },
     publishStorySuccess(state) {
+      state.isLoading = false;
       state.story = null;
     },
     publishStoryFailure(state, action) {

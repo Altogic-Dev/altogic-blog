@@ -4,6 +4,8 @@ import {
   randomInt,
   replaceTurkishChars,
 } from '@/utils/utils';
+import { faker } from '@faker-js/faker';
+import _ from 'lodash';
 
 const AuthService = {
   register(user) {
@@ -16,21 +18,23 @@ const AuthService = {
     if (newSession) auth.setSession(newSession);
     if (newUser) auth.setUser(newUser);
   },
-  setUsernameForProvider({ email, name, provider }) {
-    let username = '';
+  setUsernameForProvider({ email, name, provider, username }) {
+    let _username = username || '';
+    const _name = name || faker.random.words(2);
     const req = {
-      name,
+      name: _.startCase(_name),
       email,
       provider,
+      username,
       color: `#${randomInt(0, 16777215).toString(16)}`,
     };
     if (provider !== 'altogic') {
-      const nameArray = name && name.split(' ');
-      const surname = name ? nameArray[nameArray.length - 1] : 'User';
-      username = `${lowerCaseFirstLetter(
+      const nameArray = _name && _name.split(' ');
+      const surname = _name ? nameArray[nameArray.length - 1] : 'User';
+      _username = `${lowerCaseFirstLetter(
         replaceTurkishChars(surname)
       )}${randomInt(1000, 99999)}`;
-      req.username = username;
+      req.username = _username;
     }
     return endpoint.post('/user/info', req);
   },

@@ -40,6 +40,7 @@ export default function BlogDetail({ ip }) {
   const dispatch = useDispatch();
 
   const story = useSelector((state) => state.story.story);
+  const loading = useSelector((state) => state.story.isLoading);
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
   const user = useSelector((state) => state.auth.user);
   const isMuted = useSelector((state) => state.auth.isMuted);
@@ -66,6 +67,7 @@ export default function BlogDetail({ ip }) {
   const [morePage, setMorePage] = useState(1);
   const [isRead, setIsRead] = useState(false);
   const [enterTime, setEnterTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -144,13 +146,12 @@ export default function BlogDetail({ ip }) {
   const onScroll = useCallback(() => {
     const { pageYOffset } = window;
     if (
-      (contentRef.current.scrollHeightpageYOffset &&
-        (pageYOffset /
-          (contentRef.current.scrollHeight -
-            100 -
-            (_.isNil(isPublication) ? 0 : 100))) *
-          100 >
-          40) ||
+      (pageYOffset /
+        (contentRef.current.scrollHeight -
+          100 -
+          (_.isNil(isPublication) ? 0 : 100))) *
+        100 >
+        40 ||
       _.get(story, 'estimatedReadingTime') < 3
     ) {
       setIsRead(true);
@@ -208,6 +209,8 @@ export default function BlogDetail({ ip }) {
   useEffect(() => {
     if (storySlug && story?.storySlug !== storySlug) {
       dispatch(storyActions.getStoryBySlugRequest(storySlug));
+    } else {
+      setIsLoading(false);
     }
   }, [storySlug]);
   useEffect(() => {
@@ -225,6 +228,11 @@ export default function BlogDetail({ ip }) {
       );
     }
   }, [user]);
+  useEffect(() => {
+    if (!loading && !_.isNil(story)) {
+      setIsLoading(false);
+    }
+  }, [loading]);
 
   return (
     <div>
@@ -233,8 +241,7 @@ export default function BlogDetail({ ip }) {
         <meta name="description" content="Altogic Medium Blog App Detail" />
         <link rel="icon" href="/favicon.svg" />
       </Head>
-
-      <Layout>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0 ">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-5 lg:px-8">

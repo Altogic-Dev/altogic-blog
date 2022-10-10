@@ -17,14 +17,11 @@
   html {
     scroll-behavior: smooth;
   }
-  .Toastify__toast-container {
-    width: 400px !important;
-  }
   #editor-container {
     font-family: 'Open Sans', Helvetica, sans-serif;
     font-size: 1.2em;
     height: 100%;
-    width: 60vw;
+    width: 100%;
     position: relative;
   }
   #editor-container [contenteditable='true'] {
@@ -77,14 +74,16 @@
     font-size: 30px;
     letter-spacing: 0.6em;
   }
-  #editor-container pre.ql-syntax {
+  #editor-container pre.ql-syntax,
+  #editor-container code.ql-syntax {
     background-color: #23241f;
     color: #f8f8f2;
     overflow: visible;
     counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8
       list-9;
   }
-  #editor-container pre {
+  #editor-container pre,
+  #editor-container code {
     white-space: pre-wrap;
     margin-bottom: 5px;
     margin-top: 5px;

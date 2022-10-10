@@ -106,7 +106,8 @@ export default function Editor({ onChange, setImages, value }) {
         setImages(
           // eslint-disable-next-line array-callback-return, consistent-return
           quill.getContents().map((item) => {
-            if (item.insert && item.insert.image) {
+            if (item.insert && item.insert.image && item.insert.image.url) {
+              console.log(item.insert.image.url);
               return item.insert.image.url;
             }
           })
@@ -212,8 +213,12 @@ export default function Editor({ onChange, setImages, value }) {
   };
   const formatCode = () => {
     quillInstance.format('code-block', 2);
-    const syntax = document.getElementsByClassName('ql-syntax')[0];
-    syntax.innerHTML = hljs.highlightAuto(syntax.innerText).value;
+    const syntax = document.getElementsByClassName('ql-syntax');
+    if (syntax.length > 0) {
+      Array.from(syntax).forEach((item) => {
+        item.innerHTML = hljs.highlightAuto(item.innerText).value;
+      });
+    }
   };
   const addDivider = () => {
     const range = quillInstance.getSelection(true);

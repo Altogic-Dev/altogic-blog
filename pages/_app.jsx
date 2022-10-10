@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import '../styles/globals.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
-import { ToastContainer } from 'react-toastify';
+import { cssTransition, ToastContainer } from 'react-toastify';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import _, { isNil } from 'lodash';
 import 'highlight.js/styles/tokyo-night-dark.css';
@@ -13,6 +13,7 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/react';
 import { wrapper } from '../redux/store';
 import '@icon-park/react/styles/index.css';
+import 'animate.css/animate.min.css';
 
 config.autoAddCss = false;
 
@@ -24,6 +25,10 @@ function MyApp({ Component, pageProps }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
   const [isMounted, setIsMounted] = useState(false);
+  const toastTransition = cssTransition({
+    enter: 'animate__animated animate__slideInDown',
+    exit: 'animate__animated animate__slideOutUp',
+  });
   const visitPublicationRequest = (publicationName) => {
     dispatch(
       publicationActions.visitPublicationRequest({
@@ -95,13 +100,13 @@ function MyApp({ Component, pageProps }) {
       <ToastContainer
         position="top-center"
         autoClose={5000}
-        hideProgressBar
+        hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
-        transition="slide"
+        transition={toastTransition}
         theme="dark"
         width="500px"
       />
