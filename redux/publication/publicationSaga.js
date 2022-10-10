@@ -442,9 +442,11 @@ function* updatePublicationHomeLayoutSaga({ payload: layout }) {
 
 function* createPublicationSaga({ payload: { publication, onSuccess } }) {
   try {
+    const userIds = _.uniq(_.map(publication.users, 'user'));
     const { data, errors } = yield call(
       PublicationService.createPublication,
-      publication
+      publication,
+      userIds
     );
     if (errors) {
       throw errors.items;
