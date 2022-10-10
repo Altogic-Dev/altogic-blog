@@ -120,8 +120,10 @@ const PublicationService = {
   updatePublicationHomeLayout(layout) {
     return db.model('publication_homepage').object(layout?._id).update(layout);
   },
-  createPublication(publication) {
-    return endpoint.post('/publication', publication);
+  createPublication(publication, userIds) {
+    return endpoint.post('/publication', publication, {
+      userIds,
+    });
   },
   isFollowingPublication(publicationId, userId) {
     return db
