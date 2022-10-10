@@ -142,21 +142,22 @@ export default function BlogDetail({ ip }) {
       })
     );
   };
-
   const onScroll = useCallback(() => {
     const { pageYOffset } = window;
     if (
-      (pageYOffset /
-        (contentRef.current.scrollHeight -
-          100 -
-          (_.isNil(isPublication) ? 0 : 100))) *
-        100 >
-        40 ||
+      (contentRef.current.scrollHeightpageYOffset &&
+        (pageYOffset /
+          (contentRef.current.scrollHeight -
+            100 -
+            (_.isNil(isPublication) ? 0 : 100))) *
+          100 >
+          40) ||
       _.get(story, 'estimatedReadingTime') < 3
     ) {
       setIsRead(true);
     }
   }, []);
+
 
   useUnload((e) => {
     visitStory();
