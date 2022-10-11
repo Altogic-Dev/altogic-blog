@@ -199,9 +199,7 @@ export default function Home() {
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
-                            bookmarkList={bookmarkLists}
                             story={story}
-                            bookmarks={bookmarks}
                             optionButtons={{
                               unfollow: () =>
                                 dispatch(

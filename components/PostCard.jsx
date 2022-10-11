@@ -103,7 +103,11 @@ export default function PostCard({
                   >
                     <div>
                       <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                        {bookmarks?.some((bk) => bk.story === story?._id) ? (
+                        {bookmarks?.some(
+                          (bk) =>
+                            bk.story._id === story?._id ||
+                            bk.story === story?._id
+                        ) ? (
                           <svg
                             className="w-6 h-6 text-purple-700"
                             viewBox="0 0 24 24"
@@ -275,31 +279,28 @@ export default function PostCard({
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          <Menu.Item>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                            >
-                              Add note
-                            </button>
-                          </Menu.Item>
-                          <div>
-                            <button
-                              type="button"
-                              onClick={() => setDeleteListModal(true)}
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                            >
-                              Delete item
-                            </button>
-                          </div>
-                          <Menu.Item>
-                            <button
-                              type="button"
-                              className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                            >
-                              Report
-                            </button>
-                          </Menu.Item>
+                          {!_.isNil(optionButtons?.unBookmark) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                onClick={optionButtons?.unBookmark}
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                              >
+                                Delete item
+                              </button>
+                            </Menu.Item>
+                          )}
+                          {!_.isNil(optionButtons?.report) && (
+                            <Menu.Item>
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                                onClick={optionButtons?.report}
+                              >
+                                Report
+                              </button>
+                            </Menu.Item>
+                          )}
                         </Menu.Items>
                       </Transition>
                     </Menu>
@@ -309,7 +310,7 @@ export default function PostCard({
             </div>
           </div>
         </div>
-        {images && !images.includes('undefined') && (
+        {images && (
           <img
             src={images}
             className="w-full md:w-[150px] h-[150px] object-cover rounded-md"

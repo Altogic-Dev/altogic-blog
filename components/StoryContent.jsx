@@ -44,18 +44,20 @@ function StoryContent(props) {
   const [deleteStoryModal, setDeleteStoryModal] = useState(false);
 
   const sendNotification = (type) => {
-    dispatch(
-      notificationsActions.createNotificationRequest({
-        targetId: story._id,
-        targetTitle: story.title,
-        sentUsername: user.username,
-        sentUser: user._id,
-        type,
-        targetSlug: story.slug,
-        sentUserProfilePicture: user.profilePicture,
-        user: story.user._id,
-      })
-    );
+    if (user._id !== story.user._id) {
+      dispatch(
+        notificationsActions.createNotificationRequest({
+          targetId: story._id,
+          targetTitle: story.title,
+          sentUsername: user.username,
+          sentUser: user._id,
+          type,
+          targetSlug: story.storySlug,
+          sentUserProfilePicture: user.profilePicture,
+          user: story.user._id,
+        })
+      );
+    }
   };
 
   const handleLikeStory = () => {
@@ -207,7 +209,7 @@ function StoryContent(props) {
           </div>
         </div>
         <div className="flex items-center justify-center gap-6 border-y sm:border-0 border-gray-200">
-        <ShareButtons customLink={`/story/${_.get(story, 'storySlug')}`} />
+          <ShareButtons customLink={`/story/${_.get(story, 'storySlug')}`} />
           <div className="flex items-center relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
             <Menu as="div" className="relative inline-block text-left ml-4">
               <div>
@@ -263,10 +265,15 @@ function StoryContent(props) {
           </div>
         </div>
       </div>
-      <div className="relative flex flex-col items-center justify-center">
-        <div className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm mb-10 sm:mb-24">
-          <article dangerouslySetInnerHTML={{ __html: story?.content }} />
+      <div className="relative flex flex-col justify-center items-center">
+        <div className="prose prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md self-start mt-4">
+          <h1>{story?.title}</h1>
         </div>
+        <article
+          className="prose-sm prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm my-10 sm:mb-24"
+          dangerouslySetInnerHTML={{ __html: story?.content }}
+        />
+
         <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 sm:p-2 mb-10 sm:mb-24 w-full">
           <div className="flex items-center justify-center sm:justify-start gap-4 border-b-8 sm:border-0 border-white">
             <button

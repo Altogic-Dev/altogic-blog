@@ -70,6 +70,10 @@ export default function PublishSettings() {
               ? inpSelectedAuthor.id
               : undefined,
           user: user?._id,
+          publicationName:
+            inpSelectedAuthor.type === 'publication'
+              ? inpSelectedAuthor.name
+              : undefined,
           isPublished: true,
           categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,
@@ -111,6 +115,7 @@ export default function PublishSettings() {
       avatar: userFromStorage?.profilePicture,
       type: 'user',
     };
+    console.log({ publications });
     const publicationAuthors = _.map(publications, (publication) => ({
       id: publication._id,
       name: publication.name,

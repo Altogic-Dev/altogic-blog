@@ -45,18 +45,24 @@ export default function Suggestion({ suggestions, name, onClick }) {
             >
               <li className="hover:cursor-pointer hover:text-slate-300 hover:bg-gray-100">
                 <div className="flex items-center p-2 w-full">
-                  {suggestion.profilePicture || suggestion.storyImages ? (
-                    <img
-                      src={
-                        name === 'Stories'
-                          ? suggestion.storyImages[0]
-                          : suggestion.profilePicture
-                      }
-                      alt="profile"
-                      className="w-8 h-8 rounded-full mr-2"
-                    />
-                  ) : (
+                  {name === 'Topics' ? (
                     <TagIcon className="w-6 h-6 rounded-full mr-2 text-gray-600" />
+                  ) : (
+                    <div>
+                      {suggestion.profilePicture ||
+                      suggestion.storyImages[0] ? (
+                        <img
+                          src={
+                            suggestion.profilePicture ||
+                            suggestion.storyImages[0]
+                          }
+                          alt="profile"
+                          className="w-8 h-8 rounded-full mr-2"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full mr-2 bg-gray-200" />
+                      )}
+                    </div>
                   )}
                   <div className="ml-2 w-full text-start">
                     <p className="text-sm font-semibold text-slate-500 inline-block w-96 truncate">

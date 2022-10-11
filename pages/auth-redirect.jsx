@@ -8,8 +8,6 @@ export default function AuthRedirect(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   async function checkProps() {
-    debugger;
-
     if (!props?.error) {
       await fetch('/api/login', {
         method: 'POST',
@@ -17,8 +15,6 @@ export default function AuthRedirect(props) {
         body: JSON.stringify({ token: props?.session.token }),
         headers: { 'Content-Type': 'application/json' },
       });
-      debugger;
-
       dispatch(
         authActions.getAuthGrantRequest({
           session: props?.session,

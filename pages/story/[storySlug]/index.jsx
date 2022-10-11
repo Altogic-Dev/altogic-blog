@@ -67,7 +67,7 @@ export default function BlogDetail({ ip }) {
   const [morePage, setMorePage] = useState(1);
   const [isRead, setIsRead] = useState(false);
   const [enterTime, setEnterTime] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -210,6 +210,7 @@ export default function BlogDetail({ ip }) {
   useEffect(() => {
     if (storySlug && story?.storySlug !== storySlug) {
       dispatch(storyActions.getStoryBySlugRequest(storySlug));
+      setIsLoading(true);
     } else {
       setIsLoading(false);
     }
@@ -230,10 +231,10 @@ export default function BlogDetail({ ip }) {
     }
   }, [user]);
   useEffect(() => {
-    if (!loading && !_.isNil(story)) {
+    if (!loading && story?.storySlug === storySlug) {
       setIsLoading(false);
     }
-  }, [loading]);
+  }, [story, loading]);
 
   return (
     <div>
@@ -323,7 +324,7 @@ export default function BlogDetail({ ip }) {
                       min={moreStory.estimatedReadingTime}
                       images={_.first(moreStory.storyImages)}
                       actionMenu
-                      storyId={moreStory._id}
+                      story={moreStory}
                       optionButtons={{
                         unfollow: () =>
                           dispatch(

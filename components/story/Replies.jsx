@@ -51,18 +51,20 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     dispatch(storyActions.createReplyCommentRequest(comment));
   };
   const sendNotification = (type) => {
-    dispatch(
-      notificationsActions.createNotificationRequest({
-        targetId: story._id,
-        targetTitle: story.title,
-        sentUsername: user.username,
-        sentUser: user._id,
-        type,
-        targetSlug: story.slug,
-        sentUserProfilePicture: user.profilePicture,
-        user: story.user._id,
-      })
-    );
+    if (user._id !== story.user._id) {
+      dispatch(
+        notificationsActions.createNotificationRequest({
+          targetId: story._id,
+          targetTitle: story.title,
+          sentUsername: user.username,
+          sentUser: user._id,
+          type,
+          targetSlug: story.storySlug,
+          sentUserProfilePicture: user.profilePicture,
+          user: story.user._id,
+        })
+      );
+    }
   };
   const getComments = (reply) => {
     getReplyComments(reply._id);
