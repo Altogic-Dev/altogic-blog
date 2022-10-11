@@ -215,7 +215,10 @@ export default function Editor({ onChange, setImages, value }) {
     const syntax = document.getElementsByClassName('ql-syntax');
     if (syntax.length > 0) {
       Array.from(syntax).forEach((item) => {
-        item.innerHTML = hljs.highlightAuto(item.innerText).value;
+        if (!item.dataset.isHighlighted) {
+          item.innerHTML = hljs.highlightAuto(item.innerText).value;
+          item.dataset.isHighlighted = true;
+        }
       });
     }
   };

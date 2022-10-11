@@ -183,7 +183,6 @@ export default function TagPage({ Home, Latest, Best }) {
                     {posts.map((post) => (
                       <PostCard
                         key={post._id}
-                        noActiveBookmark
                         normalMenu
                         authorUrl={`/${post.username}`}
                         authorName={post.username}
@@ -191,7 +190,7 @@ export default function TagPage({ Home, Latest, Best }) {
                         storyUrl={`/story/${post.storySlug}`}
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
-                        infoText={post.infoText}
+                        infoText={post.excerpt}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
@@ -218,7 +217,6 @@ export default function TagPage({ Home, Latest, Best }) {
                     {posts.map((post) => (
                       <PostCard
                         key={post._id}
-                        noActiveBookmark
                         normalMenu
                         actionMenu
                         authorUrl={`/${post.username}`}
@@ -227,7 +225,7 @@ export default function TagPage({ Home, Latest, Best }) {
                         storyUrl={`/story/${post.storySlug}`}
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
-                        infoText={post.infoText}
+                        infoText={post.excerpt}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}

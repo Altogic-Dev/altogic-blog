@@ -3,6 +3,7 @@ import { XIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Avatar from '../profile/Avatar';
+import Button from '../basic/button';
 
 export default function NotificationItem({ notification }) {
   const router = useRouter();
@@ -18,6 +19,9 @@ export default function NotificationItem({ notification }) {
         router.push(`/${notification.username}`);
         break;
       case 'bookmark':
+        router.push(`/story/${notification.targetSlug}`);
+        break;
+      case 'reply':
         router.push(`/story/${notification.targetSlug}`);
         break;
       default:
@@ -47,15 +51,15 @@ export default function NotificationItem({ notification }) {
               </a>
             </Link>
             {notification.intermediateText}
-            <button
+            <Button
               type="button"
-              onClick={() => route(notification.type)}
-              className="hover:underline"
+              onClick={route}
+              className="hover:underline text-left"
             >
               <strong className="font-semibold">
                 {notification.targetTitle}{' '}
               </strong>
-            </button>
+            </Button>
           </div>
         </div>
         <div className="ml-4 flex-shrink-0 flex">

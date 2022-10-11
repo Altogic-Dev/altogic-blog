@@ -48,6 +48,10 @@ export const notificationsSlice = createSlice({
     getRealtimeNotificationsSuccess(state, action) {
       state.notificationsLoading = false;
       state.notifications = [...state.notifications, action.payload];
+      state.notificationPreview = [
+        ...state.notificationPreview,
+        action.payload,
+      ];
       state.unreadNotificationsCount += 1;
     },
     getRealtimeNotificationsFailure(state, action) {

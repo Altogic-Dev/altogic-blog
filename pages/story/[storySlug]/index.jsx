@@ -102,6 +102,7 @@ export default function BlogDetail({ ip }) {
         user: user._id,
         readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
         isRead,
+        ip,
         publication: _.get(story, 'publication._id'),
         isExternal: !!((facebook || twitter || linkedin)) ,
         author: story.user._id,

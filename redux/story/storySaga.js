@@ -84,6 +84,7 @@ function* createReplyComment({ payload: comment }) {
     );
     if (errors) throw errors;
     if (data) {
+      console.log(data);
       yield put(storyActions.createReplyCommentSuccess(data));
     }
   } catch (e) {
