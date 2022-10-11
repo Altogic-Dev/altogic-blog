@@ -140,7 +140,9 @@ function* updateFollowingTopicsSaga({ payload: { topics } }) {
     }
 
     if (data) {
-      setUserFromLocalStorage();
+      console.log(data)
+      AuthService.setUserFromLocal(data);
+      yield put(authActions.updateFollowingTopicsSuccess());
     }
   } catch (e) {
     yield put(authActions.updateFollowingTopicsFailure(e));
