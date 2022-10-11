@@ -293,8 +293,7 @@ function StoryContent(props) {
               {_.get(story, 'likeCount')}
             </button>
             {!_.get(story, 'isRestrictedComments') && (
-              <button
-                type="button"
+              <Button
                 className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm"
                 onClick={() => setSlideOvers(!slideOvers)}
               >
@@ -312,7 +311,7 @@ function StoryContent(props) {
                   </svg>
                 </span>
                 {_.get(story, 'commentCount')}
-              </button>
+              </Button>
             )}
           </div>
           <div className="flex items-center justify-center gap-6 bg-white sm:bg-transparent border-y sm:border-0 border-gray-200">
@@ -473,8 +472,7 @@ function StoryContent(props) {
                 </svg>
               </Button>
               {!_.get(story, 'isRestrictedComments') && (
-                <button
-                  type="button"
+                <Button
                   onClick={() => setSlideOvers(!slideOvers)}
                   className="group flex items-center gap-3 text-slate-400 text-sm tracking-sm transition ease-in-out duration-200 hover:text-slate-700"
                 >
@@ -489,7 +487,7 @@ function StoryContent(props) {
                       fill="currentColor"
                     />
                   </svg>
-                </button>
+                </Button>
               )}
             </div>
             <div>

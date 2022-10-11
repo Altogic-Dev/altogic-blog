@@ -95,6 +95,17 @@ function MyApp({ Component, pageProps }) {
     }
   }, [publications]);
 
+  useEffect(() => {
+    if (
+      sessionUser &&
+      (router.asPath === '/login' ||
+        router.asPath === '/create-an-account' ||
+        router.asPath === '/forgot-password' ||
+        router.asPath === '/forgot-password-email')
+    )
+      router.push('/');
+  }, [router.asPath]);
+
   return (
     <>
       <ToastContainer
