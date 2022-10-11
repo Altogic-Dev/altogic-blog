@@ -47,11 +47,7 @@ export default function Login() {
     },
     []
   );
-  useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user]);
+  
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">
