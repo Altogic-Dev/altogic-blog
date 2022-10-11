@@ -20,7 +20,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const replies = useSelector((state) => state.story.replies);
   const replyCount = useSelector((state) => state.story.replyCount);
   const storyIsLoading = useSelector((state) => state.story.isLoading);
-  const commentIsLoading = useSelector((state) => state.story.commentIsLoading);
   const user = useSelector((state) => state.auth.user);
 
   const [commentBoxes, setCommentBoxes] = useState([]);
@@ -47,7 +46,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     dispatch(storyActions.createReplyRequest(reply));
   };
   const createComment = (comment) => {
-
     dispatch(storyActions.createReplyCommentRequest(comment));
   };
   const sendNotification = (type) => {
@@ -119,7 +117,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       return temp;
     });
     sendNotification('comment');
-
   };
 
   useEffect(() => {
