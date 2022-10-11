@@ -172,7 +172,6 @@ export const publicationSlice = createSlice({
     followPublicationSuccess(state, action) {
       state.isLoading = false;
       state.isFollowingPublication = true;
-      console.log(state.isFollowingPublication);
       state.publication.followerCount += 1;
       state.publicationFollowers = [
         ...state.publicationFollowers,

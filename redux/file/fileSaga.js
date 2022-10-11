@@ -28,9 +28,9 @@ function* uploadFileSaga({ payload }) {
     yield put(fileActions.uploadFileFailure(e));
   }
 }
-function* deleteFileSaga({ payload }) {
-  yield call(FileService.deleteFile, payload);
-  yield put(fileActions.clearFileLink());
+function* deleteFileSaga({ payload: { name, data } }) {
+  yield call(FileService.deleteFile, data);
+  yield put(fileActions.clearFileLink({ name }));
 }
 export function* clearFileLink() {
   yield put(fileActions.clearFileLink());

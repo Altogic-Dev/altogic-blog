@@ -18,7 +18,7 @@ function PublicationTab({ tab, publication }) {
       return <PublicationTabFeature tab={tab} publication={publication} />;
 
     default:
-      return <div>Error!</div>;
+      return <div />;
   }
 }
 

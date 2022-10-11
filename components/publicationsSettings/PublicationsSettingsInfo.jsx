@@ -3,11 +3,14 @@ import { fileActions } from '@/redux/file/fileSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
 import { PlusIcon } from '@heroicons/react/solid';
+import { yupResolver } from '@hookform/resolvers/yup';
 import _ from 'lodash';
+import * as yup from 'yup';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
+import FileInput from '../FileInput';
 import Input from '../Input';
 import TagInput from '../TagInput';
 import UserInput from '../UserInput';
@@ -37,6 +40,28 @@ export default function PublicationSettingsInfo({
   const foundUsers = useSelector((state) => state.auth.foundUsers);
   const loading = useSelector((state) => state.auth.isLoading);
 
+  const [avatarError, setAvatarError] = useState(null);
+  const [logoError, setLogoError] = useState(null);
+
+  const schema = yup.object().shape({
+    name: yup.string().required('Name is required'),
+    description: yup
+      .string()
+      .max(280, 'Description should be max 280 characters')
+      .required('Description is required'),
+    tagline: yup
+      .string()
+      .max(100, 'Tagline should be max 100 characters')
+      .required('Tagline is required'),
+    email: yup
+      .string()
+      .email('Please enter a valid email')
+      .required('Email is required'),
+    twitter: yup.string().url('Please enter a valid url'),
+    linkedin: yup.string().url('Please enter a valid url'),
+    facebook: yup.string().url('Please enter a valid url'),
+  });
+
   const {
     register,
     handleSubmit,
@@ -45,7 +70,9 @@ export default function PublicationSettingsInfo({
     setValue,
     setError,
     clearErrors,
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const [tags, setTags] = useState([]);
   const [inpEditor, setInpEditor] = useState('');
   const [editors, setEditors] = useState([]);
@@ -166,6 +193,17 @@ export default function PublicationSettingsInfo({
           publicationActions.updatePublicationRequest(editedPublication)
         );
       }
+    } else {
+      if (!_.get(uploadedFileLinks, 'profilePicture')) {
+        setAvatarError('This Field is required.');
+        const element = document.getElementById('avatar');
+        element.scrollIntoView();
+      }
+      if (!_.get(uploadedFileLinks, 'logo')) {
+        setLogoError('This Field is required.');
+        const element = document.getElementById('logo');
+        element.scrollIntoView();
+      }
     }
   };
 
@@ -265,7 +303,7 @@ export default function PublicationSettingsInfo({
                 name="name"
                 id="name"
                 placeholder="Type your publication name"
-                register={register('name', { required: true })}
+                register={register('name')}
                 className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                 error={errors.name}
               />
@@ -288,7 +326,7 @@ export default function PublicationSettingsInfo({
                 id="description"
                 placeholder="Type your description"
                 className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                {...register('description', { required: true })}
+                {...register('description')}
               />
               <p className="mt-1.5 text-sm text-slate-500">
                 The description is longer, and appears in story footers, search
@@ -310,7 +348,7 @@ export default function PublicationSettingsInfo({
                 id="tagline"
                 placeholder="Type a short tagline"
                 className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                {...register('tagline', { required: true })}
+                {...register('tagline')}
               />
               <p className="mt-1.5 text-sm text-slate-500">
                 The tagline is short and appears on your publication’s homepage.
@@ -319,124 +357,67 @@ export default function PublicationSettingsInfo({
               </p>
             </div>
           </div>
-          <div className="grid md:grid-cols-2 items-center gap-8">
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-slate-700 mb-3 text-lg"
-              >
-                Publication avatar*
-              </label>
-              <p className="text-slate-500 text-sm">
-                The avatar appears with your stories across Medium. Recommended
+          <div id="avatar">
+            <FileInput
+              label="Publication avatar*"
+              subLabel="The avatar appears with your stories across Medium. Recommended
                 size: Square, at least 1000 pixels per side File type: JPG, PNG
-                or GIF
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-4">
-              <img
-                className="w-16 h-16 rounded-full object-contain"
-                src={_.get(uploadedFileLinks, 'profilePicture')}
-                alt=""
-              />
-              <div className="space-x-4">
-                <button
-                  type="button"
-                  className="text-slate-600 text-sm font-medium tracking-sm"
-                >
-                  Delete
-                </button>
-                <button
-                  type="button"
-                  className="text-purple-700 text-sm font-medium tracking-sm"
-                  onClick={() =>
-                    handleUploadPhoto('profilePicture', publication?.logo)
-                  }
-                >
-                  Change Avatar
-                </button>
-              </div>
-            </div>
+                or GIF"
+              onChange={() =>
+                handleUploadPhoto('profilePicture', publication?.logo)
+              }
+              onDelete={() =>
+                dispatch(
+                  fileActions.deleteFileRequest({
+                    name: 'profilePicture',
+                    data: _.get(uploadedFileLinks, 'profilePicture'),
+                  })
+                )
+              }
+              link={_.get(uploadedFileLinks, 'profilePicture')}
+              error={avatarError}
+            />
           </div>
         </div>
         <hr className="my-8 lg:my-14 border-gray-200" />
         <div className="grid lg:grid-cols-2 gap-8 mb-14">
-          <div className="grid md:grid-cols-2 items-center gap-8">
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-slate-700 mb-3 text-lg"
-              >
-                Publication logo*
-              </label>
-              <p className="text-slate-500 text-sm">
-                The logo is displayed at the top of your publication. We
-                recommend the logo have your publication’s name and a
-                transparent background. <br /> Recommended size: Each side of
-                the logo should be at least 400 pixels wide File type: JPG, PNG
-                or GIF
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-4">
-              <img
-                className="w-full h-16 rounded-full object-contain"
-                src={_.get(uploadedFileLinks, 'logo')}
-                alt=""
-              />
-              <div className="space-x-4">
-                <button
-                  type="button"
-                  className="text-slate-600 text-sm font-medium tracking-sm"
-                >
-                  Delete
-                </button>
-                <button
-                  type="button"
-                  className="text-purple-700 text-sm font-medium tracking-sm"
-                  onClick={() => handleUploadPhoto('logo', publication?.logo)}
-                >
-                  Change Logo
-                </button>
-              </div>
-            </div>
+          <div id="logo">
+            <FileInput
+              label="Publication logo*"
+              subLabel="The logo is displayed at the top of your publication. We
+            recommend the logo have your publication’s name and a
+            transparent background. <br /> Recommended size: Each side of
+            the logo should be at least 400 pixels wide File type: JPG, PNG
+            or GIF"
+              onChange={() => handleUploadPhoto('logo', publication?.logo)}
+              onDelete={() =>
+                dispatch(
+                  fileActions.deleteFileRequest({
+                    name: 'logo',
+                    data: _.get(uploadedFileLinks, 'logo'),
+                  })
+                )
+              }
+              link={_.get(uploadedFileLinks, 'logo')}
+              error={logoError}
+            />
           </div>
-          <div className="grid md:grid-cols-2 items-center gap-8">
-            <div>
-              <label
-                htmlFor="description"
-                className="block text-slate-700 mb-3 text-lg"
-              >
-                Publication cover image
-              </label>
-              <p className="text-slate-500 text-sm">
-                The cover image is used to promote your publication on Blog.
-              </p>
-            </div>
-            <div className="flex flex-col items-center gap-4">
-              <img
-                className="w-full h-16 rounded-full object-contain"
-                src={_.get(uploadedFileLinks, 'coverImage')}
-                alt=""
-              />
-              <div className="space-x-4">
-                <button
-                  type="button"
-                  className="text-slate-600 text-sm font-medium tracking-sm"
-                >
-                  Delete
-                </button>
-                <button
-                  type="button"
-                  className="text-purple-700 text-sm font-medium tracking-sm"
-                  onClick={() =>
-                    handleUploadPhoto('coverImage', publication?.coverImage)
-                  }
-                >
-                  Change Cover Image
-                </button>
-              </div>
-            </div>
-          </div>
+          <FileInput
+            label="Publication cover image"
+            subLabel="The cover image is used to promote your publication on Blog."
+            onChange={() =>
+              handleUploadPhoto('coverImage', publication?.coverImage)
+            }
+            onDelete={() =>
+              dispatch(
+                fileActions.deleteFileRequest({
+                  name: 'coverImage',
+                  data: _.get(uploadedFileLinks, 'coverImage'),
+                })
+              )
+            }
+            link={_.get(uploadedFileLinks, 'coverImage')}
+          />
         </div>
         <div className="pb-2 mb-8 border-b border-gray-200">
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
