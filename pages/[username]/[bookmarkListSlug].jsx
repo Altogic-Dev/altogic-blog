@@ -12,6 +12,9 @@ import {
   getBookmarkListDetailRequest,
   updateBookmarkListRequest,
   clearBookmarkListRequest,
+  deleteBookmarkRequest,
+  getBookmarkListsRequest,
+  getBookmarksRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
 import { DateTime } from 'luxon';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -22,6 +25,7 @@ import ListObserver from '@/components/ListObserver';
 import { generalActions } from '@/redux/general/generalSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { reportActions } from '@/redux/report/reportSlice';
 
 export default function ListDetail() {
   const [deleteListModal, setDeleteListModal] = useState(false);
@@ -159,6 +163,8 @@ export default function ListDetail() {
   useEffect(() => {
     if (!loading && !_.isEmpty(bookmarkList)) {
       setIsLoading(loading);
+    } else {
+      setIsLoading(false);
     }
   }, [loading]);
 
@@ -171,6 +177,22 @@ export default function ListDetail() {
     }
   }, [followingPage, _.get(user, '_id')]);
 
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
+
   return (
     <div>
       <Head>
@@ -179,7 +201,6 @@ export default function ListDetail() {
           name="description"
           content="Altogic Medium Blog App List Detail"
         />
-        
       </Head>
       <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -327,7 +348,6 @@ export default function ListDetail() {
                 {stories.map((post) => (
                   <PostCard
                     key={post.id}
-                    activeBookmark
                     listDetailMenu
                     authorUrl={`/${post.username}`}
                     authorName={post.username}
@@ -340,6 +360,26 @@ export default function ListDetail() {
                     badgeName={_.first(post.categoryNames)}
                     min={post.estimatedReadingTime}
                     images={_.first(post.storyImages)}
+                    actionMenu
+                    story={post}
+                    bookmarks={bookmarks}
+                    optionButtons={{
+                      unBookmark: () =>
+                        dispatch(
+                          deleteBookmarkRequest({
+                            listId: bookmarkList._id,
+                            storyId: post._id,
+                          })
+                        ),
+                      report: () =>
+                        dispatch(
+                          reportActions.reportStoryRequest({
+                            userId: user._id,
+                            storyId: post._id,
+                            reportedUserId: post.user,
+                          })
+                        ),
+                    }}
                   />
                 ))}
               </ListObserver>

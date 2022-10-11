@@ -243,7 +243,6 @@ export const storySlice = createSlice({
     },
     publishStorySuccess(state) {
       state.isLoading = false;
-      state.story = null;
     },
     publishStoryFailure(state, action) {
       state.error = action.payload;

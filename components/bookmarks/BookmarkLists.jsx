@@ -11,8 +11,10 @@ import Input from '../Input';
 export default function BookmarkLists({ setCreateNewList, className, story }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+
   const handleAddBookmark = (e, list) => {
     let { coverImages } = list;
     const storyImages = _.map(story.storyImages, (image) => image);
@@ -57,22 +59,23 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
         className={`${className} absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none`}
       >
         {bookmarkLists?.map((list) => (
-          <div key={list._id} disabled>
+          <Menu.Item key={list._id} disabled>
             <div className="relative flex items-center justify-between w-full px-6 py-4">
               <div className="flex items-start">
-                <div className="flex items-center h-5">
+                <Menu.Button className="flex items-center h-5">
                   <Input
                     id="private-list"
                     name="list"
                     type="checkbox"
                     checked={bookmarks?.some(
                       (bk) =>
-                        bk.bookmarkList === list._id && bk.story === story?._id
+                        bk.bookmarkList === list._id &&
+                        (bk.story._id === story?._id || bk.story === story?._id)
                     )}
                     className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
                     onChange={(e) => handleAddBookmark(e, list)}
                   />
-                </div>
+                </Menu.Button>
                 <div className="ml-3 text-sm">
                   <label
                     htmlFor="private-list"
@@ -98,7 +101,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
                 )}
               </div>
             </div>
-          </div>
+          </Menu.Item>
         ))}
         <div>
           <button

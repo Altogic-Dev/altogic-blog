@@ -28,9 +28,7 @@ export default function PopularStories({ title, stories }) {
           <Link href={`/story/${story.storySlug}`} key={story._id}>
             <a className="flex items-center gap-3">
               <li className="flex gap-3">
-                {story.storyImages &&
-                story.storyImages.length > 0 &&
-                !story.storyImages[0].includes('undefined') ? (
+                {story.storyImages && story.storyImages.length > 0 ? (
                   <img
                     className="rounded-full w-[30px] h-[30px]"
                     src={story.storyImages[0]}
