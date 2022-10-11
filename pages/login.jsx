@@ -47,7 +47,7 @@ export default function Login() {
     },
     []
   );
-  
+
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">
