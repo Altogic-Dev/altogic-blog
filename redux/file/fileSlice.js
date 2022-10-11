@@ -41,8 +41,14 @@ export const fileSlice = createSlice({
     setUploadedFiles(state, action) {
       state.fileLinks = action.payload;
     },
-    clearFileLink(state) {
+    clearFileLink(state, action) {
       state.fileLink = null;
+      if (action.payload && action.payload.name) {
+        state.fileLinks = {
+          ...state.fileLinks,
+          [action.payload.name]: null,
+        };
+      }
     },
     deleteFileRequest() {},
   },
