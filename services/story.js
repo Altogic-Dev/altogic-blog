@@ -146,8 +146,7 @@ const StoryService = {
     return endpoint.post('/story', story);
   },
   visitStory(visit) {
-    const value = endpoint.post(`/story/view`, visit )
-    return value;
+    return endpoint.post(`/story/view`, visit );
 
   },
   getPopularStories() {

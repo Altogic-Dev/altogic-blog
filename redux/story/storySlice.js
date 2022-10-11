@@ -17,6 +17,7 @@ const initialState = {
   userDraftStoriesInfo: null,
   publicationsStories: [],
   isLoading: false,
+  commentIsLoading: false,
   replies: [],
   replyCount: 0,
   replyPageSize: null,
@@ -105,19 +106,26 @@ export const storySlice = createSlice({
       state.isLoading = false;
     },
     createReplyCommentRequest(state) {
-      state.isLoading = true;
+      state.commentIsLoading = true;
     },
     createReplyCommentSuccess(state, action) {
-      state.story = action.payload;
-      state.isLoading = false;
+
+      state.replies = state.replies.map((reply) => {
+        if (reply._id === action.payload.reply) {
+          reply.comments.push(action.payload)
+        }
+        return reply;
+      });
+      state.commentIsLoading = false;
+
     },
     createReplyCommentFailure(state, action) {
       state.story = null;
       state.error = action.payload;
-      state.isLoading = false;
+      state.commentIsLoading = false;
     },
     getReplyCommentsRequest(state) {
-      state.isLoading = true;
+      state.commentIsLoading = true;
     },
     getReplyCommentsSuccess(state, action) {
       state.replies = state.replies.map((reply) => {
@@ -129,11 +137,11 @@ export const storySlice = createSlice({
         }
         return reply;
       });
-      state.isLoading = false;
+      state.commentIsLoading = false;
     },
     getReplyCommentsFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.commentIsLoading = false;
     },
     updateStoryRequest(state) {
       state.isLoading = true;
@@ -297,15 +305,12 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    visitStoryRequest(state) {
-      state.isLoading = true;
+    visitStoryRequest() {
     },
-    visitStorySuccess(state) {
-      state.isLoading = false;
+    visitStorySuccess() {
     },
-    visitStoryFailure(state, action) {
-      state.error = action.payload;
-      state.isLoading = false;
+    visitStoryFailure() {
+
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

@@ -14,7 +14,7 @@ import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import DeleteStoryModal from './DeleteStoryModal';
-import SocialIcons from './publication/SocialIcons';
+
 
 const Replies = dynamic(() => import('@/components/story/Replies'), {
   ssr: false,

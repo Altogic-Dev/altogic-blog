@@ -20,6 +20,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const replies = useSelector((state) => state.story.replies);
   const replyCount = useSelector((state) => state.story.replyCount);
   const storyIsLoading = useSelector((state) => state.story.isLoading);
+  const commentIsLoading = useSelector((state) => state.story.commentIsLoading);
   const user = useSelector((state) => state.auth.user);
 
   const [commentBoxes, setCommentBoxes] = useState([]);
@@ -46,6 +47,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     dispatch(storyActions.createReplyRequest(reply));
   };
   const createComment = (comment) => {
+
     dispatch(storyActions.createReplyCommentRequest(comment));
   };
   const sendNotification = (type) => {
@@ -93,12 +95,11 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       author: story.user._id,
     };
     createReply(reply);
-    setCommentText('');
+    quillInstance.setContents([{ insert: '\n' }]);
     sendNotification('reply');
   };
   const handleComment = (e, reply, index) => {
     e.preventDefault();
-
     const comment = {
       reply: reply._id,
       name: user.name,
@@ -116,6 +117,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       return temp;
     });
     sendNotification('comment');
+
   };
 
   useEffect(() => {
@@ -179,14 +181,13 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                           Write a responses
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
-                          <button
-                            type="button"
+                          <Button
                             className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
                             onClick={() => setSlideOvers(!slideOvers)}
                           >
                             <span className="sr-only">Close panel</span>
                             <XIcon className="h-6 w-6" aria-hidden="true" />
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -330,7 +331,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
 
                               {showReplies[index] &&
                                 reply.comments &&
-                                reply.comments.map((comment) => (
+                                reply.comments?.map((comment) => (
                                   <div
                                     key={comment._id}
                                     className="flex flex-col ml-4 border-l-4 pl-3"
