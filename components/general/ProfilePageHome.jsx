@@ -65,7 +65,7 @@ function ProfilePageHome({ userId, selectedTab }) {
             infoText={story.excerpt}
             badgeName={_.first(story.categoryNames)}
             min={story.estimatedReadingTime}
-            images={_.first(story.storyImages) ?? '/story-header.jpeg'}
+            images={_.first(story.storyImages)}
             bookmarkLists={bookmarkLists}
             story={story}
             optionButtons={{
