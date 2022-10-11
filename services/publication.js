@@ -37,11 +37,12 @@ const PublicationService = {
     return db.model('feature_page').delete(publication).get();
   },
 
-  getLatestPublicationStories(publicationName) {
-    return db
-      .model('story')
-      .filter(`publicationName == '${publicationName}'  `)
-      .get();
+  getLatestPublicationStories(publicationName, page, pageSize) {
+    return endpoint.get('/publication/latests', {
+      publicationName,
+      page,
+      pageSize,
+    });
   },
   getFeaturePagesByPublication(publicationId) {
     return db

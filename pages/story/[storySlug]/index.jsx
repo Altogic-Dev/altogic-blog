@@ -103,7 +103,7 @@ export default function BlogDetail({ ip }) {
         readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
         isRead,
         publication: _.get(story, 'publication._id'),
-        isExternal: facebook || twitter || linkedin,
+        isExternal: !!((facebook || twitter || linkedin)) ,
         author: story.user._id,
         categoryNames: story.categoryNames,
       })
@@ -145,7 +145,7 @@ export default function BlogDetail({ ip }) {
   const onScroll = useCallback(() => {
     const { pageYOffset } = window;
     if (
-      (contentRef.current.scrollHeightpageYOffset &&
+      (contentRef?.current?.scrollHeightpageYOffset &&
         (pageYOffset /
           (contentRef.current.scrollHeight -
             100 -

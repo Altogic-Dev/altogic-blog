@@ -58,14 +58,20 @@ function* getPublicationSaga({ payload: publicationName }) {
     yield put(publicationActions.getPublicationFailure(e));
   }
 }
-function* getLatestPublicationStoriesSaga({ payload: publicationName }) {
+function* getLatestPublicationStoriesSaga({
+  payload: { publicationName, page, pageSize },
+}) {
   try {
     const { data, errors } = yield call(
       PublicationService.getLatestPublicationStories,
-      publicationName
+      publicationName,
+      page,
+      pageSize
     );
     if (data) {
-      yield put(publicationActions.getLatestPublicationStoriesSuccess(data));
+      yield put(
+        publicationActions.getLatestPublicationStoriesSuccess(data, page)
+      );
     }
     if (errors) {
       throw errors.items;
