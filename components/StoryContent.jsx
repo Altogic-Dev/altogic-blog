@@ -14,7 +14,6 @@ import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import DeleteStoryModal from './DeleteStoryModal';
-import SocialIcons from './publication/SocialIcons';
 
 const Replies = dynamic(() => import('@/components/story/Replies'), {
   ssr: false,
@@ -209,7 +208,7 @@ function StoryContent(props) {
           </div>
         </div>
         <div className="flex items-center justify-center gap-6 border-y sm:border-0 border-gray-200">
-        <ShareButtons customLink={`/story/${_.get(story, 'storySlug')}`} />
+          <ShareButtons customLink={`/story/${_.get(story, 'storySlug')}`} />
           <div className="flex items-center relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
             <Menu as="div" className="relative inline-block text-left ml-4">
               <div>
