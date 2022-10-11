@@ -22,7 +22,6 @@ export default function WriteAStory() {
 
   const user = useSelector((state) => state.auth.user);
   const newStory = useSelector((state) => state.story.story);
-  const isLoading = useSelector((state) => state.story.isLoading);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -68,7 +67,7 @@ export default function WriteAStory() {
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
         setIsCreated(true);
-      } else {
+      } else if (!_.isNil(newStory)) {
         dispatch(
           storyActions.updateStoryRequest({
             story: {
@@ -94,7 +93,7 @@ export default function WriteAStory() {
           </span>
           <p className="text-slate-500">{minRead} min read</p>
 
-          {isCreated && !isLoading && (
+          {isCreated && (
             <button
               type="button"
               onClick={() => {
