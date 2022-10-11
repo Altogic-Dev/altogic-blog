@@ -457,7 +457,10 @@ export default function PublicationSettingsInfo({
                   type="text"
                   name="email"
                   id="email"
-                  placeholder="info@hithemes.io"
+                  placeholder={
+                    `info@${_.toLower(publicationname)}.com` ||
+                    'info@opinate.com'
+                  }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                   {...register('email', { required: true })}
                 />
@@ -483,7 +486,9 @@ export default function PublicationSettingsInfo({
                   type="text"
                   name="twitter"
                   id="twitter"
-                  placeholder="@hithemes.io"
+                  placeholder={
+                    `@${_.toLower(publicationname)}.com` || '@opinate.com'
+                  }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                   {...register('twitter')}
                 />
@@ -509,7 +514,9 @@ export default function PublicationSettingsInfo({
                   type="text"
                   name="facebook"
                   id="facebook"
-                  placeholder="@hithemes.io"
+                  placeholder={
+                    `@${_.toLower(publicationname)}.com` || '@opinate.com'
+                  }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                   {...register('facebook')}
                 />
@@ -535,7 +542,9 @@ export default function PublicationSettingsInfo({
                   type="text"
                   name="linkedin"
                   id="linkedin"
-                  placeholder="@hithemes.io"
+                  placeholder={
+                    `@${_.toLower(publicationname)}.com` || '@opinate.com'
+                  }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                   {...register('linkedin')}
                 />

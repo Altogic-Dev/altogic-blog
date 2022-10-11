@@ -17,7 +17,10 @@ export default function FileInput({
         >
           {label}
         </label>
-        <p className="text-slate-500 text-sm">{subLabel}</p>
+        <p
+          className="text-slate-500 text-sm"
+          dangerouslySetInnerHTML={{ __html: subLabel }}
+        />
       </div>
       <div className="flex flex-col items-center gap-4">
         <img
