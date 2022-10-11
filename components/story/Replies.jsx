@@ -1,17 +1,21 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { DateTime } from 'luxon';
 import { ChatIcon, HeartIcon, XIcon } from '@heroicons/react/outline';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { storyActions } from '@/redux/story/storySlice';
+import Quill from 'quill';
+import { BoldBlot, ItalicBlot } from '@/utils/QuillBlots';
 import Button from '../basic/button';
 import Avatar from '../profile/Avatar';
 import ListObserver from '../ListObserver';
 
 export default function Replies({ story, slideOvers, setSlideOvers }) {
   const dispatch = useDispatch();
+
+  const editor = useRef();
 
   const replies = useSelector((state) => state.story.replies);
   const replyCount = useSelector((state) => state.story.replyCount);
@@ -20,9 +24,10 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
 
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [commentText, setCommentText] = useState([]);
-  const [replyText, setReplyText] = useState();
   const [showReplies, setShowReplies] = useState([]);
   const [replyLimit, setReplyLimit] = useState(10);
+  const [quillInstance, setQuillInstance] = useState();
+
   const getReplies = () => {
     dispatch(
       storyActions.getStoryRepliesRequest({
@@ -53,7 +58,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
         type,
         targetSlug: story.slug,
         sentUserProfilePicture: user.profilePicture,
-        user: story.user,
+        user: story.user._id,
       })
     );
   };
@@ -82,10 +87,10 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       type: 'story',
       userProfilePicture: user.profilePicture,
       username: user.username,
-      content: replyText,
+      content: quillInstance.root.innerHTML,
       likeCount: 0,
       commentCount: 0,
-      reply: story.user,
+      author: story.user._id,
     };
     createReply(reply);
     setCommentText('');
@@ -114,8 +119,30 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   useEffect(() => {
+    if (slideOvers) {
+      setTimeout(() => {
+        const quill = new Quill('#reply-input', {
+          placeholder: 'What are you thoughts?',
+        });
+
+        setQuillInstance(quill);
+        Quill.register(BoldBlot);
+        Quill.register(ItalicBlot);
+        console.log(quill);
+      }, 1);
+    }
+  }, [slideOvers]);
+
+  useEffect(() => {
     if (story) getReplies();
   }, [story, replyLimit]);
+
+  const boldButton = () => {
+    quillInstance.format('bold', true);
+  };
+  const italicButton = () => {
+    quillInstance.format('italic', true);
+  };
 
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
@@ -181,22 +208,17 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               {_.get(user, 'name')}
                             </span>
                           </div>
-                          <div className="mb-4">
-                            <textarea
-                              id="about"
-                              name="about"
-                              rows={5}
-                              className="block w-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
-                              placeholder="What are you thoughts?"
-                              onChange={(event) =>
-                                setReplyText(event.target.value)
-                              }
-                              value={replyText}
+                          <div className="mb-4 h-24">
+                            <div
+                              ref={editor}
+                              id="reply-input"
+                              className="block w-full h-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
                             />
                           </div>
                           <div className="flex items-center justify-between">
                             <div>
-                              <button
+                              <Button
+                                onClick={boldButton}
                                 type="button"
                                 className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
                               >
@@ -211,8 +233,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     fill="currentColor"
                                   />
                                 </svg>
-                              </button>
-                              <button
+                              </Button>
+                              <Button
+                                onClick={italicButton}
                                 type="button"
                                 className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
                               >
@@ -227,11 +250,14 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     fill="currentColor"
                                   />
                                 </svg>
-                              </button>
+                              </Button>
                             </div>
                             <div className="flex items-center gap-4">
                               <Button primaryColor>Cancel</Button>
-                              <Button loading={storyIsLoading} type="Submit">
+                              <Button
+                                loading={storyIsLoading && !_.isEmpty(replies)}
+                                type="Submit"
+                              >
                                 Respond
                               </Button>
                             </div>
@@ -265,9 +291,13 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   </span>
                                 </div>
                               </div>
-                              <p className="text-slate-700 text-sm tracking-sm">
-                                {reply.content}
-                              </p>
+                              <p
+                                className="text-slate-700 text-sm tracking-sm"
+                                dangerouslySetInnerHTML={{
+                                  __html: reply.content,
+                                }}
+                              />
+
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
                                   <Button className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm">

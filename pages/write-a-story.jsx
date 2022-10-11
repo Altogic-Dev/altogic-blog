@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import Layout from '../layouts/Layout';
 
-const Editor = dynamic(() => import('../components/Editor'), {
+const Editor = dynamic(() => import('@/components/Editor'), {
   ssr: false,
 });
 
@@ -125,7 +125,7 @@ export default function WriteAStory() {
           <input
             type="text"
             name="story-title"
-            className="block w-full text-slate-500 px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+            className="block w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
             placeholder="Story Title"
             required
             onChange={(e) => setInpTitle(e.currentTarget.value)}

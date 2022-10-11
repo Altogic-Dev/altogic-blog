@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
@@ -15,7 +16,7 @@ export default function Profile({
   isLoading,
 }) {
   const sessionUser = useSelector((state) => state.auth.user);
-
+  const [isMyProfile, setIsMyProfile] = useState(false);
   const dispatch = useDispatch();
   const toggleFollow = () => {
     if (isFollowing) {
@@ -58,6 +59,11 @@ export default function Profile({
       })
     );
   };
+  useEffect(() => {
+    if (sessionUser) {
+      setIsMyProfile(sessionUser._id === profile._id);
+    }
+  }, [sessionUser]);
 
   return (
     <div>
@@ -78,14 +84,14 @@ export default function Profile({
           dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
         />
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
-          {!_.isEqual(profile, sessionUser) && (
+          {!isMyProfile && (
             <FollowButton
               isLoading={isLoading}
               isFollowing={isFollowing}
               onClick={toggleFollowProp || toggleFollow}
             />
           )}
-          {!_.isEqual(profile, sessionUser) && (
+          {!isMyProfile && (
             <Button
               primaryColor
               extraClasses="inline-flex gap-2"
@@ -120,7 +126,7 @@ export default function Profile({
               {isSubscribed ? 'Unsubscribe' : 'Subscribe'}
             </Button>
           )}
-          {_.isEqual(profile, sessionUser) && (
+          {isMyProfile && (
             <Link href="/settings">
               <button
                 type="button"

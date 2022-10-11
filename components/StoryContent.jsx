@@ -8,12 +8,16 @@ import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
 import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
-import Replies from './story/Replies';
 import DeleteStoryModal from './DeleteStoryModal';
+
+const Replies = dynamic(() => import('@/components/story/Replies'), {
+  ssr: false,
+});
 
 function StoryContent(props) {
   const {
