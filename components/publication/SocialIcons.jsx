@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Button from '../basic/button';
 
 export default function SocialIcons({ color, twitter, facebook, linkedin }) {
   return (
@@ -6,8 +7,7 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
       <li>
         {twitter && (
           <Link href={twitter} target="_blank" rel="noopener noreferrer">
-            <button
-              type="button"
+            <Button
               className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700"
             >
               <svg
@@ -24,15 +24,14 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
                   fill="currentColor"
                 />
               </svg>
-            </button>
+            </Button>
           </Link>
         )}
       </li>
       <li>
         {facebook && (
           <Link href={facebook} target="_blank" rel="noopener noreferrer">
-            <button
-              type="button"
+            <Button
               className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700"
             >
               <svg
@@ -49,15 +48,14 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
                   fill="currentColor"
                 />
               </svg>
-            </button>
+            </Button>
           </Link>
         )}
       </li>
       <li>
         {linkedin && (
           <Link href={linkedin} target="_blank" rel="noopener noreferrer">
-            <button
-              type="button"
+            <Button
               className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700"
             >
               <svg
@@ -74,7 +72,7 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
                   fill="currentColor"
                 />
               </svg>
-            </button>
+            </Button>
           </Link>
         )}
       </li>

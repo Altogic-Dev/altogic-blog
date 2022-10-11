@@ -358,9 +358,7 @@ export default function Editor({ onChange, setImages, value }) {
           </button>
         </span>
       </div>
-      <div ref={editor} id="editor-container" className="relative">
-        Tell your story...
-      </div>
+      <div ref={editor} id="editor-container" className="relative" />
       <div ref={input} className="hidden absolute w-full">
         <input
           className="w-full focus:border-none focus:outline-none"

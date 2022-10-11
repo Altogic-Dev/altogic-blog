@@ -10,6 +10,8 @@ const initialState = {
   isPublicationnameValid: true,
   publicationname: null,
   latestPublicationStories: [],
+  latestPublicationStoriesCount: 0,
+  latestPublicationStoriesPage: 0,
   featurePages: [],
   featurePage: null,
   publicationNavigation: [],
@@ -67,7 +69,9 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     getLatestPublicationStoriesSuccess(state, action) {
-      state.latestPublicationStories = action.payload;
+      state.latestPublicationStories = [...state.latestPublicationStories,...action.payload.result];
+      state.latestPublicationStoriesCount = action.payload.countInfo;
+      state.latestPublicationStoriesPage = action.payload.page;
       state.isLoading = false;
     },
     getLatestPublicationStoriesFailure(state, action) {
@@ -172,7 +176,6 @@ export const publicationSlice = createSlice({
     followPublicationSuccess(state, action) {
       state.isLoading = false;
       state.isFollowingPublication = true;
-      console.log(state.isFollowingPublication);
       state.publication.followerCount += 1;
       state.publicationFollowers = [
         ...state.publicationFollowers,

@@ -39,6 +39,7 @@ export function parseHtml(html) {
       { selector: 'h4', options: { uppercase: false } },
       { selector: 'h5', options: { uppercase: false } },
       { selector: 'h6', options: { uppercase: false } },
+      { selector: 'img', format: 'skip' },
     ],
   });
 }

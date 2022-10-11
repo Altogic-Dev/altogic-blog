@@ -13,6 +13,7 @@ import PublicationTab from '@/components/PublicationTabs/PublicationTab';
 import AligmentPublicationLayout from '@/components/AligmentPublicationLayout';
 
 export default function Publications() {
+  const pageSize = 3;
   const router = useRouter();
   const dispatch = useDispatch();
   const { publicationName } = router.query;
@@ -21,6 +22,13 @@ export default function Publications() {
   const latestPublicationStories = useSelector(
     (state) => state.publication.latestPublicationStories
   );
+  const latestPublicationStoriesPage = useSelector(
+    (state) => state.publication.latestPublicationStoriesPage
+  );
+  const latestPublicationStoriesCount = useSelector(
+    (state) => state.publication.latestPublicationStoriesCount
+  );
+
   const navigations = useSelector(
     (state) => state.publication.publicationNavigation
   );
@@ -30,11 +38,16 @@ export default function Publications() {
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
   const getLatestPublicationStories = () => {
-    dispatch(
-      publicationActions.getLatestPublicationStoriesRequest(
-        publicationName.toLowerCase()
-      )
-    );
+
+    if (publicationName && latestPublicationStoriesCount >= latestPublicationStories.length) {
+      dispatch(
+        publicationActions.getLatestPublicationStoriesRequest({
+          publicationName,
+          page: latestPublicationStoriesPage + 1 ?? 1,
+          pageSize,
+        })
+      );
+    }
   };
   useEffect(() => {
     if (!isNil(publicationName)) {
@@ -42,6 +55,7 @@ export default function Publications() {
     }
   }, [publicationName]);
 
+  console.log(latestPublicationStories);
   useEffect(() => {
     if (publication && !didMount) {
       dispatch(
@@ -110,23 +124,23 @@ export default function Publications() {
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>
-              <div className="mt-5 flex items-center gap-8">
-                {latestPublicationStories?.map((post) => (
-                  <PublicationPostCard
-                    key={post._id}
-                    image={_.first(post.storyImages)}
-                    title={post.title ?? 'Untitled'}
-                    description={post.content ?? 'Test'}
-                    readMoreUrl={`/publications/${publicationName}/${post.slug}`}
-                    personName={post.username}
-                    date={DateTime.fromISO(post.createdAt).toRelative()}
-                    storiesCount={post.user.storyCount}
-                    bookmark={post.bookmark}
-                    firstPadding
-                    bigImage={_.first(post.storyImages)}
-                    Ï
-                  />
-                ))}
+              <div className="mt-5 flex items-start gap-8 overflow-x-auto">
+                  {latestPublicationStories?.map((post) => (
+                    <PublicationPostCard
+                      key={post._id}
+                      image={_.first(post.storyImages) }
+                      title={post.title ?? 'Untitled'}
+                      description={post.content ?? 'Test'}
+                      readMoreUrl={`/story/${post.storySlug}`}
+                      personName={post.username}
+                      profilePicture={post.user?.profilePicture}
+                      date={DateTime.fromISO(post.createdAt).toRelative()}
+                      storiesCount={post.user?.storyCount}
+                      bookmark={post.bookmark}
+                      firstPadding={false}
+                      bigImage={_.first(post.storyImages)}
+                    />
+                  ))}
               </div>
             </div>
           </div>

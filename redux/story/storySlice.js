@@ -33,6 +33,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getFollowingStoriesSuccess(state, action) {
+      state.isLoading = false;
       if (_.isArray(state.followingStories)) {
         state.followingStories = [
           ...state.followingStories,
@@ -96,6 +97,7 @@ export const storySlice = createSlice({
     },
     createReplySuccess(state, action) {
       state.replies = [action.payload, ...state.replies];
+      state.replyCount += 1;
       state.isLoading = false;
     },
     createReplyFailure(state, action) {
@@ -170,6 +172,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getUserStoriesSuccess(state, action) {
+      state.isLoading = false;
       if (_.isArray(state.userStories)) {
         state.userStories = [...state.userStories, ...action.payload.data];
       } else {
@@ -240,7 +243,6 @@ export const storySlice = createSlice({
     },
     publishStorySuccess(state) {
       state.isLoading = false;
-      state.story = null;
     },
     publishStoryFailure(state, action) {
       state.error = action.payload;
@@ -254,6 +256,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     popularStoriesSuccess(state, action) {
+      state.isLoading = false;
       state.popularStories = action.payload;
     },
     popularStoriesFailure(state, action) {
@@ -264,6 +267,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getPublicationsStoriesSuccess(state, action) {
+      state.isLoading = false;
       state.publicationsStories = action.payload;
     },
     getPublicationsStoriesFailure(state, action) {
@@ -296,7 +300,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     visitStorySuccess(state) {
-      state.isLoading = true;
+      state.isLoading = false;
     },
     visitStoryFailure(state, action) {
       state.error = action.payload;

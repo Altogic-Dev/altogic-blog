@@ -54,6 +54,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingPage, setFollowingPage] = useState(1);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [unfollowed, setUnfollowed] = useState([]);
+  const [isMyProfile, setIsMyProfile] = useState(false);
   const previousPage = usePrevious(bookmarkListPage);
   const copyToClipboard = () => {
     const basePath = window.location.origin;
@@ -186,6 +187,12 @@ export default function ProfilePage({ About, Home, List }) {
       setIsLoading(false);
     }
   }, [bookmarkLoading, authLoading, storyLoading]);
+
+  useEffect(() => {
+    if (sessionUser && profileUser) {
+      setIsMyProfile(sessionUser?._id === profileUser?._id);
+    }
+  }, [sessionUser, profileUser]);
   return (
     <div>
       <Head>
@@ -329,7 +336,7 @@ export default function ProfilePage({ About, Home, List }) {
                       followingCount={_.get(profileUser, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!_.isEqual(profileUser, sessionUser) && (
+                    {!isMyProfile && (
                       <AboutSubscribeCard
                         name={_.get(profileUser, 'name')}
                         mailAddress={_.get(profileUser, 'mailAddress')}

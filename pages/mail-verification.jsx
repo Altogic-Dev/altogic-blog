@@ -39,7 +39,7 @@ export default function Login() {
                 <span className="text-slate-700">{email}</span>
               </p>
               <p className="mb-8 text-center text-sm text-slate-500 tracking-sm">
-                Didn’t receive the email?
+                Didn’t receive the email?{' '}
                 <Button className="border-0" onClick={resendVerificationEmail}>
                   <a className="font-medium text-purple-700 tracking-sm hover:text-purple-500">
                     Click to resend

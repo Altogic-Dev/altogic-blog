@@ -59,7 +59,6 @@ function* createReply({ payload: reply }) {
       yield put(storyActions.createReplySuccess(data));
     }
   } catch (e) {
-    console.error({ e });
     yield put(storyActions.createReplyFailure(e));
   }
 }
@@ -511,7 +510,7 @@ function* getPublicationStoriesByTopicSaga({
 }
 function* visitStorySaga({ payload: visit }) {
   try {
-    const { data, errors } = yield call(StoryService.visitStory,visit);
+    const { data, errors } = yield call(StoryService.visitStory, visit);
 
     if (!_.isNil(errors)) throw errors.items;
 

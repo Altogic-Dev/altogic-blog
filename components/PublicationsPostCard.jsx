@@ -1,7 +1,10 @@
 import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
+import { htmlToText } from 'html-to-text';
+import Link from 'next/link';
 import { classNames } from '@/utils/utils';
 import CreateBookmarkList from './bookmarks/CreateBookmarkList';
+import Button from './basic/button';
 
 export default function PublicationPostCard({
   firstPadding,
@@ -14,55 +17,63 @@ export default function PublicationPostCard({
   description,
   readMoreUrl,
   bookmark,
+  profilePicture,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
 
   return (
     <>
-      <div className={classNames(firstPadding ? 'py-8 first:pt-0' : 'py-8')}>
-        <a
-          href={`/${personName}`}
-          className="inline-flex items-center gap-3 mb-4"
-        >
-          <img
-            className="w-[50px] h-[50px] rounded-full object-cover"
-            src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            alt=""
-          />
-          <div>
-            <span className="text-slate-700  text-base font-medium tracking-sm">
-              {personName}
-            </span>
-            <div className="flex items-center gap-2 text-slate-500 tracking-sm">
-              <span>{date}</span>
-              <svg
-                className="h-1 w-1 text-slate-500"
-                fill="currentColor"
-                viewBox="0 0 8 8"
-              >
-                <circle cx={4} cy={4} r={3} />
-              </svg>
-              <span>{storiesCount} stories</span>
+      <div
+        className={classNames(
+          firstPadding ? 'py-8 w-4/12' : 'py-8 first:pt-0 w-4/12'
+        )}
+      >
+        <Link href={`/${personName}`}>
+          <a className="inline-flex items-center gap-3 mb-4">
+            <img
+              className="w-[50px] h-[50px] rounded-full object-cover"
+              src={profilePicture}
+              alt=""
+            />
+            <div>
+              <span className="text-slate-700  text-base font-medium tracking-sm">
+                {personName}
+              </span>
+              <div className="flex items-center gap-2 text-slate-500 tracking-sm">
+                <span>{date}</span>
+                <svg
+                  className="h-1 w-1 text-slate-500"
+                  fill="currentColor"
+                  viewBox="0 0 8 8"
+                >
+                  <circle cx={4} cy={4} r={3} />
+                </svg>
+                <span>{storiesCount} stories</span>
+              </div>
             </div>
-          </div>
-        </a>
-        <a href={readMoreUrl} className="group mb-4 md:mb-8 flex flex-col">
-          <img
-            className={classNames(
-              bigImage
-                ? 'w-full h-[250px] object-cover mb-8 rounded-md'
-                : 'w-full h-[220px] object-cover mb-8 rounded-md'
-            )}
-            src={image}
-            alt={title}
-          />
-          <div className="flex items-center gap-2">
-            <h2 className="text-slate-900 text-3xl mb-2 font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
-              {title}
-            </h2>
-          </div>
-          <p className="text-slate-500 text-sm tracking-sm">{description}</p>
-        </a>
+          </a>
+        </Link>
+        <Link href={readMoreUrl}>
+          <a className="group mb-4 md:mb-8 flex flex-col">
+            <img
+              className={classNames(
+                bigImage
+                  ? 'w-full h-[250px] object-cover mb-8 rounded-md'
+                  : 'w-full h-[220px] object-cover mb-8 rounded-md'
+              )}
+              src={image}
+              alt={title}
+            />
+            <div className="flex items-center gap-2">
+              <h2 className="text-slate-900 text-3xl mb-2 font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
+                {title}
+              </h2>
+            </div>
+            <p className="text-slate-500 text-sm tracking-sm">
+              {htmlToText(description?.substring(0, 200))}
+            </p>
+          </a>
+        </Link>
         <div className="flex items-center justify-between gap-4">
           <a
             href={readMoreUrl}
@@ -168,13 +179,12 @@ export default function PublicationPostCard({
                       </div>
                     </div>
                     <div>
-                      <button
-                        type="button"
+                      <Button
                         onClick={() => setCreateNewList(!createNewList)}
                         className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
                       >
                         Create new list
-                      </button>
+                      </Button>
                     </div>
                   </Menu.Items>
                 </Transition>

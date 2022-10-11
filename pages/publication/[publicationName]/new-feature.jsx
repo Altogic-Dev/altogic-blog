@@ -12,12 +12,16 @@ import { useState, useEffect } from 'react';
 import AddFeatureSection from '@/components/publication/AddFeatureSection';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
+import { FileUploader } from 'react-drag-drop-files';
+
+const fileTypes = ['JPG', 'PNG', 'WEBP', 'JPEG','SVG','GIF'];
 
 export default function PublicationsNewFeature() {
   const router = useRouter();
   const dispatch = useDispatch();
   const [file, setFile] = useState();
   const [featurePageRequest, setFeaturePageRequest] = useState();
+  const [fileUploadError, setFileUploadError] = useState();
   const formSchema = new yup.ObjectSchema({
     title: yup.string().required('Title is required'),
     description: yup.string().required('Description is required'),
@@ -89,6 +93,23 @@ export default function PublicationsNewFeature() {
       sections,
     });
   };
+
+  const sizeCheck = (file) => {
+    if (file) setFile();
+    const img = new Image();
+    img.onload = function () {
+      // eslint-disable-next-line react/no-this-in-sfc
+      if (this.width > this.height) {
+        setFile(file);
+      } else {
+        setFileUploadError('Choose a different image');
+      }
+    };
+    img.onerror = function () {
+      setFileUploadError('Choose a different image');
+    };
+    img.src = URL.createObjectURL(file);
+  };
   useEffect(() => {
     if (logo) {
       dispatch(
@@ -100,6 +121,7 @@ export default function PublicationsNewFeature() {
       router.push(`/publication/${publication.name}/feature`);
     }
   }, [logo]);
+
   return (
     <div>
       <Head>
@@ -219,53 +241,67 @@ export default function PublicationsNewFeature() {
                       Use SVG, PNG, JPG or GIF
                     </p>
                   </div>
-                  <div className="flex items-center justify-center max-w-[280px] max-h-[124px] py-4 px-6 border border-gray-300 rounded-md">
-                    <div className="text-center">
-                      {file ? (
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={router.query.publicationName}
-                        />
-                      ) : (
-                        <span className="inline-flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-gray-100 ring-8 ring-gray-50">
-                          <svg
-                            className="w-5 h-5 text-slate-700"
-                            viewBox="0 0 22 22"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
-                      )}
-                      <div className="flex text-sm text-gray-600">
-                        <Button
-                          onClick={uploadPhotoHandler}
-                          htmlFor="file-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-purple-700 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
-                        >
-                          <span>Click to upload</span>
-                          <Input
-                            id="file-upload"
-                            name="file-upload"
-                            type="file"
-                            className="sr-only"
+                  <div className="flex items-center justify-center max-w-[280px] max-h-[124px] py-4 border border-gray-300 rounded-md overflow-hidden">
+                    <FileUploader
+                      handleChange={(file) => {
+                        sizeCheck(file);
+                      }}
+                      name="file"
+                      types={fileTypes}
+                    >
+                      <div className="text-center">
+                        {file ? (
+                          <img
+                            className=" object-cover"
+                            src={URL.createObjectURL(file)}
+                            alt={router.query.publicationName}
                           />
-                        </Button>
-                        <p className="text-slate-600 pl-1">or drag and drop</p>
+                        ) : (
+                          <span className="inline-flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-gray-100 ring-8 ring-gray-50">
+                            <svg
+                              className="w-5 h-5 text-slate-700"
+                              viewBox="0 0 22 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
+                                stroke="currentColor"
+                                strokeWidth={2}
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </span>
+                        )}
+
+                        {!file && (
+                          <div className="flex text-sm text-gray-600">
+                            <Button
+                              onClick={uploadPhotoHandler}
+                              htmlFor="file-upload"
+                              className="relative cursor-pointer bg-white rounded-md font-medium text-purple-700 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
+                            >
+                              <span>Click to upload</span>
+                              <Input
+                                id="file-upload"
+                                name="file-upload"
+                                type="file"
+                                className="sr-only"
+                              />
+                            </Button>
+                            <p className="text-slate-600 pl-1">
+                              or drag and drop
+                            </p>
+                          </div>
+                        )}
+                        {(errors?.file?.message || fileUploadError) && (
+                          <span className="inline-block text-sm text-red-600">
+                            {fileUploadError ?? errors.file.message}
+                          </span>
+                        )}
                       </div>
-                      {errors?.file?.message && (
-                        <span className="inline-block text-sm text-red-600">
-                          {errors.file.message}
-                        </span>
-                      )}
-                    </div>
+                    </FileUploader>
                   </div>
                 </div>
               </div>

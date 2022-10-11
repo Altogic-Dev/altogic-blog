@@ -8,11 +8,11 @@ import {
 } from 'react-share';
 import Button from './basic/button';
 
-function ShareButtons() {
+function ShareButtons({ customLink }) {
   const router = useRouter();
 
   const [basePath, setBasePath] = useState();
-  const shareUrl = basePath + router.asPath;
+  const shareUrl = basePath + (customLink ?? router.asPath);
 
   useEffect(() => {
     setBasePath(window.location.origin);

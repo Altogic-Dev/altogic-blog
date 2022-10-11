@@ -274,6 +274,14 @@
 .main {
   height: 90vh;
 }
+#reply-input {
+  height: 100%;
+}
+#reply-input .ql-editor {
+  height: 100%;
+  outline: none;
+  overflow-y: auto;
+}
 * {
   box-sizing: border-box;
 }
