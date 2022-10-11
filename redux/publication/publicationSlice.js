@@ -69,7 +69,7 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     getLatestPublicationStoriesSuccess(state, action) {
-      state.latestPublicationStories = [...state.latestPublicationStories,action.payload.result];
+      state.latestPublicationStories = [...state.latestPublicationStories,...action.payload.result];
       state.latestPublicationStoriesCount = action.payload.countInfo;
       state.latestPublicationStoriesPage = action.payload.page;
       state.isLoading = false;

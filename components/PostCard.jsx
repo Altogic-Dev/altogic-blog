@@ -23,7 +23,7 @@ export default function PostCard({
   normalMenu,
   optionButtons,
   listDetailMenu,
-  images,
+  images = '/story-header.jpeg',
   story,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
