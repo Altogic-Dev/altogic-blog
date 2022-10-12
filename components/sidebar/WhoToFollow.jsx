@@ -20,6 +20,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
   const whoToFollowMinimized = useSelector(
     (state) => state.recommendations.whoToFollowMinimized
   );
+
   const topWritersIdList = useSelector(
     (state) => state.topics.topWritersIdList
   );
@@ -107,8 +108,9 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
         <SidebarTitle title={isTopWriters ? 'Top Writers' : 'Who To Follow'} />
         <div>
           <ul className="divide-y divide-gray-200">
-            {peopleMinimized?.map((person) => (
+            {peopleMinimized?.map((person, index) => (
               <UserCard
+                index={index}
                 key={person._id}
                 user={person}
                 isFollowing={userFollowings.some(
@@ -120,7 +122,6 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
           <Button
             onClick={handleSeeMoreSuggestions}
             className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
-        
           >
             See more suggestions
             <svg
@@ -177,8 +178,9 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                       </Dialog.Title>
                       <div>
                         <ul className="mb-6">
-                          {people?.map((person) => (
+                          {people?.map((person, index) => (
                             <UserCard
+                              index={index}
                               key={person._id}
                               user={person}
                               isFollowing={userFollowings.some(
