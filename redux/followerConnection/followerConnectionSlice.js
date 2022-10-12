@@ -11,6 +11,7 @@ const initialState = {
   userFollowers: [],
   userFollowings: [],
   isLoading: false,
+  followingUserLoading: false,
   followingStoriesPage: 1,
 };
 
@@ -21,10 +22,10 @@ export const followerConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     unfollowRequest(state) {
-      state.isLoading = true;
+      state.followingUserLoading = true;
     },
     unfollowSuccess(state, action) {
-      state.isLoading = false;
+      state.followingUserLoading = false;
 
       state.isFollowing = false;
       state.userFollowings = state.userFollowings.filter(
@@ -32,19 +33,19 @@ export const followerConnectionSlice = createSlice({
       );
     },
     unfollowFailure(state, action) {
-      state.isLoading = false;
+      state.followingUserLoading = false;
       state.error = action.payload;
     },
 
     followRequest(state) {
-      state.isLoading = true;
+      state.followingUserLoading = true;
     },
     followSuccess(state) {
       state.isFollowing = true;
-      state.isLoading = false;
+      state.followingUserLoading = false;
     },
     followFailure(state, action) {
-      state.isLoading = false;
+      state.followingUserLoading = false;
       state.error = action.payload;
     },
     getFollowingStoriesRequest(state) {
@@ -55,14 +56,14 @@ export const followerConnectionSlice = createSlice({
     },
 
     followUserRequest(state) {
-      state.isLoading = true;
+      state.followingUserLoading = true;
     },
     followUserSuccess(state, action) {
-      state.isLoading = false;
+      state.followingUserLoading = false;
       state.followingActionResult = action.payload;
     },
     followUserFailure(state, action) {
-      state.isLoading = false;
+      state.followingUserLoading = false;
       state.error = action.payload;
     },
     getFollowingUsersFailure(state, action) {

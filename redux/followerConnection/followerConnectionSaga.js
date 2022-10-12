@@ -32,6 +32,7 @@ function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
 
 function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
   try {
+
     const { errors } = yield call(
       FollowerConnectionService.follow,
       followerUser,
