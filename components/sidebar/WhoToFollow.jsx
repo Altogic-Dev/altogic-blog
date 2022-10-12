@@ -120,7 +120,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
           <Button
             onClick={handleSeeMoreSuggestions}
             className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
-            type="button"
+        
           >
             See more suggestions
             <svg
