@@ -6,6 +6,8 @@ const FollowerConnectionService = {
   },
 
   follow(followerUser, followingUser) {
+  console.log(followingUser)
+   
     return endpoint.post(`/follower_connection`, {
       ...followingUser,
       followerUser: followerUser._id,

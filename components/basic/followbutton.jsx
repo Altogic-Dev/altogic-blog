@@ -6,7 +6,7 @@ export default function FollowButton({ onClick, isFollowing, isLoading }) {
     <Button
       loading={isLoading}
       extraClasses="gap-2 px-[14px] "
-      onClick={onClick}
+      onClick={!isLoading ? onClick : null}
     >
       {isFollowing ? (
         <UserRemoveIcon className="w-5 h-5" />

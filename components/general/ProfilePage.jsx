@@ -30,7 +30,7 @@ export default function ProfilePage({ About, Home, List }) {
   const userStories = useSelector((state) => state.story.userStories);
   const sessionUser = useSelector((state) => state.auth.user);
   const followLoading = useSelector(
-    (state) => state.followerConnection.isLoading
+    (state) => state.followerConnection.followingUserLoading
   );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
@@ -61,7 +61,6 @@ export default function ProfilePage({ About, Home, List }) {
     const profileUrl = `${basePath}/${username}`;
     navigator.clipboard.writeText(profileUrl);
   };
-
   const getFollowingUsers = useCallback(() => {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
@@ -84,6 +83,7 @@ export default function ProfilePage({ About, Home, List }) {
   };
 
   const handleFollow = (user, index) => {
+    console.log('sa');
     if (unfollowed[index] === false)
       dispatch(
         followerConnectionActions.unfollowRequest({
@@ -328,6 +328,7 @@ export default function ProfilePage({ About, Home, List }) {
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
+                      userFollowings={userFollowings}
                       userId={_.get(profileUser, '_id')}
                       about={_.get(profileUser, 'about')}
                       signUpAt={_.get(profileUser, 'signUpAt')}
@@ -517,13 +518,12 @@ export default function ProfilePage({ About, Home, List }) {
                       ))}
                     </ul>
                     <div className="text-center">
-                      <button
-                        type="button"
+                      <Button
                         className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                         onClick={() => setFollowingPage((prev) => prev + 1)}
                       >
                         Show more
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </Dialog.Panel>

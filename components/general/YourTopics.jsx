@@ -13,6 +13,7 @@ export default function YourTopics({ Tag }) {
     _.get(state.auth.user, 'followingTopics')
   );
 
+  console.log(followingTopics)
   const [followingTopicsState, setFollowingTopicsState] = useState([]);
   const [followed, setFollowed] = useState(false);
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ export default function YourTopics({ Tag }) {
     );
   };
   const followTopic = () => {
+    console.log(followingTopicsState)
     dispatch(
       authActions.updateFollowingTopicsRequest({
         topics: [...followingTopicsState, Tag.replace('-', ' ')],
