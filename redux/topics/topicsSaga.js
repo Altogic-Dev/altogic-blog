@@ -80,32 +80,7 @@ function* getRelatedTopicsSaga({ payload: topic }) {
     yield put(topicsActions.getRelatedTopicsFailure(e));
   }
 }
-function* getTopicTopWritersIdListSaga({ payload: topic }) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getTopicTopWritersIdList,
-      topic
-    );
 
-    if (errors) throw errors.items;
-    if (data) yield put(topicsActions.getTopicTopWritersIdListSuccess(data));
-  } catch (e) {
-    yield put(topicsActions.getTopicTopWritersIdListFailure(e));
-  }
-}
-function* getTopicTopWritersSaga({ payload: people }) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getTopicTopWriters,
-      people
-    );
-
-    if (errors) throw errors.items;
-    if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
-  } catch (e) {
-    yield put(topicsActions.getTopicTopWritersFailure(e));
-  }
-}
 function* insertTopicWritersSaga(story) {
   const user = yield select((state) => state.auth.user);
   const topicWriters = _.map(story.categoryNames, (topic) => ({
@@ -237,14 +212,7 @@ export default function* rootSaga() {
     topicsActions.getRelatedTopicsRequest.type,
     getRelatedTopicsSaga
   );
-  yield takeEvery(
-    topicsActions.getTopicTopWritersRequest.type,
-    getTopicTopWritersSaga
-  );
-  yield takeEvery(
-    topicsActions.getTopicTopWritersIdListRequest.type,
-    getTopicTopWritersIdListSaga
-  );
+
   yield takeEvery(
     topicsActions.getTopicAnalyticsRequest.type,
     getTopicAnalyticsSaga

@@ -142,8 +142,8 @@ const StoryService = {
     return cache.delete(storySlug);
   },
 
-  publishStory(story,relatedTopics) {
-    return endpoint.post('/story', {story, relatedTopics});
+  publishStory(story) {
+    return endpoint.post('/story', story);
   },
   visitStory(visit) {
     return endpoint.post(`/story/view`, visit );

@@ -1,12 +1,12 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { topicsActions } from '@/redux/topics/topicsSlice';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
 import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
 import UserCard from '../general/UserCard';
 
+const sizeLimit = 20;
 export default function WhoToFollow({
   topWriters,
   whoToFollow,
@@ -19,25 +19,25 @@ export default function WhoToFollow({
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
-  let page = 0;
+  let page = 1;
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
 
 
-  const topicWritersIdList = useSelector(
-    (state) => state.topics.topicWritersIdList
+  const topicWritersData = useSelector(
+    (state) => state.recommendations.topicWriters
   );
-  const topicWritersData = useSelector((state) => state.topics.topicWriters);
-  const topWritersData = useSelector((state) => state.recommendations.topWriters);
+  const topWritersData = useSelector(
+    (state) => state.recommendations.topWriters
+  );
+
+  const count = useSelector((state) => state.recommendations.count);
 
   const dispatch = useDispatch();
 
-  const getTopicWritersIdList = (Tag, size) => {
-    dispatch(topicsActions.getTopicTopicWritersIdListRequest(Tag, size));
-  };
-  const getTopicWriters = (idList) => {
-    dispatch(topicsActions.getTopicTopWritersRequest(idList));
+  const getTopicWriters = () => {
+    dispatch(recommendationsActions.getTopicTopWritersRequest({ tag: Tag }));
   };
 
   const getWhoToFollow = (page, size) => {
@@ -49,45 +49,26 @@ export default function WhoToFollow({
   };
 
   const handleSeeMoreSuggestions = () => {
-    if (topicWriters && topicWritersData.length<= 5) {
-      const idList = topicWritersIdList?.map((person) => person.groupby.group);
-      getTopicWriters(idList.slice(0, 20));
-    } else if (whoToFollow  && whoToFollowData.length<= 5) {
-      getWhoToFollow(1, 20);
-    } else if (topWriters  && topicWritersData.length<= 5) {
-      getTopWriters(1, 20);
+    if (Tag && !topicWritersData) {
+      getTopicWriters(Tag);
+    } else if (whoToFollow && whoToFollowData.length <= sizeLimit) {
+      getWhoToFollow(1, sizeLimit);
+    } else if (topWriters && topWritersData.length <= sizeLimit) {
+      getTopWriters(1, sizeLimit);
     }
-    setwhoToFollowDataModal(true);
   };
 
   const handleShowMore = () => {
     page += 1;
-    if (topicWriters) {
-      const idList = topicWritersIdList?.map((person) => person.groupby.group);
-      getTopicWriters(idList.slice(20 * (page - 1), 20 * page));
-    } else if (whoToFollow) {
-      getWhoToFollow(page, 20);
-    } else if (topWriters) {
-      getTopWriters(page, 20);
+    if (whoToFollow && whoToFollowData.length < count) {
+      getWhoToFollow(page, sizeLimit);
+    } else if (topWriters && topWritersData.length < count) {
+      getTopWriters(page, sizeLimit);
     }
   };
-  useEffect(() => {
-    if (topicWriters && Tag && !topicWritersIdList) {
-      getTopicWritersIdList(Tag, 5);
-    }
-  }, [Tag]);
 
   useEffect(() => {
-    if (topicWriters && topicWritersData.length<1) {
-      getTopicWriters(1,5);
-    }
-    if (whoToFollow && whoToFollowData.length<1) {
-      console.log("req")
-      getWhoToFollow(1,5);
-    }
-    else if (topWriters && topWritersData.length<1) {
-      getTopWriters(1,5);
-    }
+    handleSeeMoreSuggestions();
     document.body.addEventListener('click', (e) => {
       if (e.target.id !== 'who-to-follow-modal' && whoToFollowDataModal) {
         setwhoToFollowDataModal(false);
@@ -96,38 +77,26 @@ export default function WhoToFollow({
     return () => {
       document.body.removeEventListener('click', () => {});
     };
-  }, []);
+  }, [Tag]);
 
   useEffect(() => {
     if (topicWriters) {
       setPeople(topicWritersData);
-
     } else if (whoToFollow) {
       setPeople(whoToFollowData);
-    }
-    else if (topWriters) {
+    } else if (topWriters) {
       setPeople(topWritersData);
     }
-  }, [whoToFollowData, topicWritersData,topWritersData]);
+  }, [whoToFollowData, topicWritersData, topWritersData]);
 
-
-
-  useEffect(() => {
-    if(topicWriters){
-      const idList = topicWritersIdList?.map((person) => person.groupby.group);
-      getTopicWriters(idList.slice(0, 5));
-    }
-  }, [topicWritersIdList]);
-
-
-  console.log(people)
+  console.log(whoToFollowData)
   if (!isLoading)
     return (
       <div>
-        <SidebarTitle title={whoToFollow ?  'Who To Follow' : 'Top Writers'} />
+        <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />
         <div>
           <ul className="divide-y divide-gray-200">
-            {people?.slice(0,5).map((person, index) => (
+            {people?.slice(0, 5).map((person, index) => (
               <UserCard
                 index={index}
                 key={person._id}
@@ -138,26 +107,28 @@ export default function WhoToFollow({
               />
             ))}
           </ul>
-          <Button
-            onClick={handleSeeMoreSuggestions}
-            className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
-          >
-            See more suggestions
-            <svg
-              className="w-5 h-5 text-purple-700"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          {whoToFollow  && (
+            <Button
+              onClick={() => setwhoToFollowDataModal(true)}
+              className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
             >
-              <path
-                d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16676M15.8333 10.0001L9.99996 15.8334"
-                stroke="currentColor"
-                strokeWidth="1.66667"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Button>
+              See more suggestions
+              <svg
+                className="w-5 h-5 text-purple-700"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.16663 10.0001H15.8333M15.8333 10.0001L9.99996 4.16676M15.8333 10.0001L9.99996 15.8334"
+                  stroke="currentColor"
+                  strokeWidth="1.66667"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Button>
+          )}
           <Transition appear show={whoToFollowDataModal} as={Fragment}>
             <Dialog
               as="div"

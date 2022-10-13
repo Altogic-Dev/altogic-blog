@@ -36,20 +36,7 @@ const TopicsService = {
       .limit(10)
       .get();
   },
-  getTopicTopWritersIdList(topic) {
-    return db
-      .model('story')
-      .filter(`IN(this.categoryNames, '${topic}')`)
-      .group('user')
-      .limit(1)
-      .compute([{ name: 'count', type: 'count' }]);
-  },
-  getTopicTopWriters(people) {
-    let query = `_id == '`;
-    query += people.join(`' || _id == '`);
-    query += `'`;
-    return db.model('users').filter(query).get();
-  },
+
   isTopicExist(topic) {
     return endpoint.get('/topic/isExist', { topicName: topic });
   },

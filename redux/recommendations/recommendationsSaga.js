@@ -2,21 +2,7 @@ import { call, takeEvery, put, select } from 'redux-saga/effects';
 import RecommendationsService from '@/services/recommendations';
 import { recommendationsActions } from './recommendationsSlice';
 
-function* getWhoToFollowMinimizedSaga() {
-  try {
-    const user = yield select((state) => state.auth.user);
-    const { data, errors } = yield call(
-      RecommendationsService.getWhoToFollowMinimized,
-      user._id
-    );
-    if (errors) throw errors.items;
-    if (data)
-      yield put(recommendationsActions.getWhoToFollowMinimizedSuccess(data));
-  } catch (e) {
-    yield put(recommendationsActions.getWhoToFollowMinimizedFailure(e));
-    console.error({ e });
-  }
-}
+
 
 function* getWhoToFollowSaga({ payload: { page, limit } }) {
   try {
@@ -49,6 +35,19 @@ function* getTopWritersSaga({ payload: { page, limit } }) {
   }
 }
 
+function* getTopicTopWritersSaga({ payload: {tag} }) {
+  try {
+    const { data, errors } = yield call(
+      RecommendationsService.getTopicTopWriters,
+      tag
+    );
+
+    if (errors) throw errors.items;
+    if (data) yield put(recommendationsActions.getTopicTopWritersSuccess(data));
+  } catch (e) {
+    yield put(recommendationsActions.getTopicTopWritersFailure(e));
+  }
+}
 export default function* rootSaga() {
   yield takeEvery(
     recommendationsActions.getWhoToFollowRequest.type,
@@ -56,11 +55,12 @@ export default function* rootSaga() {
   );
 
   yield takeEvery(
-    recommendationsActions.getWhoToFollowMinimizedRequest.type,
-    getWhoToFollowMinimizedSaga
-  );
-  yield takeEvery(
     recommendationsActions.getTopWritersRequest.type,
     getTopWritersSaga
   );
+  yield takeEvery(
+    recommendationsActions.getTopicTopWritersRequest.type,
+    getTopicTopWritersSaga
+  );
+
 }

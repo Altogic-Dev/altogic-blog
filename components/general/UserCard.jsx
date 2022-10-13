@@ -71,7 +71,7 @@ export default function UserCard({ user, isFollowing }) {
       </Link>
       <Button
         loading={followingUserLoading && followingLoad}
-        onClick={() => me ? toggleFollow() : router.push('/login')}
+        onClick={() => (me ? toggleFollow() : router.push('/login'))}
         className={`inline-flex items-center px-4 py-2 border gap-2 border-transparent text-sm font-medium rounded-full tracking-sm  transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
       `.concat(
           isFollowing

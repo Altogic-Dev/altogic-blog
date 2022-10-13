@@ -9,9 +9,6 @@ const initialState = {
   relatedTopics: [],
   popularTopics: [],
   publicationsTopics: [],
-  topicWritersIdList: [],
-  topWriters: [],
-  topicWriters: [],
   publicationStoriesByTopic: [],
   topicAnalytics: null,
   isLoading: false,
@@ -80,28 +77,7 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.errors = action.payload;
     },
-    getTopicTopWritersIdListRequest(state) {
-      state.isLoading = true;
-    },
-    getTopicTopWritersIdListSuccess(state, action) {
-      state.isLoading = false;
-      state.topicWritersIdList = action.payload;
-    },
-    getTopicTopWritersIdListFailure(state, action) {
-      state.isLoading = false;
-      state.errors = action.payload;
-    },
-    getTopicTopWritersRequest(state) {
-      state.isLoading = true;
-    },
-    getTopicTopWritersSuccess(state, action) {
-      state.isLoading = false;
-      state.topicWriters = [...state.topWriters,...action.payload];
-    },
-    getTopicTopWritersFailure(state, action) {
-      state.isLoading = false;
-      state.errors = action.payload;
-    },
+
 
     getTopicAnalyticsRequest() {},
     getTopicAnalyticsSuccess(state, action) {
