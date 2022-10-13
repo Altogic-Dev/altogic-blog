@@ -8,7 +8,7 @@ const initialState = {
   whoToFollowMinimized: [],
   whoToFollowMinimizedLoading: false,
   errors: [],
-  popularTopics: [],
+  topWriters: []
 };
 
 // Actual Slice
@@ -32,11 +32,23 @@ export const recommendationsSlice = createSlice({
       state.whoToFollowLoading = true;
     },
     getWhoToFollowSuccess(state, action) {
-      state.isLoading = false;
-      state.whoToFollow = action.payload;
+      state.whoToFollowLoading = false;
+      state.whoToFollow = [...state.whoToFollow,...action.payload]
+
     },
     getWhoToFollowFailure(state, action) {
-      state.isLoading = false;
+      state.whoToFollowLoading = false;
+      state.errors = action.payload;
+    },
+    getTopWritersRequest(state) {
+      state.whoToFollowLoading = true;
+    },
+    getTopWritersSuccess(state, action) {
+      state.whoToFollowLoading = false;
+      state.topWriters = [...state.topWriters,...action.payload]
+    },
+    getTopWritersFailure(state, action) {
+      state.whoToFollowLoading = false;
       state.errors = action.payload;
     },
 

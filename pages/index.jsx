@@ -146,23 +146,25 @@ export default function Home() {
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               <YourTopics />
+
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}
               >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
-                        selected
-                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
-                          : 'text-slate-500'
-                      )
-                    }
-                  >
-                    Your Following
-                  </Tab>
+           
+                    <Tab
+                      className={({ selected }) =>
+                        classNames(
+                          'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
+                          selected
+                            ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                            : 'text-slate-500'
+                        )
+                      }
+                    >
+                      Your Following
+                    </Tab>
                   <Tab
                     className={({ selected }) =>
                       classNames(
@@ -273,7 +275,8 @@ export default function Home() {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 storiesYouFollow={storiesYouFollow}
-                whoToFollow
+                topWriters={!userFromStorage}
+                whoToFollow={userFromStorage}
                 followingStoriesPage={storiesYouFollow.page}
                 popularTopics
                 popularStories

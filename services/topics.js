@@ -33,7 +33,7 @@ const TopicsService = {
     return db.model('story').filter(query).get();
   },
   getPopularTopics() {
-    return db.model('topics').sort('storyCount', 'desc').limit(10).get();
+    return endpoint.get('/topics/popular')
   },
   getRelatedTopics(topic) {
     return db

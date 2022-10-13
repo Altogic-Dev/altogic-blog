@@ -1,13 +1,8 @@
-import { db } from '@/utils/altogic';
+import { db, endpoint } from '@/utils/altogic';
 
 const RecommendationsService = {
-  getWhoToFollow2(limit, page) {
-    return db
-      .model('users')
-      .sort('storyCount', 'desc')
-      .limit(limit)
-      .page(page)
-      .getRandom(10);
+  getTopWriters(limit, page) {
+    return endpoint.get('/user/top-writers',{limit,page})
   },
   getWhoToFollow(limit, page, userId) {
     return db

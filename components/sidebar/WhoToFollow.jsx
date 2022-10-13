@@ -7,73 +7,90 @@ import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
 import UserCard from '../general/UserCard';
 
-export default function WhoToFollow({ isTopWriters, Tag }) {
+export default function WhoToFollow({
+  topWriters,
+  whoToFollow,
+  topicWriters,
+  Tag,
+}) {
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
-  const [whoToFollowModal, setWhoToFollowModal] = useState(false);
+  const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
-  const [peopleMinimized, setPeopleMinimized] = useState([]);
   const isLoading = useSelector((state) => state.recommendations.isLoading);
   let page = 0;
-  const whoToFollow = useSelector((state) => state.recommendations.whoToFollow);
-  const whoToFollowMinimized = useSelector(
-    (state) => state.recommendations.whoToFollowMinimized
+  const whoToFollowData = useSelector(
+    (state) => state.recommendations.whoToFollow
   );
 
-  const topWritersIdList = useSelector(
-    (state) => state.topics.topWritersIdList
+
+  const topicWritersIdList = useSelector(
+    (state) => state.topics.topicWritersIdList
   );
-  const topWriters = useSelector((state) => state.topics.topWriters);
+  const topicWritersData = useSelector((state) => state.topics.topicWriters);
+  const topWritersData = useSelector((state) => state.recommendations.topWriters);
 
   const dispatch = useDispatch();
 
-  const getTopWritersIdList = (Tag, size) => {
-    dispatch(topicsActions.getTopicTopWritersIdListRequest(Tag, size));
+  const getTopicWritersIdList = (Tag, size) => {
+    dispatch(topicsActions.getTopicTopicWritersIdListRequest(Tag, size));
   };
-  const getTopWriters = (idList) => {
+  const getTopicWriters = (idList) => {
     dispatch(topicsActions.getTopicTopWritersRequest(idList));
   };
 
   const getWhoToFollow = (page, size) => {
     dispatch(recommendationsActions.getWhoToFollowRequest({ page, size }));
   };
-  const getWhoToFollowMinimized = () => {
-    dispatch(recommendationsActions.getWhoToFollowMinimizedRequest());
+
+  const getTopWriters = (page, limit) => {
+    dispatch(recommendationsActions.getTopWritersRequest({ page, limit }));
   };
 
   const handleSeeMoreSuggestions = () => {
-    if (isTopWriters) {
-      const idList = topWritersIdList?.map((person) => person.groupby.group);
-      getTopWriters(idList.slice(0, 20));
-    } else {
+    if (topicWriters && topicWritersData.length<= 5) {
+      const idList = topicWritersIdList?.map((person) => person.groupby.group);
+      getTopicWriters(idList.slice(0, 20));
+    } else if (whoToFollow  && whoToFollowData.length<= 5) {
       getWhoToFollow(1, 20);
+    } else if (topWriters  && topicWritersData.length<= 5) {
+      getTopWriters(1, 20);
     }
-    setWhoToFollowModal(true);
+    setwhoToFollowDataModal(true);
   };
 
   const handleShowMore = () => {
     page += 1;
-    if (isTopWriters) {
-      const idList = topWritersIdList?.map((person) => person.groupby.group);
-      getTopWriters(idList.slice(20 * (page - 1), 20 * page));
-    } else {
+    if (topicWriters) {
+      const idList = topicWritersIdList?.map((person) => person.groupby.group);
+      getTopicWriters(idList.slice(20 * (page - 1), 20 * page));
+    } else if (whoToFollow) {
       getWhoToFollow(page, 20);
+    } else if (topWriters) {
+      getTopWriters(page, 20);
     }
   };
   useEffect(() => {
-    if (isTopWriters && Tag) {
-      getTopWritersIdList(Tag, 10);
+    if (topicWriters && Tag && !topicWritersIdList) {
+      getTopicWritersIdList(Tag, 5);
     }
   }, [Tag]);
 
   useEffect(() => {
-    if (!isTopWriters) {
-      getWhoToFollowMinimized();
+    if (topicWriters && topicWritersData.length<1) {
+      getTopicWriters(1,5);
+    }
+    if (whoToFollow && whoToFollowData.length<1) {
+      console.log("req")
+      getWhoToFollow(1,5);
+    }
+    else if (topWriters && topWritersData.length<1) {
+      getTopWriters(1,5);
     }
     document.body.addEventListener('click', (e) => {
-      if (e.target.id !== 'who-to-follow-modal' && whoToFollowModal) {
-        setWhoToFollowModal(false);
+      if (e.target.id !== 'who-to-follow-modal' && whoToFollowDataModal) {
+        setwhoToFollowDataModal(false);
       }
     });
     return () => {
@@ -82,33 +99,35 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
   }, []);
 
   useEffect(() => {
-    if (isTopWriters) {
-      if (whoToFollowModal) {
-        setPeople(topWriters);
-      } else {
-        setPeopleMinimized(topWriters);
-      }
-    } else {
-      setPeople((state) => [...state, ...whoToFollow]);
+    if (topicWriters) {
+      setPeople(topicWritersData);
+
+    } else if (whoToFollow) {
+      setPeople(whoToFollowData);
     }
-  }, [whoToFollow, topWriters]);
+    else if (topWriters) {
+      setPeople(topWritersData);
+    }
+  }, [whoToFollowData, topicWritersData,topWritersData]);
+
+
 
   useEffect(() => {
-    if (!isTopWriters) setPeopleMinimized(whoToFollowMinimized);
-  }, [whoToFollowMinimized]);
+    if(topicWriters){
+      const idList = topicWritersIdList?.map((person) => person.groupby.group);
+      getTopicWriters(idList.slice(0, 5));
+    }
+  }, [topicWritersIdList]);
 
-  useEffect(() => {
-    const idList = topWritersIdList?.map((person) => person.groupby.group);
-    getTopWriters(idList.slice(0, 5));
-  }, [topWritersIdList]);
 
+  console.log(people)
   if (!isLoading)
     return (
       <div>
-        <SidebarTitle title={isTopWriters ? 'Top Writers' : 'Who To Follow'} />
+        <SidebarTitle title={whoToFollow ?  'Who To Follow' : 'Top Writers'} />
         <div>
           <ul className="divide-y divide-gray-200">
-            {peopleMinimized?.map((person, index) => (
+            {people?.slice(0,5).map((person, index) => (
               <UserCard
                 index={index}
                 key={person._id}
@@ -139,11 +158,11 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
               />
             </svg>
           </Button>
-          <Transition appear show={whoToFollowModal} as={Fragment}>
+          <Transition appear show={whoToFollowDataModal} as={Fragment}>
             <Dialog
               as="div"
               className="relative z-10"
-              onClose={setWhoToFollowModal}
+              onClose={setwhoToFollowDataModal}
               id="who-to-follow-modal"
             >
               <Transition.Child
@@ -174,7 +193,7 @@ export default function WhoToFollow({ isTopWriters, Tag }) {
                         as="h3"
                         className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                       >
-                        {isTopWriters ? 'Top Writers' : 'Who To Follow'}
+                        {topicWriters ? 'Top Writers' : 'Who To Follow'}
                       </Dialog.Title>
                       <div>
                         <ul className="mb-6">

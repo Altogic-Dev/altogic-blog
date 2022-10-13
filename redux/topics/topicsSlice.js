@@ -10,8 +10,9 @@ const initialState = {
   relatedTopics: [],
   popularTopics: [],
   publicationsTopics: [],
-  topWritersIdList: [],
+  topicWritersIdList: [],
   topWriters: [],
+  topicWriters: [],
   publicationStoriesByTopic: [],
   topicAnalytics: null,
   isLoading: false,
@@ -96,7 +97,7 @@ export const topicsSlice = createSlice({
     },
     getTopicTopWritersIdListSuccess(state, action) {
       state.isLoading = false;
-      state.topWritersIdList = action.payload;
+      state.topicWritersIdList = action.payload;
     },
     getTopicTopWritersIdListFailure(state, action) {
       state.isLoading = false;
@@ -107,7 +108,7 @@ export const topicsSlice = createSlice({
     },
     getTopicTopWritersSuccess(state, action) {
       state.isLoading = false;
-      state.topWriters = action.payload;
+      state.topicWriters = [...state.topWriters,...action.payload];
     },
     getTopicTopWritersFailure(state, action) {
       state.isLoading = false;

@@ -34,6 +34,20 @@ function* getWhoToFollowSaga({ payload: { page, limit } }) {
     yield put(recommendationsActions.getWhoToFollowFailure(e));
   }
 }
+function* getTopWritersSaga({ payload: { page, limit } }) {
+  try {
+    const { data, errors } = yield call(
+      RecommendationsService.getTopWriters,
+      page,
+      limit,
+    );
+    if (errors) throw errors.items;
+    if (data) yield put(recommendationsActions.getTopWritersSuccess(data));
+  } catch (e) {
+    console.error({ e });
+    yield put(recommendationsActions.getTopWritersFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield takeEvery(
@@ -44,5 +58,9 @@ export default function* rootSaga() {
   yield takeEvery(
     recommendationsActions.getWhoToFollowMinimizedRequest.type,
     getWhoToFollowMinimizedSaga
+  );
+  yield takeEvery(
+    recommendationsActions.getTopWritersRequest.type,
+    getTopWritersSaga
   );
 }

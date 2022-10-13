@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { parseHtml } from '@/utils/utils';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
@@ -13,6 +14,7 @@ export default function UserCard({ user, isFollowing }) {
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
+  const router = useRouter();
   const [followingLoad, setFollowingLoad] = useState(false);
   const toggleFollow = () => {
     setFollowingLoad(true);
@@ -41,7 +43,7 @@ export default function UserCard({ user, isFollowing }) {
   };
 
   useEffect(() => {
-    setFollowingLoad(false)
+    setFollowingLoad(false);
   }, isFollowing);
 
   return (
@@ -69,7 +71,7 @@ export default function UserCard({ user, isFollowing }) {
       </Link>
       <Button
         loading={followingUserLoading && followingLoad}
-        onClick={toggleFollow}
+        onClick={() => me ? toggleFollow() : router.push('/login')}
         className={`inline-flex items-center px-4 py-2 border gap-2 border-transparent text-sm font-medium rounded-full tracking-sm  transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
       `.concat(
           isFollowing

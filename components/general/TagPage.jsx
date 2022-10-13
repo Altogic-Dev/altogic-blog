@@ -289,7 +289,7 @@ export default function TagPage({ Home, Latest, Best }) {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 personalFullStatistic
-                topWriters
+                topicWriters
                 relatedTopics
                 Tag={tag}
               />
