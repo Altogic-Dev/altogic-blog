@@ -15,27 +15,29 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
 
-  const handleAddBookmark = (e, list) => {
+  const addBookmark = (list) => {
     let { coverImages } = list;
     const storyImages = _.map(story.storyImages, (image) => image);
+    if (coverImages.length < 4) {
+      coverImages = [...coverImages, storyImages[0]];
+    } else {
+      coverImages = coverImages.slice(1, 4);
+      coverImages = [...coverImages, storyImages[0]];
+    }
+    const req = {
+      list: list._id,
+      userId: user._id,
+      story: story._id,
+    };
+    if (coverImages.length > 0) {
+      coverImages = coverImages.pop();
+      req.coverImages = coverImages;
+    }
+    dispatch(addBookmarkRequest(req));
+  };
+  const handleAddBookmark = (e, list) => {
     if (e.target.checked) {
-      if (coverImages.length < 4) {
-        coverImages = [...coverImages, storyImages[0]];
-      } else {
-        coverImages = coverImages.slice(1, 4);
-        coverImages = [...coverImages, storyImages[0]];
-      }
-      const req = {
-        list: list._id,
-        userId: user._id,
-        story: story._id,
-      };
-      if (coverImages.length > 0) {
-        coverImages = coverImages.pop();
-        req.coverImages = coverImages;
-      }
-
-      dispatch(addBookmarkRequest(req));
+      addBookmark(list);
     } else {
       dispatch(
         deleteBookmarkRequest({
@@ -45,6 +47,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       );
     }
   };
+
   return (
     <Transition
       as={Fragment}
@@ -104,13 +107,13 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
           </Menu.Item>
         ))}
         <div>
-          <button
+          <Menu.Button
             type="button"
             onClick={() => setCreateNewList(true)}
             className="flex items-center justify-center w-full px-6 py-4 text-purple-700 text-base tracking-sm text-center hover:bg-slate-50"
           >
             Create new list
-          </button>
+          </Menu.Button>
         </div>
       </Menu.Items>
     </Transition>

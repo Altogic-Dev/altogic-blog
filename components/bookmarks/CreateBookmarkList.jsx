@@ -12,10 +12,12 @@ import {
 import Input from '../Input';
 import Button from '../basic/button';
 
-export default function CreateBookmarkList({ setCreateNewList, list }) {
+export default function CreateBookmarkList({ setCreateNewList, list, story }) {
   const [enabled, setEnabled] = useState(false);
+
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+
   const bookmarkListSchema = yup.object().shape({
     name: yup.string().required('Name is required'),
     isPrivate: yup.boolean(),
@@ -45,7 +47,15 @@ export default function CreateBookmarkList({ setCreateNewList, list }) {
         user: user._id,
         username: user.username,
       };
-      dispatch(createBookmarkListRequest(req));
+      dispatch(
+        createBookmarkListRequest({
+          bookmarkList: req,
+          bookmark: {
+            userId: user._id,
+            story,
+          },
+        })
+      );
     }
     setCreateNewList(false);
   };

@@ -28,9 +28,6 @@ export default function TagPage({ Home, Latest, Best }) {
   const bestTopics = useSelector((state) => state.topics.bestTopics);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
-  const trendingTopicsIdList = useSelector(
-    (state) => state.topics.trendingTopicsIdList
-  );
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
 
   const [posts, setPosts] = useState([]);
@@ -53,28 +50,14 @@ export default function TagPage({ Home, Latest, Best }) {
       })
     );
   };
-  const getTrendings = (stories) => {
-    dispatch(
-      topicsActions.getTrendingsOfTopicRequest(
-        stories.map((person) => person.groupby.story)
-      )
-    );
-  };
-  const getTopicTopWritersIdListRequest = () => {
-    dispatch(
-      topicsActions.getIdListTrendingsOfTopicRequest({
-        topic: tag,
-        limit: 10,
-        page: 1,
-        date: DateTime.local().plus({ weeks: -1 }).toISODate(),
-      })
-    );
+  const getTrendingTopics = () => {
+    dispatch(topicsActions.getTrendingTopicsRequest(tag));
   };
 
   useEffect(() => {
     if (tag) {
       if (Home) {
-        getTopicTopWritersIdListRequest();
+        getTrendingTopics();
         setSelectedIndex(0);
       } else if (Latest) {
         getLatests(1);
@@ -96,12 +79,6 @@ export default function TagPage({ Home, Latest, Best }) {
       setPosts(bestTopics);
     }
   }, [latestTopics, bestTopics, trendingTopics]);
-
-  useEffect(() => {
-    if (trendingTopicsIdList.length > 0) {
-      getTrendings(trendingTopicsIdList);
-    }
-  }, [trendingTopicsIdList]);
 
   useEffect(() => {
     if (user) {

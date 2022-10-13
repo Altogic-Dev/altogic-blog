@@ -99,11 +99,15 @@ export default function CreateAnAccount() {
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">
         <div className="flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
-          <img
-            className="absolute top-8 left-8 w-[123px] h-[42px] mb-20 md:mb-44"
-            src="./logo.svg"
-            alt="Altogic"
-          />
+          <Link href="/">
+            <a className="flex items-center justify-center">
+              <img
+                className="absolute top-8 left-8 w-[123px] h-[42px] mb-20 md:mb-44"
+                src="./logo.svg"
+                alt="Altogic"
+              />
+            </a>
+          </Link>
           <div className="mx-auto w-full max-w-lg lg:w-[360px]">
             <div>
               <h1 className="mb-3 text-3xl font-semibold text-slate-800 tracking-md">
@@ -192,7 +196,7 @@ export default function CreateAnAccount() {
                         Sign in with
                       </p>
 
-                     <SocialProviders/>
+                      <SocialProviders />
                     </div>
                   </div>
                 </form>

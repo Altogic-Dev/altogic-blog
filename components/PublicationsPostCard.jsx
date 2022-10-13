@@ -18,6 +18,7 @@ export default function PublicationPostCard({
   readMoreUrl,
   bookmark,
   profilePicture,
+  story,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
 
@@ -194,7 +195,7 @@ export default function PublicationPostCard({
         </div>
       </div>
       {createNewList && (
-        <CreateBookmarkList setCreateNewList={setCreateNewList} />
+        <CreateBookmarkList setCreateNewList={setCreateNewList} story={story} />
       )}
     </>
   );
