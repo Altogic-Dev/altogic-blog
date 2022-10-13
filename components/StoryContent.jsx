@@ -37,6 +37,9 @@ function StoryContent(props) {
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const story = useSelector((state) => state.story.story);
   const user = useSelector((state) => state.auth.user);
+  const isLoadingFollow = useSelector(
+    (state) => state.followerConnection.followingUserLoading
+  );
 
   const isMyProfile = _.get(user, '_id') === _.get(story, 'user._id');
 
@@ -137,6 +140,7 @@ function StoryContent(props) {
           <Button
             className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
             onClick={toggleFollow}
+            disabled={isLoadingFollow}
           >
             {isFollowing ? 'Unfollow' : 'Follow'} this author
           </Button>

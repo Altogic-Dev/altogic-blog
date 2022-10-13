@@ -32,14 +32,13 @@ function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
 
 function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
   try {
-
     const { errors } = yield call(
       FollowerConnectionService.follow,
       followerUser,
       followingUser
     );
     if (errors) throw errors;
-    yield put(followerConnectionActions.followSuccess());
+    yield put(followerConnectionActions.followSuccess(followingUser));
     if (!notUpdate) {
       yield fork(updateFollowerCountSaga, true);
     }
@@ -57,8 +56,12 @@ function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
 
 function* getFollowerUsersSaga({ payload: { userId, page } }) {
   try {
+    const sessionUserId = yield select((state) =>
+      _.get(state.auth.user, '_id')
+    );
     const { data, errors } = yield call(
       FollowerConnectionService.getFollowerUsers,
+      sessionUserId,
       userId,
       page
     );
@@ -75,8 +78,12 @@ function* getFollowerUsersSaga({ payload: { userId, page } }) {
 
 function* getFollowingUsersSaga({ payload: { userId, page } }) {
   try {
+    const sessionUserId = yield select((state) =>
+      _.get(state.auth.user, '_id')
+    );
     const { data, errors } = yield call(
       FollowerConnectionService.getFollowingUsers,
+      sessionUserId,
       userId,
       page
     );

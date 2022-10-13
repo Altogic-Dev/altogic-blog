@@ -1,4 +1,5 @@
 import { Dialog, Transition } from '@headlessui/react';
+import _ from 'lodash';
 import { Fragment, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { recommendationsActions } from '@/redux/recommendations/recommendationsSlice';
@@ -13,8 +14,8 @@ export default function WhoToFollow({
   topicWriters,
   Tag,
 }) {
-  const userFollowings = useSelector(
-    (state) => state.followerConnection.userFollowings
+  const isFollowings = useSelector(
+    (state) => state.followerConnection.isFollowings
   );
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
@@ -23,7 +24,6 @@ export default function WhoToFollow({
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
-
 
   const topicWritersData = useSelector(
     (state) => state.recommendations.topicWriters
@@ -89,7 +89,7 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
-  console.log(whoToFollowData)
+  console.log(whoToFollowData);
   if (!isLoading)
     return (
       <div>
@@ -101,13 +101,11 @@ export default function WhoToFollow({
                 index={index}
                 key={person._id}
                 user={person}
-                isFollowing={userFollowings.some(
-                  (u) => u.followingUser === person._id
-                )}
+                isFollowing={_.includes(isFollowings, person._id)}
               />
             ))}
           </ul>
-          {whoToFollow  && (
+          {whoToFollow && (
             <Button
               onClick={() => setwhoToFollowDataModal(true)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
@@ -173,9 +171,7 @@ export default function WhoToFollow({
                               index={index}
                               key={person._id}
                               user={person}
-                              isFollowing={userFollowings.some(
-                                (u) => u.followingUser === person._id
-                              )}
+                              isFollowing={_.includes(isFollowings, person._id)}
                             />
                           ))}
                         </ul>
