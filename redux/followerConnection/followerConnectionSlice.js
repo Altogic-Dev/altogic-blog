@@ -13,6 +13,7 @@ const initialState = {
   isLoading: false,
   followingUserLoading: false,
   followingStoriesPage: 1,
+  
 };
 
 // Actual Slice
@@ -22,6 +23,8 @@ export const followerConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     unfollowRequest(state) {
+    
+
       state.followingUserLoading = true;
     },
     unfollowSuccess(state, action) {

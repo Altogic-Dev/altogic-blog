@@ -109,15 +109,19 @@ export const storySlice = createSlice({
       state.commentIsLoading = true;
     },
     createReplyCommentSuccess(state, action) {
-
       state.replies = state.replies.map((reply) => {
+        const temp = reply;
         if (reply._id === action.payload.reply) {
-          reply.comments.push(action.payload)
+          temp.commentCount += 1;
+          if (reply.comments) {
+            temp.comments.push(action.payload);
+            return temp;
+          }
+          temp.comments = [action.payload];
         }
-        return reply;
+        return temp;
       });
       state.commentIsLoading = false;
-
     },
     createReplyCommentFailure(state, action) {
       state.story = null;
@@ -304,13 +308,9 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    visitStoryRequest() {
-    },
-    visitStorySuccess() {
-    },
-    visitStoryFailure() {
-
-    },
+    visitStoryRequest() {},
+    visitStorySuccess() {},
+    visitStoryFailure() {},
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

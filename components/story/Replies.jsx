@@ -117,6 +117,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       return temp;
     });
     sendNotification('comment');
+
+    getComments(reply, index);
   };
 
   useEffect(() => {
@@ -266,7 +268,11 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                       </form>
                       {/* Slide Over All Responses Post */}
                       <ListObserver
-                        onEnd={() => setReplyLimit((prev) => prev + 10)}
+                        onEnd={() =>
+                          replies.length >= replyCount
+                            ? null
+                            : setReplyLimit((prev) => prev + 10)
+                        }
                       >
                         <h2 className="text-slate-800 pb-6 text-lg font-semibold tracking-sm border-b border-gray-200">
                           All Responses ({replyCount})

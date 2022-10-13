@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { parseHtml } from '@/utils/utils';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
@@ -10,7 +10,13 @@ import Button from '../basic/button';
 export default function UserCard({ user, isFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
+  const followingUserLoading = useSelector(
+    (state) => state.followerConnection.followingUserLoading
+  );
+  const [followingLoad, setFollowingLoad] = useState(false);
   const toggleFollow = () => {
+    setFollowingLoad(true);
+
     if (isFollowing) {
       return dispatch(
         followerConnectionActions.unfollowRequest({
@@ -33,6 +39,10 @@ export default function UserCard({ user, isFollowing }) {
       })
     );
   };
+
+  useEffect(() => {
+    setFollowingLoad(false)
+  }, isFollowing);
 
   return (
     <li key={user._id} className="flex items-start justify-between gap-3 py-4">
@@ -58,8 +68,9 @@ export default function UserCard({ user, isFollowing }) {
         </a>
       </Link>
       <Button
+        loading={followingUserLoading && followingLoad}
         onClick={toggleFollow}
-        className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm  transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+        className={`inline-flex items-center px-4 py-2 border gap-2 border-transparent text-sm font-medium rounded-full tracking-sm  transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
       `.concat(
           isFollowing
             ? 'text-slate-700 bg-slate-100'
