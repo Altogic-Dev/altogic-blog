@@ -19,18 +19,11 @@ const TopicsService = {
       .limit(limit)
       .get();
   },
-  getIdListTrendingsOfTopic(topic, limit, page, date) {
-    return db
-      .model('story_likes')
-      .filter(`createdAt > ${date} && IN(this.topics, '${topic}')`)
-      .group(['story'])
-      .compute([{ name: 'count', type: 'count' }]);
-  },
-  getTrendingsOfTopic(stories) {
-    let query = `_id == '`;
-    query += stories.join(`' || _id == '`);
-    query += `'`;
-    return db.model('story').filter(query).get();
+
+  getTrendingTopicsSaga(topic) {
+    return endpoint.get('/topic/trending', {
+      topic,
+    });
   },
   getPopularTopics() {
     return endpoint.get('/topics/popular')

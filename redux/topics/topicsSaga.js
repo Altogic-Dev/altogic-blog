@@ -43,44 +43,21 @@ function* getBestsOfTopicSaga({ payload: { topic, page, limit } }) {
     yield put(topicsActions.getBestsOfTopicFailure(e));
   }
 }
-
-function* getIdListTrendingsOfTopicsSaga({
-  payload: { topic, page, limit, date },
-}) {
+function* getTrendingTopicsSaga({ payload }) {
   try {
     const { data, errors } = yield call(
-      TopicsService.getIdListTrendingsOfTopic,
-      topic,
-      page,
-      limit,
-      date
+      TopicsService.getTrendingTopicsSaga,
+      payload
     );
 
     if (data) {
-      yield put(topicsActions.getIdListTrendingsOfTopicSuccess(data));
+      yield put(topicsActions.getTrendingTopicsSuccess(data));
     }
     if (errors) {
       throw errors.items;
     }
   } catch (e) {
-    yield put(topicsActions.getIdListTrendingsOfTopicFailure(e));
-  }
-}
-function* getTrendingsOfTopicsSaga({ payload: stories }) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getTrendingsOfTopic,
-      stories
-    );
-
-    if (data) {
-      yield put(topicsActions.getTrendingsOfTopicSuccess(data));
-    }
-    if (errors) {
-      throw errors.items;
-    }
-  } catch (e) {
-    yield put(topicsActions.getTrendingsOfTopicFailure(e));
+    yield put(topicsActions.getTrendingTopicsFailure(e));
   }
 }
 
@@ -249,12 +226,8 @@ export default function* rootSaga() {
     getBestsOfTopicSaga
   );
   yield takeEvery(
-    topicsActions.getTrendingsOfTopicRequest.type,
-    getTrendingsOfTopicsSaga
-  );
-  yield takeEvery(
-    topicsActions.getIdListTrendingsOfTopicRequest.type,
-    getIdListTrendingsOfTopicsSaga
+    topicsActions.getTrendingTopicsRequest.type,
+    getTrendingTopicsSaga
   );
   yield takeEvery(
     topicsActions.getPopularTopicsRequest.type,

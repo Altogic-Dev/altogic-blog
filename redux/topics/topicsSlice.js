@@ -6,7 +6,6 @@ const initialState = {
   latestTopics: [],
   bestTopics: [],
   trendingTopics: [],
-  trendingTopicsIdList: [],
   relatedTopics: [],
   popularTopics: [],
   publicationsTopics: [],
@@ -25,25 +24,14 @@ export const topicsSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getTrendingsOfTopicRequest(state) {
+    getTrendingTopicsRequest(state) {
       state.isLoading = true;
     },
-    getTrendingsOfTopicSuccess(state, action) {
+    getTrendingTopicsSuccess(state, action) {
       state.trendingTopics = action.payload;
       state.isLoading = false;
     },
-    getTrendingsOfTopicFailure(state, action) {
-      state.error = action.payload;
-      state.isLoading = false;
-    },
-    getIdListTrendingsOfTopicRequest(state) {
-      state.isLoading = true;
-    },
-    getIdListTrendingsOfTopicSuccess(state, action) {
-      state.trendingTopicsIdList = action.payload;
-      state.isLoading = false;
-    },
-    getIdListTrendingsOfTopicFailure(state, action) {
+    getTrendingTopicsFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },

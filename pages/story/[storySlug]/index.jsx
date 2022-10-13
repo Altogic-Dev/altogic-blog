@@ -104,7 +104,7 @@ export default function BlogDetail({ ip }) {
         isRead,
         ip,
         publication: _.get(story, 'publication._id'),
-        isExternal: !!((facebook || twitter || linkedin)) ,
+        isExternal: !!(facebook || twitter || linkedin),
         author: story.user._id,
         categoryNames: story.categoryNames,
       })
@@ -373,7 +373,10 @@ export default function BlogDetail({ ip }) {
           </div>
         </div>
         {createNewList && (
-          <CreateBookmarkList setCreateNewList={setCreateNewList} />
+          <CreateBookmarkList
+            setCreateNewList={setCreateNewList}
+            story={story}
+          />
         )}
       </Layout>
     </div>

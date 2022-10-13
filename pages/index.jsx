@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
 import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { reportActions } from '@/redux/report/reportSlice';
@@ -37,11 +36,14 @@ export default function Home() {
   const followingStoriesPage = useSelector(
     (state) => state.followerConnection.followingStoriesPage
   );
+  const isLoading = useSelector((state) => state.story.loading);
+
   const userFromStorage = useSelector((state) => state.auth.user);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const popularStories = useSelector((state) => state.story.popularStories);
   const [user, setUser] = useState();
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   const getFollowingStories = (page) => {
@@ -92,16 +94,17 @@ export default function Home() {
     dispatch(storyActions.popularStoriesRequest());
   }, []);
   useEffect(() => {
-    if (user) getFollowingUsers();
-  }, [followingStoriesPage, user]);
+    if (userFromStorage) getFollowingUsers();
+  }, [followingStoriesPage, userFromStorage]);
 
   useEffect(() => {
     getFollowingStories(followingListPage);
   }, [followingListPage]);
 
   useEffect(() => {
-    if (selectedIndex !== 0) getRecommendedStories(recommendedListPage);
-  }, [recommendedListPage]);
+    if (selectedIndex !== 0 || !userFromStorage)
+      getRecommendedStories(recommendedListPage);
+  }, [recommendedListPage, userFromStorage]);
 
   useEffect(() => {
     setUser(userFromStorage);
@@ -134,14 +137,18 @@ export default function Home() {
     setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
   }, [user]);
 
+  useEffect(() => {
+    if (
+      !isLoading &&
+      (!_.isNil(followingStories) || !_.isNil(recommendedStories))
+    ) {
+      setLoading(false);
+    }
+  }, [isLoading, followingStories, recommendedStories]);
+
   return (
     <div>
-      <Head>
-        <title>Altogic Medium Blog App</title>
-        <meta name="description" content="Altogic Medium Blog App" />
-        <link rel="icon" href="/favicon.svg" />
-      </Head>
-      <Layout>
+      <Layout loading={loading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
@@ -152,7 +159,7 @@ export default function Home() {
                 onChange={setSelectedIndex}
               >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
-           
+                  {user && (
                     <Tab
                       className={({ selected }) =>
                         classNames(
@@ -165,6 +172,7 @@ export default function Home() {
                     >
                       Your Following
                     </Tab>
+                  )}
                   <Tab
                     className={({ selected }) =>
                       classNames(
@@ -180,50 +188,52 @@ export default function Home() {
                 </Tab.List>
 
                 <Tab.Panels>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {!_.isNil(followingStories) && (
-                      <ListObserver onEnd={handleFollowingEndOfList}>
-                        {_.map(followingStories, (story) => (
-                          <PostCard
-                            key={story._id}
-                            noActiveBookmark
-                            normalMenu
-                            authorUrl={`/${story.username}`}
-                            authorName={story.username}
-                            authorImage={story.userProfilePicture}
-                            storyUrl={`/story/${story.storySlug}`}
-                            timeAgo={DateTime.fromISO(
-                              story.createdAt
-                            ).toRelative()}
-                            title={story.title}
-                            infoText={story.excerpt}
-                            badgeName={_.first(story.categoryNames)}
-                            min={story.estimatedReadingTime}
-                            images={_.first(story.storyImages)}
-                            actionMenu
-                            story={story}
-                            optionButtons={{
-                              unfollow: () =>
-                                dispatch(
-                                  followerConnectionActions.unfollowRequest({
-                                    userId: user._id,
-                                    followingUserId: story.user,
-                                  })
-                                ),
-                              report: () =>
-                                dispatch(
-                                  reportActions.reportStoryRequest({
-                                    userId: user._id,
-                                    storyId: story._id,
-                                    reportedUserId: story.user,
-                                  })
-                                ),
-                            }}
-                          />
-                        ))}
-                      </ListObserver>
-                    )}
-                  </Tab.Panel>
+                  {user && (
+                    <Tab.Panel className="divide-y divide-gray-200">
+                      {!_.isNil(followingStories) && (
+                        <ListObserver onEnd={handleFollowingEndOfList}>
+                          {_.map(followingStories, (story) => (
+                            <PostCard
+                              key={story._id}
+                              noActiveBookmark
+                              normalMenu
+                              authorUrl={`/${story.username}`}
+                              authorName={story.username}
+                              authorImage={story.userProfilePicture}
+                              storyUrl={`/story/${story.storySlug}`}
+                              timeAgo={DateTime.fromISO(
+                                story.createdAt
+                              ).toRelative()}
+                              title={story.title}
+                              infoText={story.excerpt}
+                              badgeName={_.first(story.categoryNames)}
+                              min={story.estimatedReadingTime}
+                              images={_.first(story.storyImages)}
+                              actionMenu
+                              story={story}
+                              optionButtons={{
+                                unfollow: () =>
+                                  dispatch(
+                                    followerConnectionActions.unfollowRequest({
+                                      userId: user._id,
+                                      followingUserId: story.user,
+                                    })
+                                  ),
+                                report: () =>
+                                  dispatch(
+                                    reportActions.reportStoryRequest({
+                                      userId: user._id,
+                                      storyId: story._id,
+                                      reportedUserId: story.user,
+                                    })
+                                  ),
+                              }}
+                            />
+                          ))}
+                        </ListObserver>
+                      )}
+                    </Tab.Panel>
+                  )}
 
                   <Tab.Panel className="divide-y divide-gray-200">
                     {!_.isNil(recommendedStories) && (
