@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { parseHtml } from '@/utils/utils';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { useRouter } from 'next/router';
@@ -61,9 +60,10 @@ export default function UserCard({ user, isFollowing }) {
                 {user.name}
               </span>
               {user?.about && (
-                <span className="text-slate-500 text-xs tracking-sm">
-                  {parseHtml(user.about)}
-                </span>
+                <span
+                  className="text-slate-500 text-xs tracking-sm"
+                  dangerouslySetInnerHTML={{ __html: user.about }}
+                />
               )}
             </div>
           </div>
@@ -78,6 +78,7 @@ export default function UserCard({ user, isFollowing }) {
             ? 'text-slate-700 bg-slate-100'
             : 'bg-purple-500 text-white'
         )}
+        disabled={followingLoad}
       >
         {isFollowing ? 'Unfollow' : 'Follow'}
       </Button>
