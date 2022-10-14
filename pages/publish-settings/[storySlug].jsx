@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -11,6 +11,8 @@ import { classNames, parseHtml } from '@/utils/utils';
 import { Listbox, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import Button from '@/components/basic/button';
+import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
+import { topicsActions } from '@/redux/topics/topicsSlice';
 
 export default function PublishSettings() {
   const router = useRouter();
@@ -20,9 +22,11 @@ export default function PublishSettings() {
   const userFromStorage = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
   const loading = useSelector((state) => state.story.isLoading);
+  const topicLoading = useSelector((state) => state.topics.isLoading);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
+  const foundTopics = useSelector((state) => state.topics.searchTopics);
 
   const { storySlug, isEdited, topic } = router.query;
 
@@ -32,22 +36,52 @@ export default function PublishSettings() {
   const [inpCategory, setInpCategory] = useState('');
   const [inpCategoryNames, setInpCategoryNames] = useState([]);
   const [inpRestrictComments, setInpRestrictComments] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
+  const debouncedSearch = useCallback(
+    _.debounce((category) => {
+      dispatch(topicsActions.searchTopicsRequest(category));
+      setIsSearchOpen(true);
+    }, 1000),
+    []
+  );
 
   const handleInsert = (e) => {
     if (
-      e.key === 'Enter' &&
       _.size(inpCategoryNames) < 5 &&
       !_.includes(inpCategoryNames, inpCategory)
     ) {
-      setInpCategoryNames((prev) => [inpCategory, ...prev]);
-      setInpCategory('');
+      if (e.key === 'Enter') {
+        setInpCategoryNames((prev) => [
+          {
+            name: inpCategory,
+            isExisting: foundTopics.some((topic) => topic.name === inpCategory),
+          },
+          ...prev,
+        ]);
+        setInpCategory('');
+        setIsSearchOpen(false);
+      } else {
+        debouncedSearch(inpCategory);
+      }
     }
+  };
+  const handleAddTopic = (topic) => {
+    setIsSearchOpen(false);
+    setInpCategoryNames((prev) => [
+      {
+        name: topic.name,
+        isExisting: true,
+      },
+      ...prev,
+    ]);
+    setInpCategory('');
   };
 
   const handleDelete = (categoryName) => {
     const newCategoryNames = _.reject(
       inpCategoryNames,
-      (category) => category === categoryName
+      (category) => category.name === categoryName
     );
     setInpCategoryNames(newCategoryNames);
   };
@@ -57,10 +91,26 @@ export default function PublishSettings() {
       !_.includes(inpCategoryNames, categoryName) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setInpCategoryNames((prev) => [...prev, categoryName]);
+      setInpCategoryNames((prev) => [
+        ...prev,
+        {
+          name: categoryName,
+          isExisting: true,
+        },
+      ]);
     }
   };
   const handlePublish = () => {
+    const tempInpCategoryNames = inpCategoryNames.sort();
+    const categoryPairs = [];
+    for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {
+      for (let j = i; j < tempInpCategoryNames.length - 1; j += 1) {
+        categoryPairs.push({
+          topicA: tempInpCategoryNames[i],
+          topicB: tempInpCategoryNames[j + 1],
+        });
+      }
+    }
     dispatch(
       storyActions.publishStoryRequest({
         story: {
@@ -75,11 +125,19 @@ export default function PublishSettings() {
               ? inpSelectedAuthor.name
               : undefined,
           isPublished: true,
-          categoryNames: inpCategoryNames.map((name) => _.startCase(name)),
+          categoryNames: inpCategoryNames.map((category) =>
+            _.startCase(category.name)
+          ),
           isRestrictedComments: inpRestrictComments,
           excerpt: parseHtml(story.content).slice(0, 300),
         },
         isEdited: isEdited === 'true',
+        categoryPairs,
+        topicsWillCreate: inpCategoryNames
+          .filter((t) => !t.isExisting)
+          .map((topic) => ({
+            name: topic.name,
+          })),
         onSuccess: () => router.push(`/story/${story.storySlug}`),
       })
     );
@@ -115,7 +173,6 @@ export default function PublishSettings() {
       avatar: userFromStorage?.profilePicture,
       type: 'user',
     };
-    console.log({ publications });
     const publicationAuthors = _.map(publications, (publication) => ({
       id: publication._id,
       name: publication.name,
@@ -138,7 +195,14 @@ export default function PublishSettings() {
       setInpSelectedAuthor(userAuthor);
     }
   }, [publications]);
-
+  useEffect(() => {
+    document.body.addEventListener('click', () => {
+      setIsSearchOpen(false);
+    });
+    return () => {
+      document.body.removeEventListener('click', () => {});
+    };
+  }, []);
   return (
     <div>
       <Head>
@@ -294,21 +358,33 @@ export default function PublishSettings() {
                   <span className="inline-flex text-slate-600 mb-4 text-sm tracking-sm">
                     Add Category:
                   </span>
-                  <div className="flex flex-wrap items-center gap-2 py-1 mb-8 rounded-md">
+                  <div className="relative flex flex-wrap items-center gap-2 py-1 mb-8 rounded-md">
                     <input
                       className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                       placeholder="Category Name"
                       value={inpCategory}
-                      onChange={(e) => setInpCategory(e.target.value)}
+                      onChange={(e) =>
+                        setInpCategory(_.startCase(e.target.value))
+                      }
                       disabled={_.size(story?.categoryNames) >= 5}
                       onKeyDown={handleInsert}
                     />
+                    {!_.isEmpty(foundTopics) &&
+                      !topicLoading &&
+                      isSearchOpen && (
+                        <PublicationSettingsSuggestions
+                          name="Topics"
+                          suggestions={foundTopics}
+                          onClick={(e, topicId, topic) => handleAddTopic(topic)}
+                          className
+                        />
+                      )}
 
-                    {_.map(inpCategoryNames, (categoryName) => (
+                    {_.map(inpCategoryNames, (category) => (
                       <Category
-                        key={categoryName}
-                        tag={categoryName}
-                        onClick={() => handleDelete(categoryName)}
+                        key={category.name}
+                        tag={category.name}
+                        onClick={() => handleDelete(category.name)}
                         className="mt-2 text-xs"
                       />
                     ))}

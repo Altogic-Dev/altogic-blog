@@ -67,7 +67,7 @@ export default function WriteAStory() {
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
         setIsCreated(true);
-      } else if (!_.isNil(newStory)) {
+      } else {
         dispatch(
           storyActions.updateStoryRequest({
             story: {

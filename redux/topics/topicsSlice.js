@@ -10,6 +10,7 @@ const initialState = {
   popularTopics: [],
   publicationsTopics: [],
   publicationStoriesByTopic: [],
+  searchTopics: [],
   topicAnalytics: null,
   isLoading: false,
   error: null,
@@ -78,7 +79,6 @@ export const topicsSlice = createSlice({
       state.errors = action.payload;
     },
 
-
     getTopicAnalyticsRequest() {},
     getTopicAnalyticsSuccess(state, action) {
       state.topicAnalytics = action.payload;
@@ -98,6 +98,17 @@ export const topicsSlice = createSlice({
     getPublicationsStoriesByTopicRequest() {},
     getPublicationsStoriesByTopicSuccess(state, action) {
       state.publicationStoriesByTopic = action.payload;
+    },
+    searchTopicsRequest(state) {
+      state.isLoading = true;
+    },
+    searchTopicsSuccess(state, action) {
+      state.isLoading = false;
+      state.searchTopics = action.payload;
+    },
+    searchTopicsFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
 
     extraReducers: {

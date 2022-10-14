@@ -1,3 +1,4 @@
+import Button from '../basic/button';
 import SidebarTitle from '../SidebarTitle';
 
 export default function Following({ followings, count, seeAllButton }) {
@@ -20,8 +21,7 @@ export default function Following({ followings, count, seeAllButton }) {
           </a>
         ))}
 
-        <button
-          type="button"
+        <Button
           className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700"
           onClick={seeAllButton}
         >
@@ -40,7 +40,7 @@ export default function Following({ followings, count, seeAllButton }) {
               strokeLinejoin="round"
             />
           </svg>
-        </button>
+        </Button>
       </div>
     </div>
   );

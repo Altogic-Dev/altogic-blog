@@ -1,6 +1,6 @@
 import TopicsService from '@/services/topics';
 import _ from 'lodash';
-import { call, fork, put, takeEvery, select, delay } from 'redux-saga/effects';
+import { call, fork, put, takeEvery, select } from 'redux-saga/effects';
 
 import { topicsActions } from './topicsSlice';
 
@@ -83,12 +83,9 @@ function* insertTopicWritersSaga(story) {
   }));
   yield call(TopicsService.insertTopicWriters, topicWriters);
 }
-export function* insertTopicsSaga(story) {
+export function* insertTopicsSaga(story, topics) {
   try {
-    const req = story.categoryNames.map((topic) => ({
-      name: topic,
-    }));
-    yield call(TopicsService.insertTopics, req);
+    yield call(TopicsService.insertTopics, topics);
     yield fork(insertTopicWritersSaga, story);
   } catch (e) {
     console.error(e);
@@ -103,22 +100,6 @@ export function* deleteTopicWritersSaga(storyId) {
   }
 }
 
-export function* insertTopicsWriterCountSaga(story) {
-  try {
-    const updatedTopicWriterCounts = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const topic of story.categoryNames) {
-      const { data } = yield call(TopicsService.isTopicWriterExist, topic);
-      if (data && !data.isExist) {
-        updatedTopicWriterCounts.push(topic);
-      }
-      yield delay(100);
-    }
-    yield call(TopicsService.increaseWriterCounts, updatedTopicWriterCounts);
-  } catch (e) {
-    console.error(e);
-  }
-}
 export function* getTopicAnalyticsSaga({ payload: topicName }) {
   try {
     const { data, errors } = yield call(
@@ -172,6 +153,15 @@ function* getPublicationsStoriesByTopicSaga({
     console.error(e);
   }
 }
+function* searchTopicsSaga({ payload }) {
+  try {
+    const { data, errors } = yield call(TopicsService.searchTopics, payload);
+    if (errors) throw errors;
+    else if (data) yield put(topicsActions.searchTopicsSuccess(data));
+  } catch (e) {
+    yield put(topicsActions.searchTopicsFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield takeEvery(
@@ -207,4 +197,5 @@ export default function* rootSaga() {
     topicsActions.getPublicationsStoriesByTopicRequest.type,
     getPublicationsStoriesByTopicSaga
   );
+  yield takeEvery(topicsActions.searchTopicsRequest.type, searchTopicsSaga);
 }
