@@ -30,7 +30,7 @@ export default function Login() {
 
   useEffect(() => {
     if (error) {
-      error.forEach((err) => {
+      error?.forEach((err) => {
         if (err.message !== 'A user with the provided email already exists.')
           setError('email', { type: 'manuel', message: err.message });
       });

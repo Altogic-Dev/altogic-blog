@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import '../styles/globals.css';
+import LocalStorageUtil from '@/utils/localStorageUtil';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { cssTransition, ToastContainer } from 'react-toastify';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -50,6 +51,17 @@ function MyApp({ Component, pageProps }) {
     );
   };
 
+  const setSelectedPublicationIfIsExist = () => {
+    const selectedPublication = LocalStorageUtil.get(
+      LocalStorageUtil.SELECTED_PUBLICATION
+    );
+    if (!_.isNil(selectedPublication)) {
+      dispatch(
+        publicationActions.selectPublicationRequest(selectedPublication)
+      );
+    }
+  };
+
   const visitPublication = (publicationName) => {
     const visitedPublications = JSON.parse(
       localStorage.getItem('visitedPublications')
@@ -92,6 +104,7 @@ function MyApp({ Component, pageProps }) {
       dispatch(
         publicationActions.setPublicationsRequest(sessionUser?.publications)
       );
+      setSelectedPublicationIfIsExist();
     }
   }, [publications]);
 

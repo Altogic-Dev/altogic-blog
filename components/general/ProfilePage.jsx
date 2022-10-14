@@ -121,7 +121,7 @@ export default function ProfilePage({ About, Home, List }) {
   }, [profileUser]);
 
   useEffect(() => {
-    if (username && selectedIndex === 1 && _.isNil(bookmarkLists)) {
+    if (username && selectedIndex === 1 && profileUser?.username !== username) {
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -213,7 +213,7 @@ export default function ProfilePage({ About, Home, List }) {
                         <Menu.Item>
                           <button
                             type="button"
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                            className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             onClick={copyToClipboard}
                           >
                             Copy link to profile
@@ -221,7 +221,7 @@ export default function ProfilePage({ About, Home, List }) {
                         </Menu.Item>
                         <Menu.Item>
                           <Link href="/settings">
-                            <a className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
+                            <a className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
                               Settings
                             </a>
                           </Link>

@@ -2,8 +2,6 @@ import { call, takeEvery, put, select } from 'redux-saga/effects';
 import RecommendationsService from '@/services/recommendations';
 import { recommendationsActions } from './recommendationsSlice';
 
-
-
 function* getWhoToFollowSaga({ payload: { page, limit } }) {
   try {
     const user = yield select((state) => state.auth.user);
@@ -16,32 +14,25 @@ function* getWhoToFollowSaga({ payload: { page, limit } }) {
     if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.getWhoToFollowSuccess(data));
   } catch (e) {
-    console.error({ e });
     yield put(recommendationsActions.getWhoToFollowFailure(e));
   }
 }
-function* getTopWritersSaga({ payload: { page, limit } }) {
+function* getTopWritersSaga() {
   try {
-    const { data, errors } = yield call(
-      RecommendationsService.getTopWriters,
-      page,
-      limit,
-    );
+    const { data, errors } = yield call(RecommendationsService.getTopWriters);
     if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.getTopWritersSuccess(data));
   } catch (e) {
-    console.error({ e });
     yield put(recommendationsActions.getTopWritersFailure(e));
   }
 }
 
-function* getTopicTopWritersSaga({ payload: {tag} }) {
+function* getTopicTopWritersSaga({ payload: { tag } }) {
   try {
     const { data, errors } = yield call(
       RecommendationsService.getTopicTopWriters,
       tag
     );
-
     if (errors) throw errors.items;
     if (data) yield put(recommendationsActions.getTopicTopWritersSuccess(data));
   } catch (e) {
@@ -62,5 +53,4 @@ export default function* rootSaga() {
     recommendationsActions.getTopicTopWritersRequest.type,
     getTopicTopWritersSaga
   );
-
 }

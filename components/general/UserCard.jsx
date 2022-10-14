@@ -43,7 +43,7 @@ export default function UserCard({ user, isFollowing }) {
 
   useEffect(() => {
     setFollowingLoad(false);
-  }, isFollowing);
+  }, [isFollowing]);
 
   return (
     <li key={user._id} className="flex items-start justify-between gap-3 py-4">

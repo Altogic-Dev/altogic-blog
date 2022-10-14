@@ -24,29 +24,27 @@ export default function TagPage({ Home, Latest, Best }) {
   const router = useRouter();
   const { tag } = router.query;
   const dispatch = useDispatch();
+
   const latestTopics = useSelector((state) => state.topics.latestTopics);
   const bestTopics = useSelector((state) => state.topics.bestTopics);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
+  const topicAnalytics = useSelector((state) => state.topics.topicAnalytics);
 
   const [posts, setPosts] = useState([]);
 
-  const getLatests = (page) => {
+  const getLatests = () => {
     dispatch(
       topicsActions.getLatestsOfTopicRequest({
         topic: tag,
-        page,
-        limit: 10,
       })
     );
   };
-  const getBests = (page) => {
+  const getBests = () => {
     dispatch(
       topicsActions.getBestsOfTopicRequest({
         topic: tag,
-        page,
-        limit: 10,
       })
     );
   };
@@ -66,7 +64,9 @@ export default function TagPage({ Home, Latest, Best }) {
         getBests(1);
         setSelectedIndex(2);
       }
-      dispatch(topicsActions.getTopicAnalyticsRequest(tag));
+      if (_.isNil(topicAnalytics)) {
+        dispatch(topicsActions.getTopicAnalyticsRequest(tag));
+      }
     }
   }, [tag]);
 
@@ -81,7 +81,7 @@ export default function TagPage({ Home, Latest, Best }) {
   }, [latestTopics, bestTopics, trendingTopics]);
 
   useEffect(() => {
-    if (user) {
+    if (user && _.isNil(bookmarkLists) && _.isNil(bookmarks)) {
       dispatch(
         getBookmarkListsRequest({
           username: user.username,

@@ -4,14 +4,9 @@ import { call, fork, put, takeEvery, select, delay } from 'redux-saga/effects';
 
 import { topicsActions } from './topicsSlice';
 
-function* getLatestsOfTopicSaga({ payload: { topic, page, limit } }) {
+function* getLatestsOfTopicSaga({ payload: { topic } }) {
   try {
-    const { data, errors } = yield call(
-      TopicsService.getLatestsOfTopic,
-      topic,
-      page,
-      limit
-    );
+    const { data, errors } = yield call(TopicsService.getLatestsOfTopic, topic);
 
     if (data) {
       yield put(topicsActions.getLatestsOfTopicSuccess(data));
@@ -24,14 +19,9 @@ function* getLatestsOfTopicSaga({ payload: { topic, page, limit } }) {
   }
 }
 
-function* getBestsOfTopicSaga({ payload: { topic, page, limit } }) {
+function* getBestsOfTopicSaga({ payload: { topic } }) {
   try {
-    const { data, errors } = yield call(
-      TopicsService.getBestsOfTopic,
-      topic,
-      page,
-      limit
-    );
+    const { data, errors } = yield call(TopicsService.getBestsOfTopic, topic);
 
     if (data) {
       yield put(topicsActions.getBestsOfTopicSuccess(data));
@@ -95,18 +85,10 @@ function* insertTopicWritersSaga(story) {
 }
 export function* insertTopicsSaga(story) {
   try {
-    const insertedTopics = [];
-    // eslint-disable-next-line no-restricted-syntax
-    for (const topic of story.categoryNames) {
-      const { data } = yield call(TopicsService.isTopicExist, topic);
-      if (data && !data.isExist) {
-        insertedTopics.push({ name: topic });
-      }
-      yield delay(100);
-    }
-    if (!_.isEmpty(insertedTopics)) {
-      yield call(TopicsService.insertTopics, insertedTopics);
-    }
+    const req = story.categoryNames.map((topic) => ({
+      name: topic,
+    }));
+    yield call(TopicsService.insertTopics, req);
     yield fork(insertTopicWritersSaga, story);
   } catch (e) {
     console.error(e);

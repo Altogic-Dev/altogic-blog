@@ -3,6 +3,7 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import usePrevious from '@/hooks/usePrevious';
 import Topic from '../basic/topic';
 import SidebarTitle from '../SidebarTitle';
 
@@ -12,7 +13,7 @@ export default function PopularTopics({ isRelatedTopics }) {
 
   const router = useRouter();
   const { tag } = router.query;
-
+  const previousTag = usePrevious(tag);
   const [topics, setTopics] = useState([]);
   const dispatch = useDispatch();
   const getPopularTopics = () => {
@@ -23,10 +24,11 @@ export default function PopularTopics({ isRelatedTopics }) {
   };
 
   useEffect(() => {
-    if (isRelatedTopics && tag) {
-      getRelatedTopics();
-    } else {
+    if (!isRelatedTopics) {
       getPopularTopics();
+    }
+    if (tag && isRelatedTopics && previousTag !== tag) {
+      getRelatedTopics();
     }
   }, [tag]);
 

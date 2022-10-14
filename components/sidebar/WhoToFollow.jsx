@@ -44,17 +44,17 @@ export default function WhoToFollow({
     dispatch(recommendationsActions.getWhoToFollowRequest({ page, size }));
   };
 
-  const getTopWriters = (page, limit) => {
-    dispatch(recommendationsActions.getTopWritersRequest({ page, limit }));
+  const getTopWriters = () => {
+    dispatch(recommendationsActions.getTopWritersRequest());
   };
 
   const handleSeeMoreSuggestions = () => {
-    if (Tag && !topicWritersData) {
+    if (Tag && _.isNil(topicWritersData)) {
       getTopicWriters(Tag);
     } else if (whoToFollow && whoToFollowData.length <= sizeLimit) {
       getWhoToFollow(1, sizeLimit);
     } else if (topWriters && topWritersData.length <= sizeLimit) {
-      getTopWriters(1, sizeLimit);
+      getTopWriters();
     }
   };
 
@@ -62,8 +62,6 @@ export default function WhoToFollow({
     page += 1;
     if (whoToFollow && whoToFollowData.length < count) {
       getWhoToFollow(page, sizeLimit);
-    } else if (topWriters && topWritersData.length < count) {
-      getTopWriters(page, sizeLimit);
     }
   };
 

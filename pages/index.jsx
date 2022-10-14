@@ -82,7 +82,6 @@ export default function Home() {
   );
 
   const getFollowingUsers = () => {
-    console.log(userFromStorage)
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(userFromStorage, '_id'),
@@ -147,7 +146,6 @@ export default function Home() {
     }
   }, [isLoading, followingStories, recommendedStories]);
 
-  console.log(storiesYouFollow)
   return (
     <div>
       <Layout loading={loading}>
@@ -286,7 +284,7 @@ export default function Home() {
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
-                storiesYouFollow={storiesYouFollow}
+                storiesYouFollow={user && storiesYouFollow}
                 topWriters={!userFromStorage}
                 whoToFollow={userFromStorage}
                 followingStoriesPage={storiesYouFollow.page}
@@ -298,7 +296,7 @@ export default function Home() {
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
               <Sidebar
                 mobilePopularStories
-                storiesYouFollow={storiesYouFollow}
+                storiesYouFollow={user && storiesYouFollow}
                 followingStoriesPage={storiesYouFollow.page}
                 stories={popularStories}
               />

@@ -6,11 +6,14 @@ import {
   takeEvery,
   select,
   fork,
+  all,
 } from 'redux-saga/effects';
+import LocalStorageUtil from '@/utils/localStorageUtil';
 import _ from 'lodash';
 import { publicationActions } from './publicationSlice';
 import { storyActions } from '../story/storySlice';
 import { clearFileLink } from '../file/fileSaga';
+import { updateUserSaga } from '../auth/authSaga';
 // function* followPublicationSaga({ payload: { followerUser, followingUser } }) {
 //   try {
 //     const { data, error } = yield call(
@@ -389,7 +392,9 @@ function* getUserPublicationsSaga() {
     yield put(publicationActions.getUserPublicationsFailure(e));
   }
 }
+
 function* selectPublicationSaga({ payload }) {
+  LocalStorageUtil.set(LocalStorageUtil.SELECTED_PUBLICATION, payload);
   yield put(publicationActions.selectPublicationSuccess(payload));
 }
 
@@ -459,9 +464,13 @@ function* createPublicationSaga({ payload: { publication, onSuccess } }) {
     }
     if (data) {
       yield put(publicationActions.createPublicationSuccess(data));
-      if (_.isFunction(onSuccess)) onSuccess();
       yield fork(selectPublicationSaga, { payload: data });
       yield fork(addPublicationToUser, { payload: data });
+      const user = yield select((state) => state.auth.user);
+      yield fork(updateUserSaga, {
+        publications: [...user.publications, data._id],
+      });
+      if (_.isFunction(onSuccess)) onSuccess();
     }
   } catch (e) {
     yield put(publicationActions.createPublicationFailure());
@@ -487,121 +496,117 @@ function* isFollowingPublicationSaga({ payload: { publicationId, userId } }) {
 }
 
 export default function* rootSaga() {
-  yield takeEvery(
-    publicationActions.getPublicationFollowersRequest.type,
-    getPublicationFollowersSaga
-  );
-  yield takeEvery(
-    publicationActions.getPublicationRequest.type,
-    getPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.getLatestPublicationStoriesRequest.type,
-    getLatestPublicationStoriesSaga
-  );
-  yield takeEvery(
-    publicationActions.visitPublicationRequest.type,
-    visitPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.followPublicationRequest.type,
-    followPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.unfollowPublicationRequest.type,
-    unfollowPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.checkPublicationFollowingRequest.type,
-    checkPublicationFollowingSaga
-  );
-  yield takeEvery(
-    publicationActions.getPublicationFeaturesRequest.type,
-    getPublicationFeaturesSaga
-  );
-  yield takeEvery(
-    publicationActions.deleteFeatureRequest.type,
-    deleteFeatureSaga
-  );
-  yield takeEvery(
-    publicationActions.getNewslettersRequest.type,
-    getNewslettersSaga
-  );
-  yield takeEvery(
-    publicationActions.getFeaturePagesByPublicationRequest.type,
-    getFeaturePagesByPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.getPublicationNavigationRequest.type,
-    getPublicationsNavigation
-  );
-  yield takeEvery(
-    publicationActions.createPublicationNavigationRequest.type,
-    createPublicationNavigation
-  );
-  yield takeEvery(
-    publicationActions.updatePublicationNavigationRequest.type,
-    updatePublicationNavigation
-  );
-  yield takeEvery(
-    publicationActions.getFeaturePageRequest.type,
-    getFeaturePageSaga
-  );
-  yield takeEvery(
-    publicationActions.getSubscribersRequest.type,
-    getSubscribersSaga
-  );
-  yield takeEvery(
-    publicationActions.getPublicationByIdRequest.type,
-    getPublicationByIdSaga
-  );
-  yield takeEvery(
-    publicationActions.updatePublicationRequest.type,
-    updatePublicationSaga
-  );
-  yield debounce(
-    1500,
-    publicationActions.isPublicationnameExistRequest.type,
-    isPublicationnameExistSaga
-  );
-  yield takeEvery(
-    publicationActions.deletePublicationSectionRequest.type,
-    deletePublicationSectionRequest
-  );
-  yield takeEvery(
-    publicationActions.setFeaturePageSectionsRequest.type,
-    setPublicationSectionSaga
-  );
-  yield takeEvery(
-    publicationActions.createFeaturePageRequest.type,
-    createFeaturePage
-  );
-  yield takeEvery(
-    publicationActions.setPublicationsRequest.type,
-    setPublications
-  );
-  yield takeEvery(
-    publicationActions.getUserPublicationsRequest.type,
-    getUserPublicationsSaga
-  );
-  yield takeEvery(
-    publicationActions.selectPublicationRequest.type,
-    selectPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.getPublicationHomeLayoutRequest.type,
-    getPublicationHomeLayoutSaga
-  );
-  yield takeEvery(
-    publicationActions.updatePublicationHomeLayoutRequest.type,
-    updatePublicationHomeLayoutSaga
-  );
-  yield takeEvery(
-    publicationActions.createPublicationRequest.type,
-    createPublicationSaga
-  );
-  yield takeEvery(
-    publicationActions.isFollowingPublicationRequest.type,
-    isFollowingPublicationSaga
-  );
+  yield all([
+    takeEvery(
+      publicationActions.getPublicationFollowersRequest.type,
+      getPublicationFollowersSaga
+    ),
+    takeEvery(
+      publicationActions.getPublicationRequest.type,
+      getPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.getLatestPublicationStoriesRequest.type,
+      getLatestPublicationStoriesSaga
+    ),
+    takeEvery(
+      publicationActions.visitPublicationRequest.type,
+      visitPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.followPublicationRequest.type,
+      followPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.unfollowPublicationRequest.type,
+      unfollowPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.checkPublicationFollowingRequest.type,
+      checkPublicationFollowingSaga
+    ),
+    takeEvery(
+      publicationActions.getPublicationFeaturesRequest.type,
+      getPublicationFeaturesSaga
+    ),
+    takeEvery(publicationActions.deleteFeatureRequest.type, deleteFeatureSaga),
+    takeEvery(
+      publicationActions.getNewslettersRequest.type,
+      getNewslettersSaga
+    ),
+    takeEvery(
+      publicationActions.getFeaturePagesByPublicationRequest.type,
+      getFeaturePagesByPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.getPublicationNavigationRequest.type,
+      getPublicationsNavigation
+    ),
+    takeEvery(
+      publicationActions.createPublicationNavigationRequest.type,
+      createPublicationNavigation
+    ),
+    takeEvery(
+      publicationActions.updatePublicationNavigationRequest.type,
+      updatePublicationNavigation
+    ),
+    takeEvery(
+      publicationActions.getFeaturePageRequest.type,
+      getFeaturePageSaga
+    ),
+    takeEvery(
+      publicationActions.getSubscribersRequest.type,
+      getSubscribersSaga
+    ),
+    takeEvery(
+      publicationActions.getPublicationByIdRequest.type,
+      getPublicationByIdSaga
+    ),
+    takeEvery(
+      publicationActions.updatePublicationRequest.type,
+      updatePublicationSaga
+    ),
+    debounce(
+      1500,
+      publicationActions.isPublicationnameExistRequest.type,
+      isPublicationnameExistSaga
+    ),
+    takeEvery(
+      publicationActions.deletePublicationSectionRequest.type,
+      deletePublicationSectionRequest
+    ),
+    takeEvery(
+      publicationActions.setFeaturePageSectionsRequest.type,
+      setPublicationSectionSaga
+    ),
+    takeEvery(
+      publicationActions.createFeaturePageRequest.type,
+      createFeaturePage
+    ),
+    takeEvery(publicationActions.setPublicationsRequest.type, setPublications),
+    takeEvery(
+      publicationActions.getUserPublicationsRequest.type,
+      getUserPublicationsSaga
+    ),
+    takeEvery(
+      publicationActions.selectPublicationRequest.type,
+      selectPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.getPublicationHomeLayoutRequest.type,
+      getPublicationHomeLayoutSaga
+    ),
+    takeEvery(
+      publicationActions.updatePublicationHomeLayoutRequest.type,
+      updatePublicationHomeLayoutSaga
+    ),
+    takeEvery(
+      publicationActions.createPublicationRequest.type,
+      createPublicationSaga
+    ),
+    takeEvery(
+      publicationActions.isFollowingPublicationRequest.type,
+      isFollowingPublicationSaga
+    ),
+  ]);
 }

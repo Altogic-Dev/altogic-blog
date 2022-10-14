@@ -28,7 +28,6 @@ export default function Publications() {
   const latestPublicationStoriesCount = useSelector(
     (state) => state.publication.latestPublicationStoriesCount
   );
-
   const navigations = useSelector(
     (state) => state.publication.publicationNavigation
   );
@@ -51,13 +50,13 @@ export default function Publications() {
       );
     }
   };
+
   useEffect(() => {
     if (!isNil(publicationName)) {
       getLatestPublicationStories();
     }
   }, [publicationName]);
 
-  console.log(latestPublicationStories);
   useEffect(() => {
     if (publication && !didMount) {
       dispatch(

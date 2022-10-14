@@ -38,7 +38,7 @@ const FollowerConnectionService = {
       .lookup({
         modelName: 'follower_connection',
         name: 'isFollowing',
-        query: `this.followingUser == lookup.followerUser && lookup.followerUser == '${sessionUserId}'`,
+        query: `this.followingUser == lookup.followingUser && lookup.followerUser == '${sessionUserId}'`,
       })
       .sort('createdAt', 'desc')
       .page(page)

@@ -64,7 +64,7 @@ const StoryService = {
   },
 
   getMoreUserStories(authorId, storyId, publicationId, page = 1, limit = 2) {
-    let filter = `_id != '${storyId}' && isPublished && !isPrivate`;
+    let filter = `_id != '${storyId}'&& !isDeleted && isPublished && !isPrivate`;
     if (publicationId) filter += ` && publication == '${publicationId}'`;
     else filter += ` && user == '${authorId}'`;
 
@@ -127,7 +127,7 @@ const StoryService = {
     return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {
-    return db.model('story').object(storyId).delete();
+    return endpoint.delete(`/story/${storyId}`);
   },
 
   updateCategory(storyId, newCategoryNames) {
@@ -151,8 +151,7 @@ const StoryService = {
     return endpoint.post('/story', story);
   },
   visitStory(visit) {
-    return endpoint.post(`/story/view`, visit );
-
+    return endpoint.post(`/story/view`, visit);
   },
   getPopularStories() {
     return endpoint.get('/story/popular');

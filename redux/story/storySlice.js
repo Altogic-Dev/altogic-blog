@@ -173,11 +173,7 @@ export const storySlice = createSlice({
     },
     getMoreUserStoriesSuccess(state, action) {
       state.isLoading = false;
-      if (_.isArray(state.moreUserStories)) {
-        state.moreUserStories = [...state.moreUserStories, ...action.payload];
-      } else {
-        state.moreUserStories = action.payload;
-      }
+      state.moreUserStories = action.payload;
     },
 
     getUserStoriesRequest(state) {
@@ -253,7 +249,8 @@ export const storySlice = createSlice({
     publishStoryRequest(state) {
       state.isLoading = true;
     },
-    publishStorySuccess(state) {
+    publishStorySuccess(state, action) {
+      state.story = action.payload;
       state.isLoading = false;
     },
     publishStoryFailure(state, action) {
