@@ -31,6 +31,11 @@ const StoryService = {
     return endpoint.get('story/recommended', { page, limit });
   },
 
+  updateCategoryPairs(categoryPairs) {
+    return endpoint.post('/topic/relation', categoryPairs);
+
+  },
+
   GetRecommendedStoriesByUser({
     recommendedTopics,
     mutedUsers,

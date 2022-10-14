@@ -61,6 +61,16 @@ export default function PublishSettings() {
     }
   };
   const handlePublish = () => {
+    const tempInpCategoryNames = inpCategoryNames.sort()
+    const categoryPairs = [];
+    for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {
+      for (let j = i; j < tempInpCategoryNames.length - 1; j += 1) {
+        categoryPairs.push({
+          topicA: tempInpCategoryNames[i],
+          topicB: tempInpCategoryNames[j + 1],
+        });
+      }
+    }
     dispatch(
       storyActions.publishStoryRequest({
         story: {
@@ -80,6 +90,7 @@ export default function PublishSettings() {
           excerpt: parseHtml(story.content).slice(0, 300),
         },
         isEdited: isEdited === 'true',
+        categoryPairs,
         onSuccess: () => router.push(`/story/${story.storySlug}`),
       })
     );

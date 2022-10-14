@@ -89,7 +89,6 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
-  console.log(whoToFollowData);
   if (!isLoading)
     return (
       <div>
