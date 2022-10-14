@@ -42,13 +42,15 @@ export default function WriteAStory() {
 
   useEffect(() => {
     if (id) {
-      setIsCreated(true);
       dispatch(storyActions.getStoryRequest(id));
     } else {
       dispatch(storyActions.clearStory());
     }
   }, [id]);
 
+  useEffect(() => {
+    if (newStory) setIsCreated(true);
+  }, [newStory]);
   useEffect(() => {
     if (content) {
       const story = {
