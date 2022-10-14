@@ -2,11 +2,7 @@ import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
-import {
-  deleteTopicWritersSaga,
-  insertTopicsSaga,
-  insertTopicsWriterCountSaga,
-} from '../topics/topicsSaga';
+import { deleteTopicWritersSaga, insertTopicsSaga } from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
@@ -46,7 +42,6 @@ function* getStoryReplies({ payload: { story, page, limit } }) {
       yield put(storyActions.getStoryRepliesSuccess(data));
     }
   } catch (e) {
-    console.error({ e });
     yield put(storyActions.getStoryRepliesFailure(e));
   }
 }
@@ -398,7 +393,7 @@ function* getCacheStorySaga({ payload: storySlug }) {
 }
 
 function* publishStorySaga({
-  payload: { story, isEdited, onSuccess, categoryPairs },
+  payload: { story, isEdited, onSuccess, categoryPairs, topicsWillCreate },
 }) {
   try {
     const operation = isEdited
@@ -409,13 +404,10 @@ function* publishStorySaga({
     if (!_.isNil(errors)) throw errors.items;
 
     if (!_.isEmpty(story.categoryNames)) {
-      yield call(
-        StoryService.updateCategoryPairs,
-        categoryPairs
-      );
-  
+      yield call(StoryService.updateCategoryPairs, categoryPairs);
+
       yield fork(insertTopicsSaga, story);
-      yield fork(insertTopicsWriterCountSaga, story);
+      yield fork(insertTopicsSaga, story, topicsWillCreate);
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
     yield put(storyActions.publishStorySuccess(data));
