@@ -43,44 +43,21 @@ function* getBestsOfTopicSaga({ payload: { topic, page, limit } }) {
     yield put(topicsActions.getBestsOfTopicFailure(e));
   }
 }
-
-function* getIdListTrendingsOfTopicsSaga({
-  payload: { topic, page, limit, date },
-}) {
+function* getTrendingTopicsSaga({ payload }) {
   try {
     const { data, errors } = yield call(
-      TopicsService.getIdListTrendingsOfTopic,
-      topic,
-      page,
-      limit,
-      date
+      TopicsService.getTrendingTopicsSaga,
+      payload
     );
 
     if (data) {
-      yield put(topicsActions.getIdListTrendingsOfTopicSuccess(data));
+      yield put(topicsActions.getTrendingTopicsSuccess(data));
     }
     if (errors) {
       throw errors.items;
     }
   } catch (e) {
-    yield put(topicsActions.getIdListTrendingsOfTopicFailure(e));
-  }
-}
-function* getTrendingsOfTopicsSaga({ payload: stories }) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getTrendingsOfTopic,
-      stories
-    );
-
-    if (data) {
-      yield put(topicsActions.getTrendingsOfTopicSuccess(data));
-    }
-    if (errors) {
-      throw errors.items;
-    }
-  } catch (e) {
-    yield put(topicsActions.getTrendingsOfTopicFailure(e));
+    yield put(topicsActions.getTrendingTopicsFailure(e));
   }
 }
 
@@ -103,32 +80,7 @@ function* getRelatedTopicsSaga({ payload: topic }) {
     yield put(topicsActions.getRelatedTopicsFailure(e));
   }
 }
-function* getTopicTopWritersIdListSaga({ payload: topic }) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getTopicTopWritersIdList,
-      topic
-    );
 
-    if (errors) throw errors.items;
-    if (data) yield put(topicsActions.getTopicTopWritersIdListSuccess(data));
-  } catch (e) {
-    yield put(topicsActions.getTopicTopWritersIdListFailure(e));
-  }
-}
-function* getTopicTopWritersSaga({ payload: people }) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getTopicTopWriters,
-      people
-    );
-
-    if (errors) throw errors.items;
-    if (data) yield put(topicsActions.getTopicTopWritersSuccess(data));
-  } catch (e) {
-    yield put(topicsActions.getTopicTopWritersFailure(e));
-  }
-}
 function* insertTopicWritersSaga(story) {
   const user = yield select((state) => state.auth.user);
   const topicWriters = _.map(story.categoryNames, (topic) => ({
@@ -249,12 +201,8 @@ export default function* rootSaga() {
     getBestsOfTopicSaga
   );
   yield takeEvery(
-    topicsActions.getTrendingsOfTopicRequest.type,
-    getTrendingsOfTopicsSaga
-  );
-  yield takeEvery(
-    topicsActions.getIdListTrendingsOfTopicRequest.type,
-    getIdListTrendingsOfTopicsSaga
+    topicsActions.getTrendingTopicsRequest.type,
+    getTrendingTopicsSaga
   );
   yield takeEvery(
     topicsActions.getPopularTopicsRequest.type,
@@ -264,14 +212,7 @@ export default function* rootSaga() {
     topicsActions.getRelatedTopicsRequest.type,
     getRelatedTopicsSaga
   );
-  yield takeEvery(
-    topicsActions.getTopicTopWritersRequest.type,
-    getTopicTopWritersSaga
-  );
-  yield takeEvery(
-    topicsActions.getTopicTopWritersIdListRequest.type,
-    getTopicTopWritersIdListSaga
-  );
+
   yield takeEvery(
     topicsActions.getTopicAnalyticsRequest.type,
     getTopicAnalyticsSaga

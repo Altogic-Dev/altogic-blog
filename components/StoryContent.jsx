@@ -10,11 +10,11 @@ import { Fragment, useState } from 'react';
 import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
+import Link from 'next/link';
 import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import DeleteStoryModal from './DeleteStoryModal';
-
 
 const Replies = dynamic(() => import('@/components/story/Replies'), {
   ssr: false,
@@ -37,6 +37,9 @@ function StoryContent(props) {
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const story = useSelector((state) => state.story.story);
   const user = useSelector((state) => state.auth.user);
+  const isLoadingFollow = useSelector(
+    (state) => state.followerConnection.followingUserLoading
+  );
 
   const isMyProfile = _.get(user, '_id') === _.get(story, 'user._id');
 
@@ -59,7 +62,6 @@ function StoryContent(props) {
       );
     }
   };
-
   const handleLikeStory = () => {
     if (isLiked) {
       dispatch(
@@ -138,6 +140,7 @@ function StoryContent(props) {
           <Button
             className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
             onClick={toggleFollow}
+            disabled={isLoadingFollow}
           >
             {isFollowing ? 'Unfollow' : 'Follow'} this author
           </Button>
@@ -182,15 +185,21 @@ function StoryContent(props) {
     <div ref={forwardedRef}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
         <div className="flex items-center gap-3">
-          <img
-            className="w-[50px] h-[50px] rounded-full object-cover"
-            src={_.get(story, 'user.profilePicture')}
-            alt=""
-          />
+          <Link href={`/${story?.user.username}/about`}>
+            <a className="flex items-center gap-2">
+              <img
+                className="w-[50px] h-[50px] rounded-full object-cover"
+                src={_.get(story, 'user.profilePicture')}
+                alt=""
+              />
+            </a>
+          </Link>
           <div>
-            <span className="text-slate-700  text-base font-medium tracking-sm">
-              {_.get(story, 'user.name')}
-            </span>
+            <Link href={`/${story?.user.username}/about`}>
+              <a className="text-slate-700  text-base font-medium tracking-sm">
+                {_.get(story, 'user.name')}
+              </a>
+            </Link>
             <div className="flex items-center gap-2 text-slate-500 tracking-sm">
               <span>
                 {DateTime.fromISO(_.get(story, 'createdAt')).toLocaleString({

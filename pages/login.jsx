@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import SocialProviders from '@/components/login/SocialProviders';
+import Router from 'next/router';
 
 export default function Login() {
   const loginSchema = new yup.ObjectSchema({
@@ -27,6 +28,7 @@ export default function Login() {
     dispatch(
       authActions.loginRequest({
         ...data,
+        onSuccess: () => Router.push('/'),
       })
     );
   }
@@ -51,11 +53,15 @@ export default function Login() {
         <div className="flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
           <div className="mx-auto w-full max-w-lg lg:w-[360px]">
             <div className="flex flex-col items-center">
-              <img
-                className="w-[192px] h-[66px] mb-6"
-                src="./logo.svg"
-                alt="Altogic"
-              />
+              <Link href="/">
+                <a>
+                  <img
+                    className="w-[192px] h-[66px] mb-6"
+                    src="./logo.svg"
+                    alt="Altogic"
+                  />
+                </a>
+              </Link>
               <h2 className="text-4xl font-bold text-slate-800">
                 Welcome Back!
               </h2>

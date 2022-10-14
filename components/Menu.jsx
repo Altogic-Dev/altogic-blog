@@ -146,42 +146,58 @@ export default function HeaderMenu() {
                 <SearchIcon className="w-5 h-5" />
               </Button>
             </div>
-            <Button
-              onClick={() => {
-                router.push('/write-a-story');
-              }}
-              className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            >
-              <PencilIcon className="w-5 h-5" />
-            </Button>
-            <Notifications
-              mobileNotifications={mobileNotifications}
-              setMobileNotifications={setMobileNotifications}
-            />
-            <Link href="/settings">
-              <a className="hidden lg:inline-flex items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                <CogIcon className="w-5 h-5" />
-              </a>
-            </Link>
-            {/* Desktop Profile Button */}
-            <Menu
-              as="div"
-              className="relative hidden lg:inline-flex items-center"
-            >
-              <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
-                <Avatar
-                  className="inline-block w-10 h-10 rounded-full"
-                  src={user?.profilePicture}
-                  alt={user?.name}
+            {user ? (
+              <>
+                <Button
+                  onClick={() => {
+                    router.push('/write-a-story');
+                  }}
+                  className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                >
+                  <PencilIcon className="w-5 h-5" />
+                </Button>
+                <Notifications
+                  mobileNotifications={mobileNotifications}
+                  setMobileNotifications={setMobileNotifications}
                 />
-              </Menu.Button>
+                <Link href="/settings">
+                  <a className="hidden lg:inline-flex items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    <CogIcon className="w-5 h-5" />
+                  </a>
+                </Link>
+                <Menu
+                  as="div"
+                  className="relative hidden lg:inline-flex items-center"
+                >
+                  <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+                    <Avatar
+                      className="inline-block w-10 h-10 rounded-full"
+                      src={user?.profilePicture}
+                      alt={user?.username}
+                    />
+                  </Menu.Button>
 
-              <HeaderDropdown
-                user={user}
-                logout={logout}
-                className="origin-top-right absolute top-10 w-56"
-              />
-            </Menu>
+                  <HeaderDropdown
+                    user={user}
+                    logout={logout}
+                    className="origin-top-right absolute top-10 w-56"
+                  />
+                </Menu>
+              </>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link href="/login">
+                  <a className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    Login
+                  </a>
+                </Link>
+                <Link href="/create-an-account">
+                  <a className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-purple-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                    Sign Up
+                  </a>
+                </Link>
+              </div>
+            )}
             {selectedPublication && (
               <Menu
                 as="div"
@@ -234,7 +250,7 @@ export default function HeaderMenu() {
             <Avatar
               className="inline-block w-10 h-10 rounded-full"
               src={user?.profilePicture}
-              alt={user?.name}
+              alt={user?.username}
             />
           </Menu.Button>
 
@@ -253,7 +269,7 @@ export default function HeaderMenu() {
               <Avatar
                 className="inline-block w-10 h-10 rounded-full"
                 src={selectedPublication?.logo}
-                alt={selectedPublication?.name}
+                alt={selectedPublication?.username}
               />
             </Menu.Button>
 

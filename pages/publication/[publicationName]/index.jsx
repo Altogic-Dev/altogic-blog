@@ -140,6 +140,7 @@ export default function Publications() {
                     bookmark={post.bookmark}
                     firstPadding={false}
                     bigImage={_.first(post.storyImages)}
+                    story={post}
                   />
                 ))}
               </div>

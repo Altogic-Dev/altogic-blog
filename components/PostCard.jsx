@@ -33,7 +33,7 @@ export default function PostCard({
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 py-8 md:py-10">
-        <div>
+        <div className="w-full">
           <Link href={authorUrl}>
             <a className="flex items-center gap-3 mb-4 md:mb-8">
               <div className="flex-shrink-0">
@@ -319,7 +319,7 @@ export default function PostCard({
         )}
       </div>
       {createNewList && (
-        <CreateBookmarkList setCreateNewList={setCreateNewList} />
+        <CreateBookmarkList setCreateNewList={setCreateNewList} story={story} />
       )}
       {deleteListModal && <DeleteList setDeleteList={setDeleteListModal} />}
     </>

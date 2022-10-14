@@ -138,7 +138,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
 
   useEffect(() => {
     if (story) getReplies();
-  }, [story, replyLimit]);
+  }, [_.get(story, '_id'), replyLimit]);
 
   const boldButton = () => {
     quillInstance.format('bold', true);

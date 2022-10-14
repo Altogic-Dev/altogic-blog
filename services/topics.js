@@ -19,21 +19,14 @@ const TopicsService = {
       .limit(limit)
       .get();
   },
-  getIdListTrendingsOfTopic(topic, limit, page, date) {
-    return db
-      .model('story_likes')
-      .filter(`createdAt > ${date} && IN(this.topics, '${topic}')`)
-      .group(['story'])
-      .compute([{ name: 'count', type: 'count' }]);
-  },
-  getTrendingsOfTopic(stories) {
-    let query = `_id == '`;
-    query += stories.join(`' || _id == '`);
-    query += `'`;
-    return db.model('story').filter(query).get();
+
+  getTrendingTopicsSaga(topic) {
+    return endpoint.get('/topic/trending', {
+      topic,
+    });
   },
   getPopularTopics() {
-    return db.model('topics').sort('storyCount', 'desc').limit(10).get();
+    return endpoint.get('/topics/popular')
   },
   getRelatedTopics(topic) {
     return db
@@ -43,20 +36,7 @@ const TopicsService = {
       .limit(10)
       .get();
   },
-  getTopicTopWritersIdList(topic) {
-    return db
-      .model('story')
-      .filter(`IN(this.categoryNames, '${topic}')`)
-      .group('user')
-      .limit(1)
-      .compute([{ name: 'count', type: 'count' }]);
-  },
-  getTopicTopWriters(people) {
-    let query = `_id == '`;
-    query += people.join(`' || _id == '`);
-    query += `'`;
-    return db.model('users').filter(query).get();
-  },
+
   isTopicExist(topic) {
     return endpoint.get('/topic/isExist', { topicName: topic });
   },

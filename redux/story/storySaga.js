@@ -9,6 +9,7 @@ import {
 } from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
+  console.log(userId);
   try {
     const user = yield select((state) => state.auth.user);
     const info = yield select((state) => state.story.followingStoriesInfo);

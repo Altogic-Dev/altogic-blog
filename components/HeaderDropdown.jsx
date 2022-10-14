@@ -36,7 +36,7 @@ export default function HeaderDropdown({ user, logout, className }) {
           <Avatar
             className="h-10 w-10 rounded-full"
             src={user?.profilePicture}
-            alt={user?.name}
+            alt={user?.username}
           />
           <div>
             <p className="text-slate-700 text-sm font-medium tracking-sm">

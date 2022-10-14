@@ -35,21 +35,25 @@ function* setUserFromLocalStorage() {
 }
 function* getAuthGrantSaga({ payload }) {
   try {
-    yield call(AuthService.authStateChange, payload.user, payload.session);
-    const { data, errors } = yield call(AuthService.setUsernameForProvider, {
-      email: payload.user.email,
-      name: payload.user.name,
-      provider: payload.user.provider,
-      username: payload.user.username,
-    });
-    if (!errors) {
-      yield call(AuthService.authStateChange, data, payload.session);
-    }
-    if (payload.user && payload.session) {
-      yield put(authActions.loginSuccess(data));
-    }
-    if (payload.error) {
-      throw payload.error.items;
+    if (!payload.user.username || !payload.user.profilePicture) {
+      const { data, errors } = yield call(AuthService.setUsernameForProvider, {
+        email: payload.user.email,
+        name: payload.user.name,
+        provider: payload.user.provider,
+        username: payload.user.username,
+      });
+      if (!errors) {
+        yield call(AuthService.authStateChange, data, payload.session);
+      }
+      if (payload.user && payload.session) {
+        yield put(authActions.loginSuccess(data));
+      }
+      if (payload.error) {
+        throw payload.error.items;
+      }
+    } else {
+      yield call(AuthService.authStateChange, payload.user, payload.session);
+      yield put(authActions.loginSuccess(payload.user));
     }
   } catch (e) {
     yield put(authActions.getAuthGrantFailure(e));
@@ -71,6 +75,7 @@ function* loginSaga({ payload }) {
         yield put(publicationActions.setPublicationsOnLogin(data));
       }
       yield put(authActions.loginSuccess(user));
+      payload.onSuccess();
     }
     if (errors) {
       throw errors.items;
@@ -140,7 +145,7 @@ function* updateFollowingTopicsSaga({ payload: { topics } }) {
     }
 
     if (data) {
-      console.log(data)
+      console.log(data);
       AuthService.setUserFromLocal(data);
       yield put(authActions.updateFollowingTopicsSuccess());
     }

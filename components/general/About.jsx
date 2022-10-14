@@ -17,15 +17,15 @@ function About(props) {
     followerCount,
     followingCount,
     toggleFollowingsModal,
-    userFollowings,
   } = props;
   const dispatch = useDispatch();
-
 
   const userFollowers = useSelector(
     (state) => state.followerConnection.userFollowers
   );
-
+  const isFollowings = useSelector(
+    (state) => state.followerConnection.isFollowings
+  );
 
   const [followersModal, setFollowersModal] = useState(false);
   const [followerPage, setFollowerPage] = useState(1);
@@ -142,12 +142,12 @@ function About(props) {
                               name: person.followerName,
                               username: person.followerUsername,
                               profilePicture: person.followerUserProfilePicture,
-                              about: ' ',
+                              about: person.followerAbout,
                             }}
-                            isFollowing={userFollowings.some(
-                              (u) => u.followingUser === person._id
+                            isFollowing={_.includes(
+                              isFollowings,
+                              person.followerUser
                             )}
-                              
                           />
                         ))}
                       </ul>

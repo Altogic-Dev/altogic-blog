@@ -1,4 +1,4 @@
-import { call, takeEvery, put, all, select } from 'redux-saga/effects';
+import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import BookmarkService from '@/services/bookmark';
 import {
   getBookmarkListsRequest,
@@ -53,21 +53,8 @@ function* getBookmarkListsSaga({ payload }) {
     yield put(getBookmarkListsFailure(error));
   }
 }
-function* createBookmarkListSaga({ payload }) {
-  try {
-    const { data, errors } = yield call(
-      BookmarkService.createBookmarkList,
-      payload
-    );
-    if (data) {
-      yield put(createBookmarkListSuccess(data));
-    }
-    if (errors) throw errors.items;
-  } catch (error) {
-    yield put(createBookmarkListFailure(error));
-  }
-}
 function* addBookmarkSaga({ payload }) {
+  console.log('addBookmarkSaga', payload);
   try {
     const { data, errors } = yield call(BookmarkService.addBookmark, payload);
     if (data) {
@@ -78,6 +65,39 @@ function* addBookmarkSaga({ payload }) {
     yield put(addBookmarkFailure(error));
   }
 }
+function* createBookmarkListSaga({ payload: { bookmarkList, bookmark } }) {
+  try {
+    const { data, errors } = yield call(
+      BookmarkService.createBookmarkList,
+      bookmarkList
+    );
+    if (data) {
+      yield put(createBookmarkListSuccess(data));
+      let { coverImages } = data;
+      const storyImages = _.map(bookmark.story.storyImages, (image) => image);
+      if (coverImages.length < 4) {
+        coverImages = [...coverImages, storyImages[0]];
+      } else {
+        coverImages = coverImages.slice(1, 4);
+        coverImages = [...coverImages, storyImages[0]];
+      }
+      const req = {
+        list: data._id,
+        story: bookmark.story._id,
+        userId: bookmark.userId,
+      };
+      if (coverImages.length > 0) {
+        coverImages = coverImages.pop();
+        req.coverImages = coverImages;
+      }
+      yield fork(addBookmarkSaga, { payload: req });
+    }
+    if (errors) throw errors.items;
+  } catch (error) {
+    yield put(createBookmarkListFailure(error));
+  }
+}
+
 function* deleteBookmarkSaga({ payload }) {
   try {
     const { data, errors } = yield call(
@@ -85,7 +105,6 @@ function* deleteBookmarkSaga({ payload }) {
       payload
     );
     if (data) {
-      console.log({ data });
       yield put(deleteBookmarkSuccess(data));
     }
     if (errors) throw errors.items;
