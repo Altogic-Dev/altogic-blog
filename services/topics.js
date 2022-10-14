@@ -1,23 +1,15 @@
 import { db, endpoint } from '@/utils/altogic';
 
 const TopicsService = {
-  getLatestsOfTopic(topic, page, limit) {
-    return db
-      .model('story')
-      .filter(`IN(this.categoryNames, '${topic}')`)
-      .sort('createdAt', 'desc')
-      .page(page)
-      .limit(limit)
-      .get();
+  getLatestsOfTopic(topic) {
+    return endpoint.get('/topic/latest', {
+      topic,
+    });
   },
-  getBestsOfTopic(topic, page, limit) {
-    return db
-      .model('story')
-      .filter(`IN(this.categoryNames, '${topic}')`)
-      .sort('likeCount', 'desc')
-      .page(page)
-      .limit(limit)
-      .get();
+  getBestsOfTopic(topic) {
+    return endpoint.get('/topic/best', {
+      topic,
+    });
   },
 
   getTrendingTopicsSaga(topic) {
@@ -26,7 +18,7 @@ const TopicsService = {
     });
   },
   getPopularTopics() {
-    return endpoint.get('/topics/popular')
+    return endpoint.get('/topics/popular');
   },
   getRelatedTopics(topic) {
     return db
@@ -41,7 +33,7 @@ const TopicsService = {
     return endpoint.get('/topic/isExist', { topicName: topic });
   },
   insertTopics(topics) {
-    return db.model('topics').create(topics);
+    return endpoint.post('/topic', topics);
   },
   deleteTopicWriters(storyId) {
     return endpoint.delete(`/topic_writers/${storyId}`);

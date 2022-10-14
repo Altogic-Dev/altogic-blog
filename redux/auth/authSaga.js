@@ -35,6 +35,7 @@ function* setUserFromLocalStorage() {
 }
 function* getAuthGrantSaga({ payload }) {
   try {
+    yield call(AuthService.authStateChange, payload.user, payload.session);
     if (!payload.user.username || !payload.user.profilePicture) {
       const { data, errors } = yield call(AuthService.setUsernameForProvider, {
         email: payload.user.email,
@@ -45,16 +46,12 @@ function* getAuthGrantSaga({ payload }) {
       if (!errors) {
         yield call(AuthService.authStateChange, data, payload.session);
       }
-      if (payload.user && payload.session) {
-        yield put(authActions.loginSuccess(data));
-      }
       if (payload.error) {
         throw payload.error.items;
       }
-    } else {
-      yield call(AuthService.authStateChange, payload.user, payload.session);
-      yield put(authActions.loginSuccess(payload.user));
     }
+
+    yield put(authActions.loginSuccess(payload.user));
   } catch (e) {
     yield put(authActions.getAuthGrantFailure(e));
   }
@@ -87,12 +84,14 @@ function* loginSaga({ payload }) {
 function* forgotPassword({ payload }) {
   try {
     const { errors } = yield call(AuthService.forgotPassword, payload);
+    console.log(payload);
     if (errors) {
       throw errors.items;
     } else {
-      yield put(authActions.forgotPasswordSuccess());
+      yield put(authActions.forgotPasswordSuccess(payload));
     }
   } catch (e) {
+    console.log({ e });
     yield put(authActions.forgotPasswordFailure(e));
   }
 }

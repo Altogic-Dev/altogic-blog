@@ -64,7 +64,6 @@ export default function BlogDetail({ ip }) {
   const contentRef = useRef();
   const [createNewList, setCreateNewList] = useState(false);
   const [didMount, setDidMount] = useState(true);
-  const [morePage, setMorePage] = useState(1);
   const [isRead, setIsRead] = useState(false);
   const [enterTime, setEnterTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -163,8 +162,10 @@ export default function BlogDetail({ ip }) {
   }, []);
 
   useUnload((e) => {
-    visitStory();
-    e.preventDefault();
+    if (user) {
+      visitStory();
+      e.preventDefault();
+    }
   });
 
   useEffect(() => {
@@ -189,7 +190,7 @@ export default function BlogDetail({ ip }) {
       setDidMount(false);
     }
     return () => {
-      if (story) {
+      if (story && user) {
         visitStory();
         window.removeEventListener('scroll', onScroll, { passive: true });
         clearInterval();
@@ -198,17 +199,16 @@ export default function BlogDetail({ ip }) {
   }, [_.get(story, '_id')]);
 
   useEffect(() => {
-    if (!_.isNil(story)) {
+    if (story) {
       dispatch(
         storyActions.getMoreUserStoriesRequest({
           authorId: _.get(story, 'user._id'),
           storyId: _.get(story, '_id'),
           publicationId: _.get(story, 'publication._id'),
-          page: morePage,
         })
       );
     }
-  }, [_.get(story, '_id'), morePage]);
+  }, [story]);
 
   useEffect(() => {
     if (storySlug && story?.storySlug !== storySlug) {
@@ -359,14 +359,11 @@ export default function BlogDetail({ ip }) {
                         : `/${_.get(story, 'username')}`
                     }
                   >
-                    <Button
-                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                      // onClick={() => setMorePage((prev) => prev + 1)}
-                    >
+                    <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
                       Read more from{' '}
                       {_.get(story, 'publication.name') ||
                         _.get(story, 'user.name')}
-                    </Button>
+                    </a>
                   </Link>
                 </div>
               </div>

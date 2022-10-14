@@ -9,7 +9,7 @@ const initialState = {
   errors: [],
   topicWritersIdList: [],
   topWriters: [],
-  topicWriters: [],
+  topicWriters: null,
   count: 1,
 };
 
@@ -25,8 +25,7 @@ export const recommendationsSlice = createSlice({
     },
     getWhoToFollowSuccess(state, action) {
       state.whoToFollowLoading = false;
-      state.whoToFollow = [...state.whoToFollow,...action.payload]
-     
+      state.whoToFollow = [...state.whoToFollow, ...action.payload];
     },
     getWhoToFollowFailure(state, action) {
       state.whoToFollowLoading = false;
@@ -37,21 +36,18 @@ export const recommendationsSlice = createSlice({
     },
     getTopWritersSuccess(state, action) {
       state.whoToFollowLoading = false;
-      state.topWriters = [...state.topWriters,...action.payload.result]
-      state.count = action.payload.countInfo.count
-
+      state.topWriters = action.payload;
     },
     getTopWritersFailure(state, action) {
       state.whoToFollowLoading = false;
       state.errors = action.payload;
     },
-  
     getTopicTopWritersRequest(state) {
       state.isLoading = true;
     },
     getTopicTopWritersSuccess(state, action) {
       state.isLoading = false;
-      state.topicWriters = action.payload
+      state.topicWriters = action.payload;
     },
     getTopicTopWritersFailure(state, action) {
       state.isLoading = false;
