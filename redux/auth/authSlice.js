@@ -60,9 +60,9 @@ export const authSlice = createSlice({
     forgotPasswordRequest(state) {
       state.isLoading = true;
     },
-    forgotPasswordSuccess(state) {
+    forgotPasswordSuccess(state, action) {
       state.isLoading = false;
-      window.location.href = `/forgot-password-email?email=${state.user.email}`;
+      window.location.href = `/forgot-password-email?email=${action.payload.email}`;
     },
 
     forgotPasswordFailure(state, action) {
@@ -102,10 +102,10 @@ export const authSlice = createSlice({
       state.isLoading = true;
     },
     updateFollowingTopicsSuccess(state) {
-      console.log(state.user)
+      console.log(state.user);
       state.isLoading = false;
-      state.user =  AuthService.getUser();
-      console.log("sa")
+      state.user = AuthService.getUser();
+      console.log('sa');
     },
     updateFollowingTopicsFailure(state, action) {
       state.isLoading = false;

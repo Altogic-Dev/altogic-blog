@@ -9,6 +9,7 @@ import {
 } from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
+  console.log(userId);
   try {
     const user = yield select((state) => state.auth.user);
     const info = yield select((state) => state.story.followingStoriesInfo);
@@ -84,7 +85,6 @@ function* createReplyComment({ payload: comment }) {
     );
     if (errors) throw errors;
     if (data) {
-      console.log(data);
       yield put(storyActions.createReplyCommentSuccess(data));
     }
   } catch (e) {
@@ -404,7 +404,7 @@ function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
       ? StoryService.updateStory
       : StoryService.publishStory;
 
-    const { errors } = yield call(operation, story);
+    const { data, errors } = yield call(operation, story);
     if (!_.isNil(errors)) throw errors.items;
 
     if (!_.isEmpty(story.categoryNames)) {
@@ -412,7 +412,7 @@ function* publishStorySaga({ payload: { story, isEdited, onSuccess } }) {
       yield fork(insertTopicsWriterCountSaga, story);
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
-    yield put(storyActions.publishStorySuccess());
+    yield put(storyActions.publishStorySuccess(data));
     if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     yield put(storyActions.publishStoryFailure(e));

@@ -6,12 +6,9 @@ const initialState = {
   latestTopics: [],
   bestTopics: [],
   trendingTopics: [],
-  trendingTopicsIdList: [],
   relatedTopics: [],
   popularTopics: [],
   publicationsTopics: [],
-  topWritersIdList: [],
-  topWriters: [],
   publicationStoriesByTopic: [],
   topicAnalytics: null,
   isLoading: false,
@@ -24,25 +21,14 @@ export const topicsSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getTrendingsOfTopicRequest(state) {
+    getTrendingTopicsRequest(state) {
       state.isLoading = true;
     },
-    getTrendingsOfTopicSuccess(state, action) {
+    getTrendingTopicsSuccess(state, action) {
       state.trendingTopics = action.payload;
       state.isLoading = false;
     },
-    getTrendingsOfTopicFailure(state, action) {
-      state.error = action.payload;
-      state.isLoading = false;
-    },
-    getIdListTrendingsOfTopicRequest(state) {
-      state.isLoading = true;
-    },
-    getIdListTrendingsOfTopicSuccess(state, action) {
-      state.trendingTopicsIdList = action.payload;
-      state.isLoading = false;
-    },
-    getIdListTrendingsOfTopicFailure(state, action) {
+    getTrendingTopicsFailure(state, action) {
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -91,28 +77,7 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.errors = action.payload;
     },
-    getTopicTopWritersIdListRequest(state) {
-      state.isLoading = true;
-    },
-    getTopicTopWritersIdListSuccess(state, action) {
-      state.isLoading = false;
-      state.topWritersIdList = action.payload;
-    },
-    getTopicTopWritersIdListFailure(state, action) {
-      state.isLoading = false;
-      state.errors = action.payload;
-    },
-    getTopicTopWritersRequest(state) {
-      state.isLoading = true;
-    },
-    getTopicTopWritersSuccess(state, action) {
-      state.isLoading = false;
-      state.topWriters = action.payload;
-    },
-    getTopicTopWritersFailure(state, action) {
-      state.isLoading = false;
-      state.errors = action.payload;
-    },
+
 
     getTopicAnalyticsRequest() {},
     getTopicAnalyticsSuccess(state, action) {

@@ -109,15 +109,19 @@ export const storySlice = createSlice({
       state.commentIsLoading = true;
     },
     createReplyCommentSuccess(state, action) {
-
       state.replies = state.replies.map((reply) => {
+        const temp = reply;
         if (reply._id === action.payload.reply) {
-          reply.comments.push(action.payload)
+          temp.commentCount += 1;
+          if (reply.comments) {
+            temp.comments.push(action.payload);
+            return temp;
+          }
+          temp.comments = [action.payload];
         }
-        return reply;
+        return temp;
       });
       state.commentIsLoading = false;
-
     },
     createReplyCommentFailure(state, action) {
       state.story = null;
@@ -169,11 +173,7 @@ export const storySlice = createSlice({
     },
     getMoreUserStoriesSuccess(state, action) {
       state.isLoading = false;
-      if (_.isArray(state.moreUserStories)) {
-        state.moreUserStories = [...state.moreUserStories, ...action.payload];
-      } else {
-        state.moreUserStories = action.payload;
-      }
+      state.moreUserStories = action.payload;
     },
 
     getUserStoriesRequest(state) {
@@ -249,7 +249,8 @@ export const storySlice = createSlice({
     publishStoryRequest(state) {
       state.isLoading = true;
     },
-    publishStorySuccess(state) {
+    publishStorySuccess(state, action) {
+      state.story = action.payload;
       state.isLoading = false;
     },
     publishStoryFailure(state, action) {
@@ -304,13 +305,9 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    visitStoryRequest() {
-    },
-    visitStorySuccess() {
-    },
-    visitStoryFailure() {
-
-    },
+    visitStoryRequest() {},
+    visitStorySuccess() {},
+    visitStoryFailure() {},
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

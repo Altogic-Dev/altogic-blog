@@ -67,15 +67,23 @@ export default function Profile({
 
   return (
     <div>
-      <Avatar
-        className="w-20 h-20 mb-3 rounded-full"
-        src={_.get(profile, 'profilePicture')}
-        alt={_.get(profile, 'name')}
-      />
+      <Link href={`/${profile.username}`}>
+        <a>
+          <Avatar
+            className="w-20 h-20 mb-3 rounded-full"
+            src={_.get(profile, 'profilePicture')}
+            alt={_.get(profile, 'name')}
+          />
+        </a>
+      </Link>
       <div className="tracking-sm">
-        <h2 className="text-slate-700 text-base font-medium">
-          {_.get(profile, 'name')}
-        </h2>
+        <Link href={`/${profile.username}`}>
+          <a>
+            <h2 className="text-slate-700 text-base font-medium">
+              {_.get(profile, 'name')}
+            </h2>
+          </a>
+        </Link>
         <span className="inline-block mb-3 text-slate-500 text-sm">
           {_.get(profile, 'followerCount')} Followers
         </span>

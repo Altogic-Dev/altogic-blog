@@ -5,14 +5,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import Button from '@/components/basic/button';
 import Link from 'next/link';
+import _ from 'lodash';
+import { useRouter } from 'next/router';
 
 export default function PublicationsFeature() {
-  const publication = useSelector((state) => state.publication.publication);
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
+  const router = useRouter();
+
+  const { publicationName } = router.query;
 
   const dispatch = useDispatch();
   const publicationFeatures = useSelector(
     (state) => state.publication.publicationFeatures
   );
+  const user = useSelector((state) => state.auth.user);
 
   const getPublicationFeatures = () => {
     dispatch(
@@ -29,8 +37,26 @@ export default function PublicationsFeature() {
     );
   };
 
+  const checkAuthorization = (publication) => {
+    const sessionUser = _.find(
+      publication.users,
+      (person) => person.user === user._id
+    );
+    if (
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !==
+        _.lowerCase(publication.publicationName) ||
+      _.isNil(publication) ||
+      !_.includes(user.publications, publication._id)
+    ) {
+      router.push('/');
+    }
+  };
+
   useEffect(() => {
     if (publication) {
+      checkAuthorization(publication);
       getPublicationFeatures();
     }
   }, [publication]);

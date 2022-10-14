@@ -5,10 +5,12 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   whoToFollow: [],
   whoToFollowLoading: false,
-  whoToFollowMinimized: [],
   whoToFollowMinimizedLoading: false,
   errors: [],
-  popularTopics: [],
+  topicWritersIdList: [],
+  topWriters: [],
+  topicWriters: null,
+  count: 1,
 };
 
 // Actual Slice
@@ -17,29 +19,40 @@ export const recommendationsSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getWhoToFollowMinimizedRequest(state) {
-      state.whoToFollowMinimizedLoading = true;
-    },
-    getWhoToFollowMinimizedSuccess(state, action) {
-      state.whoToFollowMinimizedLoading = false;
-      state.whoToFollowMinimized = action.payload;
-    },
-    getWhoToFollowMinimizedFailure(state, action) {
-      state.isLoading = false;
-      state.errors = action.payload;
-    },
+
     getWhoToFollowRequest(state) {
       state.whoToFollowLoading = true;
     },
     getWhoToFollowSuccess(state, action) {
-      state.isLoading = false;
-      state.whoToFollow = action.payload;
+      state.whoToFollowLoading = false;
+      state.whoToFollow = [...state.whoToFollow, ...action.payload];
     },
     getWhoToFollowFailure(state, action) {
+      state.whoToFollowLoading = false;
+      state.errors = action.payload;
+    },
+    getTopWritersRequest(state) {
+      state.whoToFollowLoading = true;
+    },
+    getTopWritersSuccess(state, action) {
+      state.whoToFollowLoading = false;
+      state.topWriters = action.payload;
+    },
+    getTopWritersFailure(state, action) {
+      state.whoToFollowLoading = false;
+      state.errors = action.payload;
+    },
+    getTopicTopWritersRequest(state) {
+      state.isLoading = true;
+    },
+    getTopicTopWritersSuccess(state, action) {
+      state.isLoading = false;
+      state.topicWriters = action.payload;
+    },
+    getTopicTopWritersFailure(state, action) {
       state.isLoading = false;
       state.errors = action.payload;
     },
-
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
 
     extraReducers: {

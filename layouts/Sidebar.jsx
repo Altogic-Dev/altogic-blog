@@ -18,6 +18,7 @@ export default function Sidebar({
   peopleMatch,
   whoToFollow,
   topWriters,
+  topicWriters,
   storiesYouFollow,
   popularTopics,
   popularStories,
@@ -67,8 +68,13 @@ export default function Sidebar({
           page={followingStoriesPage}
         />
       )}
-      {(whoToFollow || topWriters) && (
-        <WhoToFollow isTopWriters={topWriters} Tag={Tag} />
+      {(whoToFollow || topWriters || topicWriters) && (
+        <WhoToFollow
+          topicWriters={topicWriters}
+          whoToFollow={whoToFollow}
+          topWriters={topWriters}
+          Tag={Tag}
+        />
       )}
       {(popularTopics || relatedTopics) && (
         <PopularTopics isRelatedTopics={relatedTopics} />

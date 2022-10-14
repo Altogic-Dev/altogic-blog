@@ -44,8 +44,8 @@ export default function BlogDetail({ ip }) {
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
   const user = useSelector((state) => state.auth.user);
   const isMuted = useSelector((state) => state.auth.isMuted);
-  const isFollowing = useSelector(
-    (state) => state.followerConnection.isFollowing
+  const isFollowings = useSelector(
+    (state) => state.followerConnection.isFollowings
   );
   const followLoading = useSelector(
     (state) => state.followerConnection.isLoading
@@ -64,11 +64,13 @@ export default function BlogDetail({ ip }) {
   const contentRef = useRef();
   const [createNewList, setCreateNewList] = useState(false);
   const [didMount, setDidMount] = useState(true);
-  const [morePage, setMorePage] = useState(1);
   const [isRead, setIsRead] = useState(false);
   const [enterTime, setEnterTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
+
+  const isFollowing = _.includes(isFollowings, _.get(story, 'user._id'));
+
   const moreFromFollowing = isPublication
     ? isFollowingPublication
     : isFollowing;
@@ -104,7 +106,7 @@ export default function BlogDetail({ ip }) {
         isRead,
         ip,
         publication: _.get(story, 'publication._id'),
-        isExternal: !!((facebook || twitter || linkedin)) ,
+        isExternal: !!(facebook || twitter || linkedin),
         author: story.user._id,
         categoryNames: story.categoryNames,
       })
@@ -160,8 +162,10 @@ export default function BlogDetail({ ip }) {
   }, []);
 
   useUnload((e) => {
-    visitStory();
-    e.preventDefault();
+    if (user) {
+      visitStory();
+      e.preventDefault();
+    }
   });
 
   useEffect(() => {
@@ -186,26 +190,25 @@ export default function BlogDetail({ ip }) {
       setDidMount(false);
     }
     return () => {
-      if (story) {
+      if (story && user) {
         visitStory();
         window.removeEventListener('scroll', onScroll, { passive: true });
         clearInterval();
       }
     };
-  }, [story]);
+  }, [_.get(story, '_id')]);
 
   useEffect(() => {
-    if (!_.isNil(story)) {
+    if (story) {
       dispatch(
         storyActions.getMoreUserStoriesRequest({
           authorId: _.get(story, 'user._id'),
           storyId: _.get(story, '_id'),
           publicationId: _.get(story, 'publication._id'),
-          page: morePage,
         })
       );
     }
-  }, [story, morePage]);
+  }, [story]);
 
   useEffect(() => {
     if (storySlug && story?.storySlug !== storySlug) {
@@ -229,7 +232,7 @@ export default function BlogDetail({ ip }) {
         })
       );
     }
-  }, [user]);
+  }, [_.get(user, '_id')]);
   useEffect(() => {
     if (!loading && story?.storySlug === storySlug) {
       setIsLoading(false);
@@ -346,14 +349,22 @@ export default function BlogDetail({ ip }) {
                   ))}
                 </div>
                 <div className="pt-10 border-t border-gray-200 text-center">
-                  <Button
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                    onClick={() => setMorePage((prev) => prev + 1)}
+                  <Link
+                    href={
+                      isPublication
+                        ? `/publication/${_.get(
+                            story,
+                            'publication.publicationName'
+                          )}`
+                        : `/${_.get(story, 'username')}`
+                    }
                   >
-                    Read more from{' '}
-                    {_.get(story, 'publication.name') ||
-                      _.get(story, 'user.name')}
-                  </Button>
+                    <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                      Read more from{' '}
+                      {_.get(story, 'publication.name') ||
+                        _.get(story, 'user.name')}
+                    </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -373,7 +384,10 @@ export default function BlogDetail({ ip }) {
           </div>
         </div>
         {createNewList && (
-          <CreateBookmarkList setCreateNewList={setCreateNewList} />
+          <CreateBookmarkList
+            setCreateNewList={setCreateNewList}
+            story={story}
+          />
         )}
       </Layout>
     </div>

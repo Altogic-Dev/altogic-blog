@@ -46,6 +46,7 @@ function PublicationTabTopic({ tab, publication }) {
           bookmark={post.bookmark}
           firstPadding
           bigImage={_.first(post.storyImages)}
+          story={post}
         />
       ))}
     </div>

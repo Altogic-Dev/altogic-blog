@@ -75,7 +75,7 @@ export default function PublishSettings() {
               ? inpSelectedAuthor.name
               : undefined,
           isPublished: true,
-          categoryNames: inpCategoryNames,
+          categoryNames: inpCategoryNames.map((name) => _.startCase(name)),
           isRestrictedComments: inpRestrictComments,
           excerpt: parseHtml(story.content).slice(0, 300),
         },

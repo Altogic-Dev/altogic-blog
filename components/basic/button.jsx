@@ -21,6 +21,7 @@ export default function Button({
 
   return (
     <button
+      disabled={loading}
       className={
         props.className
           ? props.className

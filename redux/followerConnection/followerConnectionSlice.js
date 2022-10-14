@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
@@ -6,6 +7,7 @@ const initialState = {
   followingStories: null,
   followingUser: null,
   isFollowing: false,
+  isFollowings: [],
   followingStoriesLoading: false,
   followingActionResult: null,
   userFollowers: [],
@@ -13,6 +15,7 @@ const initialState = {
   isLoading: false,
   followingUserLoading: false,
   followingStoriesPage: 1,
+  
 };
 
 // Actual Slice
@@ -22,12 +25,17 @@ export const followerConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     unfollowRequest(state) {
+    
+
       state.followingUserLoading = true;
     },
     unfollowSuccess(state, action) {
       state.followingUserLoading = false;
-
       state.isFollowing = false;
+      state.isFollowings = _.reject(
+        state.isFollowings,
+        (followingId) => followingId === action.payload
+      );
       state.userFollowings = state.userFollowings.filter(
         (following) => following.followingUser !== action.payload
       );
@@ -40,8 +48,12 @@ export const followerConnectionSlice = createSlice({
     followRequest(state) {
       state.followingUserLoading = true;
     },
-    followSuccess(state) {
+    followSuccess(state, action) {
       state.isFollowing = true;
+      state.isFollowings = [
+        ...state.isFollowings,
+        action.payload.followingUser,
+      ];
       state.followingUserLoading = false;
     },
     followFailure(state, action) {
@@ -74,6 +86,14 @@ export const followerConnectionSlice = createSlice({
     getFollowerUsersRequest() {},
     getFollowerUsersSuccess(state, action) {
       state.userFollowers = [...state.userFollowers, ...action.payload.data];
+      const isFollowingsFollowers = _.reject(action.payload.data, (person) =>
+        _.isNil(person.isFollowing)
+      );
+      const isFollowingFollowerIds = _.map(
+        isFollowingsFollowers,
+        'followerUser'
+      );
+      state.isFollowings = [...state.isFollowings, ...isFollowingFollowerIds];
     },
 
     getFollowingUsersRequest(state) {

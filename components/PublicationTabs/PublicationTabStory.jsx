@@ -97,7 +97,7 @@ function PublicationTabStory({ tab, publication }) {
         isReported={isReported}
       />
       {createNewList && (
-        <CreateBookmarkList setCreateNewList={setCreateNewList} />
+        <CreateBookmarkList setCreateNewList={setCreateNewList} story={story} />
       )}
     </div>
   );

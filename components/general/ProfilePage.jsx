@@ -20,6 +20,7 @@ import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import usePrevious from '@/hooks/usePrevious';
+import UserCard from './UserCard';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
@@ -43,6 +44,9 @@ export default function ProfilePage({ About, Home, List }) {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
+  const isFollowings = useSelector(
+    (state) => state.followerConnection.isFollowings
+  );
 
   const authLoading = useSelector((state) => state.auth.isLoading);
   const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
@@ -53,7 +57,6 @@ export default function ProfilePage({ About, Home, List }) {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
-  const [unfollowed, setUnfollowed] = useState([]);
   const [isMyProfile, setIsMyProfile] = useState(false);
   const previousPage = usePrevious(bookmarkListPage);
   const copyToClipboard = () => {
@@ -80,37 +83,6 @@ export default function ProfilePage({ About, Home, List }) {
       );
     }
     setFollowingModal((prev) => !prev);
-  };
-
-  const handleFollow = (user, index) => {
-    console.log('sa');
-    if (unfollowed[index] === false)
-      dispatch(
-        followerConnectionActions.unfollowRequest({
-          userId: _.get(sessionUser, '_id'),
-          followingUserId: _.get(user, '_id'),
-          notUpdate: true,
-        })
-      );
-    else {
-      dispatch(
-        followerConnectionActions.followRequest({
-          followerUser: sessionUser,
-          followingUser: {
-            followingUser: _.get(user, '_id'),
-            followingName: _.get(user, '_name'),
-            followingUserProfilePicture: _.get(user, '_profilePicture'),
-            followingUsername: _.get(user, '_username'),
-          },
-          notUpdate: true,
-        })
-      );
-    }
-    setUnfollowed((state) => {
-      const newState = [...state];
-      newState[index] = !newState[index];
-      return newState;
-    });
   };
 
   useEffect(() => {
@@ -149,7 +121,7 @@ export default function ProfilePage({ About, Home, List }) {
   }, [profileUser]);
 
   useEffect(() => {
-    if (username && selectedIndex === 1 && _.isNil(bookmarkLists)) {
+    if (username && selectedIndex === 1 && profileUser?.username !== username) {
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -241,7 +213,7 @@ export default function ProfilePage({ About, Home, List }) {
                         <Menu.Item>
                           <button
                             type="button"
-                            className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                            className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             onClick={copyToClipboard}
                           >
                             Copy link to profile
@@ -249,7 +221,7 @@ export default function ProfilePage({ About, Home, List }) {
                         </Menu.Item>
                         <Menu.Item>
                           <Link href="/settings">
-                            <a className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
+                            <a className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
                               Settings
                             </a>
                           </Link>
@@ -486,35 +458,21 @@ export default function ProfilePage({ About, Home, List }) {
                   </Dialog.Title>
                   <div>
                     <ul className="mb-6">
-                      {_.map(userFollowings, (following, index) => (
-                        <li
-                          key={following._id}
-                          className="flex items-start justify-between gap-6 py-4"
-                        >
-                          <div className="flex gap-3">
-                            <img
-                              className="w-10 h-10 rounded-full"
-                              src={following.followingUserProfilePicture}
-                              alt={following.followingName}
-                            />
-                            <div className="flex flex-col">
-                              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                {following.followingName}
-                              </span>
-                              <span
-                                className="text-slate-500 text-xs tracking-sm"
-                                dangerouslySetInnerHTML={{
-                                  __html: following.followingAbout,
-                                }}
-                              />
-                            </div>
-                          </div>
-                          <Button
-                            onClick={() => handleFollow(following, index)}
-                          >
-                            {unfollowed[index] === true ? 'Follow' : 'Unfollow'}
-                          </Button>
-                        </li>
+                      {_.map(userFollowings, (person) => (
+                        <UserCard
+                          key={person._id}
+                          user={{
+                            _id: person.followingUser,
+                            name: person.followingName,
+                            username: person.followingUsername,
+                            profilePicture: person.followingUserProfilePicture,
+                            about: person.followingAbout,
+                          }}
+                          isFollowing={_.includes(
+                            isFollowings,
+                            person.followingUser
+                          )}
+                        />
                       ))}
                     </ul>
                     <div className="text-center">

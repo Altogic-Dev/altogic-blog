@@ -24,57 +24,38 @@ export default function TagPage({ Home, Latest, Best }) {
   const router = useRouter();
   const { tag } = router.query;
   const dispatch = useDispatch();
+
   const latestTopics = useSelector((state) => state.topics.latestTopics);
   const bestTopics = useSelector((state) => state.topics.bestTopics);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
-  const trendingTopicsIdList = useSelector(
-    (state) => state.topics.trendingTopicsIdList
-  );
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
+  const topicAnalytics = useSelector((state) => state.topics.topicAnalytics);
 
   const [posts, setPosts] = useState([]);
 
-  const getLatests = (page) => {
+  const getLatests = () => {
     dispatch(
       topicsActions.getLatestsOfTopicRequest({
         topic: tag,
-        page,
-        limit: 10,
       })
     );
   };
-  const getBests = (page) => {
+  const getBests = () => {
     dispatch(
       topicsActions.getBestsOfTopicRequest({
         topic: tag,
-        page,
-        limit: 10,
       })
     );
   };
-  const getTrendings = (stories) => {
-    dispatch(
-      topicsActions.getTrendingsOfTopicRequest(
-        stories.map((person) => person.groupby.story)
-      )
-    );
-  };
-  const getTopicTopWritersIdListRequest = () => {
-    dispatch(
-      topicsActions.getIdListTrendingsOfTopicRequest({
-        topic: tag,
-        limit: 10,
-        page: 1,
-        date: DateTime.local().plus({ weeks: -1 }).toISODate(),
-      })
-    );
+  const getTrendingTopics = () => {
+    dispatch(topicsActions.getTrendingTopicsRequest(tag));
   };
 
   useEffect(() => {
     if (tag) {
       if (Home) {
-        getTopicTopWritersIdListRequest();
+        getTrendingTopics();
         setSelectedIndex(0);
       } else if (Latest) {
         getLatests(1);
@@ -83,7 +64,9 @@ export default function TagPage({ Home, Latest, Best }) {
         getBests(1);
         setSelectedIndex(2);
       }
-      dispatch(topicsActions.getTopicAnalyticsRequest(tag));
+      if (_.isNil(topicAnalytics)) {
+        dispatch(topicsActions.getTopicAnalyticsRequest(tag));
+      }
     }
   }, [tag]);
 
@@ -98,13 +81,7 @@ export default function TagPage({ Home, Latest, Best }) {
   }, [latestTopics, bestTopics, trendingTopics]);
 
   useEffect(() => {
-    if (trendingTopicsIdList.length > 0) {
-      getTrendings(trendingTopicsIdList);
-    }
-  }, [trendingTopicsIdList]);
-
-  useEffect(() => {
-    if (user) {
+    if (user && _.isNil(bookmarkLists) && _.isNil(bookmarks)) {
       dispatch(
         getBookmarkListsRequest({
           username: user.username,
@@ -289,7 +266,7 @@ export default function TagPage({ Home, Latest, Best }) {
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
                 personalFullStatistic
-                topWriters
+                topicWriters
                 relatedTopics
                 Tag={tag}
               />
