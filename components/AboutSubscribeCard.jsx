@@ -1,4 +1,16 @@
-export default function AboutSubscribeCard({ name, mailAddress }) {
+import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
+export default function AboutSubscribeCard({ profileId, name, mailAddress }) {
+  const isLoadingSubscribe = useSelector(
+    (state) => state.subscribeConnection.isLoading
+  );
+  const dispatch = useDispatch();
+
+  const subscribe = () => {
+    dispatch(subscribeConnectionActions.subscribeRequest(profileId));
+  };
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-8 p-6 sm:p-8 rounded-2xl bg-purple-700">
       <div className="flex flex-col gap-4">
@@ -20,6 +32,8 @@ export default function AboutSubscribeCard({ name, mailAddress }) {
       <button
         type="button"
         className="inline-flex items-center justify-center gap-2 py-2.5 md:py-[18px] px-7 text-lg font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+        disabled={isLoadingSubscribe}
+        onClick={subscribe}
       >
         <svg
           className="w-6 h-6"

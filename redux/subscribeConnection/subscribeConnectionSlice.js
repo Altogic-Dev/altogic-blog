@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 
@@ -6,6 +5,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   subscribingUser: null,
   isSubscribed: false,
+  isLoading: false,
 };
 
 // Actual Slice
@@ -15,20 +15,28 @@ export const subscribeConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
 
-    unSubscribeRequest() {},
+    unSubscribeRequest(state) {
+      state.isLoading = true;
+    },
     unSubscribeSuccess(state) {
+      state.isLoading = false;
+      state.isSubscribed = false;
+    },
+    unSubscribeFailure(state) {
+      state.isLoading = false;
       state.isSubscribed = false;
     },
 
-    subscribeRequest() {},
+    subscribeRequest(state) {
+      state.isLoading = true;
+    },
     subscribeSuccess(state) {
+      state.isLoading = false;
       state.isSubscribed = true;
     },
-
-    getSubscribeRequest() {},
-    getSubscribeSuccess(state, action) {
-      state.subscribingUser = action.payload;
-      state.isSubscribed = !_.isNull(action.payload);
+    subscribeFailure(state) {
+      state.isLoading = false;
+      state.isSubscribed = true;
     },
 
     setIsSubscribed(state, action) {

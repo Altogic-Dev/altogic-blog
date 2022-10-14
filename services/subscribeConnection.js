@@ -1,30 +1,21 @@
 import { db } from '@/utils/altogic';
 
 const SubscribeConnectionService = {
-  unsubscribe(userId, subscribingUserId) {
+  unsubscribe(subscribeUser, subscribingUser) {
     return db
       .model('subscribe_connection')
       .filter(
-        `subscribeUser == '${userId}' && subscribingUser == '${subscribingUserId}'`
+        `subscribeUser == '${subscribeUser}' && subscribingUser == '${subscribingUser}'`
       )
       .delete();
   },
 
-  subscribe(userId, userEmail, subscribingUserId) {
+  subscribe(subscribingUser, subscribeUser, subscribeUserEmail) {
     return db.model('subscribe_connection').create({
-      subscribeUser: userId,
-      subscribeUserEmail: userEmail,
-      subscribingUser: subscribingUserId,
+      subscribeUser,
+      subscribeUserEmail,
+      subscribingUser,
     });
-  },
-
-  getSubscribingUser(userId, subscribingUserId) {
-    return db
-      .model('subscribe_connection')
-      .filter(
-        `subscribeUser == '${userId}' && subscribingUser == '${subscribingUserId}'`
-      )
-      .get();
   },
 };
 

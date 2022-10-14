@@ -48,7 +48,7 @@ export default function BlogDetail({ ip }) {
     (state) => state.followerConnection.isFollowings
   );
   const followLoading = useSelector(
-    (state) => state.followerConnection.isLoading
+    (state) => state.followerConnection.followingUserLoading
   );
   const isFollowingPublication = useSelector(
     (state) => state.publication.isFollowingPublication
@@ -373,7 +373,6 @@ export default function BlogDetail({ ip }) {
               <Sidebar
                 profile={_.get(story, 'user')}
                 isFollowing={isFollowing}
-                toggleFollow={toggleFollow}
                 isSubscribed={isSubscribed}
                 followLoading={followLoading}
                 whoToFollow

@@ -11,14 +11,19 @@ import Avatar from '../profile/Avatar';
 export default function Profile({
   profile,
   isFollowing,
-  toggleFollowProp,
   isSubscribed,
   isLoading,
 }) {
   const sessionUser = useSelector((state) => state.auth.user);
+  const isLoadingSubscribe = useSelector(
+    (state) => state.subscribeConnection.isLoading
+  );
   const [isMyProfile, setIsMyProfile] = useState(false);
+  const [clickedIsLoading, setClickedIsLoading] = useState(false);
   const dispatch = useDispatch();
+
   const toggleFollow = () => {
+    setClickedIsLoading(true);
     if (isFollowing) {
       return dispatch(
         followerConnectionActions.unfollowRequest({
@@ -45,25 +50,25 @@ export default function Profile({
   const toggleSubscribe = () => {
     if (isSubscribed) {
       return dispatch(
-        subscribeConnectionActions.unSubscribeRequest({
-          userId: _.get(sessionUser, '_id'),
-          subscribingUserId: _.get(profile, '_id'),
-        })
+        subscribeConnectionActions.unSubscribeRequest(_.get(profile, '_id'))
       );
     }
     return dispatch(
-      subscribeConnectionActions.subscribeRequest({
-        userId: _.get(sessionUser, '_id'),
-        userEmail: _.get(sessionUser, 'email'),
-        subscribingUserId: _.get(profile, '_id'),
-      })
+      subscribeConnectionActions.subscribeRequest(_.get(profile, '_id'))
     );
   };
+
   useEffect(() => {
     if (sessionUser) {
       setIsMyProfile(sessionUser._id === profile._id);
     }
   }, [sessionUser]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setClickedIsLoading(false);
+    }
+  }, [isLoading]);
 
   return (
     <div>
@@ -94,15 +99,17 @@ export default function Profile({
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
           {!isMyProfile && (
             <FollowButton
-              isLoading={isLoading}
+              isLoading={isLoading && clickedIsLoading}
               isFollowing={isFollowing}
-              onClick={toggleFollowProp || toggleFollow}
+              onClick={toggleFollow}
             />
           )}
           {!isMyProfile && (
             <Button
               primaryColor
               extraClasses="inline-flex gap-2"
+              disabled={isLoadingSubscribe}
+              loading={isLoadingSubscribe}
               onClick={toggleSubscribe}
             >
               <svg

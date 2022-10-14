@@ -48,7 +48,6 @@ export default function Sidebar({
       {profile && (
         <Profile
           profile={profile}
-          toggleFollowProp={toggleFollow}
           isFollowing={isFollowing}
           isSubscribed={isSubscribed}
           isLoading={followLoading}
