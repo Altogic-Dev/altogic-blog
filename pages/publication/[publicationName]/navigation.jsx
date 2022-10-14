@@ -15,19 +15,25 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import Input from '@/components/Input';
 import { useRouter } from 'next/router';
+import _ from 'lodash';
 
 export default function PublicationsNavigation() {
   const router = useRouter();
   const dispatch = useDispatch();
 
+  const { publicationName } = router.query;
+
   const [enabled, setEnabled] = useState(false);
   const [navigationReq, setNavigationReq] = useState([]);
 
-  const { publicationName } = router.query;
-  const publication = useSelector((state) => state.publication.publication);
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   const publicationNavigation = useSelector(
     (state) => state.publication.publicationNavigation
   );
+  const user = useSelector((state) => state.auth.user);
+
   const schema = yup.object().shape({
     title: yup.string().required('Title is required'),
     externalLink: yup.string().url('Url must be valid'),
@@ -85,11 +91,6 @@ export default function PublicationsNavigation() {
       setNavigationReq((prev) => [...prev, req]);
     });
   };
-  useEffect(() => {
-    if (publicationName) {
-      dispatch(publicationActions.getPublicationRequest(publicationName));
-    }
-  }, [publicationName]);
 
   const deleteExternalLink = () => {
     const list = [...navigationList];
@@ -101,6 +102,23 @@ export default function PublicationsNavigation() {
     resetField('title');
     setNavigationList(list);
     setEnabled(false);
+  };
+
+  const checkAuthorization = (publication) => {
+    const sessionUser = _.find(
+      publication.users,
+      (person) => person.user === user._id
+    );
+    if (
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !==
+        _.lowerCase(publication.publicationName) ||
+      _.isNil(publication) ||
+      !_.includes(user.publications, publication._id)
+    ) {
+      router.push('/');
+    }
   };
 
   useEffect(() => {
@@ -123,6 +141,7 @@ export default function PublicationsNavigation() {
 
   useEffect(() => {
     if (publication) {
+      checkAuthorization(publication);
       dispatch(topicsActions.getPublicationsTopicsRequest(publication?._id));
       dispatch(storyActions.getPublicationsStoriesRequest(publication?._id));
       dispatch(

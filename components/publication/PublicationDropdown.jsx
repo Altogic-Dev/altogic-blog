@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Transition, Menu } from '@headlessui/react';
+import _ from 'lodash';
 import {
   CogIcon,
   ChartBarIcon,
@@ -10,9 +11,18 @@ import {
   DocumentDuplicateIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 export default function PublicationDropdown({ publication, className }) {
   const router = useRouter();
+
+  const user = useSelector((state) => state.auth.user);
+
+  const pubUser = _.find(
+    publication.users,
+    (person) => person.user === user._id
+  );
+
   return (
     <Transition
       as={Fragment}
@@ -83,51 +93,61 @@ export default function PublicationDropdown({ publication, className }) {
                 Newsletter
               </a>
             </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                router.push(`/publication/${publication.name}/navigation`)
-              }
-            >
-              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <svg
-                  className="w-4 h-4 text-slate-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                  />
-                </svg>
-                Navigation
-              </span>
-            </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                router.push(`/publication/${publication.name}/feature`)
-              }
-            >
-              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <DocumentDuplicateIcon className="w-4 h-4 text-slate-500" />
-                Features Pages
-              </span>
-            </Menu.Item>
-            <Menu.Item
-              onClick={() =>
-                router.push(
-                  `/publication/${publication.name}/publications-settings`
-                )
-              }
-            >
-              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <CogIcon className="w-4 h-4 text-slate-500" />
-                Home and Settings
-              </span>
-            </Menu.Item>
+            {['admin', 'editor'].includes(pubUser?.role) && (
+              <Menu.Item
+                onClick={() =>
+                  router.push(
+                    `/publication/${publication.publicationName}/navigation`
+                  )
+                }
+              >
+                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                  <svg
+                    className="w-4 h-4 text-slate-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                    />
+                  </svg>
+                  Navigation
+                </span>
+              </Menu.Item>
+            )}
+            {['admin', 'editor'].includes(pubUser?.role) && (
+              <Menu.Item
+                onClick={() =>
+                  router.push(
+                    `/publication/${publication.publicationName}/feature`
+                  )
+                }
+              >
+                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                  <DocumentDuplicateIcon className="w-4 h-4 text-slate-500" />
+                  Features Pages
+                </span>
+              </Menu.Item>
+            )}
+            {['admin'].includes(pubUser?.role) && (
+              <Menu.Item
+                onClick={() =>
+                  router.push(
+                    `/publication/${publication.publicationName}/publications-settings`
+                  )
+                }
+              >
+                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                  <CogIcon className="w-4 h-4 text-slate-500" />
+                  Home and Settings
+                </span>
+              </Menu.Item>
+            )}
           </div>
         </div>
       </Menu.Items>

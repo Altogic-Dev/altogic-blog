@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import Input from '@/components/Input';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useDispatch, useSelector } from 'react-redux';
+import { FileUploader } from 'react-drag-drop-files';
 import { uploadFile } from '@/redux/file/fileSlice';
 import Button from '@/components/basic/button';
 import { useRouter } from 'next/router';
@@ -12,12 +13,13 @@ import { useState, useEffect } from 'react';
 import AddFeatureSection from '@/components/publication/AddFeatureSection';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
-import { FileUploader } from 'react-drag-drop-files';
+import _ from 'lodash';
 
-const fileTypes = ['JPG', 'PNG', 'WEBP', 'JPEG','SVG','GIF'];
+const fileTypes = ['JPG', 'PNG', 'WEBP', 'JPEG', 'SVG', 'GIF'];
 
 export default function PublicationsNewFeature() {
   const router = useRouter();
+  const { publicationName } = router.query;
   const dispatch = useDispatch();
   const [file, setFile] = useState();
   const [featurePageRequest, setFeaturePageRequest] = useState();
@@ -29,10 +31,13 @@ export default function PublicationsNewFeature() {
     logo: yup.string().url(),
   });
 
-  const publication = useSelector((state) => state.publication.publication);
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   const featStories = useSelector((state) => state.story.featureStories);
   const featSections = useSelector((state) => state.publication.sections);
   const logo = useSelector((state) => state.file.fileLink);
+  const user = useSelector((state) => state.auth.user);
 
   const {
     handleSubmit,
@@ -42,8 +47,26 @@ export default function PublicationsNewFeature() {
     resolver: yupResolver(formSchema),
   });
 
+  const checkAuthorization = (publication) => {
+    const sessionUser = _.find(
+      publication.users,
+      (person) => person.user === user._id
+    );
+    if (
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !==
+        _.lowerCase(publication.publicationName) ||
+      _.isNil(publication) ||
+      !_.includes(user.publications, publication._id)
+    ) {
+      router.push('/');
+    }
+  };
+
   useEffect(() => {
     if (publication) {
+      checkAuthorization(publication);
       dispatch(topicsActions.getPublicationsTopicsRequest(publication?._id));
     }
   }, [publication]);
@@ -118,7 +141,7 @@ export default function PublicationsNewFeature() {
           logo,
         })
       );
-      router.push(`/publication/${publication.name}/feature`);
+      router.push(`/publication/${publication.publicationName}/feature`);
     }
   }, [logo]);
 
