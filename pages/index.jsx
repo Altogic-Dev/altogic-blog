@@ -82,9 +82,10 @@ export default function Home() {
   );
 
   const getFollowingUsers = () => {
+    console.log(userFromStorage)
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
-        userId: _.get(user, '_id'),
+        userId: _.get(userFromStorage, '_id'),
         page: followingStoriesPage,
       })
     );
@@ -146,6 +147,7 @@ export default function Home() {
     }
   }, [isLoading, followingStories, recommendedStories]);
 
+  console.log(storiesYouFollow)
   return (
     <div>
       <Layout loading={loading}>

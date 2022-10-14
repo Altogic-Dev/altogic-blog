@@ -27,7 +27,7 @@ export default function AuthRedirect(props) {
   }
   useEffect(() => {
     checkProps();
-    if (router.query.status === 401) {
+    if (router.query.status === '401') {
       alert(router.query.error);
       router.push('/login');
     } else if (router.query.action === 'reset-pwd') {
