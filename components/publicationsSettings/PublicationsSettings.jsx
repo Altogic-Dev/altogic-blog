@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
@@ -11,10 +11,11 @@ import PublicationsSettingsHome from './PublicationsSettingsHome';
 
 export default function PublicationsSettings({ isCreate }) {
   const router = useRouter();
-  const { isHome } = router.query;
+  const { isHome, publicationName } = router.query;
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
+  const user = useSelector((state) => state.auth.user);
 
   const [isInfo, setIsInfo] = useState(!isHome);
   const [doHomeSave, setDoHomeSave] = useState(false);
@@ -31,6 +32,30 @@ export default function PublicationsSettings({ isCreate }) {
     if (isInfo) setDoInfoClear(true);
     setDoHomeClear(true);
   };
+
+  const checkAuthorization = (publication) => {
+    const sessionUser = _.find(
+      publication.users,
+      (person) => person.user === user._id
+    );
+    console.log({ sessionUser });
+    if (
+      _.isNil(sessionUser) ||
+      !['admin'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !==
+        _.lowerCase(publication.publicationName) ||
+      _.isNil(publication) ||
+      !_.includes(user.publications, publication._id)
+    ) {
+      router.push('/');
+    }
+  };
+
+  useEffect(() => {
+    if (!isCreate && publication) {
+      checkAuthorization(publication);
+    }
+  }, [publication]);
 
   return (
     <div>

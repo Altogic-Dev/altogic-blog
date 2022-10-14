@@ -27,11 +27,12 @@ export default function HeaderMenu() {
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.auth.user);
   const searchResults = useSelector((state) => state.general.searchPreview);
-  const selectedPublication = useSelector(
+  const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
   );
   const loading = useSelector((state) => state.general.isLoading);
   const [user, setUser] = useState();
+  const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hideMenu, setHideMenu] = useState(false);
   useEffect(() => {
@@ -39,6 +40,11 @@ export default function HeaderMenu() {
       setUser(sessionUser);
     }
   }, [sessionUser]);
+  useEffect(() => {
+    if (selectedPublicationState) {
+      setSelectedPublication(selectedPublicationState);
+    }
+  }, [selectedPublicationState]);
   const logout = () => {
     dispatch(authActions.logoutRequest());
   };

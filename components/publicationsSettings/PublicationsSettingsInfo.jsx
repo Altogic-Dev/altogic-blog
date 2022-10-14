@@ -169,9 +169,10 @@ export default function PublicationSettingsInfo({
         dispatch(
           publicationActions.createPublicationRequest({
             publication: createdPublication,
-            onSuccess: router.push(
-              `/publication/${publicationname}/publications-settings?isHome=true`
-            ),
+            onSuccess: () =>
+              router.push(
+                `/publication/${publicationname}/publications-settings?isHome=true`
+              ),
           })
         );
       } else {
