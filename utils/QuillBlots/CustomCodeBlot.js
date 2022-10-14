@@ -4,7 +4,6 @@ import { BlockEmbed } from './Blots';
 export default class CustomCode extends BlockEmbed {
   static create(value) {
     const { lang, content } = value;
-    console.log(value);
     const node = super.create(value);
     const code = document.createElement('code');
     code.setAttribute('class', lang);

@@ -29,9 +29,6 @@ const TopicsService = {
       .get();
   },
 
-  isTopicExist(topic) {
-    return endpoint.get('/topic/isExist', { topicName: topic });
-  },
   insertTopics(topics) {
     return endpoint.post('/topic', topics);
   },
@@ -39,16 +36,10 @@ const TopicsService = {
     return endpoint.delete(`/topic_writers/${storyId}`);
   },
   insertTopicWriters(topics) {
-    return endpoint.put('/topic_writers', topics);
+    return endpoint.post('/topic_writers', topics);
   },
   getTopicAnalytics(topicName) {
     return endpoint.get('/topic_writes/analytics', { topicName });
-  },
-  isTopicWriterExist(topicName) {
-    return endpoint.get('/topic_writes/isTopicWriterExist', { topicName });
-  },
-  increaseWriterCounts(topics) {
-    return endpoint.post('/topic/increaseWriterCounts', { topics });
   },
   getPublicationsTopics(publicationId) {
     return db
@@ -62,6 +53,9 @@ const TopicsService = {
       .filter(`publication == '${publicationId}' && topic == '${topicName}'`)
       .lookup({ field: 'story' })
       .get();
+  },
+  searchTopics(topic) {
+    return endpoint.get('/topic/search', { topic });
   },
 };
 
