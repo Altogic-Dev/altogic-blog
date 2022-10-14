@@ -1,52 +1,35 @@
-import { call, takeEvery, put, all } from 'redux-saga/effects';
-import _ from 'lodash';
+import { call, takeEvery, put, all, select } from 'redux-saga/effects';
 import SubscribeConnectionService from '@/services/subscribeConnection';
 import { subscribeConnectionActions } from './subscribeConnectionSlice';
 
-function* unsubscribeSaga({ payload: { userId, subscribingUserId } }) {
+function* unsubscribeSaga({ payload: subscribingUserId }) {
   try {
+    const session = yield select((state) => state.auth.user);
     const { errors } = yield call(
       SubscribeConnectionService.unsubscribe,
-      userId,
+      session._id,
       subscribingUserId
     );
     if (errors) throw errors;
     yield put(subscribeConnectionActions.unSubscribeSuccess());
   } catch (e) {
-    console.error({ e });
+    yield put(subscribeConnectionActions.unSubscribeFailure());
   }
 }
 
-function* subscribeSaga({ payload: { userId, userEmail, subscribingUserId } }) {
+function* subscribeSaga({ payload: subscribingUserId }) {
   try {
+    const session = yield select((state) => state.auth.user);
     const { errors } = yield call(
       SubscribeConnectionService.subscribe,
-      userId,
-      userEmail,
-      subscribingUserId
+      subscribingUserId,
+      session._id,
+      session.email
     );
     if (errors) throw errors;
     yield put(subscribeConnectionActions.subscribeSuccess());
   } catch (e) {
-    console.error({ e });
-  }
-}
-
-function* getSubscribeSaga({ payload: { userId, subscribingUserId } }) {
-  try {
-    const { data, errors } = yield call(
-      SubscribeConnectionService.getSubscribingUser,
-      userId,
-      subscribingUserId
-    );
-    if (errors) throw errors;
-    if (_.isEmpty(data)) {
-      yield put(subscribeConnectionActions.getSubscribeSuccess(null));
-    } else if (_.isArray(data)) {
-      yield put(subscribeConnectionActions.getSubscribeSuccess(_.first(data)));
-    }
-  } catch (e) {
-    console.error({ e });
+    yield put(subscribeConnectionActions.subscribeFailure());
   }
 }
 
@@ -57,9 +40,5 @@ export default function* rootSaga() {
       unsubscribeSaga
     ),
     takeEvery(subscribeConnectionActions.subscribeRequest.type, subscribeSaga),
-    takeEvery(
-      subscribeConnectionActions.getSubscribeRequest.type,
-      getSubscribeSaga
-    ),
   ]);
 }

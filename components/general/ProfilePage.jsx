@@ -309,10 +309,11 @@ export default function ProfilePage({ About, Home, List }) {
                       followingCount={_.get(profileUser, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfile && (
+                    {!isMyProfile && !isSubscribed && (
                       <AboutSubscribeCard
+                        profileId={_.get(profileUser, '_id')}
                         name={_.get(profileUser, 'name')}
-                        mailAddress={_.get(profileUser, 'mailAddress')}
+                        mailAddress={_.get(sessionUser, 'email')}
                       />
                     )}
                   </Tab.Panel>
