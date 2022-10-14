@@ -5,6 +5,7 @@ import { CheckCircleIcon } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
 import { useRouter } from 'next/router';
+import Button from '@/components/basic/button';
 import dynamic from 'next/dynamic';
 import Layout from '../layouts/Layout';
 
@@ -41,16 +42,20 @@ export default function WriteAStory() {
   }, [newStory]);
 
   useEffect(() => {
+    if (_.get(newStory,"_id") && _.get(newStory,"content") === content){
+      setIsCreated(true);
+    };
+  }, [newStory]);
+
+  useEffect(() => {
     if (id) {
       dispatch(storyActions.getStoryRequest(id));
+      setIsCreated(true);
     } else {
       dispatch(storyActions.clearStory());
     }
   }, [id]);
 
-  useEffect(() => {
-    if (newStory) setIsCreated(true);
-  }, [newStory]);
   useEffect(() => {
     if (content) {
       const story = {
@@ -68,8 +73,7 @@ export default function WriteAStory() {
       };
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
-        setIsCreated(true);
-      } else {
+      } else if (!_.isNil(newStory)) {
         dispatch(
           storyActions.updateStoryRequest({
             story: {
@@ -83,6 +87,7 @@ export default function WriteAStory() {
     setMinRead(Math.ceil(content.split(' ').length / 200));
   }, [content, inpTitle]);
 
+  console.log(newStory)
   return (
     <Layout>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
@@ -96,8 +101,7 @@ export default function WriteAStory() {
           <p className="text-slate-500">{minRead} min read</p>
 
           {isCreated && (
-            <button
-              type="button"
+            <Button
               onClick={() => {
                 dispatch(
                   storyActions.updateStoryRequest({
@@ -119,7 +123,7 @@ export default function WriteAStory() {
             >
               <CheckCircleIcon className="w-5 h-5" />
               Publish
-            </button>
+            </Button>
           )}
         </div>
         <form className="w-full">
