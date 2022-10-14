@@ -15,7 +15,6 @@ const initialState = {
   isLoading: false,
   followingUserLoading: false,
   followingStoriesPage: 1,
-  
 };
 
 // Actual Slice
@@ -25,8 +24,6 @@ export const followerConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     unfollowRequest(state) {
-    
-
       state.followingUserLoading = true;
     },
     unfollowSuccess(state, action) {
@@ -103,6 +100,14 @@ export const followerConnectionSlice = createSlice({
       state.isLoading = false;
       state.userFollowings = [...state.userFollowings, ...action.payload.data];
       state.userFollowings.page = action.payload.page;
+      const isFollowingsFollowings = _.reject(action.payload.data, (person) =>
+        _.isNil(person.isFollowing)
+      );
+      const isFollowingFollowingIds = _.map(
+        isFollowingsFollowings,
+        'followingUser'
+      );
+      state.isFollowings = [...state.isFollowings, ...isFollowingFollowingIds];
     },
 
     setIsFollowing(state, action) {
