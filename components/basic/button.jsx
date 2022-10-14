@@ -31,7 +31,12 @@ export default function Button({
       {...props}
     >
       {loading && (
-        <ClipLoader color="#fff" loading={loading} size={20} css={override} />
+        <ClipLoader
+          color={primaryColor ? '#000' : '#fff'}
+          loading={loading}
+          size={20}
+          css={override}
+        />
       )}
       {children}
     </button>
