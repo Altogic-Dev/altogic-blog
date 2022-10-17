@@ -6,6 +6,7 @@ import {
   LinkedinShareButton,
   TwitterShareButton,
 } from 'react-share';
+import { toast } from 'react-toastify';
 import Button from './basic/button';
 
 function ShareButtons({ customLink }) {
@@ -19,6 +20,7 @@ function ShareButtons({ customLink }) {
   }, []);
 
   const copyToClipboard = () => {
+    toast.success('Copied to clipboard');
     navigator.clipboard.writeText(shareUrl);
   };
 

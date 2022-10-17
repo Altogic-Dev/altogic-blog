@@ -98,7 +98,14 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     quillInstance.setContents([{ insert: '\n' }]);
     sendNotification('reply');
   };
+
   const handleComment = (e, reply, index) => {
+    setCommentBoxes(
+      commentBoxes.map((item, i) => {
+        if (index === i) return false;
+        return item;
+      })
+    );
     e.preventDefault();
     const comment = {
       reply: reply._id,
@@ -117,7 +124,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       return temp;
     });
     sendNotification('comment');
-
     getComments(reply, index);
   };
 
@@ -131,7 +137,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
         setQuillInstance(quill);
         Quill.register(BoldBlot);
         Quill.register(ItalicBlot);
-        console.log(quill);
       }, 1);
     }
   }, [slideOvers]);
@@ -179,7 +184,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                     <div>
                       <div className="flex items-start justify-between pb-3">
                         <Dialog.Title className="text-slate-800 text-lg font-medium tracking-sm">
-                          Write a responses
+                          Write a comment
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <Button
@@ -330,7 +335,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     });
                                   }}
                                 >
-                                  {commentBoxes[index] ? 'Hide' : 'Reply'}
+                                  {_.nth(commentBoxes, index)
+                                    ? 'Hide'
+                                    : 'Comment'}
                                 </Button>
                               </div>
 
@@ -365,12 +372,12 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     </p>
                                   </div>
                                 ))}
-                              {commentBoxes[index] && (
+                              {_.nth(commentBoxes, index) && (
                                 <form
                                   onSubmit={(e) =>
                                     handleComment(e, reply, index)
                                   }
-                                  className="flex flex-col items-end"
+                                  className="flex flex-col items-center"
                                 >
                                   <textarea
                                     className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
@@ -385,9 +392,11 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     value={commentText[index]}
                                   />
 
-                                  <Button type="submit" extraClasses="mt-5">
-                                    Comment
-                                  </Button>
+                                  <div className="w-full justify-end flex ">
+                                    <Button type="submit" extraClasses="mt-5">
+                                      Comment
+                                    </Button>
+                                  </div>
                                 </form>
                               )}
                             </li>

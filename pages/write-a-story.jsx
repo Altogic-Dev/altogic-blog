@@ -87,7 +87,6 @@ export default function WriteAStory() {
     setMinRead(Math.ceil(content.split(' ').length / 200));
   }, [content, inpTitle]);
 
-  console.log(newStory)
   return (
     <Layout>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">

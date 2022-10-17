@@ -24,7 +24,6 @@ export default function Sidebar({
   popularStories,
   mobilePopularStories,
   profile,
-  toggleFollow,
   following,
   relatedTopics,
   publicationProfile,
@@ -39,6 +38,7 @@ export default function Sidebar({
   publicationsMatch,
   followLoading,
   followingStoriesPage,
+  followingTopics,
 }) {
   return (
     <>
@@ -75,8 +75,12 @@ export default function Sidebar({
           Tag={Tag}
         />
       )}
-      {(popularTopics || relatedTopics) && (
-        <PopularTopics isRelatedTopics={relatedTopics} />
+      {(popularTopics || relatedTopics || followingTopics) && (
+        <PopularTopics
+          isFollowingTopics={followingTopics}
+          isPopularTopics={popularTopics}
+          isRelatedTopics={relatedTopics}
+        />
       )}
       {popularStories && (
         <PopularStories

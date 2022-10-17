@@ -98,7 +98,8 @@ export default function Home() {
   }, [followingStoriesPage, userFromStorage]);
 
   useEffect(() => {
-    getFollowingStories(followingListPage);
+    if (!followingStories || followingListPage > 1)
+      getFollowingStories(followingListPage);
   }, [followingListPage]);
 
   useEffect(() => {

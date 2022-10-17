@@ -241,12 +241,12 @@ export function* updateStoryLikeCountSaga(isIncrease) {
 
 function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
   try {
+
     let userID = userId;
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
     const info = yield select((state) => state.story.userStoriesInfo);
-
     if (_.isNil(info) || page <= info.totalPages) {
       const { data, errors } = yield call(
         StoryService.getUserStories,

@@ -3,7 +3,6 @@ import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import _ from 'lodash';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
@@ -16,10 +15,13 @@ import Button from '@/components/basic/button';
 import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
 import Layout from '@/layouts/Layout';
+import { DateTime } from 'luxon';
 import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import usePrevious from '@/hooks/usePrevious';
+import { ClipLoader } from 'react-spinners';
+import { toast } from 'react-toastify';
 import UserCard from './UserCard';
 
 export default function ProfilePage({ About, Home, List }) {
@@ -60,6 +62,7 @@ export default function ProfilePage({ About, Home, List }) {
   const [isMyProfile, setIsMyProfile] = useState(false);
   const previousPage = usePrevious(bookmarkListPage);
   const copyToClipboard = () => {
+    toast.success('Copied to clipboard');
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
     navigator.clipboard.writeText(profileUrl);
@@ -180,7 +183,9 @@ export default function ProfilePage({ About, Home, List }) {
             <div className="lg:py-10 lg:px-8">
               <div className="flex items-center justify-between gap-4 mb-8 md:mb-14">
                 <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                  {profileUser?.name}&apos;s {tabNames[selectedIndex]}
+                  {profileUser
+                    ? `${`${profileUser.name}\``} ${tabNames[selectedIndex]}`
+                    :<ClipLoader/>}
                 </h1>
 
                 <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
@@ -211,20 +216,12 @@ export default function ProfilePage({ About, Home, List }) {
                     >
                       <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
                         <Menu.Item>
-                          <button
-                            type="button"
+                          <Button
                             className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             onClick={copyToClipboard}
                           >
                             Copy link to profile
-                          </button>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Link href="/settings">
-                            <a className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
-                              Settings
-                            </a>
-                          </Link>
+                          </Button>
                         </Menu.Item>
                       </Menu.Items>
                     </Transition>
@@ -303,7 +300,9 @@ export default function ProfilePage({ About, Home, List }) {
                       userFollowings={userFollowings}
                       userId={_.get(profileUser, '_id')}
                       about={_.get(profileUser, 'about')}
-                      signUpAt={_.get(profileUser, 'signUpAt')}
+                      signUpAt={
+                        _.get(profileUser, 'signUpAt') ?? DateTime.now()
+                      }
                       topWriterTopics={_.get(profileUser, 'topWriterTopics')}
                       followerCount={_.get(profileUser, 'followerCount')}
                       followingCount={_.get(profileUser, 'followingCount')}
@@ -328,6 +327,7 @@ export default function ProfilePage({ About, Home, List }) {
                   count: _.get(profileUser, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
+                followingTopics={isMyProfile}
                 profile={profileUser}
                 followLoading={followLoading}
                 isFollowing={isFollowing}
@@ -401,19 +401,17 @@ export default function ProfilePage({ About, Home, List }) {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
+                    <Button
                       onClick={() => setBlockModal(false)}
                       className="inline-flex items-center justify-center px-[14px] py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
                       Cancel
-                    </button>
-                    <button
-                      type="button"
+                    </Button>
+                    <Button
                       className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
                       Block
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

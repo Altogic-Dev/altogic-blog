@@ -27,7 +27,7 @@ export default function Button({
           ? props.className
           : `${extraClasses} ${primaryColor ? whiteRounded : purpleRounded}`
       }
-      type={type === 'button' ? 'button' : 'submit'}
+      type={type === 'submit' ? 'submit' : 'button'}
       {...props}
     >
       {loading && (

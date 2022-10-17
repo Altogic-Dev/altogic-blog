@@ -4,7 +4,6 @@ import {
   HomeIcon,
   BookmarkIcon,
   BookOpenIcon,
-  CogIcon,
   PencilIcon,
   SearchIcon,
 } from '@heroicons/react/outline';
@@ -107,19 +106,23 @@ export default function HeaderMenu() {
                 Home
               </a>
             </Link>
-
-            <Link href={`/${user?.username}/lists`}>
-              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-                <BookmarkIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
-                Lists
-              </a>
-            </Link>
-            <Link href="/my-stories">
-              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-                <BookOpenIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
-                Stories
-              </a>
-            </Link>
+            {user && (
+              <Link href={`/${user?.username}/lists`}>
+                <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                  <BookmarkIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
+                  Lists
+                </a>
+              </Link>
+            )}
+            {user && (
+              <Link href="/my-stories">
+                <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                  <BookOpenIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
+                  Stories
+                </a>
+              </Link>
+            )}
+            
           </Popover.Group>
           <div
             className={`${
@@ -160,11 +163,6 @@ export default function HeaderMenu() {
                   mobileNotifications={mobileNotifications}
                   setMobileNotifications={setMobileNotifications}
                 />
-                <Link href="/settings">
-                  <a className="hidden lg:inline-flex items-center justify-center w-10 h-10 p-[10px] rounded-full text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                    <CogIcon className="w-5 h-5" />
-                  </a>
-                </Link>
                 <Menu
                   as="div"
                   className="relative hidden lg:inline-flex items-center"

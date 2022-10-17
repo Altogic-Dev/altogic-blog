@@ -145,10 +145,13 @@ export default function ListDetail() {
   }, [bookmarkListSlug]);
 
   useEffect(() => {
+    if (!isMyProfileState && bookmarkList?.isPrivate) {
+      router.push("/")
+    }
     if (bookmarks) {
       setStories(bookmarks.map((bookmark) => bookmark.story));
     }
-  }, [bookmarks]);
+  }, [bookmarks,profileUser]);
 
   useEffect(() => {
     if (bookmarkListSlug) {
@@ -235,9 +238,11 @@ export default function ListDetail() {
                     </div>
                   </div>
                 </div>
-                <ul className="flex items-center">
-                  <ShareButtons />
-                </ul>
+                {!bookmarkList?.isPrivate && (
+                  <ul className="flex items-center">
+                    <ShareButtons />
+                  </ul>
+                )}
               </div>
               <div className="flex items-center gap-8">
                 <h1 className="text-slate-700 text-3xl font-semibold tracking-md">

@@ -8,7 +8,7 @@ import ListObserver from '@/components/ListObserver';
 import PostCard from '../PostCard';
 import DeleteStoryModal from '../DeleteStoryModal';
 
-function ProfilePageHome({ userId, selectedTab }) {
+function ProfilePageHome({ userId }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -29,6 +29,7 @@ function ProfilePageHome({ userId, selectedTab }) {
   };
 
   const getUserStoriesRequest = () => {
+
     dispatch(
       storyActions.getUserStoriesRequest({
         userId,
@@ -39,7 +40,6 @@ function ProfilePageHome({ userId, selectedTab }) {
   };
 
   useEffect(() => {
-    console.log(userId, selectedTab);
     if (
       userId &&
       !router.asPath.includes('lists') &&

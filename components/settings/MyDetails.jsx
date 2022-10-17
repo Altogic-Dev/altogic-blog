@@ -205,7 +205,6 @@ export default function MyDetails({ user }) {
                 {file && (
                   <Button
                     onClick={deleteProfilePicture}
-                    type="button"
                     className="text-slate-600 text-sm tracking-sm"
                   >
                     Delete
@@ -213,7 +212,6 @@ export default function MyDetails({ user }) {
                 )}
                 <Button
                   onClick={uploadPhotoHandler}
-                  type="button"
                   className="text-purple-700 text-sm tracking-sm"
                 >
                   Update
