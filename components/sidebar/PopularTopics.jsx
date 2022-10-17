@@ -32,8 +32,6 @@ export default function PopularTopics({
     dispatch(topicsActions.getRelatedTopicsRequest(tag));
   };
 
-  console.log(followingTopics);
-
   useEffect(() => {
     if (isPopularTopics) {
       getPopularTopics();

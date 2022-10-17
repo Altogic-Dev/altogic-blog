@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
@@ -25,12 +25,40 @@ export default function MyStories({ publishedPage, draftPage }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user, setUser] = useState();
   const [deletedStory, setDeletedStory] = useState(null);
+  const [page, setPage] = useState(1);
+
+  const userDraftStories = useSelector((state) => state.story.userDraftStories);
+
+  const DRAFT_PAGE_LIMIT = 6;
 
   const copyToClipboard = () => {
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${_.get(user, 'username')}`;
     navigator.clipboard.writeText(profileUrl);
   };
+
+  const handleEndOfList = () => {
+    if (
+      !_.isNil(userDraftStories) &&
+      _.size(userDraftStories) >= DRAFT_PAGE_LIMIT
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const getUserDraftStories = useCallback(() => {
+    dispatch(
+      storyActions.getUserDraftStoriesRequest({
+        page,
+        limit: DRAFT_PAGE_LIMIT,
+        isPublishedFilter: false,
+      })
+    );
+  }, [page]);
+
+  useEffect(() => {
+    if (page > 1 || _.isNil(userDraftStories)) getUserDraftStories();
+  }, [page]);
 
   useEffect(() => {
     setUser(sessionUser);
@@ -235,7 +263,11 @@ export default function MyStories({ publishedPage, draftPage }) {
                     <MyStoriesPublished setDeletedStory={setDeletedStory} />
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <MyStoriesDraft setDeletedStory={setDeletedStory} />
+                    <MyStoriesDraft
+                      setDeletedStory={setDeletedStory}
+                      handleEndOfList={handleEndOfList}
+                      userStories={userDraftStories}
+                    />
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>

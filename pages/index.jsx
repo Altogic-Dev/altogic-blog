@@ -218,6 +218,7 @@ export default function Home() {
                                     followerConnectionActions.unfollowRequest({
                                       userId: user._id,
                                       followingUserId: story.user,
+                                      notUpdate: true,
                                     })
                                   ),
                                 report: () =>

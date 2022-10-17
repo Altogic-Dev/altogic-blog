@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
+import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
@@ -194,7 +195,14 @@ export const storySlice = createSlice({
     },
     getUserDraftStoriesSuccess(state, action) {
       state.isLoading = false;
-      state.userDraftStories = action.payload.data;
+      if (_.isArray(state.userDraftStories)) {
+        state.userDraftStories = [
+          ...state.userDraftStories,
+          ...action.payload.data,
+        ];
+      } else {
+        state.userDraftStories = action.payload.data;
+      }
       state.userDraftStoriesInfo = action.payload.info;
     },
 
@@ -222,6 +230,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
+      toast.success('Story updated successfully');
       state.isLoading = false;
       state.story = {
         ...state.story,
@@ -233,6 +242,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStoryFieldSuccess(state, action) {
+      toast.success('Story updated successfully');
       state.isLoading = false;
       state.story = action.payload;
     },
@@ -308,6 +318,10 @@ export const storySlice = createSlice({
     visitStoryRequest() {},
     visitStorySuccess() {},
     visitStoryFailure() {},
+
+    removeUnfollowingStories(state, action) {
+      state.followingStories = action.payload;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
-import { DuplicateIcon } from '@heroicons/react/outline';
 import Category from '@/components/Category';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
@@ -10,6 +9,8 @@ import { storyActions } from '@/redux/story/storySlice';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
 import DeleteStoryModal from '@/components/DeleteStoryModal';
+import { topicsActions } from '@/redux/topics/topicsSlice';
+import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 
 export default function WriteAStorySettings() {
   const router = useRouter();
@@ -17,6 +18,8 @@ export default function WriteAStorySettings() {
 
   const story = useSelector((state) => state.story.story);
   const user = useSelector((state) => state.auth.user);
+  const foundTopics = useSelector((state) => state.topics.searchTopics);
+  const topicLoading = useSelector((state) => state.topics.isLoading);
 
   const [userState, setUserState] = useState(null);
   const [basePath, setBasePath] = useState();
@@ -29,19 +32,40 @@ export default function WriteAStorySettings() {
 
   const [radioCustomizeLink, setRadioCustomizeLink] = useState('automatic');
   const [radiolicense, setRadioLicense] = useState('all');
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const { id } = router.query;
   const storyLink = `${basePath}/story/${_.get(story, 'storySlug')}`;
 
   const [deleteStoryModal, setDeleteStoryModal] = useState(false);
 
+  const debouncedSearch = useCallback(
+    _.debounce((category) => {
+      dispatch(topicsActions.searchTopicsRequest(category));
+      setIsSearchOpen(true);
+    }, 1000),
+    []
+  );
+
   const handleInsert = (e) => {
     if (
-      e.key === 'Enter' &&
       _.size(inpCategoryNames) < 5 &&
-      !_.includes(inpCategoryNames, inpCategory)
+      !_.includes(inpCategoryNames, inpCategory) &&
+      !foundTopics.some((topic) => topic.name === inpCategory)
     ) {
-      setInpCategoryNames((prev) => [inpCategory, ...prev]);
+      if (e.key === 'Enter') {
+        setInpCategoryNames((prev) => [inpCategory, ...prev]);
+        setInpCategory('');
+        setIsSearchOpen(false);
+      } else {
+        debouncedSearch(inpCategory);
+      }
+    }
+  };
+  const handleAddTopic = ({ name }) => {
+    if (!_.includes(inpCategoryNames, name)) {
+      setIsSearchOpen(false);
+      setInpCategoryNames((prev) => [name, ...prev]);
       setInpCategory('');
     }
   };
@@ -56,15 +80,6 @@ export default function WriteAStorySettings() {
 
   const handleChangeLicense = (e) => {
     setRadioLicense(e.target.value);
-
-    dispatch(
-      storyActions.updateStoryFieldRequest({
-        story,
-        newStoryField: {
-          license: e.target.value,
-        },
-      })
-    );
   };
 
   const fillInputs = useCallback(() => {
@@ -76,6 +91,15 @@ export default function WriteAStorySettings() {
       setRadioLicense(story.license);
     }
   }, [story]);
+
+  useEffect(() => {
+    document.body.addEventListener('click', () => {
+      setIsSearchOpen(false);
+    });
+    return () => {
+      document.body.removeEventListener('click', () => {});
+    };
+  }, []);
 
   useEffect(() => {
     setBasePath(window.location.origin);
@@ -100,11 +124,10 @@ export default function WriteAStorySettings() {
           name="description"
           content="Altogic Medium Blog App Write A Story Settings"
         />
-        
       </Head>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-10 mb-20">
-          <div className="xl:grid xl:grid-cols-[125px,1fr] gap-24">
+          <div className="xl:grid xl:grid-cols-[175px,1fr] gap-24">
             <ul className="hidden xl:block sticky bottom-0">
               <li>
                 <a
@@ -179,7 +202,7 @@ export default function WriteAStorySettings() {
                       authorUrl={`/${_.get(userState, 'username')}`}
                       authorName={_.get(userState, 'username')}
                       authorImage={_.get(userState, 'profilePicture')}
-                      storyUrl={`/story/${_.get(userState, 'storySlug')}`}
+                      storyUrl={`/story/${_.get(story, 'storySlug')}`}
                       timeAgo={DateTime.fromISO(
                         _.get(story, 'createdAt')
                       ).toRelative()}
@@ -189,6 +212,7 @@ export default function WriteAStorySettings() {
                       badgeName={_.first(_.get(story, 'categoryNames'))}
                       min={_.get(story, 'estimatedReadingTime')}
                       images={_.first(_.get(story, 'storyImages'))}
+                      showImages={!_.isEmpty(_.get(story, 'storyImages'))}
                     />
                   </div>
                 </div>
@@ -200,7 +224,7 @@ export default function WriteAStorySettings() {
                   <div className="flex gap-6">
                     <img
                       className="w-20 h-20 mb-3 rounded-full"
-                      src="https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src={_.get(userState, 'profilePicture')}
                       alt=""
                     />
                     <div className="tracking-sm">
@@ -237,20 +261,34 @@ export default function WriteAStorySettings() {
                     <div className="flex flex-col md:flex-row items-center gap-4">
                       <div className="flex flex-wrap items-center flex-1 w-full md:w-auto">
                         <div className="flex items-center">
-                          <input
-                            className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
-                            placeholder="Category Name"
-                            value={inpCategory}
-                            onChange={(e) => setInpCategory(e.target.value)}
-                            disabled={_.size(story?.categoryNames) >= 5}
-                            onKeyDown={handleInsert}
-                          />
-
-                          {_.map(inpCategoryNames, (categoryName) => (
+                          <div className="relative">
+                            <input
+                              className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                              placeholder="Category Name"
+                              value={inpCategory}
+                              onChange={(e) =>
+                                setInpCategory(_.startCase(e.target.value))
+                              }
+                              disabled={_.size(story?.categoryNames) >= 5}
+                              onKeyDown={handleInsert}
+                            />
+                            {!_.isEmpty(foundTopics) &&
+                              !topicLoading &&
+                              isSearchOpen && (
+                                <PublicationSettingsSuggestions
+                                  name="Topics"
+                                  suggestions={foundTopics}
+                                  onClick={(e, topicId, topic) =>
+                                    handleAddTopic(topic)
+                                  }
+                                />
+                              )}
+                          </div>
+                          {_.map(inpCategoryNames, (category) => (
                             <Category
-                              key={categoryName}
-                              tag={categoryName}
-                              onClick={() => handleDelete(categoryName)}
+                              key={category}
+                              tag={category}
+                              onClick={() => handleDelete(category)}
                               className="ml-2 text-xs"
                             />
                           ))}
@@ -295,7 +333,8 @@ export default function WriteAStorySettings() {
                       <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
                         Title preview:{' '}
                         <span className="text-slate-700 text-base font-light">
-                          Title | by İsmail Erüstün | Medium
+                          {_.get(story, 'seoTitle') || _.get(story, 'title')} |
+                          by {_.get(story, 'user.name')} | Opinate
                         </span>
                       </span>
                       <div className="flex flex-col md:flex-row items-center gap-4">
@@ -342,7 +381,13 @@ export default function WriteAStorySettings() {
                       <span className="inline-block text-slate-600 mb-4 text-sm tracking-sm">
                         Title preview:{' '}
                         <span className="text-slate-700 text-base font-light">
-                          Desc. Description | by İsmail Erüstün | Medium
+                          {_.slice(
+                            _.get(story, 'seoDescription') ||
+                              _.get(story, 'excerpt'),
+                            0,
+                            20
+                          )}
+                          ... | by {_.get(story, 'user.name')} | Opinate
                         </span>
                       </span>
                       <div className="flex flex-col md:flex-row items-center gap-4">
@@ -377,7 +422,7 @@ export default function WriteAStorySettings() {
                   </div>
                 </div>
                 <hr className="my-14" />
-                <div id="promotion">
+                {/* <div id="promotion">
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Promotion
                   </h2>
@@ -424,8 +469,7 @@ export default function WriteAStorySettings() {
                       <span>Copy</span>
                     </button>
                   </div>
-                </div>
-                <hr className="my-14" />
+                </div> */}
                 <div id="content-licensing">
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Content Licensing
@@ -681,6 +725,24 @@ export default function WriteAStorySettings() {
                       </div>
                     </div>
                   </div>
+                  <div className="flex flex-row-reverse">
+                    <button
+                      type="button"
+                      className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                      onClick={() =>
+                        dispatch(
+                          storyActions.updateStoryFieldRequest({
+                            story,
+                            newStoryField: {
+                              license: radiolicense,
+                            },
+                          })
+                        )
+                      }
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
                 <hr className="my-14" />
                 <div id="advanced-settings">
@@ -773,7 +835,7 @@ export default function WriteAStorySettings() {
                   </div>
                 </div>
                 <hr className="my-14" />
-                <div>
+                <div className="mb-12">
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Delete Story
                   </h2>
