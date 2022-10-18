@@ -6,7 +6,6 @@ import SuggestionList from './SuggestionList';
 export default function Search({
   suggestions,
   onSearch,
-  loading,
   closeModal,
   showSuggestions,
   setShowSuggestions,
@@ -27,8 +26,10 @@ export default function Search({
   };
 
   const handleDebounceFn = (inputValue) => {
-    onSearch(inputValue);
-    setShowSuggestions(true);
+    if (inputValue.length > 3) {
+      onSearch(inputValue);
+      setShowSuggestions(true);
+    }
   };
 
   const onKeyDown = (key) => {
@@ -36,17 +37,24 @@ export default function Search({
       router.push(`/search-result?search=${input}`);
     }
   };
-  const debounceFn = useCallback(_.debounce(handleDebounceFn, 1000), []);
+  const debounceFn = useCallback(_.debounce(handleDebounceFn, 500), []);
   const onChange = async (e) => {
     setInput(e.target.value);
     debounceFn(e.target.value);
   };
-
   useEffect(() => {
     if (!showSuggestions) {
       closeSuggestions();
     }
   }, [showSuggestions]);
+  useEffect(() => {
+    document.addEventListener('click', closeSuggestions);
+
+    return () => {
+      document.removeEventListener('click', closeSuggestions);
+    };
+  }, []);
+
   return (
     <div className="hidden lg:block">
       <div>
@@ -64,7 +72,7 @@ export default function Search({
           />
         </div>
       </div>
-      {showSuggestions && !loading && input && (
+      {showSuggestions && input && (
         <SuggestionList
           filteredSuggestions={suggestions}
           onClick={onClick}

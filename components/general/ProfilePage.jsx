@@ -23,10 +23,12 @@ import usePrevious from '@/hooks/usePrevious';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import UserCard from './UserCard';
+import CreateBookmarkList from '../bookmarks/CreateBookmarkList';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [createNewList, setCreateNewList] = useState(false);
   const { username } = router.query;
   const tabNames = ['Home', 'Lists', 'About'];
   const [isLoading, setIsLoading] = useState(true);
@@ -111,6 +113,7 @@ export default function ProfilePage({ About, Home, List }) {
     if (profileUser?.username !== username && username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
+    setFollowingModal(false);
   }, [username]);
 
   useEffect(() => {
@@ -183,9 +186,11 @@ export default function ProfilePage({ About, Home, List }) {
             <div className="lg:py-10 lg:px-8">
               <div className="flex items-center justify-between gap-4 mb-8 md:mb-14">
                 <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                  {profileUser
-                    ? `${`${profileUser.name}\``} ${tabNames[selectedIndex]}`
-                    :<ClipLoader/>}
+                  {profileUser ? (
+                    `${`${profileUser.name}\``} ${tabNames[selectedIndex]}`
+                  ) : (
+                    <ClipLoader />
+                  )}
                 </h1>
 
                 <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
@@ -221,6 +226,15 @@ export default function ProfilePage({ About, Home, List }) {
                             onClick={copyToClipboard}
                           >
                             Copy link to profile
+                          </Button>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Button
+                            type="button"
+                            className='className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"'
+                            onClick={setCreateNewList}
+                          >
+                            Create New List
                           </Button>
                         </Menu.Item>
                       </Menu.Items>
@@ -332,6 +346,9 @@ export default function ProfilePage({ About, Home, List }) {
                 followLoading={followLoading}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
+                popularStories={!isMyProfile}
+                userTopics={profileUser?.topWriterTopics}
+                stories={userStories?.slice(0, 5)}
               />
             </div>
             {/* Mobile Sidebar */}
@@ -407,9 +424,7 @@ export default function ProfilePage({ About, Home, List }) {
                     >
                       Cancel
                     </Button>
-                    <Button
-                      className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
+                    <Button className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                       Block
                     </Button>
                   </div>
@@ -417,6 +432,9 @@ export default function ProfilePage({ About, Home, List }) {
               </div>
             </div>
           </div>
+        )}
+        {createNewList && (
+          <CreateBookmarkList setCreateNewList={setCreateNewList} />
         )}
       </Layout>
       <Transition appear show={followingModal} as={Fragment}>

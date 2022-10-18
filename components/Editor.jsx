@@ -11,8 +11,9 @@ import {
   Code,
   Camera,
   Play,
+  ClearFormat,
 } from '@icon-park/react';
-import { PlusCircle, MinusCircle, Hash } from 'react-feather';
+import { PlusCircle, MinusCircle } from 'react-feather';
 import {
   BoldBlot,
   ItalicBlot,
@@ -29,7 +30,12 @@ import hljs from 'highlight.js';
 import { Block } from '@/utils/QuillBlots/Blots';
 import Quill from 'quill';
 
-export default function Editor({ onChange, setImages, value }) {
+export default function Editor({
+  onChange,
+  setImages,
+  value,
+  setIsShowSaving,
+}) {
   const uploadImage = async (file) => {
     const { data } = await FileService.uploadFile(file, file.name);
     return data.publicPath;
@@ -44,10 +50,66 @@ export default function Editor({ onChange, setImages, value }) {
   const tooltipInput = useRef();
   const tooltipButtons = useRef();
 
+  function convertMedia(url) {
+    const vimeo = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
+    const youtube =
+      /(?:http?s?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g;
+
+    if (vimeo.test(url)) {
+      return url.replace(vimeo, '//player.vimeo.com/video/$1');
+    }
+
+    if (youtube.test(url)) {
+      return url.replace(
+        youtube,
+        'https://lite-youtube-embed-iframe.vercel.app/$1'
+      );
+    }
+    if (url.includes('dailymotion')) {
+      return url.replace('video', 'embed/video');
+    }
+    return url;
+  }
+  const validateURL = (url) => {
+    const expression =
+      /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi;
+    const regex = new RegExp(expression);
+    return (
+      regex.test(url) &&
+      (url.includes('dailymotion') ||
+        url.includes('vimeo') ||
+        url.includes('youtube') ||
+        url.includes('youtu.be') ||
+        url.includes('twitter'))
+    );
+  };
+  const insertVideo = (url, index, quill, isChangeEvent) => {
+    if (validateURL(url)) {
+      if (url.includes('twitter')) {
+        const tweetUrlArray = url.split('/');
+        const tweetId = tweetUrlArray[tweetUrlArray.length - 1];
+        quill.insertEmbed(index, 'tweet', tweetId, Quill.sources.USER);
+        quill.setSelection(index + 1, Quill.sources.SILENT);
+      } else {
+        const embedUrl = convertMedia(url);
+        quill.insertEmbed(index, 'video', embedUrl, Quill.sources.USER);
+        quill.formatText(index + 1, 1, {
+          height: '480',
+          width: '854',
+        });
+        quill.setSelection(index + 1, Quill.sources.SILENT);
+      }
+      if (isChangeEvent) {
+        quill.deleteText(index + 1, url.length, Quill.sources.USER);
+      }
+    }
+  };
   useEffect(() => {
     const quill = new Quill('#editor-container', {
-      placeholder: 'Compose an epic...',
+      placeholder: 'Tell your story...',
+      scrollingContainer: document.documentElement,
     });
+    quill.root.dataset.placeholder = 'Tell your story...';
     setQuillInstance(quill);
     Quill.register(BoldBlot);
     Quill.register(ItalicBlot);
@@ -100,7 +162,23 @@ export default function Editor({ onChange, setImages, value }) {
         tooltip.current.style.top = `${rangeBounds.bottom + 10}px`;
       }
     });
-    quill.on(Quill.events.TEXT_CHANGE, () => {
+    quill.on(Quill.events.TEXT_CHANGE, (delta) => {
+      setIsShowSaving(false);
+      delta.ops.forEach((op) => {
+        if (op.insert) {
+          const range = quill.getSelection(true);
+          insertVideo(op.insert, range.index, quill, true);
+        }
+      });
+      if (
+        quill.root.innerHTML.length > 0 &&
+        quill.root.innerHTML !== '<p><br></p>'
+      ) {
+        quill.root.dataset.placeholder = '';
+      } else {
+        quill.root.dataset.placeholder = 'Tell your story...';
+      }
+
       _.debounce(() => {
         onChange(quill.root.innerHTML);
         setImages(
@@ -111,7 +189,7 @@ export default function Editor({ onChange, setImages, value }) {
             }
           })
         );
-      }, 5000)();
+      }, 2500)();
 
       tooltip.current.style.display = 'none';
       sidebar.current.style.display = 'none';
@@ -120,64 +198,38 @@ export default function Editor({ onChange, setImages, value }) {
   }, []);
 
   useEffect(() => {
-    if (value && quillInstance) quillInstance.root.innerHTML = value;
+    if (value && quillInstance) {
+      quillInstance.root.innerHTML = value;
+      const range = quillInstance.getSelection();
+      console.log(range);
+      quillInstance.setSelection(quillInstance.getLength(), 0);
+    }
   }, [value, quillInstance]);
 
-  function convertMedia(url) {
-    const vimeo = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
-    const youtube =
-      /(?:http?s?:\/\/)?(?:www\.)?(?:youtube\.com|youtu\.be)\/(?:watch\?v=)?(.+)/g;
-
-    if (vimeo.test(url)) {
-      return url.replace(vimeo, '//player.vimeo.com/video/$1');
+  const removeFormat = () => {
+    const range = quillInstance.getSelection();
+    debugger;
+    if (range.length === 0) {
+      let leaf;
+      const offset = quillInstance.getLeaf(range.index);
+      quillInstance.removeFormat(
+        range.index - offset,
+        range.index + leaf.domNode.length
+      );
+    } else {
+      quillInstance.removeFormat(
+        range.index + 2,
+        range.length + 1000,
+        Quill.sources.USER
+      );
     }
-
-    if (youtube.test(url)) {
-      return url.replace(youtube, 'http://www.youtube.com/embed/$1');
-    }
-    if (url.includes('dailymotion')) {
-      return url.replace('video', 'embed/video');
-    }
-    return url;
-  }
-  const validateURL = (url) => {
-    const expression =
-      /[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_+.~#?&//=]*)?/gi;
-    const regex = new RegExp(expression);
-    return regex.test(url);
   };
-
   const handleAddVideo = (e) => {
     const { value } = e.target;
+    const range = quillInstance.getSelection(true);
     if (e.which === 13) {
-      const range = quillInstance.getSelection(true);
-      if (validateURL(value)) {
-        if (value.includes('twitter')) {
-          const tweetUrlArray = value.split('/');
-          const tweetId = tweetUrlArray[tweetUrlArray.length - 1];
-          quillInstance.insertEmbed(
-            range.index,
-            'tweet',
-            tweetId,
-            Quill.sources.USER
-          );
-          quillInstance.setSelection(range.index + 1, Quill.sources.SILENT);
-        } else {
-          const url = convertMedia(value);
-          quillInstance.insertEmbed(
-            range.index,
-            'video',
-            url,
-            Quill.sources.USER
-          );
-          quillInstance.formatText(range.index + 1, 1, {
-            height: '480',
-            width: '854',
-          });
-          quillInstance.setSelection(range.index + 1, Quill.sources.SILENT);
-        }
-
-        input.current.style.display = 'none';
+      const isInserted = insertVideo(value, range.index, quillInstance);
+      if (isInserted) {
         e.target.value = '';
       } else {
         quillInstance.insertText(range.index, value);
@@ -267,16 +319,6 @@ export default function Editor({ onChange, setImages, value }) {
     input.current.style.top = `${lineBounds.top - 3}px`;
     sidebar.current.style.display = 'none';
   };
-  const addTweet = (e) => {
-    e.stopPropagation();
-    const range = quillInstance.getSelection(true);
-    const lineBounds = quillInstance.getBounds(range);
-    input.current.style.display = 'block';
-    input.current.style.left = `${lineBounds.left - 15}px`;
-    input.current.style.top = `${lineBounds.top - 3}px`;
-    sidebar.current.style.display = 'none';
-    e.target.value = '';
-  };
   const handleShowControl = () => {
     sidebar.current.classList.toggle('active');
     quillInstance.focus();
@@ -333,6 +375,9 @@ export default function Editor({ onChange, setImages, value }) {
           <button type="button" id="divider-button" onClick={formatCode}>
             <Code />
           </button>
+          <button type="button" id="divider-button" onClick={removeFormat}>
+            <ClearFormat />
+          </button>
         </div>
         <div ref={tooltipInput} className="hidden w-[244px] h-[42px]">
           <input
@@ -352,9 +397,6 @@ export default function Editor({ onChange, setImages, value }) {
           </button>
           <button type="button" id="video-button" onClick={addVideo}>
             <Play size={24} />
-          </button>
-          <button type="button" id="tweet-button" onClick={addTweet}>
-            <Hash />
           </button>
           <button type="button" id="divider-button" onClick={addDivider}>
             <MinusCircle />

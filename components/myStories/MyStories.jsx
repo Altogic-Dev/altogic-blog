@@ -9,6 +9,10 @@ import { storyActions } from '@/redux/story/storySlice';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import MyStoriesPublished from './MyStoriesPublished';
 import MyStoriesDraft from './MyStoriesDraft';
 import DeleteStoryModal from '../DeleteStoryModal';
@@ -39,7 +43,21 @@ export default function MyStories({ publishedPage, draftPage }) {
     if (publishedPage) setSelectedIndex(0);
     else if (draftPage) setSelectedIndex(1);
   }, []);
-
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
   return (
     <div>
       <Head>

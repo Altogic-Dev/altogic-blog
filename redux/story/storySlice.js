@@ -180,13 +180,17 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getUserStoriesSuccess(state, action) {
-      state.isLoading = false;
+      debugger;
       if (_.isArray(state.userStories)) {
-        state.userStories = [...state.userStories, ...action.payload.data];
+        state.userStories = [
+          ...state.userStories.filter((s) => s.user === action.payload.userId),
+          ...action.payload.data,
+        ];
       } else {
         state.userStories = action.payload.data;
       }
       state.userStoriesInfo = action.payload.info;
+      state.isLoading = false;
     },
 
     getUserDraftStoriesRequest(state) {

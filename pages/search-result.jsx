@@ -14,6 +14,11 @@ import Topic from '@/components/basic/topic';
 import PublicationCard from '@/components/Publications/PublicationCard';
 import ListObserver from '@/components/ListObserver';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import {
+  getBookmarkListsRequest,
+  getBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
+import _ from 'lodash';
 
 export default function SearchResult() {
   const dispatch = useDispatch();
@@ -62,6 +67,22 @@ export default function SearchResult() {
       );
     }
   }, [topicLimit, userLimit, publicationLimit, postLimit]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(
+        getBookmarkListsRequest({
+          username: user.username,
+          includePrivates: true,
+        })
+      );
+      dispatch(
+        getBookmarksRequest({
+          userId: _.get(user, '_id'),
+        })
+      );
+    }
+  }, [user]);
 
   return (
     <div>
@@ -216,10 +237,18 @@ export default function SearchResult() {
                 peoples={searchResults?.users.slice(0, 5)}
                 stories={searchResults?.stories.slice(0, 5)}
                 publications={searchResults?.publications.slice(0, 5)}
-                popularStories={selectedIndex !== 0}
-                peopleMatch={selectedIndex !== 1}
-                publicationsMatch={selectedIndex !== 2}
-                topicMatch={selectedIndex !== 3}
+                popularStories={
+                  selectedIndex !== 0 && searchResults?.stories.length > 0
+                }
+                peopleMatch={
+                  selectedIndex !== 1 && searchResults?.users.length > 0
+                }
+                publicationsMatch={
+                  selectedIndex !== 2 && searchResults?.publications.length > 0
+                }
+                topicMatch={
+                  selectedIndex !== 3 && searchResults?.topics.length > 0
+                }
                 query={router.query.search}
               />
             </div>

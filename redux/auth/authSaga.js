@@ -273,6 +273,8 @@ function* getSessionsSaga() {
 }
 function* deleteSessionSaga({ payload: sessionToken }) {
   try {
+    debugger;
+    console.log(sessionToken);
     const { errors } = yield call(AuthService.deleteSession, sessionToken);
     if (errors) {
       throw errors.items;
@@ -313,11 +315,11 @@ function* logoutSaga() {
 }
 function* changeEmailSaga({ payload }) {
   try {
-    const { errors } = yield call(AuthService.changeEmail, payload);
+    const { user, errors } = yield call(AuthService.changeEmail, payload);
     if (errors) {
       throw errors.items;
     } else {
-      yield put(authActions.changeEmailSuccess());
+      yield put(authActions.changeEmailSuccess(user));
     }
   } catch (e) {
     yield put(authActions.changeEmailFailure(e));

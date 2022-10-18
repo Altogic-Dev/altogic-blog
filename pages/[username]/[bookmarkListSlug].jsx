@@ -354,7 +354,7 @@ export default function ListDetail() {
                   <PostCard
                     key={post.id}
                     listDetailMenu
-                    authorUrl={`/${post.username}`}
+                    authorUrl={`/${post?.username}`}
                     authorName={post.username}
                     authorImage={post.userProfilePicture}
                     storyUrl={`/story/${post.storySlug}`}
