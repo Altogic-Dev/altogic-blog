@@ -8,14 +8,12 @@ import ListObserver from '@/components/ListObserver';
 import PostCard from '../PostCard';
 import DeleteStoryModal from '../DeleteStoryModal';
 
-function ProfilePageHome({ userId, selectedTab }) {
+function ProfilePageHome({ userId }) {
   const dispatch = useDispatch();
   const router = useRouter();
-
   const userStories = useSelector((state) => state.story.userStories);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const firstUpdate = useRef(true);
-
   const [page, setPage] = useState(1);
   const [deletedStory, setDeletedStory] = useState(null);
   const PAGE_LIMIT = 6;
@@ -39,7 +37,6 @@ function ProfilePageHome({ userId, selectedTab }) {
   };
 
   useEffect(() => {
-    console.log(userId, selectedTab);
     if (
       userId &&
       !router.asPath.includes('lists') &&

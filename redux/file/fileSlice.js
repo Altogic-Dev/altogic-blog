@@ -10,7 +10,7 @@ export const uploadFile = createAsyncThunk(
   }
 );
 const initialState = {
-  isLoading: true,
+  isLoading: false,
   error: null,
   fileLink: null,
   fileLinks: {},

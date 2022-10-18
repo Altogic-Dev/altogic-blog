@@ -8,20 +8,15 @@ import * as yup from 'yup';
 import Avatar from '@/components/profile/Avatar';
 import constants from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import { fileActions } from '@/redux/file/fileSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import UserSettingsInput from './UserSettingsInput';
-import Button from '../basic/button';
 import EditorToolbar, { modules, formats } from '../EditorToolbar';
 
 const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
 });
 
-export default function MyDetails({ user }) {
-  const [profilePicture, setProfilePicture] = useState();
-  const [file, setFile] = useState();
-  const [profileRequest, setProfileRequest] = useState();
+export default function MyDetails() {
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -36,7 +31,7 @@ export default function MyDetails({ user }) {
     profilePicture: yup.string(),
   });
   const dispatch = useDispatch();
-  const userAvatarLink = useSelector((state) => state.file.fileLink);
+  const user = useSelector((state) => state.auth.user);
   const error = useSelector((state) => state.auth.updateProfileError);
   const isUsernameAvailable = useSelector(
     (state) => state.auth.isUsernameAvailable
@@ -63,19 +58,7 @@ export default function MyDetails({ user }) {
         message: 'Please enter a valid url',
       });
     }
-    req.profilePicture = profilePicture;
-    if (file) {
-      dispatch(
-        fileActions.uploadFileRequest({
-          file,
-          name: user?.username,
-          existingFile: user?.profilePicture,
-        })
-      );
-      setProfileRequest(req);
-    } else {
-      dispatch(authActions.updateProfileRequest(req));
-    }
+    dispatch(authActions.updateProfileRequest(req));
   };
 
   useEffect(() => {
@@ -94,19 +77,6 @@ export default function MyDetails({ user }) {
     }
   }, [isUsernameAvailable]);
 
-  const uploadPhotoHandler = (e) => {
-    e.stopPropagation();
-    const fileInput = document.createElement('input');
-
-    fileInput.setAttribute('type', 'file');
-    fileInput.setAttribute('accept', 'image/*');
-    fileInput.click();
-
-    fileInput.onchange = async () => {
-      const file = fileInput.files[0];
-      setFile(file);
-    };
-  };
   const checkUsername = (e) => {
     if (e.target.value !== user.username) {
       dispatch(authActions.checkUsernameRequest(e.target.value));
@@ -129,21 +99,6 @@ export default function MyDetails({ user }) {
   useEffect(() => {
     setAbout(user?.about);
   }, [user]);
-  useEffect(() => {
-    setProfilePicture(userAvatarLink || user?.profilePicture);
-    if (userAvatarLink) {
-      dispatch(
-        authActions.updateProfileRequest({
-          ...profileRequest,
-          profilePicture: userAvatarLink,
-        })
-      );
-    }
-  }, [userAvatarLink]);
-  const deleteProfilePicture = () => {
-    setFile();
-    delete profileRequest.profilePicture;
-  };
   return (
     <div id="my-details" className="mb-16">
       <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
@@ -180,47 +135,6 @@ export default function MyDetails({ user }) {
               onBlur={field.name === 'username' ? checkUsername : null}
             />
           ))}
-
-          <div className="settingsInput">
-            <div className="mb-5 md:mb-0">
-              <label
-                htmlFor="photo"
-                className="block text-sm font-medium text-gray-700 tracking-sm"
-              >
-                Your photo
-              </label>
-              <span className="text-slate-500 text-sm tracking-sm">
-                This will be displayed on your profile.
-              </span>
-            </div>
-            <div className="flex items-start justify-between">
-              {(file || user?.profilePicture) && (
-                <Avatar
-                  src={file ? URL.createObjectURL(file) : user?.profilePicture}
-                  alt={user?.name}
-                  className="w-16 h-16 object-cover"
-                />
-              )}
-              <div className="flex items-center gap-4">
-                {file && (
-                  <Button
-                    onClick={deleteProfilePicture}
-                    type="button"
-                    className="text-slate-600 text-sm tracking-sm"
-                  >
-                    Delete
-                  </Button>
-                )}
-                <Button
-                  onClick={uploadPhotoHandler}
-                  type="button"
-                  className="text-purple-700 text-sm tracking-sm"
-                >
-                  Update
-                </Button>
-              </div>
-            </div>
-          </div>
 
           <div className="settingsInput">
             <div>

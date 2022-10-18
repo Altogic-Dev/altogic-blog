@@ -3,14 +3,24 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
 import usePrevious from '@/hooks/usePrevious';
 import Topic from '../basic/topic';
 import SidebarTitle from '../SidebarTitle';
 
-export default function PopularTopics({ isRelatedTopics }) {
+export default function PopularTopics({
+  isRelatedTopics,
+  isFollowingTopics,
+  isPopularTopics,
+  userTopics,
+}) {
   const popularTopics = useSelector((state) => state.topics.popularTopics);
   const relatedTopics = useSelector((state) => state.topics.relatedTopics);
+  const followingTopics = useSelector((state) =>
+    _.get(state.auth.user, 'followingTopics')
+  );
 
+  const [title, setTitle] = useState();
   const router = useRouter();
   const { tag } = router.query;
   const previousTag = usePrevious(tag);
@@ -24,16 +34,21 @@ export default function PopularTopics({ isRelatedTopics }) {
   };
 
   useEffect(() => {
-    if (!isRelatedTopics) {
+    if (isPopularTopics) {
       getPopularTopics();
-    }
-    if (tag && isRelatedTopics && previousTag !== tag) {
+      setTitle('Popular Topics');
+    } else if (tag && isRelatedTopics && previousTag !== tag) {
       getRelatedTopics();
+      setTitle('Related Topics');
+    } else if (isFollowingTopics) {
+      setTitle('Following Topics');
+    } else if (userTopics) {
+      setTitle('Your Topics');
     }
   }, [tag]);
 
   useEffect(() => {
-    if (isRelatedTopics) {
+    if (relatedTopics && isRelatedTopics) {
       setTopics(
         relatedTopics.map((topic) => ({
           name: topic.topicA === tag ? topic.topicB : topic.topicA,
@@ -41,17 +56,23 @@ export default function PopularTopics({ isRelatedTopics }) {
           ...topic,
         }))
       );
-    } else {
+    } else if (popularTopics && isPopularTopics) {
       setTopics(popularTopics);
+    } else if (followingTopics && isFollowingTopics) {
+      setTopics(
+        followingTopics.map((topic) => ({
+          name: topic,
+        }))
+      );
+    } else if (userTopics) {
+      setTopics(
+        userTopics.map((topic, index) => ({ _id: index, name: topic }))
+      );
     }
-  }, [relatedTopics, popularTopics]);
-
+  }, [relatedTopics, popularTopics, followingTopics]);
   return (
     <div>
-      <SidebarTitle
-        title={isRelatedTopics ? 'Related Topics' : 'Popular Topics'}
-        spacing="mb-4"
-      />
+      <SidebarTitle title={title} spacing="mb-4" />
       <div className="flex flex-wrap gap-x-2 gap-y-4">
         {topics?.map((topic) => (
           <Topic

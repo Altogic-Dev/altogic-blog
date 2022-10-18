@@ -105,7 +105,7 @@ export default function Login() {
                         htmlFor="remember-me"
                         className="ml-2 block text-sm text-slate-700 tracking-sm"
                       >
-                        Remember for 30 days
+                        Remember This Device
                       </label>
                     </div>
 

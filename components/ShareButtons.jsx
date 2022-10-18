@@ -6,19 +6,25 @@ import {
   LinkedinShareButton,
   TwitterShareButton,
 } from 'react-share';
+import { toast } from 'react-toastify';
 import Button from './basic/button';
 
 function ShareButtons({ customLink }) {
   const router = useRouter();
 
   const [basePath, setBasePath] = useState();
-  const shareUrl = basePath + (customLink ?? router.asPath);
+  const shareUrl =
+    basePath +
+    encodeURI(customLink ?? router.asPath)
+      .replace(/\(/g, '%28')
+      .replace(/\)/g, '%29');
 
   useEffect(() => {
     setBasePath(window.location.origin);
   }, []);
 
   const copyToClipboard = () => {
+    toast.success('Copied to clipboard');
     navigator.clipboard.writeText(shareUrl);
   };
 

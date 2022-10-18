@@ -24,7 +24,6 @@ export default function Sidebar({
   popularStories,
   mobilePopularStories,
   profile,
-  toggleFollow,
   following,
   relatedTopics,
   publicationProfile,
@@ -39,6 +38,8 @@ export default function Sidebar({
   publicationsMatch,
   followLoading,
   followingStoriesPage,
+  followingTopics,
+  userTopics,
 }) {
   return (
     <>
@@ -75,10 +76,15 @@ export default function Sidebar({
           Tag={Tag}
         />
       )}
-      {(popularTopics || relatedTopics) && (
-        <PopularTopics isRelatedTopics={relatedTopics} />
+      {(popularTopics || relatedTopics || followingTopics || userTopics) && (
+        <PopularTopics
+          isFollowingTopics={followingTopics}
+          isPopularTopics={popularTopics}
+          isRelatedTopics={relatedTopics}
+          userTopics={profile?.topWriterTopics}
+        />
       )}
-      {popularStories && (
+      {popularStories && stories?.length > 0 && (
         <PopularStories
           title={query ? `Stories Match ${query}` : 'Popular Stories'}
           stories={stories}

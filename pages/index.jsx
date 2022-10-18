@@ -98,7 +98,8 @@ export default function Home() {
   }, [followingStoriesPage, userFromStorage]);
 
   useEffect(() => {
-    getFollowingStories(followingListPage);
+    if (!followingStories || followingListPage > 1)
+      getFollowingStories(followingListPage);
   }, [followingListPage]);
 
   useEffect(() => {
@@ -217,6 +218,7 @@ export default function Home() {
                                     followerConnectionActions.unfollowRequest({
                                       userId: user._id,
                                       followingUserId: story.user,
+                                      notUpdate: true,
                                     })
                                   ),
                                 report: () =>

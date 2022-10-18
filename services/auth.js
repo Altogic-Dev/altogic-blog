@@ -90,7 +90,9 @@ const AuthService = {
     return auth.getAllSessions();
   },
   deleteSession(session) {
-    return auth.deleteSession(session);
+    return endpoint.delete('/user/session', {
+      token: session,
+    });
   },
   getCurrentSession() {
     return auth.getSession();

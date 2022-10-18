@@ -73,24 +73,26 @@ function* createBookmarkListSaga({ payload: { bookmarkList, bookmark } }) {
     );
     if (data) {
       yield put(createBookmarkListSuccess(data));
-      let { coverImages } = data;
-      const storyImages = _.map(bookmark.story.storyImages, (image) => image);
-      if (coverImages.length < 4) {
-        coverImages = [...coverImages, storyImages[0]];
-      } else {
-        coverImages = coverImages.slice(1, 4);
-        coverImages = [...coverImages, storyImages[0]];
+      if (bookmark.story) {
+        let { coverImages } = data;
+        const storyImages = _.map(bookmark.story.storyImages, (image) => image);
+        if (coverImages.length < 4) {
+          coverImages = [...coverImages, storyImages[0]];
+        } else {
+          coverImages = coverImages.slice(1, 4);
+          coverImages = [...coverImages, storyImages[0]];
+        }
+        const req = {
+          list: data._id,
+          story: bookmark.story._id,
+          userId: bookmark.userId,
+        };
+        if (coverImages.length > 0) {
+          coverImages = coverImages.pop();
+          req.coverImages = coverImages;
+        }
+        yield fork(addBookmarkSaga, { payload: req });
       }
-      const req = {
-        list: data._id,
-        story: bookmark.story._id,
-        userId: bookmark.userId,
-      };
-      if (coverImages.length > 0) {
-        coverImages = coverImages.pop();
-        req.coverImages = coverImages;
-      }
-      yield fork(addBookmarkSaga, { payload: req });
     }
     if (errors) throw errors.items;
   } catch (error) {

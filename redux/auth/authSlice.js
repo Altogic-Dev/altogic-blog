@@ -102,10 +102,8 @@ export const authSlice = createSlice({
       state.isLoading = true;
     },
     updateFollowingTopicsSuccess(state) {
-      console.log(state.user);
       state.isLoading = false;
       state.user = AuthService.getUser();
-      console.log('sa');
     },
     updateFollowingTopicsFailure(state, action) {
       state.isLoading = false;
@@ -226,6 +224,8 @@ export const authSlice = createSlice({
     },
     getUserByUserNameRequest(state) {
       state.isLoading = true;
+      state.profileUser = null;
+
     },
     getUserByUserNameSuccess(state, action) {
       state.isLoading = false;

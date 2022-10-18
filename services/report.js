@@ -1,8 +1,8 @@
-import { db } from '@/utils/altogic';
+import { db, endpoint } from '@/utils/altogic';
 
 const ReportService = {
   reportStory(userId, storyId, reportedUserId) {
-    return db.model('report').create({
+    return endpoint.post('/report', {
       reportedStory: storyId,
       reportedUser: reportedUserId,
       user: userId,

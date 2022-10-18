@@ -288,7 +288,7 @@ function StoryContent(props) {
           <h1>{story?.title}</h1>
         </div>
         <article
-          className="prose-sm prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm my-10 sm:mb-24"
+          className="prose self-baseline prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm my-10 sm:mb-24"
           dangerouslySetInnerHTML={{ __html: story?.content }}
         />
 
@@ -395,7 +395,7 @@ function StoryContent(props) {
           </div>
         </div>
         {/* Post sticky menu */}
-        {user && (
+        {sessionUser && (
           <div className="fixed bottom-24 max-w-[257px]">
             <div className="flex items-center justify-center gap-7 max-w-[257px] bg-white px-4 py-2 rounded-[200px] shadow-md">
               <div className="flex items-center gap-8">

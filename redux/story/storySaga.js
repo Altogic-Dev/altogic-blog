@@ -246,7 +246,6 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
     const info = yield select((state) => state.story.userStoriesInfo);
-
     if (_.isNil(info) || page <= info.totalPages) {
       const { data, errors } = yield call(
         StoryService.getUserStories,
@@ -260,6 +259,7 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
           storyActions.getUserStoriesSuccess({
             data: data.data,
             info: data.info,
+            userId,
           })
         );
       }
@@ -275,20 +275,23 @@ function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const { data, errors } = yield call(
-      StoryService.getUserDraftStories,
-      userID,
-      page,
-      limit
-    );
-    if (errors) throw errors;
-    if (data) {
-      yield put(
-        storyActions.getUserDraftStoriesSuccess({
-          data: data.data,
-          info: data.info,
-        })
+    const info = yield select((state) => state.story.userDraftStoriesInfo);
+    if (_.isNil(info) || page <= info.totalPages) {
+      const { data, errors } = yield call(
+        StoryService.getUserDraftStories,
+        userID,
+        page,
+        limit
       );
+      if (errors) throw errors;
+      if (data) {
+        yield put(
+          storyActions.getUserDraftStoriesSuccess({
+            data: data.data,
+            info: data.info,
+          })
+        );
+      }
     }
   } catch (e) {
     console.error({ e });
@@ -321,7 +324,7 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
       newCategoryNames
     );
     if (errors) throw errors;
-    yield put(storyActions.updateCategorySuccess(newCategoryNames));
+    yield put(storyActions.updateCategoryNamesSuccess(newCategoryNames));
   } catch (e) {
     console.error({ e });
   }
@@ -520,6 +523,18 @@ function* visitStorySaga({ payload: visit }) {
     yield put(storyActions.visitStoryFailure(e));
   }
 }
+
+export function* removeUnfollowingStories(authorId) {
+  const followingStories = yield select(
+    (state) => state.story.followingStories
+  );
+  const newFollowingStories = _.reject(
+    followingStories,
+    (story) => story.user === authorId
+  );
+  yield put(storyActions.removeUnfollowingStories(newFollowingStories));
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(

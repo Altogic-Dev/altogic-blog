@@ -42,7 +42,7 @@ export default function HeaderDropdown({ user, logout, className }) {
             <p className="text-slate-700 text-sm font-medium tracking-sm">
               {user?.name}
             </p>
-            <p className="text-slate-500 text-sm tracking-sm">{user?.email}</p>
+            <p className="text-slate-500 text-sm tracking-sm text-ellipsis w-36 overflow-hidden">@{user?.username}</p>
           </div>
         </div>
         <div className="divide-y divide-gray-200">
@@ -50,7 +50,7 @@ export default function HeaderDropdown({ user, logout, className }) {
             <Link href={`/${user?.username}/about`}>
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                 <UserIcon className="w-4 h-4 text-slate-500" />
-                View profile
+                View Profile
               </a>
             </Link>
 
