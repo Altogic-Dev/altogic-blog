@@ -322,6 +322,9 @@ export const storySlice = createSlice({
     removeUnfollowingStories(state, action) {
       state.followingStories = action.payload;
     },
+    removeRecommendedStories(state, action) {
+      state.recommendedStories = action.payload;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

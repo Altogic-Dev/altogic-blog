@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { DateTime } from 'luxon';
-import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import {
   getBookmarkListsRequest,
@@ -176,8 +175,6 @@ export default function TagPage({ Home, Latest, Best }) {
                         story={post}
                         bookmarks={bookmarks}
                         optionButtons={{
-                          mute: () =>
-                            dispatch(authActions.muteAuthorRequest(post.user)),
                           report: () =>
                             dispatch(
                               reportActions.reportStoryRequest({
@@ -210,8 +207,6 @@ export default function TagPage({ Home, Latest, Best }) {
                         story={post}
                         bookmarks={bookmarks}
                         optionButtons={{
-                          mute: () =>
-                            dispatch(authActions.muteAuthorRequest(post.user)),
                           report: () =>
                             dispatch(
                               reportActions.reportStoryRequest({
@@ -245,8 +240,6 @@ export default function TagPage({ Home, Latest, Best }) {
                         story={post}
                         bookmarks={bookmarks}
                         optionButtons={{
-                          mute: () =>
-                            dispatch(authActions.muteAuthorRequest(post.user)),
                           report: () =>
                             dispatch(
                               reportActions.reportStoryRequest({

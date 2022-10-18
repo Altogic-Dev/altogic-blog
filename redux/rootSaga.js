@@ -15,6 +15,7 @@ import bookmarkSaga from './bookmarks/bookmarkSaga';
 import notificationsSaga from './notifications/notificationsSaga';
 import statsSaga from './stats/statsSaga';
 import paymentSaga from './payment/paymentSaga';
+import blockConnectionSaga from './blockConnection/blockConnectionSaga';
 
 function* rootSaga() {
   yield all([
@@ -34,6 +35,7 @@ function* rootSaga() {
     fork(notificationsSaga),
     fork(statsSaga),
     fork(paymentSaga),
+    fork(blockConnectionSaga),
   ]);
 }
 

@@ -1,4 +1,3 @@
-import { authActions } from '@/redux/auth/authSlice';
 import {
   getBookmarkListsRequest,
   getBookmarksRequest,
@@ -22,7 +21,7 @@ function PublicationTabStory({ tab, publication }) {
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
   );
-  const isMuted = useSelector((state) => state.auth.isMuted);
+  const isMuted = useSelector((state) => state.blockConnection.isBlocked);
   const isReported = useSelector((state) => state.report.isReported);
 
   const [createNewList, setCreateNewList] = useState(false);
@@ -80,7 +79,6 @@ function PublicationTabStory({ tab, publication }) {
           authorId: _.get(story, 'user._id'),
         })
       );
-      dispatch(authActions.isMutedRequest(_.get(story, 'user._id')));
       setDidMount(false);
     }
   }, [story]);
