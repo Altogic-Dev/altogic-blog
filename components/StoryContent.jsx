@@ -1,9 +1,9 @@
-import { authActions } from '@/redux/auth/authSlice';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { reportActions } from '@/redux/report/reportSlice';
 import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { Menu, Transition } from '@headlessui/react';
 import { storyActions } from '@/redux/story/storySlice';
+import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { Fragment, useState, useEffect } from 'react';
@@ -40,6 +40,7 @@ function StoryContent(props) {
   const isLoadingFollow = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
+  const isLoadingMute = useSelector((state) => state.blockConnection.isLoading);
 
   const isMyProfile = _.get(sessionUser, '_id') === _.get(story, 'user._id');
 
@@ -150,22 +151,25 @@ function StoryContent(props) {
             {isFollowing ? 'Unfollow' : 'Follow'} this author
           </Button>
         </Menu.Item>
-        <Menu.Item>
-          {!isMuted && (
+        {!isMuted && (
+          <Menu.Item>
             <Button
               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+              disabled={isLoadingMute}
               onClick={() =>
                 dispatch(
-                  authActions.muteAuthorRequest(_.get(story, 'user._id'))
+                  blockConnectionActions.blockUserRequest(
+                    _.get(story, 'user._id')
+                  )
                 )
               }
             >
               Mute this author
             </Button>
-          )}
-        </Menu.Item>
-        <Menu.Item>
-          {!isReported && (
+          </Menu.Item>
+        )}
+        {!isReported && (
+          <Menu.Item>
             <Button
               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
               onClick={() =>
@@ -180,8 +184,8 @@ function StoryContent(props) {
             >
               Report
             </Button>
-          )}
-        </Menu.Item>
+          </Menu.Item>
+        )}
       </Menu.Items>
     );
   };

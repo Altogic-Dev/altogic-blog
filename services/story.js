@@ -1,18 +1,7 @@
-import _ from 'lodash';
 import { db, endpoint, cache } from '@/utils/altogic';
 
 const StoryService = {
-  getFollowingStories(userId, mutedUsers, page = 1, limit = 10) {
-    const query = () => {
-      if (_.isArray(mutedUsers) && !_.isEmpty(mutedUsers)) {
-        const mutedUserQuery = _.map(mutedUsers, (user, index) =>
-          index === 0 ? `this.user != '${user}'` : `|| this.user != '${user}'`
-        );
-        return `EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate && (${mutedUserQuery})`;
-      }
-      return 'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate';
-    };
-
+  getFollowingStories(userId, page = 1, limit = 10) {
     return db
       .model('story')
       .lookup({
@@ -20,7 +9,9 @@ const StoryService = {
         name: 'followerConnection',
         query: `this.user == lookup.followingUser && lookup.followerUser == '${userId}'`,
       })
-      .filter(query())
+      .filter(
+        'EXISTS(followerConnection) && !isDeleted && isPublished && !isPrivate'
+      )
       .sort('createdAt', 'desc')
       .limit(limit)
       .page(page)
@@ -33,18 +24,11 @@ const StoryService = {
 
   updateCategoryPairs(categoryPairs) {
     return endpoint.post('/topic/relation', categoryPairs);
-
   },
 
-  GetRecommendedStoriesByUser({
-    recommendedTopics,
-    mutedUsers,
-    page = 1,
-    limit = 10,
-  }) {
+  GetRecommendedStoriesByUser({ recommendedTopics, page = 1, limit = 10 }) {
     return endpoint.put('/story/recommendedByUser', {
       recommendedTopics,
-      mutedUsers,
       page,
       limit,
     });

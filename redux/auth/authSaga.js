@@ -1,6 +1,5 @@
 import AuthService from '@/services/auth';
 import PublicationService from '@/services/publication';
-import _ from 'lodash';
 import { toast } from 'react-toastify';
 import {
   takeEvery,
@@ -153,66 +152,8 @@ function* updateFollowingTopicsSaga({ payload: { topics } }) {
   }
 }
 
-function* muteAuthorSaga({ payload: mutedUserId }) {
-  try {
-    const userFromLocal = yield select((state) => state.auth.user);
-    if (
-      !_.isNil(userFromLocal.mutedUsers) &&
-      _.includes(userFromLocal.mutedUsers, mutedUserId)
-    ) {
-      throw 'This user is already muted.';
-    } else {
-      const newMutedUsers = _.isNil(userFromLocal.mutedUsers)
-        ? [mutedUserId]
-        : [...userFromLocal.mutedUsers, mutedUserId];
-      const { errors } = yield call(AuthService.updateUser, {
-        mutedUser: newMutedUsers,
-      });
-      if (!errors) {
-        yield put(
-          authActions.muteAuthorSuccess({ newMutedUsers, mutedUserId })
-        );
-        AuthService.setUserFromLocal({
-          ...userFromLocal,
-          mutedUser: newMutedUsers,
-        });
-      }
-    }
-  } catch (e) {
-    console.log({ e });
-  }
-}
 function* errorResetSaga() {
   yield put(authActions.resetErrors());
-}
-
-function* unmuteAuthorSaga({ payload: mutedUserId }) {
-  try {
-    const userFromLocal = yield select((state) => state.auth.user);
-
-    const newMutedUsers = _.reject(userFromLocal.mutedUsers, mutedUserId);
-
-    const { errors } = yield call(AuthService.updateUser, {
-      mutedUser: newMutedUsers,
-    });
-    if (!errors) {
-      yield put(
-        authActions.unmuteAuthorSuccess({ newMutedUsers, mutedUserId })
-      );
-      AuthService.setUserFromLocal({
-        ...userFromLocal,
-        mutedUser: newMutedUsers,
-      });
-    }
-  } catch (e) {
-    console.log({ e });
-  }
-}
-
-function* isMutedSaga({ payload: authorId }) {
-  const user = yield select((state) => state.auth.user);
-  const isMuted = _.includes(user.mutedUser, authorId);
-  yield put(authActions.isMutedSuccess(isMuted));
 }
 
 function* changePasswordSaga({ payload }) {
@@ -368,9 +309,6 @@ export default function* rootSaga() {
       authActions.updateFollowingTopicsRequest.type,
       updateFollowingTopicsSaga
     ),
-    takeEvery(authActions.muteAuthorRequest.type, muteAuthorSaga),
-    takeEvery(authActions.unmuteAuthorRequest.type, unmuteAuthorSaga),
-    takeEvery(authActions.isMutedRequest.type, isMutedSaga),
     takeEvery(authActions.resetPasswordRequest.type, resetPassword),
     takeEvery(
       authActions.authenticateWithProviderRequest.type,

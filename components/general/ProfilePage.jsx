@@ -22,6 +22,7 @@ import { generalActions } from '@/redux/general/generalSlice';
 import usePrevious from '@/hooks/usePrevious';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 import UserCard from './UserCard';
 import CreateBookmarkList from '../bookmarks/CreateBookmarkList';
 
@@ -228,6 +229,15 @@ export default function ProfilePage({ About, Home, List }) {
                             Copy link to profile
                           </Button>
                         </Menu.Item>
+                        {isMyProfile && (
+                          <Menu.Item>
+                            <Link href="/muted-users">
+                              <Button className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
+                                Muted Users
+                              </Button>
+                            </Link>
+                          </Menu.Item>
+                        )}
                         <Menu.Item>
                           <Button
                             type="button"
