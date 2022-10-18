@@ -53,6 +53,7 @@ function About(props) {
     }
   }, [followerPage]);
 
+  console.log(topWriterTopics)
   return (
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
@@ -74,13 +75,15 @@ function About(props) {
           >
             <circle cx={4} cy={4} r={3} />
           </svg>
-          <span>Top writer in</span>
+          {topWriterTopics && <span>Top writer in</span>}
         </div>
-        <div className="flex flex-wrap items-center gap-4">
-          {_.map(topWriterTopics, (topic) => (
-            <Topic title={topic.name} key={topic} />
-          ))}
-        </div>
+        {topWriterTopics && (
+          <div className="flex flex-wrap items-center gap-4">
+            {_.map(topWriterTopics, (topic) => (
+              <Topic title={topic.name} key={topic} />
+            ))}
+          </div>
+        )}
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
         <Button onClick={toggleFollowersModal}>

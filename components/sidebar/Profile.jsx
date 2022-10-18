@@ -97,14 +97,14 @@ export default function Profile({
           dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
         />
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
-          {!isMyProfile && (
+          {!isMyProfile && sessionUser && (
             <FollowButton
               isLoading={isLoading && clickedIsLoading}
               isFollowing={isFollowing}
               onClick={toggleFollow}
             />
           )}
-          {!isMyProfile && (
+          {!isMyProfile && sessionUser && (
             <Button
               primaryColor
               extraClasses="inline-flex gap-2"

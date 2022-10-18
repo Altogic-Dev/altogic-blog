@@ -9,9 +9,13 @@ import {
 import { toast } from 'react-toastify';
 import Button from './basic/button';
 
-function ShareButtons({ customLink }) {
+function ShareButtons({ customLink, backgroundColor }) {
   const router = useRouter();
-
+  const bgColor = `inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200${
+    backgroundColor === 'purple'
+      ? ' hover:bg-purple-50'
+      : ' hover:bg-slate-100 '
+  }`;
   const [basePath, setBasePath] = useState();
   const shareUrl = basePath + (customLink ?? router.asPath);
 
@@ -28,7 +32,7 @@ function ShareButtons({ customLink }) {
     <ul className="flex items-center">
       <li>
         <TwitterShareButton url={`${shareUrl}?twitter=true`}>
-          <a className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100">
+          <a className={bgColor}>
             <svg
               className="w-6 h-6 text-slate-400"
               viewBox="0 0 24 24"
@@ -47,7 +51,7 @@ function ShareButtons({ customLink }) {
       </li>
       <li>
         <FacebookShareButton url={`${shareUrl}?facebook=true`}>
-          <a className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100">
+          <a className={bgColor}>
             <svg
               className="w-6 h-6 text-slate-400"
               viewBox="0 0 24 24"
@@ -66,7 +70,7 @@ function ShareButtons({ customLink }) {
       </li>
       <li>
         <LinkedinShareButton url={`${shareUrl}?linkedin=true`}>
-          <a className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100">
+          <a className={bgColor}>
             <svg
               className="w-6 h-6 text-slate-400"
               viewBox="0 0 24 24"
@@ -84,10 +88,7 @@ function ShareButtons({ customLink }) {
         </LinkedinShareButton>
       </li>
       <li>
-        <Button
-          onClick={copyToClipboard}
-          className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-100"
-        >
+        <Button onClick={copyToClipboard} className={bgColor}>
           <svg
             className="w-6 h-6 text-slate-400"
             viewBox="0 0 24 24"

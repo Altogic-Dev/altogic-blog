@@ -121,7 +121,6 @@ export default function ListDetail() {
   }, [username]);
 
   useEffect(() => {
-    if (sessionUser) {
       setUser(isMyProfileState ? sessionUser : profileUser);
       if (!isMyProfileState && profileUser) {
         dispatch(
@@ -130,7 +129,6 @@ export default function ListDetail() {
           )
         );
       }
-    }
   }, [isMyProfileState, profileUser, sessionUser]);
 
   useEffect(() => {

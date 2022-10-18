@@ -9,19 +9,16 @@ export default function Footer() {
         style={{ listStyle: 'none' }}
       >
         <li className="pr-2 pt-2">
-          <Link href="writers">Writers</Link>
+          <Link href="/writers">Writers</Link>
         </li>
         <li className="pr-2 pt-2">
-          <Link href="blog">Blog</Link>
+          <Link href="/blog">Blog</Link>
         </li>
         <li className="pr-2 pt-2">
-          <Link href="privacy">Privacy</Link>
+          <Link href="/privacy">Privacy</Link>
         </li>
         <li className="pr-2 pt-2">
-          <Link href="terms">Terms</Link>
-        </li>
-        <li className="pr-2 pt-2">
-          <Link href="about">About</Link>
+          <Link href="/terms">Terms</Link>
         </li>
         <li className="pr-2 pt-2">
           <Link href="https://www.altogic.com">Altogic</Link>

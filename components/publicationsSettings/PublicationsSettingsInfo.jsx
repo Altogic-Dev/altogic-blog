@@ -15,6 +15,7 @@ import Input from '../Input';
 import TagInput from '../TagInput';
 import UserInput from '../UserInput';
 import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSuggestions';
+import Button from '../basic/button';
 
 export default function PublicationSettingsInfo({
   doSave,
@@ -123,7 +124,6 @@ export default function PublicationSettingsInfo({
 
   const handleSearch = (e) => {
     const { name, value } = e.target;
-
     if (name === 'writer') setInpWriter(value);
     else setInpEditor(value);
 
@@ -576,9 +576,8 @@ export default function PublicationSettingsInfo({
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
                   {_.map(user?.recommendedTopics, (topic) => (
-                    <button
+                    <Button
                       key={topic}
-                      type="button"
                       className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-5 rounded-md tracking-sm text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                       onClick={() => addTagFromRecommended(topic)}
                     >
@@ -587,7 +586,7 @@ export default function PublicationSettingsInfo({
                         aria-hidden="true"
                       />
                       {topic}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               </div>
@@ -608,7 +607,7 @@ export default function PublicationSettingsInfo({
             </p>
           </div>
           <div className="relative md:mb-6">
-            <div className="hidden lg:block">
+            <div className="lg:block">
               <div>
                 <div className="rounded-md shadow-sm">
                   <UserInput
@@ -617,6 +616,7 @@ export default function PublicationSettingsInfo({
                     users={editors}
                     setUsers={setEditors}
                     onChange={handleSearch}
+                    value={inpEditor}
                   />
                 </div>
               </div>
@@ -643,6 +643,7 @@ export default function PublicationSettingsInfo({
                       users={writers}
                       setUsers={setWriters}
                       onChange={handleSearch}
+                      value={inpWriter}
                     />
                   </div>
                 </div>
@@ -659,19 +660,19 @@ export default function PublicationSettingsInfo({
         </div>
         <hr className="my-8 lg:my-14 border-gray-200" />
         <div className="flex items-center justify-end gap-4">
-          <button
+          <Button
             type="submit"
             className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
           >
             {isCreate ? 'Create' : 'Save'}
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
             onClick={isCreate ? router.back : _.noop}
           >
             Cancel
-          </button>
+          </Button>
         </div>
       </form>
     </div>

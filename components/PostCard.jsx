@@ -7,6 +7,7 @@ import BookmarkLists from './bookmarks/BookmarkLists';
 import CreateBookmarkList from './bookmarks/CreateBookmarkList';
 import DeleteList from './bookmarks/DeleteList';
 import Topic from './basic/topic';
+import Button from './basic/button';
 
 export default function PostCard({
   authorUrl,
@@ -23,13 +24,14 @@ export default function PostCard({
   normalMenu,
   optionButtons,
   listDetailMenu,
-  images = '/story-header.jpeg',
+  images,
   story,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
   const [deleteListModal, setDeleteListModal] = useState(false);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const sessionUser = useSelector((state) => state.auth.user);
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 py-8 md:py-10">
@@ -95,14 +97,14 @@ export default function PostCard({
                   {min} min read
                 </span>
               </div>
-              {actionMenu && (
-                <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
+              {actionMenu && sessionUser && (
+                <div className="group flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                   <Menu
                     as="div"
                     className="relative inline-block text-left ml-4"
                   >
                     <div>
-                      <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                      <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50">
                         {bookmarks?.some(
                           (bk) =>
                             bk.story._id === story?._id ||
@@ -147,7 +149,7 @@ export default function PostCard({
                   {normalMenu && (
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
-                        <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50">
                           <svg
                             className="w-6 h-6 text-slate-400 group-hover:text-slate-600"
                             viewBox="0 0 24 24"
@@ -173,79 +175,72 @@ export default function PostCard({
                         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
                           {!_.isNil(optionButtons?.unfollow) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.unfollow}
                               >
                                 Unfollow this author
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                           {!_.isNil(optionButtons?.mute) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.mute}
                               >
                                 Mute this author
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                           {!_.isNil(optionButtons?.report) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.report}
                               >
                                 Report
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                           {!_.isNil(optionButtons?.editStory) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.editStory}
                               >
                                 Edit Story
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                           {!_.isNil(optionButtons?.storySettings) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.storySettings}
                               >
                                 Story Settings
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                           {!_.isNil(optionButtons?.storyStats) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.storyStats}
                               >
                                 Story Stats
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                           {!_.isNil(optionButtons?.deleteStory) && (
                             <Menu.Item>
-                              <button
-                                type="button"
+                              <Button
                                 className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                                 onClick={optionButtons?.deleteStory}
                               >
                                 Delete Story
-                              </button>
+                              </Button>
                             </Menu.Item>
                           )}
                         </Menu.Items>
