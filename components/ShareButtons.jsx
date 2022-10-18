@@ -17,7 +17,11 @@ function ShareButtons({ customLink, backgroundColor }) {
       : ' hover:bg-slate-100 '
   }`;
   const [basePath, setBasePath] = useState();
-  const shareUrl = basePath + (customLink ?? router.asPath);
+  const shareUrl =
+    basePath +
+    encodeURI(customLink ?? router.asPath)
+      .replace(/\(/g, '%28')
+      .replace(/\)/g, '%29');
 
   useEffect(() => {
     setBasePath(window.location.origin);

@@ -58,21 +58,15 @@ export const modules = {
 
 // Formats objects for setting up the Quill editor
 export const formats = [
-  'header',
-  'font',
-  'size',
   'bold',
   'italic',
   'underline',
-  'align',
   'strike',
-  'background',
+  'align',
   'list',
   'bullet',
   'indent',
   'link',
-  'image',
-  'color',
 ];
 
 // Quill Toolbar component
@@ -90,11 +84,6 @@ export function QuillToolbar() {
         <Button className="ql-list" value="bullet" />
         <Button className="ql-indent" value="-1" />
         <Button className="ql-indent" value="+1" />
-      </span>
-      <span className="ql-formats">
-        <select className="ql-align" />
-        <select className="ql-color" />
-        <select className="ql-background" />
       </span>
       <span className="ql-formats">
         <Button className="ql-link" />

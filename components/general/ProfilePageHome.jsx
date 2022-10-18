@@ -11,11 +11,9 @@ import DeleteStoryModal from '../DeleteStoryModal';
 function ProfilePageHome({ userId }) {
   const dispatch = useDispatch();
   const router = useRouter();
-
   const userStories = useSelector((state) => state.story.userStories);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const firstUpdate = useRef(true);
-
   const [page, setPage] = useState(1);
   const [deletedStory, setDeletedStory] = useState(null);
   const PAGE_LIMIT = 6;
@@ -29,7 +27,6 @@ function ProfilePageHome({ userId }) {
   };
 
   const getUserStoriesRequest = () => {
-
     dispatch(
       storyActions.getUserStoriesRequest({
         userId,

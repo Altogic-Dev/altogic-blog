@@ -28,11 +28,9 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       list: list._id,
       userId: user._id,
       story: story._id,
+      coverImages,
     };
-    if (coverImages.length > 0) {
-      coverImages = coverImages.pop();
-      req.coverImages = coverImages;
-    }
+
     dispatch(addBookmarkRequest(req));
   };
   const handleAddBookmark = (e, list) => {

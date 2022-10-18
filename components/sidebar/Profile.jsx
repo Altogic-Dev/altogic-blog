@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
+import { parseHtml } from '@/utils/utils';
 import FollowButton from '../basic/followbutton';
 import Button from '../basic/button';
 import Avatar from '../profile/Avatar';
@@ -92,10 +93,10 @@ export default function Profile({
         <span className="inline-block mb-3 text-slate-500 text-sm">
           {_.get(profile, 'followerCount')} Followers
         </span>
-        <p
-          className="text-slate-500 text-xs mb-8"
-          dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
-        />
+        <p className="text-slate-500 text-xs mb-8">
+          {' '}
+          {parseHtml(_.get(profile, 'about'))}
+        </p>
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">
           {!isMyProfile && sessionUser && (
             <FollowButton

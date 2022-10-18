@@ -169,6 +169,9 @@ export default function WhoToFollow({
                               key={person._id}
                               user={person}
                               isFollowing={_.includes(isFollowings, person._id)}
+                              onClick={() => setwhoToFollowDataModal(false)}
+                              role="button"
+                              tabIndex={0}
                             />
                           ))}
                         </ul>

@@ -8,6 +8,7 @@ import MyPlans from '@/components/settings/MyPlans';
 import ChangeEmail from '@/components/settings/ChangeEmail';
 import Layout from '@/layouts/Layout';
 import constants from '@/constants';
+import ChangeProfilePicture from '@/components/settings/ChangeProfilePicture';
 
 export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
@@ -40,18 +41,25 @@ export default function Settings() {
             <ul className="hidden xl:block sticky bottom-0">
               {constants.SETTINGS_MENU.map((setting) => (
                 <li key={setting.id}>
-                  <a
-                    href={setting.href}
-                    className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
-                  >
-                    {setting.name}
-                  </a>
+                  {setting.provider(user?.provider) && (
+                    <a
+                      href={setting.href}
+                      className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
+                    >
+                      {setting.name}
+                    </a>
+                  )}
                 </li>
               ))}
             </ul>
             <div>
               {/* My Details */}
-              <MyDetails user={user} id="my-details" className="mb-16" />
+              <MyDetails id="my-details" className="mb-16" />
+              {/* My Details */}
+              <ChangeProfilePicture
+                id="change-profile-picture"
+                className="mb-16"
+              />
               {/* Password */}
               {user?.provider === 'altogic' && (
                 <ChangePassword id="password" className="mb-16" />

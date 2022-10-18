@@ -2,7 +2,10 @@ import { call, takeEvery, put, all, fork, select } from 'redux-saga/effects';
 import _ from 'lodash';
 import FollowerConnectionService from '@/services/followerConnection';
 import { followerConnectionActions } from './followerConnectionSlice';
-import { updateFollowerCountSaga } from '../story/storySaga';
+import {
+  removeUnfollowingStories,
+  updateFollowerCountSaga,
+} from '../story/storySaga';
 import { updateProfileUserSaga, updateUserSaga } from '../auth/authSaga';
 
 function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
@@ -17,6 +20,7 @@ function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
     if (!notUpdate) {
       yield fork(updateFollowerCountSaga, false);
     }
+    yield fork(removeUnfollowingStories, followingUserId);
     const user = yield select((state) => state.auth.user);
     yield fork(updateUserSaga, {
       followingCount: user.followingCount - 1,

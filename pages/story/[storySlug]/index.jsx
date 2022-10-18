@@ -375,9 +375,9 @@ export default function BlogDetail({ ip }) {
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
                 followLoading={followLoading}
-                whoToFollow = {user}
-                popularTopics
+                stories={moreUserStories}
                 popularStories
+                userTopics
               />
             </div>
           </div>

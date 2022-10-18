@@ -24,7 +24,8 @@ export default function PostCard({
   normalMenu,
   optionButtons,
   listDetailMenu,
-  images,
+  images = '/story-header.jpeg',
+  showImages = true,
   story,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
@@ -305,7 +306,7 @@ export default function PostCard({
             </div>
           </div>
         </div>
-        {images && (
+        {images && showImages && (
           <img
             src={images}
             className="w-full md:w-[150px] h-[150px] object-cover rounded-md"

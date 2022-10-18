@@ -41,7 +41,7 @@ export default function CreateBookmarkList({ setCreateNewList, list, story }) {
         })
       );
     } else {
-      const req = {
+      const bookmarkList = {
         ...data,
         isPrivate: enabled,
         user: user._id,
@@ -49,7 +49,7 @@ export default function CreateBookmarkList({ setCreateNewList, list, story }) {
       };
       dispatch(
         createBookmarkListRequest({
-          bookmarkList: req,
+          bookmarkList,
           bookmark: {
             userId: user._id,
             story,
