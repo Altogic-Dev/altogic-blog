@@ -31,7 +31,7 @@ function MyStoriesPublished({ setDeletedStory }) {
   };
 
   useEffect(() => {
-    if (page > 1 || _.isNil(userStories)) getUserStories();
+    getUserStories();
   }, [page]);
 
   return (
