@@ -46,6 +46,16 @@ html {
   padding-bottom: 75px;
   outline: none;
 }
+#editor-container .ql-editor::before {
+  content: attr(data-placeholder);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  @apply text-gray-500;
+}
 #editor-container .ql-editor > * {
   margin-top: 1.5em;
 }
