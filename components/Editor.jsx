@@ -62,7 +62,7 @@ export default function Editor({
     if (youtube.test(url)) {
       return url.replace(
         youtube,
-        'https://lite-youtube-embed-iframe.vercel.app/$1'
+        'https://lite-youtube-embed-iframe.vercel.app/embed/$1'
       );
     }
     if (url.includes('dailymotion')) {
