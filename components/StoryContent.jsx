@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import dynamic from 'next/dynamic';
 import { useDispatch, useSelector } from 'react-redux';
 import Link from 'next/link';
+import { getLicenseTitle } from '@/utils/utils';
 import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
@@ -198,7 +199,7 @@ function StoryContent(props) {
     <div ref={forwardedRef}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
         <div className="flex items-center gap-3">
-          <Link href={`/${story?.user.username}/about`}>
+          <Link href={`/${story?.user.username}?tab=about`}>
             <a className="flex items-center gap-2">
               <img
                 className="w-[50px] h-[50px] rounded-full object-cover"
@@ -208,7 +209,7 @@ function StoryContent(props) {
             </a>
           </Link>
           <div>
-            <Link href={`/${story?.user.username}/about`}>
+            <Link href={`/${story?.user.username}?tab=about`}>
               <a className="text-slate-700  text-base font-medium tracking-sm">
                 {_.get(story, 'user.name')}
               </a>
@@ -295,7 +296,12 @@ function StoryContent(props) {
           className="prose self-baseline prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm my-10 sm:mb-24"
           dangerouslySetInnerHTML={{ __html: story?.content }}
         />
-
+        <span className="text-slate-700 text-sm font-semibold mb-2">
+          License:{' '}
+          <span className="text-slate-500 text-sm tracking-sm">
+            {getLicenseTitle(story?.license)}
+          </span>
+        </span>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-slate-50 sm:p-2 mb-10 sm:mb-24 w-full">
           <div className="flex items-center justify-center sm:justify-start gap-4 border-b-8 sm:border-0 border-white">
             <button
