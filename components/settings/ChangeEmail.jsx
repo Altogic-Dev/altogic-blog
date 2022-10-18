@@ -41,6 +41,12 @@ export default function ChangeEmail() {
             message: err.message,
           });
         }
+        if (err.message?.includes('email')) {
+          setError('newEmail', {
+            type: 'manuel',
+            message: err.message,
+          });
+        }
       });
     }
     if (!error) {
@@ -122,7 +128,7 @@ export default function ChangeEmail() {
                 type="submit"
                 className="inline-flex justify-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
               >
-                Update Password
+                Change Email
               </Button>
             </div>
           </div>

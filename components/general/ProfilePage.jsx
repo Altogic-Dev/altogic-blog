@@ -24,10 +24,12 @@ import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import UserCard from './UserCard';
+import CreateBookmarkList from '../bookmarks/CreateBookmarkList';
 
 export default function ProfilePage({ About, Home, List }) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const [createNewList, setCreateNewList] = useState(false);
   const { username } = router.query;
   const tabNames = ['Home', 'Lists', 'About'];
   const [isLoading, setIsLoading] = useState(true);
@@ -112,6 +114,7 @@ export default function ProfilePage({ About, Home, List }) {
     if (profileUser?.username !== username && username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
+    setFollowingModal(false);
   }, [username]);
 
   useEffect(() => {
@@ -235,6 +238,15 @@ export default function ProfilePage({ About, Home, List }) {
                             </Link>
                           </Menu.Item>
                         )}
+                        <Menu.Item>
+                          <Button
+                            type="button"
+                            className='className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"'
+                            onClick={setCreateNewList}
+                          >
+                            Create New List
+                          </Button>
+                        </Menu.Item>
                       </Menu.Items>
                     </Transition>
                   </Menu>
@@ -344,6 +356,9 @@ export default function ProfilePage({ About, Home, List }) {
                 followLoading={followLoading}
                 isFollowing={isFollowing}
                 isSubscribed={isSubscribed}
+                popularStories={!isMyProfile}
+                userTopics={profileUser?.topWriterTopics}
+                stories={userStories?.slice(0, 5)}
               />
             </div>
             {/* Mobile Sidebar */}
@@ -427,6 +442,9 @@ export default function ProfilePage({ About, Home, List }) {
               </div>
             </div>
           </div>
+        )}
+        {createNewList && (
+          <CreateBookmarkList setCreateNewList={setCreateNewList} />
         )}
       </Layout>
       <Transition appear show={followingModal} as={Fragment}>

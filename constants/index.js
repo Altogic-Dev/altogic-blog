@@ -6,26 +6,37 @@ const constants = {
       id: 0,
       name: 'My Details',
       href: '#my-details',
+      provider: () => true,
+    },
+    {
+      id: 0,
+      name: 'Profile Picture',
+      href: '#change-profile-picture',
+      provider: () => true,
     },
     {
       id: 1,
       name: 'Password',
       href: '#password',
+      provider: (provider) => provider === 'altogic',
     },
     {
       id: 2,
       name: 'Change Email',
       href: '#change-email',
+      provider: (provider) => provider === 'altogic',
     },
     {
       id: 3,
       name: 'My Sessions',
       href: '#my-sessions',
+      provider: () => true,
     },
     {
       id: 4,
       name: 'My Plans',
       href: '#my-plans',
+      provider: () => true,
     },
   ],
   USER_SETTINGS_FIELDS: [

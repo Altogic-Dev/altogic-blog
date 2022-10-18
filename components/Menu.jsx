@@ -13,6 +13,7 @@ import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { useRouter } from 'next/router';
 import { realtime } from '@/utils/altogic';
 import { generalActions } from '@/redux/general/generalSlice';
+import { storyActions } from '@/redux/story/storySlice';
 import Avatar from './profile/Avatar';
 import Button from './basic/button';
 import Notifications from './Notifications/Notifications';
@@ -29,7 +30,6 @@ export default function HeaderMenu() {
   const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const loading = useSelector((state) => state.general.isLoading);
   const [user, setUser] = useState();
   const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -122,7 +122,6 @@ export default function HeaderMenu() {
                 </a>
               </Link>
             )}
-            
           </Popover.Group>
           <div
             className={`${
@@ -130,22 +129,30 @@ export default function HeaderMenu() {
             } flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 gap-4`}
           >
             <div
-              className="search"
-              onMouseLeave={() => {
-                setShowSuggestions(false);
-                setHideMenu(false);
-              }}
-              onMouseOver={() => setHideMenu(true)}
-              onFocus={() => setHideMenu(true)}
+              className={`${
+                hideMenu &&
+                'w-[32rem] cursor-pointer border border-solid border-gray-300'
+              } relative h-12 w-12 bg-white rounded-xl p-1`}
             >
               <Search
                 showSuggestions={showSuggestions}
                 setShowSuggestions={setShowSuggestions}
                 onSearch={handleOnSearch}
                 suggestions={searchResults}
-                loading={loading}
+                className={`${
+                  hideMenu ? 'block' : 'hidden'
+                } absolute top-0 left-0 w-full h-[42.5px] leading-[30px] bg-white outline-none py-0 px-5 rounded-2xl`}
               />
-              <Button className="search-button">
+
+              <Button
+                onClick={() => {
+                  setHideMenu((prev) => !prev);
+                  if (hideMenu) {
+                    setShowSuggestions(false);
+                  }
+                }}
+                className="absolute top-0 right-0 border-none w-10 h-10 p-2 bg-transparent cursor-pointer shadow-none rounded-full text-center"
+              >
                 <SearchIcon className="w-5 h-5" />
               </Button>
             </div>
@@ -153,6 +160,7 @@ export default function HeaderMenu() {
               <>
                 <Button
                   onClick={() => {
+                    dispatch(storyActions.clearStory());
                     router.push('/write-a-story');
                   }}
                   className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
@@ -190,7 +198,7 @@ export default function HeaderMenu() {
                   </a>
                 </Link>
                 <Link href="/create-an-account">
-                  <a className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-purple-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                  <a className="whitespace-nowrap inline-flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-purple-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                     Sign Up
                   </a>
                 </Link>

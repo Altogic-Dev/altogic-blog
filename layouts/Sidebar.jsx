@@ -39,6 +39,7 @@ export default function Sidebar({
   followLoading,
   followingStoriesPage,
   followingTopics,
+  userTopics,
 }) {
   return (
     <>
@@ -75,14 +76,15 @@ export default function Sidebar({
           Tag={Tag}
         />
       )}
-      {(popularTopics || relatedTopics || followingTopics) && (
+      {(popularTopics || relatedTopics || followingTopics || userTopics) && (
         <PopularTopics
           isFollowingTopics={followingTopics}
           isPopularTopics={popularTopics}
           isRelatedTopics={relatedTopics}
+          userTopics={profile?.topWriterTopics}
         />
       )}
-      {popularStories && (
+      {popularStories && stories?.length > 0 && (
         <PopularStories
           title={query ? `Stories Match ${query}` : 'Popular Stories'}
           stories={stories}

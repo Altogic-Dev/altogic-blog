@@ -12,6 +12,7 @@ export default function PopularTopics({
   isRelatedTopics,
   isFollowingTopics,
   isPopularTopics,
+  userTopics,
 }) {
   const popularTopics = useSelector((state) => state.topics.popularTopics);
   const relatedTopics = useSelector((state) => state.topics.relatedTopics);
@@ -41,6 +42,8 @@ export default function PopularTopics({
       setTitle('Related Topics');
     } else if (isFollowingTopics) {
       setTitle('Following Topics');
+    } else if (userTopics) {
+      setTitle('Your Topics');
     }
   }, [tag]);
 
@@ -61,9 +64,12 @@ export default function PopularTopics({
           name: topic,
         }))
       );
+    } else if (userTopics) {
+      setTopics(
+        userTopics.map((topic, index) => ({ _id: index, name: topic }))
+      );
     }
   }, [relatedTopics, popularTopics, followingTopics]);
-
   return (
     <div>
       <SidebarTitle title={title} spacing="mb-4" />
