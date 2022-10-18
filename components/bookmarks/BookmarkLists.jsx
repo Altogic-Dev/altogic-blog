@@ -17,7 +17,6 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
 
   const addBookmark = (list) => {
     let { coverImages } = list;
-    debugger;
     const storyImages = _.map(story.storyImages, (image) => image);
     if (coverImages.length < 4) {
       coverImages = [...coverImages, storyImages[0]];

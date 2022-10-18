@@ -273,7 +273,6 @@ function* getSessionsSaga() {
 }
 function* deleteSessionSaga({ payload: sessionToken }) {
   try {
-    debugger;
     console.log(sessionToken);
     const { errors } = yield call(AuthService.deleteSession, sessionToken);
     if (errors) {

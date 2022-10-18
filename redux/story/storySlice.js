@@ -181,7 +181,6 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getUserStoriesSuccess(state, action) {
-      debugger;
       if (_.isArray(state.userStories)) {
         state.userStories = [
           ...state.userStories.filter((s) => s.user === action.payload.userId),
