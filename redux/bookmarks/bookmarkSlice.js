@@ -37,7 +37,12 @@ export const bookmarkSlice = createSlice({
     getBookmarkListsSuccess(state, action) {
       state.isLoading = false;
       if (_.isArray(state.bookmarkLists)) {
-        state.bookmarkLists = [...state.bookmarkLists, ...action.payload.data];
+        state.bookmarkLists = [
+          ...state.bookmarkLists.filter(
+            (b) => b.username === action.payload.username
+          ),
+          ...action.payload.data,
+        ];
       } else {
         state.bookmarkLists = action.payload.data;
       }
