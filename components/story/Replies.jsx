@@ -94,7 +94,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       temp.content = editText;
       console.log(temp);
       dispatch(storyActions.editReplyRequest(temp));
-      setEditRespondBoxes((prev) => prev.map((item) => ''));
+      setEditRespondBoxes((prev) => prev.map(() => ''));
     }
   };
 
