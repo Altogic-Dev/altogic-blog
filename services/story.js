@@ -55,6 +55,7 @@ const StoryService = {
     return db
       .model('story')
       .filter(filter)
+      .sort('pinnedStory', 'desc')
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
@@ -65,6 +66,7 @@ const StoryService = {
     return db
       .model('story')
       .filter(`user == '${userId}' && !isDeleted && isPublished`)
+      .sort('pinnedStory', 'desc')
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
@@ -75,6 +77,7 @@ const StoryService = {
     return db
       .model('story')
       .filter(`user == '${userId}' && !isDeleted && !isPublished`)
+      .sort('pinnedStory', 'desc')
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)

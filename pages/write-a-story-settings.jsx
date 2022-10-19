@@ -29,6 +29,7 @@ export default function WriteAStorySettings() {
   const [inpStorySlug, setInpStorySlug] = useState('');
   const [inpCategory, setInpCategory] = useState('');
   const [inpCategoryNames, setInpCategoryNames] = useState([]);
+  const [inpPinStory, setInpPinStory] = useState(false);
 
   const [radioCustomizeLink, setRadioCustomizeLink] = useState('automatic');
   const [radiolicense, setRadioLicense] = useState('all');
@@ -89,6 +90,7 @@ export default function WriteAStorySettings() {
       setInpStorySlug(story.storySlug);
       setInpCategoryNames(story.categoryNames);
       setRadioLicense(story.license);
+      setInpPinStory(Boolean(story.pinnedStory));
     }
   }, [story]);
 
@@ -242,6 +244,43 @@ export default function WriteAStorySettings() {
                       />
                     </div>
                   </div>
+                </div>
+                <hr className="my-14" />
+                <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
+                  Story Sorting
+                </h2>
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                  <div className="flex items-center">
+                    <input
+                      id="pin-story"
+                      name="pinStory"
+                      type="checkbox"
+                      className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
+                      onChange={() => setInpPinStory((prev) => !prev)}
+                      checked={inpPinStory}
+                    />
+                    <label htmlFor="all-rights-reserved" className="ml-3 block">
+                      <h2 className="text-base font-medium text-slate-700">
+                        Pin Story
+                      </h2>
+                    </label>
+                  </div>
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[42px] md:h-[48px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                    onClick={() =>
+                      dispatch(
+                        storyActions.updateStoryFieldRequest({
+                          story,
+                          newStoryField: {
+                            pinnedStory: inpPinStory,
+                          },
+                        })
+                      )
+                    }
+                  >
+                    Save
+                  </button>
                 </div>
                 <hr className="my-14" />
                 <div id="reader-interest">
