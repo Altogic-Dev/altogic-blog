@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment,useEffect,useState } from 'react';
 import { Transition, Menu } from '@headlessui/react';
 import {
   CogIcon,
@@ -19,6 +19,14 @@ export default function HeaderDropdown({ user, logout, className }) {
   const selectPublication = (publication) => {
     dispatch(publicationActions.selectPublicationRequest(publication));
   };
+
+  const [publiationsState,setPublicationState] = useState([]);
+
+  console.log(publications)
+
+  useEffect(() => {
+    setPublicationState(publications)
+  },[publications])
   return (
     <Transition
       as={Fragment}
@@ -42,12 +50,14 @@ export default function HeaderDropdown({ user, logout, className }) {
             <p className="text-slate-700 text-sm font-medium tracking-sm">
               {user?.name}
             </p>
-            <p className="text-slate-500 text-sm tracking-sm text-ellipsis w-36 overflow-hidden">@{user?.username}</p>
+            <p className="text-slate-500 text-sm tracking-sm text-ellipsis w-36 overflow-hidden">
+              @{user?.username}
+            </p>
           </div>
         </div>
         <div className="divide-y divide-gray-200">
           <div>
-            <Link href={`/${user?.username}/about`}>
+            <Link href={`/${user?.username}?tab=about`}>
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                 <UserIcon className="w-4 h-4 text-slate-500" />
                 View Profile
@@ -72,7 +82,7 @@ export default function HeaderDropdown({ user, logout, className }) {
             <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
               Publications
             </span>
-            {publications?.slice(0, 3).map((publication) => (
+            {publiationsState?.slice(0, 3).map((publication) => (
               <Menu.Item
                 key={publication._id}
                 onClick={() => selectPublication(publication)}

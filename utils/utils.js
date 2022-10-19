@@ -62,3 +62,31 @@ export function toMonthName(monthNumber) {
     month: 'long',
   });
 }
+
+export function getLicenseTitle(license) {
+  switch (license) {
+    case 'all':
+      return 'All rights reserved';
+
+    case 'some-attribution':
+      return 'Attribution';
+    case 'some-attributionNoDerrivates':
+      return 'Attribution, no derrivates';
+    case 'some-attributionShareALike':
+      return 'Attribution, share a like';
+    case 'some-attributionNonCommercial':
+      return 'Attribution, non-commercial';
+    case 'some-attributionNonCommercialNoDerrivates':
+      return 'Attribution, non-commercial, no derrivates';
+    case 'some-attributionNonCommercialShareALike':
+      return 'Attribution, non-commercial, share a like';
+
+    case 'no-creativeCommonsCopyrightWaiver':
+      return 'Creative Commons copyright waiver';
+    case 'no-publicDomain':
+      return 'Public domain';
+
+    default:
+      return '-';
+  }
+}

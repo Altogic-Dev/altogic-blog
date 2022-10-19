@@ -6,6 +6,7 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useRouter } from 'next/router';
 import Layout from '@/layouts/Layout';
 import { classNames } from '@/utils/utils';
+import _ from 'lodash';
 
 export default function PublicationsFollowers() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -14,6 +15,7 @@ export default function PublicationsFollowers() {
   const peoples = useSelector(
     (state) => state.publication.publicationFollowers
   );
+  const publication = useSelector((state) => state.publication.publication);
 
   const publicationId = router.query.id;
 
@@ -38,7 +40,7 @@ export default function PublicationsFollowers() {
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <h1 className="text-slate-700 my-[60px] text-5xl font-bold tracking-md">
-            HiThemes followers
+            {`${_.get(publication, 'name')} followers`}
           </h1>
           <div className="max-w-[800px] mx-auto">
             <Tab.Group
@@ -63,7 +65,7 @@ export default function PublicationsFollowers() {
                       selectedIndex === 0 ? 'bg-purple-50 text-purple-900' : ''
                     )}
                   >
-                    255
+                    {peoples.length}
                   </span>
                 </Tab>
               </Tab.List>

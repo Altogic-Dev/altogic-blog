@@ -18,7 +18,7 @@ const initialState = {
   userDraftStoriesInfo: null,
   publicationsStories: [],
   isLoading: false,
-  commentIsLoading: false,
+  replyLoading: false,
   replies: [],
   replyCount: 0,
   replyPageSize: null,
@@ -106,8 +106,39 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    editReplyRequest(state) {
+      state.replyLoading = true;
+    },
+    editReplySuccess(state, action) {
+      state.replies = state.replies.map((reply) => {
+        if (reply._id === action.payload._id) {
+          return action.payload;
+        }
+        return reply;
+      });
+      state.replyLoading = false;
+    },
+    editReplyFailure(state, action) {
+      state.error = action.payload;
+      state.replyLoading = false;
+    },
+    removeReplyRequest(state) {
+      state.replyLoading = true;
+    },
+    removeReplySuccess(state, action) {
+      state.replies = state.replies.filter(
+        (reply) => reply._id !== action.payload._id
+      );
+      state.replyCount -= 1;
+      state.replyLoading = false;
+
+    },
+    removeReplyFailure(state, action) {
+      state.error = action.payload;
+      state.replyLoading = false;
+    },
     createReplyCommentRequest(state) {
-      state.commentIsLoading = true;
+      state.replyLoading = true;
     },
     createReplyCommentSuccess(state, action) {
       state.replies = state.replies.map((reply) => {
@@ -122,15 +153,15 @@ export const storySlice = createSlice({
         }
         return temp;
       });
-      state.commentIsLoading = false;
+      state.replyLoading = false;
     },
     createReplyCommentFailure(state, action) {
       state.story = null;
       state.error = action.payload;
-      state.commentIsLoading = false;
+      state.replyLoading = false;
     },
     getReplyCommentsRequest(state) {
-      state.commentIsLoading = true;
+      state.replyLoading = true;
     },
     getReplyCommentsSuccess(state, action) {
       state.replies = state.replies.map((reply) => {
@@ -142,11 +173,11 @@ export const storySlice = createSlice({
         }
         return reply;
       });
-      state.commentIsLoading = false;
+      state.replyLoading = false;
     },
     getReplyCommentsFailure(state, action) {
       state.error = action.payload;
-      state.commentIsLoading = false;
+      state.replyLoading = false;
     },
     updateStoryRequest(state) {
       state.isLoading = true;
@@ -324,6 +355,9 @@ export const storySlice = createSlice({
 
     removeUnfollowingStories(state, action) {
       state.followingStories = action.payload;
+    },
+    removeRecommendedStories(state, action) {
+      state.recommendedStories = action.payload;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

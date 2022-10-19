@@ -1,6 +1,13 @@
+/* eslint-disable no-nested-ternary */
 import { Dialog, Transition } from '@headlessui/react';
 import { DateTime } from 'luxon';
-import { ChatIcon, HeartIcon, XIcon } from '@heroicons/react/outline';
+import {
+  ChatIcon,
+  HeartIcon,
+  PencilIcon,
+  XIcon,
+} from '@heroicons/react/outline';
+import { htmlToText } from 'html-to-text';
 import { Fragment, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -20,14 +27,16 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const replies = useSelector((state) => state.story.replies);
   const replyCount = useSelector((state) => state.story.replyCount);
   const storyIsLoading = useSelector((state) => state.story.isLoading);
+  const replyLoading = useSelector((state) => state.story.replyLoading);
   const user = useSelector((state) => state.auth.user);
 
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [commentText, setCommentText] = useState([]);
   const [showReplies, setShowReplies] = useState([]);
+  const [editRespondBoxes, setEditRespondBoxes] = useState([]);
   const [replyLimit, setReplyLimit] = useState(10);
   const [quillInstance, setQuillInstance] = useState();
-
+  const [editText, setEditText] = useState();
   const getReplies = () => {
     dispatch(
       storyActions.getStoryRepliesRequest({
@@ -79,6 +88,21 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     });
   };
 
+  const handleEditReply = (reply) => {
+    if (user._id !== reply.user._id) {
+      const temp = { ...reply };
+      temp.content = editText;
+      console.log(temp);
+      dispatch(storyActions.editReplyRequest(temp));
+      setEditRespondBoxes((prev) => prev.map(() => ''));
+    }
+  };
+
+  const handleRemoveReply = (reply) => {
+    if (user._id !== reply.user._id) {
+      dispatch(storyActions.removeReplyRequest(reply));
+    }
+  };
   const handleRespond = (e) => {
     e.preventDefault();
 
@@ -263,7 +287,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               <Button primaryColor>Cancel</Button>
                               <Button
                                 loading={storyIsLoading && !_.isEmpty(replies)}
-                                type="Submit"
+                                type="submit"
                               >
                                 Respond
                               </Button>
@@ -285,29 +309,58 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                         <ul className="divide-y divide-gray-200">
                           {replies?.map((reply, index) => (
                             <li key={reply._id} className="py-6 space-y-4">
-                              <div className="flex items-center gap-3">
-                                <Avatar
-                                  className="w-10 h-10 rounded-full object-cover"
-                                  src={reply.userProfilePicture}
-                                  alt={reply.name}
-                                />
-                                <div className="flex flex-col">
-                                  <span className="text-slate-700 text-base font-medium tracking-sm">
-                                    {reply.name}
-                                  </span>
-                                  <span className="text-slate-500 text-sm tracking-sm">
-                                    {DateTime.fromISO(
-                                      reply.createdAt
-                                    ).toRelative()}
-                                  </span>
+                              <div className="flex items-center gap-36">
+                                <div className="flex items-center gap-2">
+                                  <Avatar
+                                    className="w-10 h-10 rounded-full object-cover"
+                                    src={reply.userProfilePicture}
+                                    alt={reply.name}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span className="text-slate-700 text-base font-medium tracking-sm">
+                                      {reply.name}
+                                    </span>
+                                    <span className="text-slate-500 text-sm tracking-sm">
+                                      {DateTime.fromISO(
+                                        reply.createdAt
+                                      ).toRelative()}
+                                    </span>
+                                  </div>
                                 </div>
+                                {reply.user === user._id && (
+                                  <div className="right-4 relative flex gap-2">
+                                    <PencilIcon
+                                      onClick={() => {
+                                        setEditText(htmlToText(reply.content));
+                                        setEditRespondBoxes((prev) => {
+                                          const temp = [...prev];
+                                          temp[index] = !temp[index];
+                                          return temp;
+                                        });
+                                      }}
+                                      className="text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
+                                    />
+                                    <XIcon
+                                      onClick={() => handleRemoveReply(reply)}
+                                      className="text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
+                                    />
+                                  </div>
+                                )}
                               </div>
-                              <p
-                                className="text-slate-700 text-sm tracking-sm"
-                                dangerouslySetInnerHTML={{
-                                  __html: reply.content,
-                                }}
-                              />
+                              {editRespondBoxes[index] ? (
+                                <textarea
+                                  value={editText}
+                                  onChange={(e) => setEditText(e.target.value)}
+                                  className="text-slate-700 text-sm tracking-sm  w-full focus:outline-none border-slate-200 "
+                                />
+                              ) : (
+                                <p
+                                  className="text-slate-700 text-sm tracking-sm"
+                                  dangerouslySetInnerHTML={{
+                                    __html: reply.content,
+                                  }}
+                                />
+                              )}
 
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
@@ -326,16 +379,23 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   </Button>
                                 </div>
                                 <Button
+                                  loading={replyLoading}
                                   onClick={() => {
-                                    setCommentText('');
-                                    setCommentBoxes((prev) => {
-                                      const temp = [...prev];
-                                      temp[index] = !temp[index];
-                                      return temp;
-                                    });
+                                    if (editRespondBoxes[index]) {
+                                      handleEditReply(reply);
+                                    } else {
+                                      setCommentText([]);
+                                      setCommentBoxes((prev) => {
+                                        const temp = [...prev];
+                                        temp[index] = !temp[index];
+                                        return temp;
+                                      });
+                                    }
                                   }}
                                 >
-                                  {_.nth(commentBoxes, index)
+                                  {editRespondBoxes[index]
+                                    ? 'Save'
+                                    : _.nth(commentBoxes, index)
                                     ? 'Hide'
                                     : 'Comment'}
                                 </Button>
@@ -367,6 +427,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                         </span>
                                       </div>
                                     </div>
+
                                     <p className="text-slate-700 text-sm tracking-sm mt-5">
                                       {comment.content}
                                     </p>

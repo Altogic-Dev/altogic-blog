@@ -44,7 +44,7 @@ export default function PublicationDropdown({ publication, className }) {
             <Menu.Item onClick={() => router.push('/write-a-story')}>
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
                 <PencilAltIcon className="w-4 h-4 text-slate-500" />
-                Write A Story
+                Write a Story
               </a>
             </Menu.Item>
             <Menu.Item
@@ -70,7 +70,7 @@ export default function PublicationDropdown({ publication, className }) {
             <Menu.Item
               onClick={() =>
                 router.push(
-                  `publication/${publication.name}/publications-followers`
+                  `/publication/${publication.name}/publications-followers`
                 )
               }
             >

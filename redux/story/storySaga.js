@@ -6,14 +6,12 @@ import { deleteTopicWritersSaga, insertTopicsSaga } from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
   try {
-    const user = yield select((state) => state.auth.user);
     const info = yield select((state) => state.story.followingStoriesInfo);
 
     if (_.isNil(info) || page <= info.totalPages) {
       const { data, errors } = yield call(
         StoryService.getFollowingStories,
         userId,
-        _.get(user, 'mutedUser'),
         page
       );
       if (!_.isNil(data) && _.isNil(errors)) {
@@ -46,6 +44,28 @@ function* getStoryReplies({ payload: { story, page, limit } }) {
   }
 }
 
+function* removeReply({ payload: reply }) {
+  try {
+    const { data, errors } = yield call(StoryService.removeReply, reply);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.removeReplySuccess(reply));
+    }
+  } catch (e) {
+    yield put(storyActions.removeReplyFailure(e));
+  }
+}
+function* editReply({ payload: reply }) {
+  try {
+    const { data, errors } = yield call(StoryService.editReply, reply);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.editReplySuccess(reply));
+    }
+  } catch (e) {
+    yield put(storyActions.editReplyFailure(e));
+  }
+}
 function* createReply({ payload: reply }) {
   try {
     const { data, errors } = yield call(StoryService.createReply, reply);
@@ -97,7 +117,6 @@ function* getRecommendedStoriesSaga({ payload: { page } }) {
           StoryService.GetRecommendedStoriesByUser,
           {
             recommendedTopics: user.recommendedTopics,
-            mutedUsers: _.get(user, 'mutedUser'),
             page,
           }
         );
@@ -259,7 +278,7 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
           storyActions.getUserStoriesSuccess({
             data: data.data,
             info: data.info,
-            userId,
+            userID,
           })
         );
       }
@@ -535,6 +554,17 @@ export function* removeUnfollowingStories(authorId) {
   yield put(storyActions.removeUnfollowingStories(newFollowingStories));
 }
 
+export function* removeRecommendedStories(authorId) {
+  const recommendedStories = yield select(
+    (state) => state.story.recommendedStories
+  );
+  const newRecommendedStories = _.reject(
+    recommendedStories,
+    (story) => story.user === authorId
+  );
+  yield put(storyActions.removeRecommendedStories(newRecommendedStories));
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -563,6 +593,8 @@ export default function* rootSaga() {
     ),
     takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
     takeEvery(storyActions.createReplyRequest.type, createReply),
+    takeEvery(storyActions.editReplyRequest.type, editReply),
+    takeEvery(storyActions.removeReplyRequest.type, removeReply),
     takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),
     takeEvery(storyActions.getReplyCommentsRequest.type, getReplyComments),
     takeEvery(storyActions.createStoryRequest.type, createStorySaga),

@@ -13,10 +13,10 @@ import {
   getBookmarkListsRequest,
   getBookmarksRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
-import { authActions } from '@/redux/auth/authSlice';
 import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
+import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -46,6 +46,8 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
+
+  
   const getFollowingStories = (page) => {
     if (userFromStorage) {
       dispatch(
@@ -78,8 +80,8 @@ export default function Home() {
   };
 
   const storiesYouFollow = useSelector(
-    (state) => state.followerConnection.userFollowings
-  );
+    (state) => state.followerConnection.userFollowings.filter(item => item.unreadStories > 0)
+  );  
 
   const getFollowingUsers = () => {
     dispatch(
@@ -264,7 +266,9 @@ export default function Home() {
                             optionButtons={{
                               mute: () =>
                                 dispatch(
-                                  authActions.muteAuthorRequest(story.user)
+                                  blockConnectionActions.blockUserRequest(
+                                    story.user
+                                  )
                                 ),
                               report: () =>
                                 dispatch(

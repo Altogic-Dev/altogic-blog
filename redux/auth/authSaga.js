@@ -1,6 +1,5 @@
 import AuthService from '@/services/auth';
 import PublicationService from '@/services/publication';
-import _ from 'lodash';
 import { toast } from 'react-toastify';
 import {
   takeEvery,
@@ -36,6 +35,7 @@ function* setUserFromLocalStorage() {
 function* getAuthGrantSaga({ payload }) {
   try {
     yield call(AuthService.authStateChange, payload.user, payload.session);
+    yield put(authActions.loginSuccess(payload.user));
     if (!payload.user.username || !payload.user.profilePicture) {
       const { data, errors } = yield call(AuthService.setUsernameForProvider, {
         email: payload.user.email,
@@ -45,13 +45,12 @@ function* getAuthGrantSaga({ payload }) {
       });
       if (!errors) {
         yield call(AuthService.authStateChange, data, payload.session);
+        yield put(authActions.loginSuccess(data));
       }
       if (payload.error) {
         throw payload.error.items;
       }
     }
-
-    yield put(authActions.loginSuccess(payload.user));
   } catch (e) {
     yield put(authActions.getAuthGrantFailure(e));
   }
@@ -72,6 +71,7 @@ function* loginSaga({ payload }) {
         yield put(publicationActions.setPublicationsOnLogin(data));
       }
       yield put(authActions.loginSuccess(user));
+
       payload.onSuccess();
     }
     if (errors) {
@@ -144,7 +144,6 @@ function* updateFollowingTopicsSaga({ payload: { topics } }) {
     }
 
     if (data) {
-      console.log(data);
       AuthService.setUserFromLocal(data);
       yield put(authActions.updateFollowingTopicsSuccess());
     }
@@ -153,66 +152,8 @@ function* updateFollowingTopicsSaga({ payload: { topics } }) {
   }
 }
 
-function* muteAuthorSaga({ payload: mutedUserId }) {
-  try {
-    const userFromLocal = yield select((state) => state.auth.user);
-    if (
-      !_.isNil(userFromLocal.mutedUsers) &&
-      _.includes(userFromLocal.mutedUsers, mutedUserId)
-    ) {
-      throw 'This user is already muted.';
-    } else {
-      const newMutedUsers = _.isNil(userFromLocal.mutedUsers)
-        ? [mutedUserId]
-        : [...userFromLocal.mutedUsers, mutedUserId];
-      const { errors } = yield call(AuthService.updateUser, {
-        mutedUser: newMutedUsers,
-      });
-      if (!errors) {
-        yield put(
-          authActions.muteAuthorSuccess({ newMutedUsers, mutedUserId })
-        );
-        AuthService.setUserFromLocal({
-          ...userFromLocal,
-          mutedUser: newMutedUsers,
-        });
-      }
-    }
-  } catch (e) {
-    console.log({ e });
-  }
-}
 function* errorResetSaga() {
   yield put(authActions.resetErrors());
-}
-
-function* unmuteAuthorSaga({ payload: mutedUserId }) {
-  try {
-    const userFromLocal = yield select((state) => state.auth.user);
-
-    const newMutedUsers = _.reject(userFromLocal.mutedUsers, mutedUserId);
-
-    const { errors } = yield call(AuthService.updateUser, {
-      mutedUser: newMutedUsers,
-    });
-    if (!errors) {
-      yield put(
-        authActions.unmuteAuthorSuccess({ newMutedUsers, mutedUserId })
-      );
-      AuthService.setUserFromLocal({
-        ...userFromLocal,
-        mutedUser: newMutedUsers,
-      });
-    }
-  } catch (e) {
-    console.log({ e });
-  }
-}
-
-function* isMutedSaga({ payload: authorId }) {
-  const user = yield select((state) => state.auth.user);
-  const isMuted = _.includes(user.mutedUser, authorId);
-  yield put(authActions.isMutedSuccess(isMuted));
 }
 
 function* changePasswordSaga({ payload }) {
@@ -368,9 +309,6 @@ export default function* rootSaga() {
       authActions.updateFollowingTopicsRequest.type,
       updateFollowingTopicsSaga
     ),
-    takeEvery(authActions.muteAuthorRequest.type, muteAuthorSaga),
-    takeEvery(authActions.unmuteAuthorRequest.type, unmuteAuthorSaga),
-    takeEvery(authActions.isMutedRequest.type, isMutedSaga),
     takeEvery(authActions.resetPasswordRequest.type, resetPassword),
     takeEvery(
       authActions.authenticateWithProviderRequest.type,

@@ -106,7 +106,6 @@ export default function Editor({
   };
   useEffect(() => {
     const quill = new Quill('#editor-container', {
-      placeholder: 'Tell your story...',
       scrollingContainer: document.documentElement,
     });
     quill.root.dataset.placeholder = 'Tell your story...';
@@ -189,8 +188,7 @@ export default function Editor({
             }
           })
         );
-      }, 2500)();
-
+      }, 5000)();
       tooltip.current.style.display = 'none';
       sidebar.current.style.display = 'none';
       sidebar.current.classList.remove('active');
@@ -200,8 +198,7 @@ export default function Editor({
   useEffect(() => {
     if (value && quillInstance) {
       quillInstance.root.innerHTML = value;
-      const range = quillInstance.getSelection();
-      console.log(range);
+      quillInstance.getSelection();
       quillInstance.setSelection(quillInstance.getLength(), 0);
     }
   }, [value, quillInstance]);
@@ -225,11 +222,12 @@ export default function Editor({
   };
   const handleAddVideo = (e) => {
     const { value } = e.target;
-    const range = quillInstance.getSelection(true);
     if (e.which === 13) {
+      const range = quillInstance.getSelection(true);
       const isInserted = insertVideo(value, range.index, quillInstance);
       if (isInserted) {
         e.target.value = '';
+        input.current.style.display = 'none';
       } else {
         quillInstance.insertText(range.index, value);
         quillInstance.setSelection(range.index + 1, Quill.sources.SILENT);
@@ -408,6 +406,7 @@ export default function Editor({
           className="w-full focus:border-none focus:outline-none"
           placeholder="Paste a YouTube, Vimeo or tweet url and press Enter"
           onKeyDown={handleAddVideo}
+          key="video-input"
         />
       </div>
     </div>

@@ -106,7 +106,7 @@ function MyApp({ Component, pageProps }) {
       );
       setSelectedPublicationIfIsExist();
     }
-  }, [publications]);
+  }, [sessionUser,publications]);
 
   useEffect(() => {
     if (

@@ -20,6 +20,7 @@ import { bookmarkSlice } from './bookmarks/bookmarkSlice';
 import { notificationsSlice } from './notifications/notificationsSlice';
 import { statsSlice } from './stats/statsSlice';
 import { paymentSlice } from './payment/paymentSlice';
+import { blockConnectionSlice } from './blockConnection/blockConnectionSlice';
 
 const sagaMiddleware = createSagaMiddleware();
 const persistConfig = {
@@ -48,6 +49,7 @@ const makeStore = () => {
       [notificationsSlice.name]: notificationsSlice.reducer,
       [statsSlice.name]: statsSlice.reducer,
       [paymentSlice.name]: persistReducer(persistConfig, paymentSlice.reducer),
+      [blockConnectionSlice.name]: blockConnectionSlice.reducer,
     },
     devTools: true,
     middleware: (getDefaultMiddleware) =>
