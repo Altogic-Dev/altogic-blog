@@ -115,6 +115,12 @@ const StoryService = {
   createReply(reply) {
     return db.model('replies').create(reply);
   },
+  editReply(reply) {
+   return db.model('replies').object(reply._id).update(reply)
+  },
+  removeReply(reply) {
+    // return db.model('replies').create(reply);    
+  },
 
   createReplyComment(comment) {
     return endpoint.post(`/reply_comments`, comment);

@@ -17,13 +17,13 @@ export default function StoriesYouFollow({ storiesYouFollow }) {
   return (
     <div>
       <SidebarTitle title="Stories you follow" spacing="mb-4" />
-      <span className="flex items-center gap-3 overflow-x-auto ">
+      <span className="stories-follow flex items-center gap-3 overflow-x-auto ">
         <ListObserver onEnd={handleListEnd}>
           {storiesYouFollow.map((storiesFollow) => (
             <a
               key={storiesFollow._id}
               href={`/${storiesFollow.followingUsername}`}
-              className="group relative flex-shrink-0"
+              className="group relative flex-shrink-0 mb-1"
             >
               <Avatar
                 className="rounded-full w-14 h-14  "

@@ -241,3 +241,17 @@ textarea {
 * {
   box-sizing: border-box;
 }
+
+.stories-follow::-webkit-scrollbar {
+  height: 5px;
+  margin-top:5px;
+  border-radius: 30px;
+}
+
+
+/* Handle */
+.stories-follow::-webkit-scrollbar-thumb {
+  background: rgb(126 34 206 /0.8);
+  border-radius: 8px;
+
+}

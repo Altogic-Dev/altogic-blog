@@ -1,6 +1,11 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { DateTime } from 'luxon';
-import { ChatIcon, HeartIcon, XIcon } from '@heroicons/react/outline';
+import {
+  ChatIcon,
+  HeartIcon,
+  PencilIcon,
+  XIcon,
+} from '@heroicons/react/outline';
 import { Fragment, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -79,6 +84,17 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     });
   };
 
+  const handleEditReply = (reply) => {
+    if (user._id !== reply.user._id) {
+      dispatch(storyActions.editReplyRequest(reply));
+    }
+  };
+
+  const handleRemoveReply = (reply) => {
+    if (user._id !== reply.user._id) {
+      dispatch(storyActions.removeReplyRequest(reply));
+    }
+  };
   const handleRespond = (e) => {
     e.preventDefault();
 
@@ -263,7 +279,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               <Button primaryColor>Cancel</Button>
                               <Button
                                 loading={storyIsLoading && !_.isEmpty(replies)}
-                                type="Submit"
+                                type="submit"
                               >
                                 Respond
                               </Button>
@@ -301,6 +317,18 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     ).toRelative()}
                                   </span>
                                 </div>
+                                {reply.user === user._id && (
+                                  <>
+                                    <PencilIcon
+                                      onClick={() => handleEditReply(reply)}
+                                      className=" right-16 absolute text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
+                                    />
+                                    <XIcon
+                                      onClick={() => handleRemoveReply(reply)}
+                                      className=" right-10 absolute text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
+                                    />
+                                  </>
+                                )}
                               </div>
                               <p
                                 className="text-slate-700 text-sm tracking-sm"

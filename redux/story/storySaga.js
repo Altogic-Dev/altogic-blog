@@ -46,6 +46,28 @@ function* getStoryReplies({ payload: { story, page, limit } }) {
   }
 }
 
+function* removeReply({ payload: reply }) {
+  try {
+    const { data, errors } = yield call(StoryService.removeReply, reply);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.removeReplySuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.removeReplyFailure(e));
+  }
+}
+function* editReply({ payload: reply }) {
+  try {
+    const { data, errors } = yield call(StoryService.editReply, reply);
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.editReplySuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.editReplyFailure(e));
+  }
+}
 function* createReply({ payload: reply }) {
   try {
     const { data, errors } = yield call(StoryService.createReply, reply);
@@ -563,6 +585,8 @@ export default function* rootSaga() {
     ),
     takeEvery(storyActions.getStoryRepliesRequest.type, getStoryReplies),
     takeEvery(storyActions.createReplyRequest.type, createReply),
+    takeEvery(storyActions.editReplyRequest.type, editReply),
+    takeEvery(storyActions.removeReplyRequest.type, removeReply),
     takeEvery(storyActions.createReplyCommentRequest.type, createReplyComment),
     takeEvery(storyActions.getReplyCommentsRequest.type, getReplyComments),
     takeEvery(storyActions.createStoryRequest.type, createStorySaga),

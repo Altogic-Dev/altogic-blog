@@ -53,7 +53,6 @@ function About(props) {
     }
   }, [followerPage]);
 
-  console.log(topWriterTopics)
   return (
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
@@ -78,9 +77,9 @@ function About(props) {
           {topWriterTopics && <span>Top writer in</span>}
         </div>
         {topWriterTopics && (
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-wrap items-center justify-start gap-4 w-7/12">
             {_.map(topWriterTopics, (topic) => (
-              <Topic title={topic.name} key={topic} />
+              <Topic title={topic} key={topic} />
             ))}
           </div>
         )}

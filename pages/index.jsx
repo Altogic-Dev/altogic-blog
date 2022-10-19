@@ -78,7 +78,7 @@ export default function Home() {
   };
 
   const storiesYouFollow = useSelector(
-    (state) => state.followerConnection.userFollowings
+    (state) => state.followerConnection.userFollowings.filter(item => item.unreadStories > 0)
   );
 
   const getFollowingUsers = () => {

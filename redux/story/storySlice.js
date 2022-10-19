@@ -106,6 +106,30 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    editReplyRequest(state) {
+      state.isLoading = true;
+    },
+    editReplySuccess(state, action) {
+      state.replies = [action.payload, ...state.replies];
+      state.replyCount += 1;
+      state.isLoading = false;
+    },
+    editReplyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    removeReplyRequest(state) {
+      state.isLoading = true;
+    },
+    removeReplySuccess(state, action) {
+      state.replies = [action.payload, ...state.replies];
+      state.replyCount -= 1;
+      state.isLoading = false;
+    },
+    removeReplyFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
     createReplyCommentRequest(state) {
       state.commentIsLoading = true;
     },

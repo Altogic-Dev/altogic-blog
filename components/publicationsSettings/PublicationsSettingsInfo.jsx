@@ -612,7 +612,7 @@ export default function PublicationSettingsInfo({
                 <div className="rounded-md shadow-sm">
                   <UserInput
                     name="editor"
-                    placeholder="Editors"
+                    placeholder="Editor's Name or Username"
                     users={editors}
                     setUsers={setEditors}
                     onChange={handleSearch}
@@ -639,7 +639,7 @@ export default function PublicationSettingsInfo({
                   <div className="rounded-md shadow-sm">
                     <UserInput
                       name="writer"
-                      placeholder="Writers"
+                      placeholder="Writer's Name or Username"
                       users={writers}
                       setUsers={setWriters}
                       onChange={handleSearch}
