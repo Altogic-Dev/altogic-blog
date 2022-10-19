@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment,useEffect,useState } from 'react';
 import { Transition, Menu } from '@headlessui/react';
 import {
   CogIcon,
@@ -19,6 +19,14 @@ export default function HeaderDropdown({ user, logout, className }) {
   const selectPublication = (publication) => {
     dispatch(publicationActions.selectPublicationRequest(publication));
   };
+
+  const [publiationsState,setPublicationState] = useState([]);
+
+  console.log(publications)
+
+  useEffect(() => {
+    setPublicationState(publications)
+  },[publications])
   return (
     <Transition
       as={Fragment}
@@ -74,7 +82,7 @@ export default function HeaderDropdown({ user, logout, className }) {
             <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
               Publications
             </span>
-            {publications?.slice(0, 3).map((publication) => (
+            {publiationsState?.slice(0, 3).map((publication) => (
               <Menu.Item
                 key={publication._id}
                 onClick={() => selectPublication(publication)}

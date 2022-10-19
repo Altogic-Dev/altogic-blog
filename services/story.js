@@ -100,10 +100,19 @@ const StoryService = {
     return db.model('replies').create(reply);
   },
   editReply(reply) {
-   return db.model('replies').object(reply._id).update(reply)
+    return db
+      .model('replies')
+      .object(reply._id)
+      .updateFields([
+        {
+          field: 'content',
+          value: reply.content,
+          updateType: 'set',
+        },
+      ]);
   },
   removeReply(reply) {
-    // return db.model('replies').create(reply);    
+    return endpoint.delete(`/reply/remove`, reply);
   },
 
   createReplyComment(comment) {

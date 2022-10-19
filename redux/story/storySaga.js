@@ -49,7 +49,7 @@ function* removeReply({ payload: reply }) {
     const { data, errors } = yield call(StoryService.removeReply, reply);
     if (errors) throw errors;
     if (data) {
-      yield put(storyActions.removeReplySuccess(data));
+      yield put(storyActions.removeReplySuccess(reply));
     }
   } catch (e) {
     yield put(storyActions.removeReplyFailure(e));
@@ -60,7 +60,7 @@ function* editReply({ payload: reply }) {
     const { data, errors } = yield call(StoryService.editReply, reply);
     if (errors) throw errors;
     if (data) {
-      yield put(storyActions.editReplySuccess(data));
+      yield put(storyActions.editReplySuccess(reply));
     }
   } catch (e) {
     yield put(storyActions.editReplyFailure(e));

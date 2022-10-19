@@ -71,6 +71,7 @@ function* loginSaga({ payload }) {
         yield put(publicationActions.setPublicationsOnLogin(data));
       }
       yield put(authActions.loginSuccess(user));
+
       payload.onSuccess();
     }
     if (errors) {
@@ -143,7 +144,6 @@ function* updateFollowingTopicsSaga({ payload: { topics } }) {
     }
 
     if (data) {
-      console.log(data);
       AuthService.setUserFromLocal(data);
       yield put(authActions.updateFollowingTopicsSuccess());
     }
