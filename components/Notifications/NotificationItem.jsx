@@ -33,7 +33,7 @@ export default function NotificationItem({ notification }) {
     <div className="p-4 bg-white rounded-lg">
       <div className="flex items-start w-full">
         <div className="flex items-center flex-1">
-          <Link href={`/${notification.sentUsername}/about`}>
+          <Link href={`/${notification.sentUsername}?tab=about`}>
             <a className="flex-shrink-0">
               <Avatar
                 src={notification?.sentUserProfilePicture}
@@ -43,7 +43,7 @@ export default function NotificationItem({ notification }) {
             </a>
           </Link>
           <div className="ml-3 w-0 text-slate-600 flex-1 text-sm leading-5 tracking-[-0.4 px]">
-            <Link href={`/${notification.sentUsername}/about`}>
+            <Link href={`/${notification.sentUsername}?tab=about`}>
               <a className="font-semibold text-slate-900 hover:underline">
                 <strong className="font-semibold">
                   {notification?.sentUsername}

@@ -13,10 +13,10 @@ import {
   getBookmarkListsRequest,
   getBookmarksRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
-import { authActions } from '@/redux/auth/authSlice';
 import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
+import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -264,7 +264,9 @@ export default function Home() {
                             optionButtons={{
                               mute: () =>
                                 dispatch(
-                                  authActions.muteAuthorRequest(story.user)
+                                  blockConnectionActions.blockUserRequest(
+                                    story.user
+                                  )
                                 ),
                               report: () =>
                                 dispatch(

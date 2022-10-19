@@ -5,6 +5,7 @@ import { followerConnectionActions } from '../followerConnection/followerConnect
 import { storyLikesActions } from '../storyLikes/storyLikesSlice';
 import { reportActions } from '../report/reportSlice';
 import { subscribeConnectionActions } from '../subscribeConnection/subscribeConnectionSlice';
+import { blockConnectionActions } from '../blockConnection/blockConnectionSlice';
 
 function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
   try {
@@ -21,6 +22,7 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
         reportActions.getReportedStoryByUserSuccess(data.isStoryReported)
       );
       yield put(subscribeConnectionActions.setIsSubscribed(data.isSubscribed));
+      yield put(blockConnectionActions.setIsBlocked(data.isAuthorBlocked));
     }
   } catch (e) {
     console.error({ e });

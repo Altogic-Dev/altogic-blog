@@ -251,7 +251,7 @@ export default function MyStories({ publishedPage, draftPage }) {
                       </span>
                     </Tab>
                   </Link>
-                  <Link href="/my-stories/draft">
+                  <Link href="/my-stories?tab=draft">
                     <Tab
                       className={({ selected }) =>
                         classNames(

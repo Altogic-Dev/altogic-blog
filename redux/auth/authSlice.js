@@ -13,7 +13,6 @@ const initialState = {
   changeEmailError: null,
   user: AuthService.getUser(),
   profileUser: null,
-  isMuted: false,
   isAuthenticated: false,
   sessions: [],
   foundUsers: [],
@@ -109,29 +108,6 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-
-    muteAuthorRequest() {},
-    muteAuthorSuccess(state, action) {
-      state.user = {
-        ...state.user,
-        mutedUser: action.payload.newMutedUsers,
-      };
-      state.isMuted = true;
-    },
-
-    unmuteAuthorRequest() {},
-    unmuteAuthorSuccess(state, action) {
-      state.user = {
-        ...state.user,
-        mutedUser: action.payload.newMutedUsers,
-      };
-      state.isMuted = false;
-    },
-
-    isMutedRequest() {},
-    isMutedSuccess(state, action) {
-      state.isMuted = action.payload;
-    },
     resetErrorsRequest() {},
 
     resetErrors(state) {
@@ -225,7 +201,6 @@ export const authSlice = createSlice({
     getUserByUserNameRequest(state) {
       state.isLoading = true;
       state.profileUser = null;
-
     },
     getUserByUserNameSuccess(state, action) {
       state.isLoading = false;
