@@ -27,6 +27,7 @@ import UserCard from '@/components/general/UserCard';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 
 export default function ProfilePage() {
+  const BOOKMARK_LIMIT = 10;
   const router = useRouter();
   const dispatch = useDispatch();
   const [createNewList, setCreateNewList] = useState(false);
@@ -64,6 +65,7 @@ export default function ProfilePage() {
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [isMyProfile, setIsMyProfile] = useState(false);
   const previousPage = usePrevious(bookmarkListPage);
+  const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
     toast.success('Copied to clipboard');
     const basePath = window.location.origin;
@@ -133,20 +135,25 @@ export default function ProfilePage() {
   }, [profileUser]);
 
   useEffect(() => {
-    if (username && selectedIndex === 1 && profileUser?.username !== username) {
+    if (
+      _.isNil(prevUsername) ||
+      (prevUsername !== username && selectedIndex === 1)
+    ) {
       dispatch(
         getBookmarkListsRequest({
           username,
           includePrivates: username === sessionUser?.username,
           page: 1,
-          limit: 10,
+          limit: BOOKMARK_LIMIT,
         })
       );
     }
-  }, [username]);
+  }, [username, selectedIndex]);
 
   const handleBookmarkListEnd = () => {
-    setBookmarkListPage((prev) => prev + 1);
+    if (_.size(bookmarkLists) >= BOOKMARK_LIMIT) {
+      setBookmarkListPage((prev) => prev + 1);
+    }
   };
   useEffect(() => {
     if (selectedIndex === 1 && username && previousPage !== bookmarkListPage) {
