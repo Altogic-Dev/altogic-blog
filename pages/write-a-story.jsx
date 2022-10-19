@@ -193,7 +193,6 @@ export default function WriteAStory() {
           <div className="mt-4 w-full">
             <Editor
               setIsShowSaving={setIsShowSaving}
-              isShowSaving={isShowSaving}
               onChange={setContent}
               setImages={setStoryImages}
               value={!_.isNil(id) && _.get(newStory, 'content')}

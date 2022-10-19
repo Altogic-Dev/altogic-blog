@@ -34,7 +34,6 @@ export default function Editor({
   onChange,
   setImages,
   value,
-  isShowSaving,
   setIsShowSaving,
 }) {
   const uploadImage = async (file) => {

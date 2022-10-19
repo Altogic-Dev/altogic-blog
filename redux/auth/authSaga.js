@@ -35,6 +35,7 @@ function* setUserFromLocalStorage() {
 function* getAuthGrantSaga({ payload }) {
   try {
     yield call(AuthService.authStateChange, payload.user, payload.session);
+    yield put(authActions.loginSuccess(payload.user));
     if (!payload.user.username || !payload.user.profilePicture) {
       const { data, errors } = yield call(AuthService.setUsernameForProvider, {
         email: payload.user.email,
@@ -44,13 +45,12 @@ function* getAuthGrantSaga({ payload }) {
       });
       if (!errors) {
         yield call(AuthService.authStateChange, data, payload.session);
+        yield put(authActions.loginSuccess(data));
       }
       if (payload.error) {
         throw payload.error.items;
       }
     }
-
-    yield put(authActions.loginSuccess(payload.user));
   } catch (e) {
     yield put(authActions.getAuthGrantFailure(e));
   }
