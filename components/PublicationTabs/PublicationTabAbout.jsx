@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { DateTime } from 'luxon';
+import Topic from '../basic/topic';
 
 function PublicationTabAbout({ publication }) {
   return (
@@ -23,15 +24,11 @@ function PublicationTabAbout({ publication }) {
           >
             <circle cx={4} cy={4} r={3} />
           </svg>
-          <span>Top writer in</span>
+          {publication?.topWriterTopics?.length && <span>Top writer in</span>}
         </div>
         <div className="flex flex-wrap items-center gap-4">
           {_.map(publication?.topWriterTopics, (topic) => (
-            <a href="#">
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium tracking-sm bg-slate-400 text-white">
-                {topic}
-              </span>
-            </a>
+            <Topic title={topic} key={topic} />
           ))}
         </div>
       </div>

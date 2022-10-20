@@ -7,6 +7,7 @@ import {
   PencilIcon,
   XIcon,
 } from '@heroicons/react/outline';
+import { ClipLoader } from 'react-spinners';
 import { htmlToText } from 'html-to-text';
 import { Fragment, useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,7 +19,6 @@ import { BoldBlot, ItalicBlot } from '@/utils/QuillBlots';
 import Button from '../basic/button';
 import Avatar from '../profile/Avatar';
 import ListObserver from '../ListObserver';
-import { ClipLoader } from 'react-spinners';
 
 export default function Replies({ story, slideOvers, setSlideOvers }) {
   const dispatch = useDispatch();
@@ -210,96 +210,102 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
                   <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll">
-                    <div>
-                      <div className="flex items-start justify-between pb-3">
-                        <Dialog.Title className="text-slate-800 text-lg font-medium tracking-sm">
-                          Write a comment
-                        </Dialog.Title>
-                        <div className="ml-3 flex h-7 items-center">
-                          <Button
-                            className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
-                            onClick={() => setSlideOvers(!slideOvers)}
-                          >
-                            <span className="sr-only">Close panel</span>
-                            <XIcon className="h-6 w-6" aria-hidden="true" />
-                          </Button>
+                    {user && (
+                      <div>
+                        <div className="flex items-start justify-between pb-3">
+                          <Dialog.Title className="text-slate-800 text-lg font-medium tracking-sm">
+                            Write a comment
+                          </Dialog.Title>
+                          <div className="ml-3 flex h-7 items-center">
+                            <Button
+                              className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
+                              onClick={() => setSlideOvers(!slideOvers)}
+                            >
+                              <span className="sr-only">Close panel</span>
+                              <XIcon className="h-6 w-6" aria-hidden="true" />
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                     <div>
                       {/* Slide Over Form */}
-                      <form
-                        name="respond"
-                        onSubmit={(e) => handleRespond(e)}
-                        className="mb-12"
-                      >
-                        <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
-                          <div className="flex items-center gap-2 mb-4">
-                            <Avatar
-                              className="w-8 h-8 object-cover rounded-full"
-                              src={_.get(user, 'profilePicture')}
-                              alt={_.get(user, 'name')}
-                            />
-                            <span className="text-slate-700 text-sm font-medium tracking-sm">
-                              {_.get(user, 'name')}
-                            </span>
-                          </div>
-                          <div className="mb-4 h-24">
-                            <div
-                              ref={editor}
-                              id="reply-input"
-                              className="block w-full h-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
-                            />
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <Button
-                                onClick={boldButton}
-                                type="button"
-                                className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                              >
-                                <svg
-                                  className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                              </Button>
-                              <Button
-                                onClick={italicButton}
-                                type="button"
-                                className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                              >
-                                <svg
-                                  className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                  viewBox="0 0 24 24"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
-                                    fill="currentColor"
-                                  />
-                                </svg>
-                              </Button>
+                      {user && (
+                        <form
+                          name="respond"
+                          onSubmit={(e) => handleRespond(e)}
+                          className="mb-12"
+                        >
+                          <div className="bg-white p-4 mb-6 border border-slate-50 shadow-md rounded-[10px]">
+                            <div className="flex items-center gap-2 mb-4">
+                              <Avatar
+                                className="w-8 h-8 object-cover rounded-full"
+                                src={_.get(user, 'profilePicture')}
+                                alt={_.get(user, 'name')}
+                              />
+                              <span className="text-slate-700 text-sm font-medium tracking-sm">
+                                {_.get(user, 'name')}
+                              </span>
                             </div>
-                            <div className="flex items-center gap-4">
-                              <Button primaryColor>Cancel</Button>
-                              <Button
-                                loading={storyIsLoading && !_.isEmpty(replies)}
-                                type="submit"
-                              >
-                                Respond
-                              </Button>
+                            <div className="mb-4 h-24">
+                              <div
+                                ref={editor}
+                                id="reply-input"
+                                className="block w-full h-full max-w-lg text-slate-500 p-0 text-sm tracking-sm border-0 placeholder:text-slate-500 focus:outline-none focus:ring-0"
+                              />
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <Button
+                                  onClick={boldButton}
+                                  type="button"
+                                  className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
+                                >
+                                  <svg
+                                    className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
+                                      fill="currentColor"
+                                    />
+                                  </svg>
+                                </Button>
+                                <Button
+                                  onClick={italicButton}
+                                  type="button"
+                                  className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
+                                >
+                                  <svg
+                                    className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                  >
+                                    <path
+                                      d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
+                                      fill="currentColor"
+                                    />
+                                  </svg>
+                                </Button>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <Button primaryColor>Cancel</Button>
+                                <Button
+                                  loading={
+                                    storyIsLoading && !_.isEmpty(replies)
+                                  }
+                                  type="submit"
+                                >
+                                  Respond
+                                </Button>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </form>
+                        </form>
+                      )}
                       {/* Slide Over All Responses Post */}
                       <ListObserver
                         onEnd={() =>

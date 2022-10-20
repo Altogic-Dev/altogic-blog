@@ -100,12 +100,15 @@ export default function HeaderMenu() {
               !hideMenu ? 'hidden lg:flex' : 'hidden'
             } gap-1 transition-all duration-1000`}
           >
-            <Link href="/">
-              <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-                <HomeIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
-                Home
-              </a>
-            </Link>
+            {user && (
+              <Link href="/">
+                <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+                  <HomeIcon className="w-6 h-6 text-slate-300 group-hover:text-purple-500" />
+                  Home
+                </a>
+              </Link>
+            )}
+
             {user && (
               <Link href={`/${user?.username}?tab=list`}>
                 <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
