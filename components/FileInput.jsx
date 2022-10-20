@@ -23,11 +23,16 @@ export default function FileInput({
         />
       </div>
       <div className="flex flex-col items-center gap-4">
-        <img
-          className="w-16 h-16 rounded-full object-contain"
-          src={link}
-          alt=""
-        />
+        {_.isNil(link) ? (
+          <div className="w-16 h-16 rounded-full object-contain border border-purple-700 " />
+        ) : (
+          <img
+            className="w-16 h-16 rounded-full object-contain"
+            src={link}
+            alt=""
+          />
+        )}
+
         <div className="space-x-4">
           <button
             type="button"
