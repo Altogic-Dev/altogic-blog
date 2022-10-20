@@ -7,9 +7,7 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
       <li>
         {twitter && (
           <Link href={twitter} target="_blank" rel="noopener noreferrer">
-            <Button
-              className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700"
-            >
+            <Button className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700 hover:bg-opacity-30">
               <svg
                 className="w-6 h-6 text-slate-400"
                 viewBox="0 0 24 24"
@@ -31,9 +29,7 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
       <li>
         {facebook && (
           <Link href={facebook} target="_blank" rel="noopener noreferrer">
-            <Button
-              className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700"
-            >
+            <Button className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700 hover:bg-opacity-30">
               <svg
                 className="w-6 h-6 text-slate-400"
                 viewBox="0 0 24 24"
@@ -55,9 +51,7 @@ export default function SocialIcons({ color, twitter, facebook, linkedin }) {
       <li>
         {linkedin && (
           <Link href={linkedin} target="_blank" rel="noopener noreferrer">
-            <Button
-              className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700"
-            >
+            <Button className="inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-200 hover:bg-gray-700 hover:bg-opacity-30">
               <svg
                 className="w-6 h-6 text-slate-400"
                 viewBox="0 0 24 24"

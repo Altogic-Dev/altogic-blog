@@ -1,4 +1,5 @@
 import React from 'react';
+import _ from 'lodash';
 import { Popover } from '@headlessui/react';
 import { TagIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
@@ -47,10 +48,12 @@ export default function Suggestion({ suggestions, name, onClick }) {
                   <TagIcon className="w-6 h-6 rounded-full mr-2 text-gray-600" />
                 ) : (
                   <div>
-                    {suggestion.profilePicture || suggestion.storyImages[0] ? (
+                    {suggestion.profilePicture ||
+                    _.get(suggestion, 'storyImages[0]') ? (
                       <img
                         src={
-                          suggestion.profilePicture || suggestion.storyImages[0]
+                          suggestion.profilePicture ||
+                          _.get(suggestion, 'storyImages[0]')
                         }
                         alt="profile"
                         className="w-8 h-8 rounded-full mr-2"

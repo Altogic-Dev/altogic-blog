@@ -221,15 +221,25 @@ function* isPublicationnameExistSaga({
   }
 }
 
-function* updatePublicationSaga({ payload: publication }) {
+function* selectPublicationSaga({ payload }) {
+  LocalStorageUtil.set(LocalStorageUtil.SELECTED_PUBLICATION, payload);
+  yield put(publicationActions.selectPublicationSuccess(payload));
+}
+
+function* updatePublicationSaga({ payload: { publication, onSuccess } }) {
   try {
-    const { data, errors } = yield call(
+    const { data: updatedPublication, errors } = yield call(
       PublicationService.updatePublication,
       publication
     );
     if (errors) throw errors.items;
-    if (data)
-      yield put(publicationActions.updatePublicationSuccess(publication));
+    if (updatedPublication) {
+      if (_.isFunction(onSuccess)) onSuccess();
+      yield put(
+        publicationActions.updatePublicationSuccess(updatedPublication)
+      );
+      yield fork(selectPublicationSaga, { payload: updatedPublication });
+    }
   } catch (e) {
     console.error(e);
   }
@@ -391,11 +401,6 @@ function* getUserPublicationsSaga() {
   } catch (e) {
     yield put(publicationActions.getUserPublicationsFailure(e));
   }
-}
-
-function* selectPublicationSaga({ payload }) {
-  LocalStorageUtil.set(LocalStorageUtil.SELECTED_PUBLICATION, payload);
-  yield put(publicationActions.selectPublicationSuccess(payload));
 }
 
 function* getFeaturePageSaga({ payload: featureId }) {

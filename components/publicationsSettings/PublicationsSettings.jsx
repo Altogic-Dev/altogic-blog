@@ -38,7 +38,6 @@ export default function PublicationsSettings({ isCreate }) {
       publication.users,
       (person) => person.user === user._id
     );
-    console.log({ sessionUser });
     if (
       _.isNil(sessionUser) ||
       !['admin'].includes(sessionUser.role) ||

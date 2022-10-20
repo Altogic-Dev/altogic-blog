@@ -10,6 +10,7 @@ function Input({
   className,
   prefix,
   icon,
+  iconSvg,
   ...rest
 }) {
   return (
@@ -23,7 +24,11 @@ function Input({
         {label}
       </label>
       <div className="relative">
-        <div className={icon || prefix ? 'flex rounded-md shadow-sm' : ''}>
+        <div
+          className={
+            iconSvg || icon || prefix ? 'flex rounded-md shadow-sm' : ''
+          }
+        >
           {prefix && (
             <span
               className={`inline-flex items-center px-3 rounded-l-md border border-r-0 tracking-sm ${
@@ -38,6 +43,11 @@ function Input({
           {icon && (
             <div className="absolute top-[11px] left-0 pl-3 pointer-events-none">
               <FontAwesomeIcon icon={icon} className="w-5 h-5 text-gray-500" />
+            </div>
+          )}
+          {iconSvg && (
+            <div className="absolute top-[11px] left-0 pl-3 pointer-events-none">
+              <div className="w-5 h-5 text-gray-500">{iconSvg}</div>
             </div>
           )}
           <input
