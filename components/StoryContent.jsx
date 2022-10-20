@@ -38,6 +38,8 @@ function StoryContent(props) {
   const isLiked = useSelector((state) => state.storyLikes.isLiked);
   const story = useSelector((state) => state.story.story);
   const sessionUser = useSelector((state) => state.auth.user);
+  const replyCount = useSelector((state) => state.story.replyCount);
+
   const isLoadingFollow = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -348,7 +350,7 @@ function StoryContent(props) {
                     />
                   </svg>
                 </span>
-                {_.get(story, 'commentCount')}
+                {replyCount}
               </Button>
             )}
           </div>

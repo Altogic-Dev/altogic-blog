@@ -189,10 +189,9 @@ export default function BlogDetail({ ip }) {
       setDidMount(false);
     }
     return () => {
-      if (story && user) {
+      if (story && user && enterTime) {
         visitStory();
         window.removeEventListener('scroll', onScroll, { passive: true });
-        clearInterval();
       }
     };
   }, [_.get(story, '_id')]);
