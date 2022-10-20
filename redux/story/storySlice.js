@@ -19,6 +19,7 @@ const initialState = {
   publicationsStories: [],
   isLoading: false,
   replyLoading: false,
+  deletingIsLoading: false,
   replies: [],
   replyCount: 0,
   replyPageSize: null,
@@ -123,19 +124,19 @@ export const storySlice = createSlice({
       state.replyLoading = false;
     },
     removeReplyRequest(state) {
-      state.replyLoading = true;
+      state.deletingIsLoading = true;
     },
     removeReplySuccess(state, action) {
       state.replies = state.replies.filter(
         (reply) => reply._id !== action.payload._id
       );
       state.replyCount -= 1;
-      state.replyLoading = false;
+      state.deletingIsLoading = false;
 
     },
     removeReplyFailure(state, action) {
       state.error = action.payload;
-      state.replyLoading = false;
+      state.deletingIsLoading = false;
     },
     createReplyCommentRequest(state) {
       state.replyLoading = true;

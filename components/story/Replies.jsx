@@ -18,6 +18,7 @@ import { BoldBlot, ItalicBlot } from '@/utils/QuillBlots';
 import Button from '../basic/button';
 import Avatar from '../profile/Avatar';
 import ListObserver from '../ListObserver';
+import { ClipLoader } from 'react-spinners';
 
 export default function Replies({ story, slideOvers, setSlideOvers }) {
   const dispatch = useDispatch();
@@ -28,6 +29,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const replyCount = useSelector((state) => state.story.replyCount);
   const storyIsLoading = useSelector((state) => state.story.isLoading);
   const replyLoading = useSelector((state) => state.story.replyLoading);
+  const deletingIsLoading = useSelector(
+    (state) => state.story.deletingIsLoading
+  );
   const user = useSelector((state) => state.auth.user);
 
   const [commentBoxes, setCommentBoxes] = useState([]);
@@ -35,6 +39,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const [showReplies, setShowReplies] = useState([]);
   const [editRespondBoxes, setEditRespondBoxes] = useState([]);
   const [replyLimit, setReplyLimit] = useState(10);
+  const [clickedCommentButton, setClickedCommentButton] = useState(0);
   const [quillInstance, setQuillInstance] = useState();
   const [editText, setEditText] = useState();
   const getReplies = () => {
@@ -309,8 +314,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                         <ul className="divide-y divide-gray-200">
                           {replies?.map((reply, index) => (
                             <li key={reply._id} className="py-6 space-y-4">
-                              <div className="flex items-center gap-36">
-                                <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-[13rem]">
+                                <div className="flex items-center gap-3">
                                   <Avatar
                                     className="w-10 h-10 rounded-full object-cover"
                                     src={reply.userProfilePicture}
@@ -328,9 +333,11 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   </div>
                                 </div>
                                 {reply.user === user._id && (
-                                  <div className="right-4 relative flex gap-2">
+                                  <div className="flex gap-2">
                                     <PencilIcon
                                       onClick={() => {
+                                        setClickedCommentButton(index);
+
                                         setEditText(htmlToText(reply.content));
                                         setEditRespondBoxes((prev) => {
                                           const temp = [...prev];
@@ -340,10 +347,22 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                       }}
                                       className="text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
                                     />
-                                    <XIcon
-                                      onClick={() => handleRemoveReply(reply)}
-                                      className="text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
-                                    />
+                                    {clickedCommentButton === index &&
+                                    deletingIsLoading ? (
+                                      <ClipLoader
+                                        color="purple-600"
+                                        size="20px"
+                                        className="text-purple-600 w-2 text-sm tracking-sm cursor-pointer"
+                                      />
+                                    ) : (
+                                      <XIcon
+                                        onClick={() => {
+                                          setClickedCommentButton(index);
+                                          handleRemoveReply(reply);
+                                        }}
+                                        className="text-purple-600 w-5 text-sm tracking-sm cursor-pointer"
+                                      />
+                                    )}
                                   </div>
                                 )}
                               </div>
@@ -369,9 +388,10 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     {reply.likeCount}
                                   </Button>
                                   <Button
-                                    onClick={() =>
-                                      handleShowComments(reply, index)
-                                    }
+                                    onClick={() => {
+                                      setClickedCommentButton(index);
+                                      handleShowComments(reply, index);
+                                    }}
                                     className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm"
                                   >
                                     <ChatIcon className="w-6" />
@@ -379,8 +399,12 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   </Button>
                                 </div>
                                 <Button
-                                  loading={replyLoading}
+                                  loading={
+                                    replyLoading &&
+                                    clickedCommentButton === index
+                                  }
                                   onClick={() => {
+                                    setClickedCommentButton(index);
                                     if (editRespondBoxes[index]) {
                                       handleEditReply(reply);
                                     } else {
