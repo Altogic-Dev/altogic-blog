@@ -193,6 +193,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     quillInstance.format('italic', true);
   };
 
+  console.log(replies);
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
@@ -350,7 +351,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     </span>
                                   </div>
                                 </div>
-                                {reply.user === user._id && (
+                                {reply?.user === user?._id && (
                                   <div className="flex gap-2">
                                     <PencilIcon
                                       onClick={() => {
@@ -459,30 +460,33 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     {reply.commentCount}
                                   </Button>
                                 </div>
-                                <Button
-                                  loading={
-                                    replyLoading &&
-                                    clickedCommentButton === index
-                                  }
-                                  onClick={() => {
-                                    setClickedCommentButton(index);
-                                    if (editRespondBoxes[index]) {
-                                      handleEditReply(reply);
-                                    } else {
-                                      setCommentBoxes((prev) => {
-                                        const temp = [...prev];
-                                        temp[index] = !temp[index];
-                                        return temp;
-                                      });
+
+                                {user && (
+                                  <Button
+                                    loading={
+                                      replyLoading &&
+                                      clickedCommentButton === index
                                     }
-                                  }}
-                                >
-                                  {editRespondBoxes[index]
-                                    ? 'Save'
-                                    : _.nth(commentBoxes, index)
-                                    ? 'Hide'
-                                    : 'Comment'}
-                                </Button>
+                                    onClick={() => {
+                                      setClickedCommentButton(index);
+                                      if (editRespondBoxes[index]) {
+                                        handleEditReply(reply);
+                                      } else {
+                                        setCommentBoxes((prev) => {
+                                          const temp = [...prev];
+                                          temp[index] = !temp[index];
+                                          return temp;
+                                        });
+                                      }
+                                    }}
+                                  >
+                                    {editRespondBoxes[index]
+                                      ? 'Save'
+                                      : _.nth(commentBoxes, index)
+                                      ? 'Hide'
+                                      : 'Comment'}
+                                  </Button>
+                                )}
                               </div>
 
                               {showReplies[index] &&

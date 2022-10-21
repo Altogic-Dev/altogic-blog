@@ -229,7 +229,7 @@ export default function HeaderMenu() {
           </div>
         </div>
       </div>
-      <div className="flex lg:hidden items-center justify-between fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
+      <div className="flex lg:hidden items-center justify-around gap-14 fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
         <Link href="/">
           <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
             <HomeIcon
@@ -238,37 +238,46 @@ export default function HeaderMenu() {
             />
           </a>
         </Link>
-        <Link href={`/${user?.username}/lists`}>
-          <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-            <BookmarkIcon
-              className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
-              viewBox="0 0 21 21"
-            />
-          </a>
-        </Link>
-        <Link href="/my-stories">
-          <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-            <BookOpenIcon
-              className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
-              viewBox="0 0 21 21"
-            />
-          </a>
-        </Link>
-        <Menu as="div" className="relative inline-flex lg:hidden items-center">
-          <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
-            <Avatar
-              className="inline-block w-10 h-10 rounded-full"
-              src={user?.profilePicture}
-              alt={user?.username}
-            />
-          </Menu.Button>
+        {user && (
+          <Link href={`/${user?.username}/lists`}>
+            <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+              <BookmarkIcon
+                className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+                viewBox="0 0 21 21"
+              />
+            </a>
+          </Link>
+        )}
+        {user && (
+          <Link href="/my-stories">
+            <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+              <BookOpenIcon
+                className="w-8 h-7 text-slate-300 group-hover:text-purple-500"
+                viewBox="0 0 21 21"
+              />
+            </a>
+          </Link>
+        )}
+        {user && (
+          <Menu
+            as="div"
+            className="relative inline-flex lg:hidden items-center"
+          >
+            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+              <Avatar
+                className="inline-block w-10 h-10 rounded-full"
+                src={user?.profilePicture}
+                alt={user?.username}
+              />
+            </Menu.Button>
 
-          <HeaderDropdown
-            user={user}
-            logout={logout}
-            className="fixed bottom-20 w-full"
-          />
-        </Menu>
+            <HeaderDropdown
+              user={user}
+              logout={logout}
+              className="fixed bottom-20 w-full"
+            />
+          </Menu>
+        )}
         {selectedPublication && (
           <Menu
             as="div"
