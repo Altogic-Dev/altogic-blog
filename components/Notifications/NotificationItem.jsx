@@ -36,6 +36,7 @@ export default function NotificationItem({ notification }) {
           <Link href={`/${notification.sentUsername}?tab=about`}>
             <a className="flex-shrink-0">
               <Avatar
+                placeholderName={notification?.sentUsername}
                 src={notification?.sentUserProfilePicture}
                 alt={notification?.sentUsername}
                 className="w-6 h-6"

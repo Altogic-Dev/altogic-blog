@@ -4,7 +4,6 @@ import { followerConnectionActions } from '@/redux/followerConnection/followerCo
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import { parseHtml } from '@/utils/utils';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
@@ -53,6 +52,7 @@ export default function UserCard({ user, isFollowing }) {
           <div className="flex gap-3">
             <Avatar
               className="w-10 h-10 rounded-full"
+              placeholderName={user?.name}
               src={user.profilePicture}
               alt={user.name}
             />
@@ -61,9 +61,10 @@ export default function UserCard({ user, isFollowing }) {
                 {user.name}
               </span>
               {user?.about && (
-                <p className="text-slate-500 text-xs tracking-sm">
-                  {parseHtml(user.about)}
-                </p>
+                <p
+                  className="text-slate-500 text-xs tracking-sm"
+                  dangerouslySetInnerHTML={{ __html: user.about }}
+                />
               )}
             </div>
           </div>

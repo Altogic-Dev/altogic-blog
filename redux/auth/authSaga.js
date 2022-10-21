@@ -256,7 +256,7 @@ function* changeEmailSaga({ payload }) {
     if (errors) {
       throw errors.items;
     } else {
-      yield put(authActions.changeEmailSuccess(user));
+      yield put(authActions.changeEmailSuccess({ user, email: payload.email }));
     }
   } catch (e) {
     yield put(authActions.changeEmailFailure(e));

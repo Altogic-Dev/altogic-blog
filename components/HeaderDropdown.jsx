@@ -41,6 +41,7 @@ export default function HeaderDropdown({ user, logout, className }) {
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
           <Avatar
             className="h-10 w-10 rounded-full"
+            placeholderName={user?.name}
             src={user?.profilePicture}
             alt={user?.username}
           />
