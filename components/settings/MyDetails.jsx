@@ -26,7 +26,7 @@ export default function MyDetails() {
       .matches(/^[a-zA-Z0-9_]+$/, 'Only alphabets are allowed for this field ')
       .max(15, 'Username must be at most 15 characters'),
     name: yup.string(),
-    website: yup.string().nullable(true),
+    website: yup.string().url('Please enter a valid url').nullable(true),
     about: yup.string(),
     profilePicture: yup.string(),
   });
@@ -103,7 +103,9 @@ export default function MyDetails() {
     <div id="my-details" className="mb-16">
       <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
         <Avatar
-          className="hidden md:block w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
+          className="hidden md:flex w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
+          fontClassName="text-4xl"
+          placeholderName={user?.name}
           src={user?.profilePicture}
           alt={user?.name}
         />
@@ -136,7 +138,7 @@ export default function MyDetails() {
             />
           ))}
 
-          <div className="settingsInput">
+          <div className="settingsInput grid-cols-1">
             <div>
               <label
                 htmlFor="photo"

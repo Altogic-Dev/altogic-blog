@@ -7,13 +7,13 @@ import { ClipLoader } from 'react-spinners';
 import Button from '../basic/button';
 
 export default function ChangeProfilePicture() {
-  const [file, setFile] = useState();
-
   const user = useSelector((state) => state.auth.user);
   const userAvatarLink = useSelector((state) => state.file.fileLink);
   const loading = useSelector((state) => state.file.isLoading);
-  const authLoading = useSelector((state) => state.auth.isLoading);
   const dispatch = useDispatch();
+
+  const [didMount, setDidMount] = useState(false);
+
   const uploadPhotoHandler = (e) => {
     e.stopPropagation();
     const fileInput = document.createElement('input');
@@ -24,7 +24,6 @@ export default function ChangeProfilePicture() {
 
     fileInput.onchange = async () => {
       const file = fileInput.files[0];
-      setFile(file);
       dispatch(
         fileActions.uploadFileRequest({
           file,
@@ -34,8 +33,13 @@ export default function ChangeProfilePicture() {
       );
     };
   };
+
+  const deletePhotoHandler = () => {
+    dispatch(fileActions.deleteFileRequest());
+  };
+
   useEffect(() => {
-    if (userAvatarLink) {
+    if (didMount) {
       dispatch(
         authActions.updateProfileRequest({
           _id: user._id,
@@ -43,7 +47,9 @@ export default function ChangeProfilePicture() {
         })
       );
     }
+    setDidMount(true);
   }, [userAvatarLink]);
+
   return (
     <div id="change-profile-picture" className="mb-16">
       <div className="space-y-8 divide-y divide-gray-200">
@@ -57,7 +63,7 @@ export default function ChangeProfilePicture() {
             </p>
           </div>
           <div className="mt-4 divide-y divide-gray-200 border-b border-gray-200">
-            <div className="settingsInput ">
+            <div className="settingsInput md:grid-cols-2 grid-cols-1">
               <div className="mb-5 md:mb-0">
                 <label
                   htmlFor="photo"
@@ -69,26 +75,31 @@ export default function ChangeProfilePicture() {
                   This will be displayed on your profile.
                 </span>
               </div>
-              <div className="flex items-start justify-between">
-                {authLoading || loading ? (
+              <div className="flex md:items-end items-start justify-between flex-col">
+                {loading ? (
                   <div className="flex items-center justify-center">
                     <ClipLoader color="#9333ea" size={30} />
                   </div>
                 ) : (
                   <Avatar
-                    src={
-                      file ? URL.createObjectURL(file) : user?.profilePicture
-                    }
+                    src={userAvatarLink}
                     alt={user?.name}
-                    className="w-16 h-16 object-cover"
+                    placeholderName={user?.name}
+                    className="w-16 h-16 object-cover mr-4"
                   />
                 )}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-4 mt-2">
                   <Button
                     onClick={uploadPhotoHandler}
                     className="text-purple-700 text-sm tracking-sm"
                   >
                     Update
+                  </Button>
+                  <Button
+                    onClick={deletePhotoHandler}
+                    className="text-purple-700 text-sm tracking-sm"
+                  >
+                    Delete
                   </Button>
                 </div>
               </div>

@@ -191,8 +191,8 @@ export const authSlice = createSlice({
     },
     changeEmailSuccess(state, action) {
       state.isLoading = false;
-      state.user = action.payload;
-      window.location.href = `/mail-verification?email=${state.user.email}`;
+      state.user = action.payload.user;
+      window.location.href = `/mail-verification?email=${action.payload.email}`;
     },
     changeEmailFailure(state, action) {
       state.isLoading = false;

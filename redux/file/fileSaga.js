@@ -1,4 +1,5 @@
 import FileService from '@/services/file';
+import _ from 'lodash';
 import { takeEvery, put, call, all } from 'redux-saga/effects';
 import { fileActions } from './fileSlice';
 
@@ -28,8 +29,8 @@ function* uploadFileSaga({ payload }) {
     yield put(fileActions.uploadFileFailure(e));
   }
 }
-function* deleteFileSaga({ payload: { name, data } }) {
-  yield put(fileActions.clearFileLink({ name }));
+function* deleteFileSaga({ payload }) {
+  yield put(fileActions.clearFileLink({ name: _.get(payload, 'name') }));
 }
 export function* clearFileLink() {
   yield put(fileActions.clearFileLink());

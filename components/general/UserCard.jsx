@@ -53,6 +53,7 @@ export default function UserCard({ user, isFollowing }) {
           <div className="flex gap-3">
             <Avatar
               className="w-10 h-10 rounded-full"
+              placeholderName={user?.name}
               src={user.profilePicture}
               alt={user.name}
             />
@@ -61,9 +62,10 @@ export default function UserCard({ user, isFollowing }) {
                 {user.name}
               </span>
               {user?.about && (
-                <p className="text-slate-500 text-xs tracking-sm">
-                  {parseHtml(user.about)}
-                </p>
+                <p
+                  className="text-slate-500 text-xs tracking-sm"
+                  dangerouslySetInnerHTML={{ __html: user.about }}
+                />
               )}
             </div>
           </div>
