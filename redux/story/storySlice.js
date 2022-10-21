@@ -87,8 +87,8 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getStoryRepliesSuccess(state, action) {
-      state.replies = action.payload.data;
-      state.replyCount = action.payload.info.count;
+      state.replies = action.payload.result;
+      state.replyCount = action.payload.countInfo.count;
       state.isLoading = false;
     },
     getStoryRepliesFailure(state, action) {

@@ -8,6 +8,7 @@ import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import SocialProviders from '@/components/login/SocialProviders';
 import Router from 'next/router';
+import Button from '@/components/basic/button';
 
 export default function Login() {
   const loginSchema = new yup.ObjectSchema({
@@ -118,14 +119,20 @@ export default function Login() {
                     </div>
                   </div>
 
-                  <div>
-                    <button
+                  <div className='text-center '>
+                    <Button
                       type="submit"
-                      className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                      className="w-full flex mb-4 justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                     >
                       Sign in
-                    </button>
+                    </Button>
                   </div>
+                 
+                  <Link href="/">
+                    <a className="flex justify-center font-medium text-purple-700 tracking-sm hover:text-purple-500">
+                       Continue without login
+                    </a>
+                  </Link>
                   <div className="mt-6 relative">
                     <div
                       className="absolute inset-0 flex items-center"

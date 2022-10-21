@@ -20,7 +20,7 @@ export default function PublicationDropdown({ publication, className }) {
 
   const pubUser = _.find(
     publication.users,
-    (person) => person.user === user._id
+    (person) => person.user === user?._id
   );
 
   return (
