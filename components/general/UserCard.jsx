@@ -4,7 +4,6 @@ import { followerConnectionActions } from '@/redux/followerConnection/followerCo
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import { parseHtml } from '@/utils/utils';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
