@@ -121,14 +121,14 @@ export default function ListDetail() {
   }, [username]);
 
   useEffect(() => {
-      setUser(isMyProfileState ? sessionUser : profileUser);
-      if (!isMyProfileState && profileUser) {
-        dispatch(
-          generalActions.getFollowAndSubscribedInfoRequest(
-            _.get(profileUser, '_id')
-          )
-        );
-      }
+    setUser(isMyProfileState ? sessionUser : profileUser);
+    if (!isMyProfileState && profileUser) {
+      dispatch(
+        generalActions.getFollowAndSubscribedInfoRequest(
+          _.get(profileUser, '_id')
+        )
+      );
+    }
   }, [isMyProfileState, profileUser, sessionUser]);
 
   useEffect(() => {
@@ -144,12 +144,12 @@ export default function ListDetail() {
 
   useEffect(() => {
     if (!isMyProfileState && bookmarkList?.isPrivate) {
-      router.push("/")
+      router.push('/');
     }
     if (bookmarks) {
       setStories(bookmarks.map((bookmark) => bookmark.story));
     }
-  }, [bookmarks,profileUser]);
+  }, [bookmarks, profileUser]);
 
   useEffect(() => {
     if (bookmarkListSlug) {
@@ -213,6 +213,7 @@ export default function ListDetail() {
                     className="w-[50px] h-[50px] rounded-full object-cover"
                     src={user?.profilePicture}
                     alt={user?.username}
+                    placeholderName={user?.name}
                   />
                   <div>
                     <span className="text-slate-700  text-base font-medium tracking-sm">

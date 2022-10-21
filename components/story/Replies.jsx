@@ -193,7 +193,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     quillInstance.format('italic', true);
   };
 
-  console.log(replies);
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
@@ -255,6 +254,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                 className="w-8 h-8 object-cover rounded-full"
                                 src={_.get(user, 'profilePicture')}
                                 alt={_.get(user, 'name')}
+                                placeholderName={_.get(user, 'name')}
                               />
                               <span className="text-slate-700 text-sm font-medium tracking-sm">
                                 {_.get(user, 'name')}
@@ -339,6 +339,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     className="w-10 h-10 rounded-full object-cover"
                                     src={reply.userProfilePicture}
                                     alt={reply.name}
+                                    placeholderName={reply.name}
                                   />
                                   <div className="flex flex-col">
                                     <span className="text-slate-700 text-base font-medium tracking-sm">

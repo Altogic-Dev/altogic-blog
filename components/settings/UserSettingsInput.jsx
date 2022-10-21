@@ -22,10 +22,10 @@ export default function UserSettingsInput({
   }, [defaultValue, setValue, id]);
 
   return (
-    <div className="settingsInput">
+    <div className="settingsInput grid-cols-1">
       <label
         htmlFor={id}
-        className="block text-sm font-medium text-gray-700 tracking-sm"
+        className="block text-sm font-medium text-gray-700 tracking-sm mb-3"
       >
         {label}
       </label>
