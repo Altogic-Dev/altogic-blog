@@ -125,7 +125,7 @@ const StoryService = {
   createStory(story) {
     return db.model('story').object(story._id).create(story);
   },
-  updateStory(story) {
+  async updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {

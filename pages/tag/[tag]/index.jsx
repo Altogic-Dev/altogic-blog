@@ -53,7 +53,6 @@ export default function TagPage() {
 
   useEffect(() => {
     if (tag) {
-      console.log('istek attık');
       if (_.lowerCase(tab) === 'latest') {
         getLatests(1);
         setSelectedIndex(1);

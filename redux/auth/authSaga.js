@@ -84,14 +84,12 @@ function* loginSaga({ payload }) {
 function* forgotPassword({ payload }) {
   try {
     const { errors } = yield call(AuthService.forgotPassword, payload);
-    console.log(payload);
     if (errors) {
       throw errors.items;
     } else {
       yield put(authActions.forgotPasswordSuccess(payload));
     }
   } catch (e) {
-    console.log({ e });
     yield put(authActions.forgotPasswordFailure(e));
   }
 }
@@ -214,7 +212,6 @@ function* getSessionsSaga() {
 }
 function* deleteSessionSaga({ payload: sessionToken }) {
   try {
-    console.log(sessionToken);
     const { errors } = yield call(AuthService.deleteSession, sessionToken);
     if (errors) {
       throw errors.items;

@@ -25,9 +25,10 @@ export default function WriteAStory() {
   const [minRead, setMinRead] = useState(0);
   const [isShowSaving, setIsShowSaving] = useState(false);
   const [inpTitle, setInpTitle] = useState('');
+  const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
   const newStory = useSelector((state) => state.story.story);
-  const loading = useSelector((state) => state.story.isLoading);
+  const [webworker, setWebworker] = useState();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -49,6 +50,9 @@ export default function WriteAStory() {
     resolver: yupResolver(storySchema),
   });
   useEffect(() => {
+    setWebworker(new Worker(new URL('@/utils/worker', import.meta.url)));
+  }, []);
+  useEffect(() => {
     if (user) {
       setUsername(user.name);
     }
@@ -61,8 +65,10 @@ export default function WriteAStory() {
     }
     if (_.get(newStory, '_id') && !isCreated) {
       setIsCreated(true);
+      setLoading(false);
       router.push(`/write-a-story?id=${newStory._id}`);
     }
+    console.log(newStory);
   }, [newStory]);
 
   useEffect(() => {
@@ -76,6 +82,7 @@ export default function WriteAStory() {
 
   useEffect(() => {
     if (content || inpTitle) {
+      setLoading(true);
       const story = {
         user: user._id,
         username: user.username,
@@ -93,14 +100,14 @@ export default function WriteAStory() {
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
       } else if (!_.isNil(newStory)) {
-        dispatch(
-          storyActions.updateStoryRequest({
-            story: {
-              _id: newStory._id,
-              ...story,
-            },
-          })
-        );
+        webworker.postMessage({
+          _id: newStory._id,
+          ...story,
+        });
+        webworker.onmessage = (e) => {
+          setLoading(false);
+          dispatch(storyActions.updateStoryWorkerRequest(e.data));
+        };
       }
     }
     setMinRead(Math.ceil(content.split(' ').length / 200));
@@ -147,18 +154,18 @@ export default function WriteAStory() {
     <Layout>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
         <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
-          <span className="text-slate-800 text-lg tracking-sm">
+          <span className="text-slate-800 text-lg tracking-sm w-1/3">
             Draft in{' '}
             <span className="font-semibold">
               {selectedPublication ? selectedPublication.name : username}
             </span>
             {isCreated && isShowSaving && (
-              <span className="text-green-700 font-semibold">
+              <span className="text-green-400 font-semibold">
                 {' - '}
                 {loading ? (
                   <span>
                     <span className="animate-pulse">Saving</span>...
-                    <ClipLoader size={10} color="#9333ea" loading={loading} />
+                    <ClipLoader size={10} color="#4ade80" loading={loading} />
                   </span>
                 ) : (
                   'Saved'
@@ -166,16 +173,18 @@ export default function WriteAStory() {
               </span>
             )}
           </span>
-          <p className="text-slate-500">{minRead} min read</p>
+          <p className="text-slate-500 w-1/3 text-center">{minRead} min read</p>
 
           {isCreated && (
-            <Button
-              onClick={handlePublish}
-              className="inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
-            >
-              <CheckCircleIcon className="w-5 h-5" />
-              Publish
-            </Button>
+            <div className="w-1/3 flex justify-end">
+              <Button
+                onClick={handlePublish}
+                className=" inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
+              >
+                <CheckCircleIcon className="w-5 h-5" />
+                Publish
+              </Button>
+            </div>
           )}
         </div>
         <form className="w-full">

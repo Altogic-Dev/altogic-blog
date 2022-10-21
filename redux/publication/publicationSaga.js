@@ -14,19 +14,6 @@ import { publicationActions } from './publicationSlice';
 import { storyActions } from '../story/storySlice';
 import { clearFileLink } from '../file/fileSaga';
 import { updateUserSaga } from '../auth/authSaga';
-// function* followPublicationSaga({ payload: { followerUser, followingUser } }) {
-//   try {
-//     const { data, error } = yield call(
-//       FollowerConnectionService.followUser,
-//       followerUser,
-//       followingUser
-//     );
-//     console.log({ data, error });
-//     // yield put(followerConnectionActions.fetchDataSuccess());
-//   } catch (e) {
-//     console.error({ e });
-//   }
-// }
 
 function* getPublicationFollowersSaga({ payload: publicationId }) {
   try {
@@ -247,7 +234,6 @@ function* updatePublicationSaga({ payload: { publication, onSuccess } }) {
 
 function* followPublicationSaga({ payload: { publication, user } }) {
   try {
-    console.log({ publication, user });
     const { data, errors } = yield call(
       PublicationService.followPublication,
       publication,
