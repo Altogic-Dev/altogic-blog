@@ -181,6 +181,7 @@ export default function HeaderMenu() {
                   <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
                     <Avatar
                       className="inline-block w-10 h-10 rounded-full"
+                      placeholderName={user?.name}
                       src={user?.profilePicture}
                       alt={user?.username}
                     />
@@ -215,6 +216,7 @@ export default function HeaderMenu() {
                 <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
                   <Avatar
                     className="inline-block w-10 h-10 rounded-full"
+                    placeholderName={selectedPublication?.name}
                     src={selectedPublication?.logo}
                     alt={selectedPublication?.name}
                   />
@@ -266,6 +268,7 @@ export default function HeaderMenu() {
             <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
               <Avatar
                 className="inline-block w-10 h-10 rounded-full"
+                placeholderName={user?.name}
                 src={user?.profilePicture}
                 alt={user?.username}
               />
@@ -286,6 +289,7 @@ export default function HeaderMenu() {
             <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
               <Avatar
                 className="inline-block w-10 h-10 rounded-full"
+                placeholderName={selectedPublication?.name}
                 src={selectedPublication?.logo}
                 alt={selectedPublication?.username}
               />

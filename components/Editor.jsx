@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 // import dynamic from 'next/dynamic';
 import FileService from '@/services/file';
 import _ from 'lodash';
@@ -29,6 +29,7 @@ import {
 import hljs from 'highlight.js';
 import { Block } from '@/utils/QuillBlots/Blots';
 import Quill from 'quill';
+import { useRouter } from 'next/router';
 
 export default function Editor({
   onChange,
@@ -40,15 +41,17 @@ export default function Editor({
     const { data } = await FileService.uploadFile(file, file.name);
     return data.publicPath;
   };
-  // const [value, setValue] = useState();
-  const [quillInstance, setQuillInstance] = useState();
 
+  const [quillInstance, setQuillInstance] = useState();
+  const [isStateUpdated, setIsStateUpdated] = useState(false);
   const tooltip = useRef();
   const sidebar = useRef();
   const editor = useRef();
   const input = useRef();
   const tooltipInput = useRef();
   const tooltipButtons = useRef();
+  const router = useRouter();
+  const { id } = router.query;
 
   function convertMedia(url) {
     const vimeo = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
@@ -104,6 +107,19 @@ export default function Editor({
       }
     }
   };
+  const handleDebounceFn = (quill) => {
+    onChange(quill.root.innerHTML);
+    setImages(
+      // eslint-disable-next-line array-callback-return, consistent-return
+      quill.getContents().map((item) => {
+        if (item.insert && item.insert.image && item.insert.image.url) {
+          return item.insert.image.url;
+        }
+      })
+    );
+  };
+  const debounceFn = useCallback(_.debounce(handleDebounceFn, 1500), []);
+
   useEffect(() => {
     const quill = new Quill('#editor-container', {
       scrollingContainer: document.documentElement,
@@ -179,16 +195,8 @@ export default function Editor({
       }
 
       _.debounce(() => {
-        onChange(quill.root.innerHTML);
-        setImages(
-          // eslint-disable-next-line array-callback-return, consistent-return
-          quill.getContents().map((item) => {
-            if (item.insert && item.insert.image && item.insert.image.url) {
-              return item.insert.image.url;
-            }
-          })
-        );
-      }, 5000)();
+        debounceFn(quill);
+      }, 1500)();
       tooltip.current.style.display = 'none';
       sidebar.current.style.display = 'none';
       sidebar.current.classList.remove('active');
@@ -196,15 +204,21 @@ export default function Editor({
   }, []);
 
   useEffect(() => {
-    if (value && quillInstance) {
+    if (value && quillInstance && !isStateUpdated) {
       quillInstance.root.innerHTML = value;
       quillInstance.getSelection();
       quillInstance.setSelection(quillInstance.getLength(), 0);
+      setIsStateUpdated(true);
     }
   }, [value, quillInstance]);
+  useEffect(() => {
+    if (!id && quillInstance) {
+      quillInstance.setContents([{ insert: '\n' }]);
+    }
+  }, [id, quillInstance]);
 
   const removeFormat = () => {
-    const range = quillInstance.getSelection();
+    const range = quillInstance.getSelection(true);
     if (range.length === 0) {
       let leaf;
       const offset = quillInstance.getLeaf(range.index);
@@ -213,11 +227,7 @@ export default function Editor({
         range.index + leaf.domNode.length
       );
     } else {
-      quillInstance.removeFormat(
-        range.index + 2,
-        range.length + 1000,
-        Quill.sources.USER
-      );
+      quillInstance.removeFormat(range.index, range.length, Quill.sources.USER);
     }
   };
   const handleAddVideo = (e) => {

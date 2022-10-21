@@ -1,4 +1,4 @@
-import React, { Fragment,useEffect,useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Transition, Menu } from '@headlessui/react';
 import {
   CogIcon,
@@ -20,13 +20,11 @@ export default function HeaderDropdown({ user, logout, className }) {
     dispatch(publicationActions.selectPublicationRequest(publication));
   };
 
-  const [publiationsState,setPublicationState] = useState([]);
-
-  console.log(publications)
+  const [publiationsState, setPublicationState] = useState([]);
 
   useEffect(() => {
-    setPublicationState(publications)
-  },[publications])
+    setPublicationState(publications);
+  }, [publications]);
   return (
     <Transition
       as={Fragment}
@@ -43,6 +41,7 @@ export default function HeaderDropdown({ user, logout, className }) {
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
           <Avatar
             className="h-10 w-10 rounded-full"
+            placeholderName={user?.name}
             src={user?.profilePicture}
             alt={user?.username}
           />

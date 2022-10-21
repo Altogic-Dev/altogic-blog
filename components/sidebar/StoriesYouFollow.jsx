@@ -30,6 +30,7 @@ export default function StoriesYouFollow({ storiesYouFollow }) {
                   className="rounded-full w-14 h-14  "
                   src={storiesFollow.followingUserProfilePicture}
                   alt={storiesFollow.followingUsername}
+                  placeholderName={storiesFollow.followingUsername}
                 />
                 {storiesFollow.unreadStories ? (
                   <span className="inline-flex items-center justify-center absolute bottom-0 right-0 w-[18px] h-[18px] bg-purple-500 text-white text-xs tracking-sm rounded-full ring-2 ring-white">

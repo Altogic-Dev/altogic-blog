@@ -132,7 +132,7 @@ export const storySlice = createSlice({
       );
       state.replyCount -= 1;
       state.deletingIsLoading = false;
-
+      state.replyLoading = false;
     },
     removeReplyFailure(state, action) {
       state.error = action.payload;
@@ -181,6 +181,9 @@ export const storySlice = createSlice({
       state.replyLoading = false;
     },
     updateStoryRequest(state) {
+      state.isLoading = true;
+    },
+    updateStoryWorkerRequest(state) {
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {

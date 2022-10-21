@@ -55,7 +55,6 @@ function* getBookmarkListsSaga({ payload }) {
   }
 }
 function* addBookmarkSaga({ payload }) {
-  console.log('addBookmarkSaga', payload);
   try {
     const { data, errors } = yield call(BookmarkService.addBookmark, payload);
     if (data) {

@@ -72,7 +72,7 @@ export const formats = [
 // Quill Toolbar component
 export function QuillToolbar() {
   return (
-    <div id="toolbar" className="border-none mb-2">
+    <div id="toolbar" className="border-none mt-2">
       <span className="ql-formats">
         <Button className="ql-bold" />
         <Button className="ql-italic" />

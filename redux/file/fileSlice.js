@@ -58,11 +58,9 @@ export const fileSlice = createSlice({
       ...action.payload.file,
     }),
     [uploadFile.pending]: (state) => {
-      console.log('pending');
       state.isLoading = true;
     },
     [uploadFile.fulfilled]: (state, action) => {
-      console.log('fulfilled', action.payload);
       state.isLoading = false;
       state.fileLink = action.payload;
     },

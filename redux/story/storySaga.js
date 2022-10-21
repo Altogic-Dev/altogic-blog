@@ -564,6 +564,18 @@ export function* removeRecommendedStories(authorId) {
   );
   yield put(storyActions.removeRecommendedStories(newRecommendedStories));
 }
+function* updateStoryWorkerSaga({ payload: { data, errors } }) {
+  try {
+    if (!_.isNil(data)) {
+      yield put(storyActions.updateStorySuccess(data));
+    }
+    if (!_.isNil(errors)) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(storyActions.updateStoryFailure(e));
+  }
+}
 
 export default function* rootSaga() {
   yield all([
@@ -617,5 +629,9 @@ export default function* rootSaga() {
       getPublicationStoriesByTopicSaga
     ),
     takeEvery(storyActions.visitStoryRequest.type, visitStorySaga),
+    takeEvery(
+      storyActions.updateStoryWorkerRequest.type,
+      updateStoryWorkerSaga
+    ),
   ]);
 }

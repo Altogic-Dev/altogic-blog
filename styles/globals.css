@@ -243,25 +243,26 @@ textarea {
 #reply-input {
   height: 100%;
 }
-#reply-input .ql-editor {
+#reply-input .ql-editor,
+#comment-input .ql-editor,
+#reply-editor .ql-editor {
   height: 100%;
   outline: none;
   overflow-y: auto;
 }
+
 * {
   box-sizing: border-box;
 }
 
 .stories-follow::-webkit-scrollbar {
   height: 5px;
-  margin-top:5px;
+  margin-top: 5px;
   border-radius: 30px;
 }
-
 
 /* Handle */
 .stories-follow::-webkit-scrollbar-thumb {
   background: rgb(126 34 206 /0.8);
   border-radius: 8px;
-
 }

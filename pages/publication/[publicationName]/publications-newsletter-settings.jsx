@@ -34,7 +34,6 @@ export default function PublicationsNewsletterSettings() {
   });
 
   const submitFunction = (data) => {
-    console.log(data);
     dispatch(
       fileActions.uploadFileRequest({
         file,
