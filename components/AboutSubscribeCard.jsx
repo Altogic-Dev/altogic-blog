@@ -5,6 +5,7 @@ export default function AboutSubscribeCard({ profileId, name, mailAddress }) {
   const isLoadingSubscribe = useSelector(
     (state) => state.subscribeConnection.isLoading
   );
+
   const dispatch = useDispatch();
 
   const subscribe = () => {

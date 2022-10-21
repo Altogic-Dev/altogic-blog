@@ -87,8 +87,8 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getStoryRepliesSuccess(state, action) {
-      state.replies = action.payload.data;
-      state.replyCount = action.payload.info.count;
+      state.replies = action.payload.result;
+      state.replyCount = action.payload.countInfo.count;
       state.isLoading = false;
     },
     getStoryRepliesFailure(state, action) {
@@ -132,7 +132,7 @@ export const storySlice = createSlice({
       );
       state.replyCount -= 1;
       state.deletingIsLoading = false;
-
+      state.replyLoading = false;
     },
     removeReplyFailure(state, action) {
       state.error = action.payload;
@@ -181,6 +181,9 @@ export const storySlice = createSlice({
       state.replyLoading = false;
     },
     updateStoryRequest(state) {
+      state.isLoading = true;
+    },
+    updateStoryWorkerRequest(state) {
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {

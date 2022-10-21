@@ -60,7 +60,7 @@ export default function PublicationProfile() {
 
   return (
     <div className="space-y-6">
-      <img className="w-[200px]" src={publication?.logo} alt="HiThemes" />
+      <img className="w-[200px]" src={publication?.logo} alt={publication?.name} />
       <p className="text-slate-500 text-sm tracking-sm">
         {publication?.description}
       </p>

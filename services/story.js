@@ -84,20 +84,12 @@ const StoryService = {
       .get(true);
   },
   getStoryReplies(storyId, page, limit) {
-    return db
-      .model('replies')
-      .filter(`story == '${storyId}'`)
-      .sort('createdAt', 'desc')
-      .page(page)
-      .limit(limit)
-      .get(true);
+    return endpoint.get(`/story/${storyId}/replies`, page,limit);
+
   },
   getReplyComments(reply) {
-    return db
-      .model('reply_comments')
-      .filter(`reply == '${reply}'`)
-      .sort('createdAt', 'desc')
-      .get();
+    return endpoint.get(`/reply/${reply}/comments`);
+
   },
   createReply(reply) {
     return db.model('replies').create(reply);
@@ -125,7 +117,7 @@ const StoryService = {
   createStory(story) {
     return db.model('story').object(story._id).create(story);
   },
-  updateStory(story) {
+  async updateStory(story) {
     return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {

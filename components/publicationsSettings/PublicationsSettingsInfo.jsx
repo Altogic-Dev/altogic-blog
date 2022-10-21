@@ -80,7 +80,7 @@ export default function PublicationSettingsInfo({
   const [inpWriter, setInpWriter] = useState('');
   const [writers, setWriters] = useState([]);
   const [user, setUser] = useState();
-
+  const [isEditorSearch, setIsEditorSearch] = useState(false);
   const addTagFromRecommended = (tag) => {
     if (!_.includes(tags, tag) && _.size(tags) < 5) {
       setTags((prev) => [tag, ...prev]);
@@ -122,7 +122,8 @@ export default function PublicationSettingsInfo({
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e, isEditorSearch) => {
+    setIsEditorSearch(isEditorSearch);
     const { name, value } = e.target;
     if (name === 'writer') setInpWriter(value);
     else setInpEditor(value);
@@ -291,6 +292,7 @@ export default function PublicationSettingsInfo({
     }
   }, [doClear]);
 
+  console.log(isEditorSearch)
   return (
     <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
@@ -641,12 +643,12 @@ export default function PublicationSettingsInfo({
                     placeholder="Editor's Name or Username"
                     users={editors}
                     setUsers={setEditors}
-                    onChange={handleSearch}
+                    onChange={(e) => handleSearch(e, true)}
                     value={inpEditor}
                   />
                 </div>
               </div>
-              {foundUsers && !loading && inpEditor && (
+              {foundUsers && !loading && inpEditor && isEditorSearch && (
                 <PublicationSettingsSuggestions
                   name="Editors"
                   suggestions={foundUsers}
@@ -668,12 +670,14 @@ export default function PublicationSettingsInfo({
                       placeholder="Writer's Name or Username"
                       users={writers}
                       setUsers={setWriters}
-                      onChange={handleSearch}
+                      onChange={(e) =>
+                        handleSearch(e, false)
+                      }
                       value={inpWriter}
                     />
                   </div>
                 </div>
-                {foundUsers && !loading && inpWriter && (
+                {foundUsers && !loading && inpWriter && !isEditorSearch && (
                   <PublicationSettingsSuggestions
                     name="Writers"
                     suggestions={foundUsers}

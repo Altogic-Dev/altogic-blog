@@ -224,6 +224,9 @@ export default function PublishSettings() {
                 <span className="text-slate-600 text-sm tracking-sm">
                   Story Preview
                 </span>
+                <h1 className="text-slate-800 text-2xl font-bold tracking-sm mb-4">
+                  {story?.title}
+                </h1>
                 <div
                   className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-base prose-h1:md:text-lg prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm mb-10 sm:mb-24"
                   dangerouslySetInnerHTML={{ __html: _.get(story, 'content') }}

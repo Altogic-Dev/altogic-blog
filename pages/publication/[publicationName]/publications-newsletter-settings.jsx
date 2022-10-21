@@ -33,8 +33,7 @@ export default function PublicationsNewsletterSettings() {
     resolver: yupResolver(formSchema),
   });
 
-  const submitFunction = (data) => {
-    console.log(data);
+  const submitFunction = () => {
     dispatch(
       fileActions.uploadFileRequest({
         file,

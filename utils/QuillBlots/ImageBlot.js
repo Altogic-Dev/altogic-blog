@@ -2,7 +2,6 @@ import { BlockEmbed } from './Blots';
 
 export default class ImageBlot extends BlockEmbed {
   static create(value) {
-    console.log('value', value);
     const node = super.create();
     node.setAttribute('alt', value.alt || '');
     node.setAttribute('src', value.url || value);

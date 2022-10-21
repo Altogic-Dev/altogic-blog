@@ -346,7 +346,7 @@ export default function ProfilePage() {
                       followingCount={_.get(profileUser, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfile && !isSubscribed && (
+                    {!isMyProfile && !isSubscribed && sessionUser && (
                       <AboutSubscribeCard
                         profileId={_.get(profileUser, '_id')}
                         name={_.get(profileUser, 'name')}

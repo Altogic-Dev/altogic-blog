@@ -90,6 +90,7 @@ export default function Notifications() {
                               className="w-[30px] h-[30px]"
                               src={allNotification.sentUserProfilePicture}
                               alt={allNotification.sentUsername}
+                              placeholderName={allNotification.sentUsername}
                             />
                             <span className="text-sm font-light tracking-sm text-slate-500">
                               <strong className="text-slate-600 font-semibold">
@@ -122,6 +123,7 @@ export default function Notifications() {
                               className="w-[30px] h-[30px]"
                               src={response.sentUserProfilePicture}
                               alt={response.sentUsername}
+                              placeholderName={response.sentUsername}
                             />
                             <span className="text-sm font-light tracking-sm text-slate-500">
                               <strong className="text-slate-600 font-semibold">
