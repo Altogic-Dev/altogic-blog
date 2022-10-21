@@ -12,6 +12,7 @@ export default function YourTopics({ Tag }) {
   const followingTopics = useSelector((state) =>
     _.get(state.auth.user, 'followingTopics')
   );
+  const user = useSelector((state) => state.auth.user);
 
   const [followingTopicsState, setFollowingTopicsState] = useState([]);
   const [followed, setFollowed] = useState(false);
@@ -75,18 +76,20 @@ export default function YourTopics({ Tag }) {
               <GlobeAltIcon className="w-6" />
               {Tag}
             </p>
-            <div className="inline-flex gap-4 mb-12">
-              <Button primaryColor onClick={() => handleClick(followed)}>
-                {followed ? 'Unfollow' : 'Follow'}
-              </Button>
-              <Button
-                onClick={() =>
-                  router.push(`/write-a-story?topic=${Tag.replace('-', ' ')}`)
-                }
-              >
-                Start Writing
-              </Button>
-            </div>
+            {user && (
+              <div className="inline-flex gap-4 mb-12">
+                <Button primaryColor onClick={() => handleClick(followed)}>
+                  {followed ? 'Unfollow' : 'Follow'}
+                </Button>
+                <Button
+                  onClick={() =>
+                    router.push(`/write-a-story?topic=${Tag.replace('-', ' ')}`)
+                  }
+                >
+                  Start Writing
+                </Button>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -111,17 +114,19 @@ export default function YourTopics({ Tag }) {
               {Tag}
             </h1>
           </div>
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={() => handleClick(followed)}
-              className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            >
-              {followed ? 'Unfollow' : 'Follow'}
-            </Button>
-            <Button className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-              Start writing
-            </Button>
-          </div>
+          {user && (
+            <div className="flex items-center gap-4">
+              <Button
+                onClick={() => handleClick(followed)}
+                className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              >
+                {followed ? 'Unfollow' : 'Follow'}
+              </Button>
+              <Button className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                Start writing
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </>
