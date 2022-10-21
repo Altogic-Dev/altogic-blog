@@ -180,7 +180,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     quillInstance.format('italic', true);
   };
 
-  console.log(replies);
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>

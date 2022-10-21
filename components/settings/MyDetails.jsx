@@ -118,23 +118,26 @@ export default function MyDetails() {
       </div>
       <form onSubmit={handleSubmit(formSubmit)}>
         <div className="divide-y divide-gray-200">
-          {constants.USER_SETTINGS_FIELDS.map((field) => (
-            <UserSettingsInput
-              key={field.name}
-              label={field.label}
-              placeholder={field.placeholder}
-              register={register}
-              errors={errors}
-              icon={field.icon ?? ''}
-              prefix={field.prefix ?? ''}
-              className={field.className ?? ''}
-              id={field.name}
-              type={field.type ?? 'text'}
-              defaultValue={user?.[field.name]}
-              setValue={setValue}
-              onBlur={field.name === 'username' ? checkUsername : null}
-            />
-          ))}
+          {constants.USER_SETTINGS_FIELDS.map(
+            (field) =>
+              (!field.provider  || user?.provider === field.provider) && (
+                <UserSettingsInput
+                  key={field.name}
+                  label={field.label}
+                  placeholder={field.placeholder}
+                  register={register}
+                  errors={errors}
+                  icon={field.icon ?? ''}
+                  prefix={field.prefix ?? ''}
+                  className={field.className ?? ''}
+                  id={field.name}
+                  type={field.type ?? 'text'}
+                  defaultValue={user?.[field.name]}
+                  setValue={setValue}
+                  onBlur={field.name === 'username' ? checkUsername : null}
+                />
+              )
+          )}
 
           <div className="settingsInput">
             <div>
