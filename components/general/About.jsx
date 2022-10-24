@@ -64,7 +64,7 @@ function About(props) {
           <p className="">
             Let others know who you are.
             <Link href="/settings">
-              <a className="text-purple-500 no-underline">{' '}Click here to add</a>
+              <a className="text-purple-500 no-underline">{' '}Click here to edit your profile.</a>
             </Link>
           </p>
         ) : (
