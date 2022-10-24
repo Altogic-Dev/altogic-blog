@@ -16,7 +16,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
 });
 
-export default function MyDetails({user}) {
+export default function MyDetails({ user }) {
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -95,6 +95,11 @@ export default function MyDetails({user}) {
     };
   }
 
+  const handleAbout = (e) => {
+    setAbout(e.substring(0, 200));
+    console.log(about.length)
+  };
+
   useEffect(() => {
     setAbout(user?.about);
   }, [user]);
@@ -144,20 +149,23 @@ export default function MyDetails({user}) {
                 About me
               </label>
               <span className="text-slate-500 text-sm tracking-sm">
-                Write a short introduction.
+                Write a short introduction. <br />
+                (Max 200 characters)
               </span>
             </div>
             <div>
               <EditorToolbar />
               <ReactQuill
+                className="w-96"
                 theme="snow"
-                value={about}
-                onChange={setAbout}
+                value={about.substring(0,200)}
+                onChange={(e) => handleAbout(e)}
                 placeholder="You can start typing the forum you want to start."
                 modules={modules}
                 formats={formats}
               />
             </div>
+            {about?.length > 200 && <p>Reached Max Characters</p>}{' '}
           </div>
         </div>
 

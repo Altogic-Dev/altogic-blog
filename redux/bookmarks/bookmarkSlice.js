@@ -123,7 +123,7 @@ export const bookmarkSlice = createSlice({
         (list) => list._id !== action.payload
       );
       state.bookmarkList = null;
-      toast.success('Bookmark list deleted successfully');
+      toast.success('Bookmark list deleted successfully',{hideProgressBar: true});
     },
     deleteBookmarkListFailure(state, action) {
       state.isLoading = false;
@@ -137,7 +137,7 @@ export const bookmarkSlice = createSlice({
       state.bookmarkList.name = action.payload.name;
       state.bookmarkList.isPrivate = action.payload.isPrivate;
       state.bookmarkList.slug = action.payload.slug;
-      toast.success('Bookmark list updated successfully');
+      toast.success('Bookmark list updated successfully',{hideProgressBar: true});
     },
     updateBookmarkListFailure(state, action) {
       state.isLoading = false;

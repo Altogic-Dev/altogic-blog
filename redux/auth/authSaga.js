@@ -217,7 +217,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
       throw errors.items;
     } else {
       yield put(authActions.deleteSessionSuccess(sessionToken));
-      toast.success('Session deleted successfully');
+      toast.success('Session deleted successfully',{hideProgressBar: true});
     }
   } catch (e) {
     yield put(authActions.deleteSessionFailure(e));

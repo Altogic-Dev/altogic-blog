@@ -108,6 +108,7 @@ export default function ListDetail() {
     });
   };
 
+
   useEffect(() => {
     if (username) {
       setIsMyProfileState(username === _.get(sessionUser, 'username'));
@@ -146,11 +147,12 @@ export default function ListDetail() {
     if (!isMyProfileState && bookmarkList?.isPrivate) {
       router.push('/');
     }
-    if (bookmarks) {
+    if (_.get(_.get(_.first(bookmarks), 'story'), '_id')) {
       setStories(bookmarks.map((bookmark) => bookmark.story));
     }
   }, [bookmarks, profileUser]);
 
+  console.log(bookmarks);
   useEffect(() => {
     if (bookmarkListSlug) {
       dispatch(
@@ -390,7 +392,7 @@ export default function ListDetail() {
                 </ListObserver>
               ) : (
                 <p className="text-slate-500 text-md my-10 border-b-2 pb-10">
-                 You have not bookmarked any stories to this list yet!
+                  You have not bookmarked any stories to this list yet!
                 </p>
               )}
             </div>

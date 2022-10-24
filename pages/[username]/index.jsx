@@ -67,7 +67,7 @@ export default function ProfilePage() {
   const previousPage = usePrevious(bookmarkListPage);
   const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
-    toast.success('Copied to clipboard');
+    toast.success('Copied to clipboard',{hideProgressBar: true});
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
     navigator.clipboard.writeText(profileUrl);

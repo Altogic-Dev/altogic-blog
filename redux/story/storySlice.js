@@ -268,7 +268,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
-      toast.success('Story updated successfully');
+      toast.success('Story updated successfully',{hideProgressBar: true});
       state.isLoading = false;
       state.story = {
         ...state.story,
@@ -280,7 +280,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStoryFieldSuccess(state, action) {
-      toast.success('Story updated successfully');
+      toast.success('Story updated successfully',{hideProgressBar: true});
       state.isLoading = false;
       state.story = action.payload;
     },
