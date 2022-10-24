@@ -26,7 +26,7 @@ export default function Layout({ children, loading }) {
           <Image width={150} height={40} src="/powered-by-altogic.svg" alt="" />
         </Button>
       </Link>
-      <ScrollToTop />s
+      <ScrollToTop />
     </div>
   );
 }

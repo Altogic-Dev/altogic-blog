@@ -74,7 +74,7 @@ function About(props) {
           >
             <circle cx={4} cy={4} r={3} />
           </svg>
-          {topWriterTopics && <span>Top writer in</span>}
+          {topWriterTopics?.length>0 && <span>Top writer in</span>}
         </div>
         {topWriterTopics && (
           <div className="flex flex-wrap items-center justify-start gap-4 w-7/12">

@@ -26,7 +26,7 @@ export default function MyDetails() {
       .matches(/^[a-zA-Z0-9_]+$/, 'Only alphabets are allowed for this field ')
       .max(15, 'Username must be at most 15 characters'),
     name: yup.string(),
-    website: yup.string().url('Please enter a valid url').nullable(true),
+    website: yup.string().nullable(true),
     about: yup.string(),
     profilePicture: yup.string(),
   });
@@ -103,9 +103,7 @@ export default function MyDetails() {
     <div id="my-details" className="mb-16">
       <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
         <Avatar
-          className="hidden md:flex w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
-          fontClassName="text-4xl"
-          placeholderName={user?.name}
+          className="hidden md:block w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
           src={user?.profilePicture}
           alt={user?.name}
         />
@@ -120,28 +118,25 @@ export default function MyDetails() {
       </div>
       <form onSubmit={handleSubmit(formSubmit)}>
         <div className="divide-y divide-gray-200">
-          {constants.USER_SETTINGS_FIELDS.map(
-            (field) =>
-              (!field.provider  || user?.provider === field.provider) && (
-                <UserSettingsInput
-                  key={field.name}
-                  label={field.label}
-                  placeholder={field.placeholder}
-                  register={register}
-                  errors={errors}
-                  icon={field.icon ?? ''}
-                  prefix={field.prefix ?? ''}
-                  className={field.className ?? ''}
-                  id={field.name}
-                  type={field.type ?? 'text'}
-                  defaultValue={user?.[field.name]}
-                  setValue={setValue}
-                  onBlur={field.name === 'username' ? checkUsername : null}
-                />
-              )
-          )}
+          {constants.USER_SETTINGS_FIELDS.map((field) => (
+            <UserSettingsInput
+              key={field.name}
+              label={field.label}
+              placeholder={field.placeholder}
+              register={register}
+              errors={errors}
+              icon={field.icon ?? ''}
+              prefix={field.prefix ?? ''}
+              className={field.className ?? ''}
+              id={field.name}
+              type={field.type ?? 'text'}
+              defaultValue={user?.[field.name]}
+              setValue={setValue}
+              onBlur={field.name === 'username' ? checkUsername : null}
+            />
+          ))}
 
-          <div className="settingsInput grid-cols-1">
+          <div className="settingsInput">
             <div>
               <label
                 htmlFor="photo"

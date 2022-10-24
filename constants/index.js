@@ -66,7 +66,6 @@ const constants = {
       placeholder: 'Enter your email',
       icon: faEnvelope,
       className: 'pl-10 text-base',
-      provider: 'altogic',
     },
   ],
 };
