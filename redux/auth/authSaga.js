@@ -292,6 +292,24 @@ function* searchUserByUsernameSaga({ payload }) {
   }
 }
 
+export function* setDefaultAvatarSaga() {
+  try {
+    const user = yield select((state) => state.auth.user);
+    const { data, errors } = yield call(
+      AuthService.setDefaultAvatar,
+      user.name
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield call(AuthService.authStateChange, data);
+      yield put(authActions.updateUserSuccess(data));
+    }
+    return { data, errors: null };
+  } catch (e) {
+    return { data: null, errors: e };
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(authActions.registerRequest.type, registerSaga),

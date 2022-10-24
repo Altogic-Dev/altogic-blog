@@ -6,7 +6,7 @@ import { authActions } from '@/redux/auth/authSlice';
 import { ClipLoader } from 'react-spinners';
 import Button from '../basic/button';
 
-export default function ChangeProfilePicture({user}) {
+export default function ChangeProfilePicture({ user }) {
   const userAvatarLink = useSelector((state) => state.file.fileLink);
   const loading = useSelector((state) => state.file.isLoading);
   const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export default function ChangeProfilePicture({user}) {
   };
 
   const deletePhotoHandler = () => {
-    dispatch(fileActions.deleteFileRequest());
+    dispatch(fileActions.setDefaultAvatarFileRequest());
   };
 
   useEffect(() => {
@@ -45,9 +45,14 @@ export default function ChangeProfilePicture({user}) {
           profilePicture: userAvatarLink,
         })
       );
+    } else if (userAvatarLink) {
+      setDidMount(true);
     }
-    setDidMount(true);
   }, [userAvatarLink]);
+
+  useEffect(() => {
+    dispatch(fileActions.setFileLinkByProfilePictureRequest());
+  }, []);
 
   return (
     <div id="change-profile-picture" className="mb-16">

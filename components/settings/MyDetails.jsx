@@ -51,13 +51,13 @@ export default function MyDetails({ user }) {
     if (!data.website || urlRegex.test(data.website)) {
       req._id = user._id;
       req.about = about;
+      dispatch(authActions.updateProfileRequest(req));
     } else {
       setError('website', {
         type: 'url',
         message: 'Please enter a valid url',
       });
     }
-    dispatch(authActions.updateProfileRequest(req));
   };
 
   useEffect(() => {
