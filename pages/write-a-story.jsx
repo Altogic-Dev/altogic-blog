@@ -68,7 +68,6 @@ export default function WriteAStory() {
       setLoading(false);
       router.push(`/write-a-story?id=${newStory._id}`);
     }
-    console.log(newStory);
   }, [newStory]);
 
   useEffect(() => {
@@ -154,25 +153,30 @@ export default function WriteAStory() {
     <Layout>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
         <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
-          <span className="text-slate-800 text-lg tracking-sm w-1/3">
-            Draft in{' '}
-            <span className="font-semibold">
-              {selectedPublication ? selectedPublication.name : username}
-            </span>
+          <div className="text-slate-800 text-lg tracking-sm w-1/3 flex">
+            <div className="mr-4">
+              Draft in{' '}
+              <span className="font-semibold">
+                {selectedPublication ? selectedPublication.name : username}
+              </span>
+            </div>
             {isCreated && isShowSaving && (
-              <span className="text-green-400 font-semibold">
-                {' - '}
+              <div className="text-green-700 font-semibold">
+                {'  '}
                 {loading ? (
                   <span>
                     <span className="animate-pulse">Saving</span>...
                     <ClipLoader size={10} color="#4ade80" loading={loading} />
                   </span>
                 ) : (
-                  'Saved'
+                  <div className="flex items-center justify-center">
+                    <span>Saved</span>
+                    <CheckCircleIcon className="w-5 h-5 ml-2" />
+                  </div>
                 )}
-              </span>
+              </div>
             )}
-          </span>
+          </div>
           <p className="text-slate-500 w-1/3 text-center">{minRead} min read</p>
 
           {isCreated && (
@@ -191,7 +195,7 @@ export default function WriteAStory() {
           <Input
             type="text"
             name="story-title"
-            className="block w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+            className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
             placeholder="Story Title"
             required
             register={register('title')}
