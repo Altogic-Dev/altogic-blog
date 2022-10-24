@@ -77,6 +77,10 @@ export const storySlice = createSlice({
       state.story = action.payload;
       state.error = null;
       state.isLoading = false;
+      state.userDraftStoriesInfo = {
+        ...state.userDraftStoriesInfo,
+        count: state.userDraftStoriesInfo.count + 1,
+      };
     },
     createStoryFailure(state, action) {
       state.story = null;
@@ -268,7 +272,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
-      toast.success('Story updated successfully',{hideProgressBar: true});
+      toast.success('Story updated successfully', { hideProgressBar: true });
       state.isLoading = false;
       state.story = {
         ...state.story,
@@ -280,7 +284,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStoryFieldSuccess(state, action) {
-      toast.success('Story updated successfully',{hideProgressBar: true});
+      toast.success('Story updated successfully', { hideProgressBar: true });
       state.isLoading = false;
       state.story = action.payload;
     },
@@ -300,6 +304,10 @@ export const storySlice = createSlice({
     publishStorySuccess(state, action) {
       state.story = action.payload;
       state.isLoading = false;
+      state.userDraftStoriesInfo = {
+        ...state.userDraftStoriesInfo,
+        count: state.userDraftStoriesInfo.count - 1,
+      };
     },
     publishStoryFailure(state, action) {
       state.error = action.payload;
