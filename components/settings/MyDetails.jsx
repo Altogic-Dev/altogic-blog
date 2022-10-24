@@ -107,9 +107,9 @@ export default function MyDetails({ user }) {
 
   const handleAbout = (e) => {
     quillRef.current.editor.on('text-change', () => {
-      if (quillRef.current.editor.getLength() > 200) {
+      if (quillRef.current.editor.getLength() > 300) {
         quillRef.current.editor.deleteText(
-          200,
+          300,
           quillRef.current.editor.getLength()
         );
       }
@@ -167,7 +167,7 @@ export default function MyDetails({ user }) {
               </label>
               <span className="text-slate-500 text-sm tracking-sm">
                 Write a short introduction. <br />
-                (Max 200 characters)
+                (Max 300 characters)
               </span>
             </div>
             <div>

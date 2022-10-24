@@ -38,7 +38,9 @@ export default function WriteAStory() {
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const isLoading = useSelector((state) => state.story.isLoading);
+  const isLoading = useSelector(
+    (state) => state.story.isLoading
+  );
   const storySchema = new yup.ObjectSchema({
     title: yup.string(),
   });
@@ -151,6 +153,7 @@ export default function WriteAStory() {
     []
   );
 
+  
   return (
     <Layout>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
@@ -194,32 +197,24 @@ export default function WriteAStory() {
           )}
         </div>
         <form className="w-full">
-          {isLoading ? (
-            <ClipLoader />
-          ) : (
-            <Input
-              type="text"
-              name="story-title"
-              className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
-              placeholder="Story Title"
-              required
-              register={register('title')}
-              error={errors.title}
-              onChange={handleChangeTitle}
-            />
-          )}
+          <Input
+            type="text"
+            name="story-title"
+            className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+            placeholder="Story Title"
+            required
+            register={register('title')}
+            error={errors.title}
+            onChange={handleChangeTitle}
+          />
 
           <div className="mt-4 w-full">
-            {isLoading ? (
-              <ClipLoader className='mt-96' />
-            ) : (
-              <Editor
-                setIsShowSaving={setIsShowSaving}
-                onChange={setContent}
-                setImages={setStoryImages}
-                value={!_.isNil(id) && _.get(newStory, 'content')}
-              />
-            )}
+            <Editor
+              setIsShowSaving={setIsShowSaving}
+              onChange={setContent}
+              setImages={setStoryImages}
+              value={!_.isNil(id) && _.get(newStory, 'content')}
+            />
           </div>
         </form>
       </div>
