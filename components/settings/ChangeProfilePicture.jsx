@@ -6,14 +6,12 @@ import { authActions } from '@/redux/auth/authSlice';
 import { ClipLoader } from 'react-spinners';
 import Button from '../basic/button';
 
-export default function ChangeProfilePicture() {
-  const _user = useSelector((state) => state.auth.user);
+export default function ChangeProfilePicture({ user }) {
   const userAvatarLink = useSelector((state) => state.file.fileLink);
   const loading = useSelector((state) => state.file.isLoading);
   const dispatch = useDispatch();
 
   const [didMount, setDidMount] = useState(false);
-  const [user, setUser] = useState(null);
 
   const uploadPhotoHandler = (e) => {
     e.stopPropagation();
@@ -43,7 +41,7 @@ export default function ChangeProfilePicture() {
     if (didMount) {
       dispatch(
         authActions.updateProfileRequest({
-          _id: _user._id,
+          _id: user._id,
           profilePicture: userAvatarLink,
         })
       );
@@ -55,10 +53,6 @@ export default function ChangeProfilePicture() {
   useEffect(() => {
     dispatch(fileActions.setFileLinkByProfilePictureRequest());
   }, []);
-
-  useEffect(() => {
-    if (_user) setUser(_user);
-  }, [_user]);
 
   return (
     <div id="change-profile-picture" className="mb-16">

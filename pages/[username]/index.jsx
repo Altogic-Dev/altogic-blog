@@ -63,7 +63,7 @@ export default function ProfilePage() {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
-  const [isMyProfile, setIsMyProfile] = useState(false);
+  const [isMyProfile, setIsMyProfile] = useState(true);
   const previousPage = usePrevious(bookmarkListPage);
   const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
@@ -199,8 +199,8 @@ export default function ProfilePage() {
             <div className="lg:py-10 lg:px-8">
               <div className="flex items-center justify-between gap-4 mb-8 md:mb-14">
                 <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                  {profileUser ? (
-                    `${`${profileUser.name}\``} ${tabNames[selectedIndex]}`
+                {profileUser ? (
+                    (selectedIndex !== 2 ? `${`${profileUser.name}\`s`} ${tabNames[selectedIndex]}` : `About ${profileUser.name}`)
                   ) : (
                     <ClipLoader />
                   )}

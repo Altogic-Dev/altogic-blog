@@ -48,45 +48,49 @@ function ProfilePageHome({ userId }) {
 
   return (
     <>
-      <ListObserver onEnd={handleEndOfList}>
-        {_.map(userStories, (story) => (
-          <PostCard
-            key={story._id}
-            normalMenu
-            authorUrl={`/${story.username}`}
-            authorName={story.username}
-            authorImage={story.userProfilePicture}
-            storyUrl={`/story/${story.storySlug}`}
-            timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
-            title={story.title}
-            infoText={story.excerpt}
-            badgeName={_.first(story.categoryNames)}
-            min={story.estimatedReadingTime}
-            images={_.first(story.storyImages)}
-            bookmarkLists={bookmarkLists}
-            story={story}
-            optionButtons={{
-              editStory: () => {
-                router.push(`/write-a-story?id=${story._id}`);
-              },
-              storySettings: () => {
-                router.push(`/write-a-story-settings?id=${story._id}`);
-              },
-              storyStats: () => {
-                router.push(`stats-blog-post?id=${story._id}`);
-              },
-              deleteStory: () => {
-                setDeletedStory({
-                  storyId: story._id,
-                  categoryNames: story.categoryNames,
-                  isPublished: story.isPublished,
-                });
-              },
-            }}
-            actionMenu
-          />
-        ))}
-      </ListObserver>
+      {userStories?.length > 0 ? (
+        <ListObserver onEnd={handleEndOfList}>
+          {_.map(userStories, (story) => (
+            <PostCard
+              key={story._id}
+              normalMenu
+              authorUrl={`/${story.username}`}
+              authorName={story.username}
+              authorImage={story.userProfilePicture}
+              storyUrl={`/story/${story.storySlug}`}
+              timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+              title={story.title}
+              infoText={story.excerpt}
+              badgeName={_.first(story.categoryNames)}
+              min={story.estimatedReadingTime}
+              images={_.first(story.storyImages)}
+              bookmarkLists={bookmarkLists}
+              story={story}
+              optionButtons={{
+                editStory: () => {
+                  router.push(`/write-a-story?id=${story._id}`);
+                },
+                storySettings: () => {
+                  router.push(`/write-a-story-settings?id=${story._id}`);
+                },
+                storyStats: () => {
+                  router.push(`stats-blog-post?id=${story._id}`);
+                },
+                deleteStory: () => {
+                  setDeletedStory({
+                    storyId: story._id,
+                    categoryNames: story.categoryNames,
+                    isPublished: story.isPublished,
+                  });
+                },
+              }}
+              actionMenu
+            />
+          ))}
+        </ListObserver>
+      ) : (
+        <p className="text-slate-500 text-md my-10 border-b-2 pb-10">No Stories Yet</p>
+      )}
       {deletedStory && (
         <DeleteStoryModal
           setDeleteStoryModal={() => setDeletedStory(null)}

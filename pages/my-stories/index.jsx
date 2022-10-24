@@ -174,14 +174,9 @@ export default function MyStories() {
                 <div className="flex items-center gap-6">
                   <div className="grid grid-cols-2 md:flex items-center w-full sm:w-auto gap-6">
                     <Link href="/write-a-story">
-                      <button
-                        type="button"
-                        className="inline-flex items-center justify-center px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                      >
-                        Write a story
-                      </button>
+                      <Button> Write a story</Button>
                     </Link>
-                    <Button>Import a story</Button>
+                    {/* <Button>Import a story</Button> */}
                   </div>
                   <div className="hidden md:flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                     <Menu

@@ -105,12 +105,12 @@ export default function HeaderDropdown({ user, logout, className }) {
             </Link>
           </div>
           <div>
-            <Link href="/help">
+            {/* <Link href="/help">
               <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                 <QuestionMarkCircleIcon className="w-4 h-4 text-slate-500" />
                 Help
               </a>
-            </Link>
+            </Link> */}
             <Menu.Item onClick={logout}>
               <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
                 <LogoutIcon className="w-4 h-4 text-slate-500" />

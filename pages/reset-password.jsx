@@ -67,22 +67,22 @@ export default function ResetPassword() {
               <div className="mt-6">
                 <form onSubmit={handleSubmit(formSubmit)} className="space-y-6">
                   <Input
-                    label="Password"
+                    label="New Password"
                     id="password"
                     type="password"
                     name="password"
                     register={register('password')}
                     error={errors.password}
-                    placeholder="Password"
+                    placeholder="New Password"
                   />
                   <Input
-                    label="Password Confirm"
+                    label="New Password Confirm"
                     id="passwordConfirmation"
                     type="password"
                     name="passwordConfirmation"
                     register={register('passwordConfirmation')}
                     error={errors.passwordConfirmation}
-                    placeholder="Password Confirm"
+                    placeholder="New Password Confirm"
                   />
 
                   <div>

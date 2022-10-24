@@ -74,7 +74,7 @@ function About(props) {
           >
             <circle cx={4} cy={4} r={3} />
           </svg>
-          {topWriterTopics && <span>Top writer in</span>}
+          {topWriterTopics?.length > 0 && <span>Top writer in</span>}
         </div>
         {topWriterTopics && (
           <div className="flex flex-wrap items-center justify-start gap-4 w-7/12">
@@ -85,7 +85,7 @@ function About(props) {
         )}
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
-        <Button onClick={toggleFollowersModal}>
+        <Button onClick={followerCount ? toggleFollowingsModal : null}>
           {followerCount} Followers
         </Button>
         <svg
@@ -95,7 +95,7 @@ function About(props) {
         >
           <circle cx={4} cy={4} r={3} />
         </svg>
-        <Button onClick={toggleFollowingsModal}>
+        <Button onClick={followerCount ? toggleFollowingsModal : null}>
           {followingCount} Following
         </Button>
         <Transition appear show={followersModal} as={Fragment}>

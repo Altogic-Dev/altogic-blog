@@ -24,7 +24,7 @@ export default function PostCard({
   normalMenu,
   optionButtons,
   listDetailMenu,
-  images = '/story-header.jpeg',
+  images,
   showImages = true,
   story,
 }) {
