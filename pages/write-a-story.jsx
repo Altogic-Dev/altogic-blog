@@ -38,9 +38,6 @@ export default function WriteAStory() {
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const isLoading = useSelector(
-    (state) => state.story.isLoading
-  );
   const storySchema = new yup.ObjectSchema({
     title: yup.string(),
   });
@@ -152,8 +149,6 @@ export default function WriteAStory() {
     },
     []
   );
-
-  
   return (
     <Layout>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
