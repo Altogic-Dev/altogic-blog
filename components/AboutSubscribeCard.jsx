@@ -1,5 +1,6 @@
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import Button from './basic/button';
 
 export default function AboutSubscribeCard({ profileId, name, mailAddress }) {
   const isLoadingSubscribe = useSelector(
@@ -30,8 +31,7 @@ export default function AboutSubscribeCard({ profileId, name, mailAddress }) {
           </a>
         </span>
       </div>
-      <button
-        type="button"
+      <Button
         className="inline-flex items-center justify-center gap-2 py-2.5 md:py-[18px] px-7 text-lg font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
         disabled={isLoadingSubscribe}
         onClick={subscribe}
@@ -63,7 +63,7 @@ export default function AboutSubscribeCard({ profileId, name, mailAddress }) {
           </defs>
         </svg>
         Subscribe
-      </button>
+      </Button>
     </div>
   );
 }

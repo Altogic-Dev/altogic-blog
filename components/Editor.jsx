@@ -105,7 +105,9 @@ export default function Editor({
       if (isChangeEvent) {
         quill.deleteText(index + 1, url.length, Quill.sources.USER);
       }
+      return true;
     }
+    return false;
   };
   const handleDebounceFn = (quill) => {
     onChange(quill.root.innerHTML);
@@ -118,11 +120,27 @@ export default function Editor({
       })
     );
   };
-  const debounceFn = useCallback(_.debounce(handleDebounceFn, 1500), []);
+  const debounceFn = useCallback(_.debounce(handleDebounceFn, 500), []);
 
   useEffect(() => {
+    const bindings = {
+      code: {
+        key: 'backspace',
+        format: ['code-block'],
+        empty: true,
+        handler() {
+          // eslint-disable-next-line no-use-before-define
+          quill.format('code-block', false, Quill.sources.USER);
+        },
+      },
+    };
+
     const quill = new Quill('#editor-container', {
-      scrollingContainer: document.documentElement,
+      modules: {
+        keyboard: {
+          bindings,
+        },
+      },
     });
     quill.root.dataset.placeholder = 'Tell your story...';
     setQuillInstance(quill);
@@ -272,10 +290,12 @@ export default function Editor({
   const formatCode = () => {
     quillInstance.format('code-block', 2);
     const syntax = document.getElementsByClassName('ql-syntax');
+    const code = document.createElement('code');
     if (syntax.length > 0) {
       Array.from(syntax).forEach((item) => {
         if (!item.dataset.isHighlighted) {
-          item.innerHTML = hljs.highlightAuto(item.innerText).value;
+          code.innerHTML = hljs.highlightAuto(item.innerText).value;
+          item.innerHTML = code.outerHTML;
           item.dataset.isHighlighted = true;
         }
       });

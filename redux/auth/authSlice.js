@@ -119,7 +119,7 @@ export const authSlice = createSlice({
     },
     changePasswordSuccess(state) {
       state.isLoading = false;
-      toast.success('Password changed successfully');
+      toast.success('Password changed successfully',{hideProgressBar: true});
     },
     changePasswordFailure(state, action) {
       state.isLoading = false;
@@ -134,7 +134,7 @@ export const authSlice = createSlice({
     updateUserSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;
-      toast.success('Profile updated successfully');
+      toast.success('Profile updated successfully',{hideProgressBar: true});
     },
     updateUserFailure(state, action) {
       state.isLoading = false;
@@ -192,7 +192,7 @@ export const authSlice = createSlice({
     changeEmailSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload.user;
-      window.location.href = `/mail-verification?email=${action.payload.email}`;
+      window.location.href = `/mail-verification?operation=change&email=${action.payload.email}`;
     },
     changeEmailFailure(state, action) {
       state.isLoading = false;

@@ -1,6 +1,8 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react/function-component-definition */
 /* eslint-disable global-require */
 /* eslint-disable max-classes-per-file */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,11 +14,18 @@ import { authActions } from '@/redux/auth/authSlice';
 import UserSettingsInput from './UserSettingsInput';
 import EditorToolbar, { modules, formats } from '../EditorToolbar';
 
-const ReactQuill = dynamic(() => import('react-quill'), {
-  ssr: false,
-});
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import('react-quill');
 
-export default function MyDetails() {
+    return ({ forwardedRef, ...props }) => <RQ ref={forwardedRef} {...props} />;
+  },
+  {
+    ssr: false,
+  }
+);
+
+export default function MyDetails({ user }) {
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -26,17 +35,17 @@ export default function MyDetails() {
       .matches(/^[a-zA-Z0-9_]+$/, 'Only alphabets are allowed for this field ')
       .max(15, 'Username must be at most 15 characters'),
     name: yup.string(),
-    website: yup.string().url('Please enter a valid url').nullable(true),
+    website: yup.string().nullable(true),
     about: yup.string(),
     profilePicture: yup.string(),
   });
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
   const error = useSelector((state) => state.auth.updateProfileError);
   const isUsernameAvailable = useSelector(
     (state) => state.auth.isUsernameAvailable
   );
   const [about, setAbout] = useState();
+  const quillRef = useRef();
   const {
     handleSubmit,
     register,
@@ -52,13 +61,13 @@ export default function MyDetails() {
     if (!data.website || urlRegex.test(data.website)) {
       req._id = user._id;
       req.about = about;
+      dispatch(authActions.updateProfileRequest(req));
     } else {
       setError('website', {
         type: 'url',
         message: 'Please enter a valid url',
       });
     }
-    dispatch(authActions.updateProfileRequest(req));
   };
 
   useEffect(() => {
@@ -96,6 +105,18 @@ export default function MyDetails() {
     };
   }
 
+  const handleAbout = (e) => {
+    quillRef.current.editor.on('text-change', () => {
+      if (quillRef.current.editor.getLength() > 200) {
+        quillRef.current.editor.deleteText(
+          200,
+          quillRef.current.editor.getLength()
+        );
+      }
+    });
+    setAbout(e);
+  };
+
   useEffect(() => {
     setAbout(user?.about);
   }, [user]);
@@ -103,9 +124,7 @@ export default function MyDetails() {
     <div id="my-details" className="mb-16">
       <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
         <Avatar
-          className="hidden md:flex w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
-          fontClassName="text-4xl"
-          placeholderName={user?.name}
+          className="hidden md:block w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
           src={user?.profilePicture}
           alt={user?.name}
         />
@@ -120,28 +139,25 @@ export default function MyDetails() {
       </div>
       <form onSubmit={handleSubmit(formSubmit)}>
         <div className="divide-y divide-gray-200">
-          {constants.USER_SETTINGS_FIELDS.map(
-            (field) =>
-              (!field.provider  || user?.provider === field.provider) && (
-                <UserSettingsInput
-                  key={field.name}
-                  label={field.label}
-                  placeholder={field.placeholder}
-                  register={register}
-                  errors={errors}
-                  icon={field.icon ?? ''}
-                  prefix={field.prefix ?? ''}
-                  className={field.className ?? ''}
-                  id={field.name}
-                  type={field.type ?? 'text'}
-                  defaultValue={user?.[field.name]}
-                  setValue={setValue}
-                  onBlur={field.name === 'username' ? checkUsername : null}
-                />
-              )
-          )}
+          {constants.USER_SETTINGS_FIELDS.map((field) => (
+            <UserSettingsInput
+              key={field.name}
+              label={field.label}
+              placeholder={field.placeholder}
+              register={register}
+              errors={errors}
+              icon={field.icon ?? ''}
+              prefix={field.prefix ?? ''}
+              className={field.className ?? ''}
+              id={field.name}
+              type={field.type ?? 'text'}
+              defaultValue={user?.[field.name]}
+              setValue={setValue}
+              onBlur={field.name === 'username' ? checkUsername : null}
+            />
+          ))}
 
-          <div className="settingsInput grid-cols-1">
+          <div className="settingsInput flex flex-col md:flex-row md:gap-32 md:items-start">
             <div>
               <label
                 htmlFor="photo"
@@ -150,19 +166,23 @@ export default function MyDetails() {
                 About me
               </label>
               <span className="text-slate-500 text-sm tracking-sm">
-                Write a short introduction.
+                Write a short introduction. <br />
+                (Max 200 characters)
               </span>
             </div>
             <div>
               <EditorToolbar />
               <ReactQuill
+                forwardedRef={quillRef}
+                className="w-96"
                 theme="snow"
                 value={about}
-                onChange={setAbout}
+                onChange={handleAbout}
                 placeholder="You can start typing the forum you want to start."
                 modules={modules}
                 formats={formats}
               />
+            {about?.length > 200 && <p className='text-red-500 text-xs py-2 ml-60'>Reached Max Characters</p>}
             </div>
           </div>
         </div>

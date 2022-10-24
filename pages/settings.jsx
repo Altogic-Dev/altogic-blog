@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
-import MyDetails from '@/components/settings/MyDetails';
 import ChangePassword from '@/components/settings/ChangePassword';
 import MySessions from '@/components/settings/MySessions';
 import MyPlans from '@/components/settings/MyPlans';
@@ -9,19 +8,22 @@ import ChangeEmail from '@/components/settings/ChangeEmail';
 import Layout from '@/layouts/Layout';
 import constants from '@/constants';
 import ChangeProfilePicture from '@/components/settings/ChangeProfilePicture';
+import MyDetails from '@/components/settings/MyDetails';
+import { useRouter } from 'next/router';
 
 export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
   const [user, setUser] = useState();
-
+  const router = useRouter();
   useEffect(() => {
     if (_user) {
       setUser(_user);
-    }
+    } else router.push('/login');
   }, [_user]);
   const currentSubscription = useSelector(
     (state) => state.payment.currentSubscription
   );
+
   const invoices = useSelector((state) => state.payment.invoices);
   return (
     <div>
@@ -37,7 +39,7 @@ export default function Settings() {
               Settings
             </h1>
           </div>
-          <div className="xl:grid xl:grid-cols-[125px,1fr] gap-24">
+          <div className="xl:grid xl:grid-cols-[145px,1fr] gap-24">
             <ul className="hidden xl:block sticky bottom-0">
               {constants.SETTINGS_MENU.map((setting) => (
                 <li key={setting.id}>
@@ -54,9 +56,10 @@ export default function Settings() {
             </ul>
             <div>
               {/* My Details */}
-              <MyDetails id="my-details" className="mb-16" />
+              <MyDetails user={user} id="my-details" className="mb-16" />
               {/* My Details */}
               <ChangeProfilePicture
+                user={user}
                 id="change-profile-picture"
                 className="mb-16"
               />

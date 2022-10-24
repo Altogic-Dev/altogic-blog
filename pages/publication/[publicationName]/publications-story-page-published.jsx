@@ -6,6 +6,7 @@ import Layout from '@/layouts/Layout';
 import PostCard from '@/components/PostCard';
 import PublicationsPostCard from '@/components/PublicationsDraftCard';
 import { classNames } from '@/utils/utils';
+import Button from '@/components/basic/button';
 
 const posts = [
   {
@@ -185,18 +186,8 @@ export default function PublicationsStoryPagePublished() {
               </h1>
             )}
             <div className="flex items-center w-full sm:w-auto gap-6">
-              <button
-                type="button"
-                className="flex items-center justify-center w-full md:w-auto px-[14px] py-2 text-sm font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              >
-                Write a story
-              </button>
-              <button
-                type="button"
-                className="flex items-center justify-center w-full md:w-auto px-[14px] py-2 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-              >
-                Import a story
-              </button>
+              <Button >Write a story</Button>
+              {/* <Button>Import a story</Button> */}
             </div>
           </div>
           <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>

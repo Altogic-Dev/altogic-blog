@@ -6,6 +6,7 @@ import Button from '@/components/basic/button';
 import { useDispatch } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import BackToLogin from '@/components/BackToLogin';
+import { toast } from 'react-toastify';
 
 export default function Login() {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function Login() {
 
   const resendVerificationEmail = () => {
     dispatch(authActions.resendVerificationEmailRequest(email));
+    toast.success('Email Sent Successfully',{hideProgressBar: true});
+
   };
 
   return (
@@ -38,14 +41,19 @@ export default function Login() {
                 We sent a verification link to <br />{' '}
                 <span className="text-slate-700">{email}</span>
               </p>
-              <p className="mb-8 text-center text-sm text-slate-500 tracking-sm">
-                Didn’t receive the email?{' '}
-                <Button className="border-0" onClick={resendVerificationEmail}>
-                  <a className="font-medium text-purple-700 tracking-sm hover:text-purple-500">
-                    Click to resend
-                  </a>
-                </Button>
-              </p>
+              {router.query.operation !== 'change' && (
+                <p className="mb-8 text-center text-sm text-slate-500 tracking-sm">
+                  Didn’t receive the email?{' '}
+                  <Button
+                    className="border-0"
+                    onClick={resendVerificationEmail}
+                  >
+                    <a className="font-medium text-purple-700 tracking-sm hover:text-purple-500">
+                      Click to resend
+                    </a>
+                  </Button>
+                </p>
+              )}
               <BackToLogin />
             </div>
           </div>

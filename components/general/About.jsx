@@ -1,8 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { DateTime } from 'luxon';
-import _ from 'lodash';
+import _, { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Transition, Dialog } from '@headlessui/react';
+import { htmlToText } from 'html-to-text';
+import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import Topic from '../basic/topic';
 import Button from '../basic/button';
@@ -17,6 +19,7 @@ function About(props) {
     followerCount,
     followingCount,
     toggleFollowingsModal,
+    isMyProfile,
   } = props;
   const dispatch = useDispatch();
 
@@ -53,10 +56,20 @@ function About(props) {
     }
   }, [followerPage]);
 
+
   return (
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
-        <p dangerouslySetInnerHTML={{ __html: about }} />
+        {!isMyProfile || !isEmpty(htmlToText(about).trim()) ? (
+          <p className="">
+            Let others know who you are.
+            <Link href="/settings">
+              <a className="text-purple-500 no-underline">{' '}Click here to add</a>
+            </Link>
+          </p>
+        ) : (
+          <p dangerouslySetInnerHTML={{ __html: about }} />
+        )}
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 text-slate-500 text-base tracking-sm py-10 mt-10 border-t border-b border-slate-200">
         <div className="flex items-center gap-2 md:gap-4">
@@ -74,7 +87,7 @@ function About(props) {
           >
             <circle cx={4} cy={4} r={3} />
           </svg>
-          {topWriterTopics && <span>Top writer in</span>}
+          {topWriterTopics?.length > 0 && <span>Top writer in</span>}
         </div>
         {topWriterTopics && (
           <div className="flex flex-wrap items-center justify-start gap-4 w-7/12">
@@ -85,7 +98,7 @@ function About(props) {
         )}
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
-        <Button onClick={toggleFollowersModal}>
+        <Button onClick={followerCount ? toggleFollowingsModal : null}>
           {followerCount} Followers
         </Button>
         <svg
@@ -95,7 +108,7 @@ function About(props) {
         >
           <circle cx={4} cy={4} r={3} />
         </svg>
-        <Button onClick={toggleFollowingsModal}>
+        <Button onClick={followerCount ? toggleFollowingsModal : null}>
           {followingCount} Following
         </Button>
         <Transition appear show={followersModal} as={Fragment}>

@@ -146,11 +146,12 @@ export default function ListDetail() {
     if (!isMyProfileState && bookmarkList?.isPrivate) {
       router.push('/');
     }
-    if (bookmarks) {
+    if (_.get(_.get(_.first(bookmarks), 'story'), '_id')) {
       setStories(bookmarks.map((bookmark) => bookmark.story));
     }
   }, [bookmarks, profileUser]);
 
+  console.log(bookmarks);
   useEffect(() => {
     if (bookmarkListSlug) {
       dispatch(
@@ -346,47 +347,53 @@ export default function ListDetail() {
                 )}
               </div>
 
-              <ListObserver
-                onEnd={() => setBookmarkListLimit((prev) => prev + 5)}
-              >
-                {stories.map((post) => (
-                  <PostCard
-                    key={post.id}
-                    listDetailMenu
-                    authorUrl={`/${post?.username}`}
-                    authorName={post.username}
-                    authorImage={post.userProfilePicture}
-                    storyUrl={`/story/${post.storySlug}`}
-                    timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                    title={post.title}
-                    infoText={post.infoText}
-                    badgeUrl={post.badgeUrl}
-                    badgeName={_.first(post.categoryNames)}
-                    min={post.estimatedReadingTime}
-                    images={_.first(post.storyImages)}
-                    actionMenu
-                    story={post}
-                    bookmarks={bookmarks}
-                    optionButtons={{
-                      unBookmark: () =>
-                        dispatch(
-                          deleteBookmarkRequest({
-                            listId: bookmarkList._id,
-                            storyId: post._id,
-                          })
-                        ),
-                      report: () =>
-                        dispatch(
-                          reportActions.reportStoryRequest({
-                            userId: user._id,
-                            storyId: post._id,
-                            reportedUserId: post.user,
-                          })
-                        ),
-                    }}
-                  />
-                ))}
-              </ListObserver>
+              {stories.length > 0 ? (
+                <ListObserver
+                  onEnd={() => setBookmarkListLimit((prev) => prev + 5)}
+                >
+                  {stories.map((post) => (
+                    <PostCard
+                      key={post.id}
+                      listDetailMenu
+                      authorUrl={`/${post?.username}`}
+                      authorName={post.username}
+                      authorImage={post.userProfilePicture}
+                      storyUrl={`/story/${post.storySlug}`}
+                      timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
+                      title={post.title}
+                      infoText={post.infoText}
+                      badgeUrl={post.badgeUrl}
+                      badgeName={_.first(post.categoryNames)}
+                      min={post.estimatedReadingTime}
+                      images={_.first(post.storyImages)}
+                      actionMenu
+                      story={post}
+                      bookmarks={bookmarks}
+                      optionButtons={{
+                        unBookmark: () =>
+                          dispatch(
+                            deleteBookmarkRequest({
+                              listId: bookmarkList._id,
+                              storyId: post._id,
+                            })
+                          ),
+                        report: () =>
+                          dispatch(
+                            reportActions.reportStoryRequest({
+                              userId: user._id,
+                              storyId: post._id,
+                              reportedUserId: post.user,
+                            })
+                          ),
+                      }}
+                    />
+                  ))}
+                </ListObserver>
+              ) : (
+                <p className="text-slate-500 text-md my-10">
+                  You have not bookmarked any stories to this list yet!
+                </p>
+              )}
             </div>
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar

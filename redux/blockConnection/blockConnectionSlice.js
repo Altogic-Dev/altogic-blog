@@ -41,7 +41,7 @@ export const blockConnectionSlice = createSlice({
     blockUserSuccess(state) {
       state.isLoading = false;
       state.isBlocked = true;
-      toast.success('Author is muted');
+      toast.success('Author is muted',{hideProgressBar: true});
     },
     blockUserFailure(state) {
       state.isLoading = false;
@@ -55,7 +55,7 @@ export const blockConnectionSlice = createSlice({
         state.blockedUsers,
         (person) => person._id === action.payload
       );
-      toast.success('Author is unmuted');
+      toast.success('Author is unmuted',{hideProgressBar: true});
       state.isLoading = false;
     },
     unblockAuthorFailure(state) {

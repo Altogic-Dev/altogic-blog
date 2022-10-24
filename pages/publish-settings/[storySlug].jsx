@@ -366,9 +366,7 @@ export default function PublishSettings() {
                       className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                       placeholder="Category Name"
                       value={inpCategory}
-                      onChange={(e) =>
-                        setInpCategory(_.startCase(e.target.value))
-                      }
+                      onChange={(e) => setInpCategory(e.target.value)}
                       disabled={_.size(story?.categoryNames) >= 5}
                       onKeyDown={handleInsert}
                     />

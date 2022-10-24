@@ -14,9 +14,17 @@ export default function MySessions() {
   useEffect(() => {
     dispatch(authActions.getSessionsRequest());
   }, [dispatch]);
-  const deleteSession = (token) => {
-    dispatch(authActions.deleteSessionRequest(token));
+
+  const logout = () => {
+    dispatch(authActions.logoutRequest());
   };
+  
+  const deleteSession = (token, isCurrent) => {
+    dispatch(authActions.deleteSessionRequest(token));
+
+    if (isCurrent) logout();
+  };
+
   return (
     <div id="my-sessions" className="mb-16">
       <div className="border-b border-gray-200 pb-6">
@@ -65,9 +73,8 @@ export default function MySessions() {
                 </div>
               </div>
               <Button
-                type="button"
                 className="hidden sm:inline-flex justify-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                onClick={() => deleteSession(session.token)}
+                onClick={() => deleteSession(session.token, session.isCurrent)}
               >
                 Delete Session
               </Button>

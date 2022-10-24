@@ -217,7 +217,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
       throw errors.items;
     } else {
       yield put(authActions.deleteSessionSuccess(sessionToken));
-      toast.success('Session deleted successfully');
+      toast.success('Session deleted successfully',{hideProgressBar: true});
     }
   } catch (e) {
     yield put(authActions.deleteSessionFailure(e));
@@ -289,6 +289,24 @@ function* searchUserByUsernameSaga({ payload }) {
   } catch (e) {
     yield put(authActions.searchUserByUsernameFailure());
     console.error(e);
+  }
+}
+
+export function* setDefaultAvatarSaga() {
+  try {
+    const user = yield select((state) => state.auth.user);
+    const { data, errors } = yield call(
+      AuthService.setDefaultAvatar,
+      user.name
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield call(AuthService.authStateChange, data);
+      yield put(authActions.updateUserSuccess(data));
+    }
+    return { data, errors: null };
+  } catch (e) {
+    return { data: null, errors: e };
   }
 }
 

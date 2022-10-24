@@ -28,7 +28,7 @@ function ShareButtons({ customLink, backgroundColor }) {
   }, []);
 
   const copyToClipboard = () => {
-    toast.success('Copied to clipboard');
+    toast.success('Copied to clipboard',{hideProgressBar: true});
     navigator.clipboard.writeText(shareUrl);
   };
 

@@ -112,7 +112,7 @@ export const publicationSlice = createSlice({
 
     updatePublicationRequest() {},
     updatePublicationSuccess(state, action) {
-      toast.success('Publication updated successfully');
+      toast.success('Publication updated successfully',{hideProgressBar: true});
       state.publication = action.payload;
     },
 
@@ -337,7 +337,7 @@ export const publicationSlice = createSlice({
     },
     updatePublicationHomeLayoutSuccess(state, action) {
       state.homeLayout = action.payload;
-      toast.success('Publication layout updated successfully');
+      toast.success('Publication layout updated successfully',{hideProgressBar: true});
       state.isLoading = false;
     },
     updatePublicationHomeLayoutFailure(state, action) {
