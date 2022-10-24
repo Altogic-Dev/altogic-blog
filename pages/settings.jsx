@@ -37,7 +37,7 @@ export default function Settings() {
               Settings
             </h1>
           </div>
-          <div className="xl:grid xl:grid-cols-[125px,1fr] gap-24">
+          <div className="xl:grid xl:grid-cols-[145px,1fr] gap-24">
             <ul className="hidden xl:block sticky bottom-0">
               {constants.SETTINGS_MENU.map((setting) => (
                 <li key={setting.id}>

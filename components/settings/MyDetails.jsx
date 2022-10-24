@@ -26,7 +26,7 @@ export default function MyDetails() {
       .matches(/^[a-zA-Z0-9_]+$/, 'Only alphabets are allowed for this field ')
       .max(15, 'Username must be at most 15 characters'),
     name: yup.string(),
-    website: yup.string().url('Please enter a valid url').nullable(true),
+    website: yup.string().nullable(true),
     about: yup.string(),
     profilePicture: yup.string(),
   });
@@ -52,13 +52,13 @@ export default function MyDetails() {
     if (!data.website || urlRegex.test(data.website)) {
       req._id = user._id;
       req.about = about;
+      dispatch(authActions.updateProfileRequest(req));
     } else {
       setError('website', {
         type: 'url',
         message: 'Please enter a valid url',
       });
     }
-    dispatch(authActions.updateProfileRequest(req));
   };
 
   useEffect(() => {
@@ -122,7 +122,7 @@ export default function MyDetails() {
         <div className="divide-y divide-gray-200">
           {constants.USER_SETTINGS_FIELDS.map(
             (field) =>
-              (!field.provider  || user?.provider === field.provider) && (
+              (!field.provider || user?.provider === field.provider) && (
                 <UserSettingsInput
                   key={field.name}
                   label={field.label}
