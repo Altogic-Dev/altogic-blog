@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import { useSelector } from 'react-redux';
-import MyDetails from '@/components/settings/MyDetails';
 import ChangePassword from '@/components/settings/ChangePassword';
 import MySessions from '@/components/settings/MySessions';
 import MyPlans from '@/components/settings/MyPlans';
@@ -9,6 +8,7 @@ import ChangeEmail from '@/components/settings/ChangeEmail';
 import Layout from '@/layouts/Layout';
 import constants from '@/constants';
 import ChangeProfilePicture from '@/components/settings/ChangeProfilePicture';
+import MyDetails from '@/components/settings/MyDetails';
 import { useRouter } from 'next/router';
 
 export default function Settings() {
