@@ -60,7 +60,7 @@ function About(props) {
   return (
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
-        {!isMyProfile || !isEmpty(htmlToText(about).trim()) ? (
+        {!isMyProfile || isEmpty(htmlToText(about).trim()) ? (
           <p className="">
             Let others know who you are.
             <Link href="/settings">
