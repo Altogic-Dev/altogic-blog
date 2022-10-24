@@ -51,6 +51,21 @@ export const fileSlice = createSlice({
       }
     },
     deleteFileRequest() {},
+
+    setDefaultAvatarFileRequest(state) {
+      state.isLoading = true;
+    },
+    setDefaultAvatarFileSuccess(state, action) {
+      state.fileLink = action.payload;
+      state.isLoading = false;
+    },
+    setDefaultAvatarFileFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
+    },
+    setFileLinkByProfilePictureRequest(state) {
+      state.isLoading = true;
+    },
   },
   extraReducers: {
     [HYDRATE]: (state, action) => ({

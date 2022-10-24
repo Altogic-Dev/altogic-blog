@@ -6,7 +6,6 @@ import {
   ChartBarIcon,
   ClipboardListIcon,
   LogoutIcon,
-  QuestionMarkCircleIcon,
 } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';

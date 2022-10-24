@@ -16,7 +16,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
 });
 
-export default function MyDetails({user}) {
+export default function MyDetails({ user }) {
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -51,13 +51,13 @@ export default function MyDetails({user}) {
     if (!data.website || urlRegex.test(data.website)) {
       req._id = user._id;
       req.about = about;
+      dispatch(authActions.updateProfileRequest(req));
     } else {
       setError('website', {
         type: 'url',
         message: 'Please enter a valid url',
       });
     }
-    dispatch(authActions.updateProfileRequest(req));
   };
 
   useEffect(() => {

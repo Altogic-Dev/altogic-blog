@@ -43,10 +43,10 @@ function DeleteStoryModal({ setDeleteStoryModal, clickDelete }) {
             <div className="text-left mb-8">
               <div className="mb-5">
                 <h3 className="text-slate-800 mb-2 text-lg font-medium tracking-sm">
-                  Delete list
+                  Delete Story
                 </h3>
                 <span className="text-slate-500 text-sm tracking-sm">
-                  Deleting this list will not delete the stories in it.
+                  Deleting this story.
                 </span>
               </div>
             </div>

@@ -109,5 +109,12 @@ const AuthService = {
   searchUserByUsername(username) {
     return endpoint.get('/user/searchByUsername', { username });
   },
+  setDefaultAvatar(name) {
+    const req = {
+      name,
+      color: `#${randomInt(0, 16777215).toString(16)}`,
+    };
+    return endpoint.put('/user/updateAvatar', req);
+  },
 };
 export default AuthService;
