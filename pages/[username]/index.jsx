@@ -67,7 +67,7 @@ export default function ProfilePage() {
   const previousPage = usePrevious(bookmarkListPage);
   const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
-    toast.success('Copied to clipboard',{hideProgressBar: true});
+    toast.success('Copied to clipboard', { hideProgressBar: true });
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
     navigator.clipboard.writeText(profileUrl);
@@ -199,8 +199,12 @@ export default function ProfilePage() {
             <div className="lg:py-10 lg:px-8">
               <div className="flex items-center justify-between gap-4 mb-8 md:mb-14">
                 <h1 className="text-slate-700 text-2xl sm:text-3xl md:text-5xl font-bold tracking-md">
-                {profileUser ? (
-                    (selectedIndex !== 2 ? `${`${profileUser.name}\`s`} ${tabNames[selectedIndex]}` : `About ${profileUser.name}`)
+                  {profileUser ? (
+                    selectedIndex !== 2 ? (
+                      `${`${profileUser.name}\`s`} ${tabNames[selectedIndex]}`
+                    ) : (
+                      `About ${profileUser.name}`
+                    )
                   ) : (
                     <ClipLoader />
                   )}
@@ -335,6 +339,7 @@ export default function ProfilePage() {
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
+                      isMyProfile={isMyProfile}
                       userFollowings={userFollowings}
                       userId={_.get(profileUser, '_id')}
                       about={_.get(profileUser, 'about')}

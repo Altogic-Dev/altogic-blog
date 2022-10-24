@@ -108,7 +108,6 @@ export default function ListDetail() {
     });
   };
 
-
   useEffect(() => {
     if (username) {
       setIsMyProfileState(username === _.get(sessionUser, 'username'));
@@ -391,7 +390,7 @@ export default function ListDetail() {
                   ))}
                 </ListObserver>
               ) : (
-                <p className="text-slate-500 text-md my-10 border-b-2 pb-10">
+                <p className="text-slate-500 text-md my-10">
                   You have not bookmarked any stories to this list yet!
                 </p>
               )}

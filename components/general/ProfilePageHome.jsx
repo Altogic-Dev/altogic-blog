@@ -7,6 +7,7 @@ import { storyActions } from '@/redux/story/storySlice';
 import ListObserver from '@/components/ListObserver';
 import PostCard from '../PostCard';
 import DeleteStoryModal from '../DeleteStoryModal';
+import Button from '../basic/button';
 
 function ProfilePageHome({ userId }) {
   const dispatch = useDispatch();
@@ -89,7 +90,15 @@ function ProfilePageHome({ userId }) {
           ))}
         </ListObserver>
       ) : (
-        <p className="text-slate-500 text-md my-10 border-b-2 pb-10">No Stories Yet</p>
+        <div className="border-b-2 pb-10">
+          <p className="text-slate-500 text-md my-10 pb-10">
+            No Stories Yet
+          </p>
+
+          <Button onClick={() => router.push('/write-a-story')}>
+            Create Story
+          </Button>
+        </div>
       )}
       {deletedStory && (
         <DeleteStoryModal

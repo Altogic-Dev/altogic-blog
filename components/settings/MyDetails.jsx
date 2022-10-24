@@ -1,6 +1,8 @@
+/* eslint-disable react/display-name */
+/* eslint-disable react/function-component-definition */
 /* eslint-disable global-require */
 /* eslint-disable max-classes-per-file */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,9 +14,16 @@ import { authActions } from '@/redux/auth/authSlice';
 import UserSettingsInput from './UserSettingsInput';
 import EditorToolbar, { modules, formats } from '../EditorToolbar';
 
-const ReactQuill = dynamic(() => import('react-quill'), {
-  ssr: false,
-});
+const ReactQuill = dynamic(
+  async () => {
+    const { default: RQ } = await import('react-quill');
+
+    return ({ forwardedRef, ...props }) => <RQ ref={forwardedRef} {...props} />;
+  },
+  {
+    ssr: false,
+  }
+);
 
 export default function MyDetails({ user }) {
   const urlRegex =
@@ -36,6 +45,7 @@ export default function MyDetails({ user }) {
     (state) => state.auth.isUsernameAvailable
   );
   const [about, setAbout] = useState();
+  const quillRef = useRef();
   const {
     handleSubmit,
     register,
@@ -96,8 +106,15 @@ export default function MyDetails({ user }) {
   }
 
   const handleAbout = (e) => {
-    setAbout(e.substring(0, 200));
-    console.log(about.length)
+    quillRef.current.editor.on('text-change', () => {
+      if (quillRef.current.editor.getLength() > 200) {
+        quillRef.current.editor.deleteText(
+          200,
+          quillRef.current.editor.getLength()
+        );
+      }
+    });
+    setAbout(e);
   };
 
   useEffect(() => {
@@ -140,7 +157,7 @@ export default function MyDetails({ user }) {
             />
           ))}
 
-          <div className="settingsInput">
+          <div className="settingsInput flex flex-col md:flex-row md:gap-32 md:items-start">
             <div>
               <label
                 htmlFor="photo"
@@ -156,16 +173,17 @@ export default function MyDetails({ user }) {
             <div>
               <EditorToolbar />
               <ReactQuill
+                forwardedRef={quillRef}
                 className="w-96"
                 theme="snow"
-                value={about.substring(0,200)}
-                onChange={(e) => handleAbout(e)}
+                value={about}
+                onChange={handleAbout}
                 placeholder="You can start typing the forum you want to start."
                 modules={modules}
                 formats={formats}
               />
+            {about?.length > 200 && <p className='text-red-500 text-xs py-2 ml-60'>Reached Max Characters</p>}
             </div>
-            {about?.length > 200 && <p>Reached Max Characters</p>}{' '}
           </div>
         </div>
 
