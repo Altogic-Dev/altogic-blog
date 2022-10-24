@@ -9,19 +9,21 @@ import ChangeEmail from '@/components/settings/ChangeEmail';
 import Layout from '@/layouts/Layout';
 import constants from '@/constants';
 import ChangeProfilePicture from '@/components/settings/ChangeProfilePicture';
+import { useRouter } from 'next/router';
 
 export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
   const [user, setUser] = useState();
-
+  const router = useRouter();
   useEffect(() => {
     if (_user) {
       setUser(_user);
-    }
+    } else router.push('/login');
   }, [_user]);
   const currentSubscription = useSelector(
     (state) => state.payment.currentSubscription
   );
+
   const invoices = useSelector((state) => state.payment.invoices);
   return (
     <div>
@@ -54,9 +56,10 @@ export default function Settings() {
             </ul>
             <div>
               {/* My Details */}
-              <MyDetails id="my-details" className="mb-16" />
+              <MyDetails user={user} id="my-details" className="mb-16" />
               {/* My Details */}
               <ChangeProfilePicture
+                user={user}
                 id="change-profile-picture"
                 className="mb-16"
               />

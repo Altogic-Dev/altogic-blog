@@ -63,7 +63,7 @@ export default function ProfilePage() {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
-  const [isMyProfile, setIsMyProfile] = useState(false);
+  const [isMyProfile, setIsMyProfile] = useState(true);
   const previousPage = usePrevious(bookmarkListPage);
   const prevUsername = usePrevious(username);
   const copyToClipboard = () => {

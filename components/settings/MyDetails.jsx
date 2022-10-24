@@ -16,7 +16,7 @@ const ReactQuill = dynamic(() => import('react-quill'), {
   ssr: false,
 });
 
-export default function MyDetails() {
+export default function MyDetails({user}) {
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -31,7 +31,6 @@ export default function MyDetails() {
     profilePicture: yup.string(),
   });
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
   const error = useSelector((state) => state.auth.updateProfileError);
   const isUsernameAvailable = useSelector(
     (state) => state.auth.isUsernameAvailable
