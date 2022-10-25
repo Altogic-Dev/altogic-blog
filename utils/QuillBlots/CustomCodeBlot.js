@@ -1,16 +1,8 @@
-import hljs from 'highlight.js';
-import { BlockEmbed } from './Blots';
+import { CodeBlock } from './Blots';
 
-export default class CustomCode extends BlockEmbed {
+export default class CustomCode extends CodeBlock {
   static create(value) {
     const node = super.create(value);
-    if (value) {
-      const { lang, content } = value;
-      const code = document.createElement('code');
-      code.setAttribute('class', lang);
-      code.innerHTML = hljs.highlightAuto(content).value;
-      node.appendChild(code);
-    }
     return node;
   }
 
@@ -22,6 +14,6 @@ export default class CustomCode extends BlockEmbed {
   }
 }
 
-CustomCode.blotName = 'code-custom';
+CustomCode.blotName = 'code-block';
 CustomCode.tagName = 'pre';
 CustomCode.className = 'ql-syntax';

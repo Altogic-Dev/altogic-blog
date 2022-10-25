@@ -107,7 +107,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
         ) : (
           <div
             className={`border-b-2 my-10 pb-10 items-center flex flex-col ${
-              isMyProfile ? 'pb-10' :  ''
+              isMyProfile ? 'pb-10' : ''
             }`}
           >
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
