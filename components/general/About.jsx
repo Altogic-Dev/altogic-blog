@@ -58,17 +58,22 @@ function About(props) {
     }
   }, [followerPage]);
 
-
   return (
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
-        {!isMyProfile || isEmpty(htmlToText(about).trim()) ? (
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {isMyProfile && isEmpty(htmlToText(about).trim()) ? (
           <p className="text-sm">
             Let others know who you are.
             <Link href="/settings">
-              <a className="text-purple-500 no-underline">{' '}Click here to edit your profile.</a>
+              <a className="text-purple-500 no-underline">
+                {' '}
+                Click here to edit your profile.
+              </a>
             </Link>
           </p>
+        ) : isEmpty(htmlToText(about).trim()) ? (
+          <p className="text-sm">No Information</p>
         ) : (
           <p dangerouslySetInnerHTML={{ __html: about }} />
         )}

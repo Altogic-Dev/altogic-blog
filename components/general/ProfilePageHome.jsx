@@ -15,6 +15,7 @@ function ProfilePageHome({ userId, selectedIndex }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const userStories = useSelector((state) => state.story.userStories);
+  const user = useSelector((state) => state.auth.user);
   const userStoriesOwner = useSelector((state) => state.story.userStoriesOwner);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
@@ -22,6 +23,7 @@ function ProfilePageHome({ userId, selectedIndex }) {
   const [page, setPage] = useState(1);
   const [deletedStory, setDeletedStory] = useState(null);
   const PAGE_LIMIT = 6;
+  const isMyProfile = userId === _.get(user, '_id');
 
   const handleEndOfList = () => {
     if (
@@ -35,7 +37,6 @@ function ProfilePageHome({ userId, selectedIndex }) {
   };
 
   const getUserStoriesRequest = () => {
-    console.log(page)
     if (page === 0 || page === 1) {
       dispatch(
         storyActions.getUserStoriesRequest({
@@ -55,7 +56,6 @@ function ProfilePageHome({ userId, selectedIndex }) {
     }
   };
 
-  console.log(userStoriesOwner)
   useEffect(() => {
     if (userId && selectedIndex === 0 && userStoriesOwner !== userId) {
       getUserStoriesRequest();
@@ -64,7 +64,7 @@ function ProfilePageHome({ userId, selectedIndex }) {
 
   return (
     <>
-      {(userStoriesOwner && userId) ? (
+      {userStoriesOwner && userId ? (
         userStories?.length > 0 ? (
           <ListObserver onEnd={handleEndOfList}>
             {_.map(userStories, (story) => (
@@ -108,10 +108,11 @@ function ProfilePageHome({ userId, selectedIndex }) {
         ) : (
           <div className="border-b-2 pb-10">
             <p className="text-slate-500 text-md my-10 pb-10">No Stories Yet</p>
-
-            <Button onClick={() => router.push('/write-a-story')}>
-              Create Story
-            </Button>
+            {isMyProfile && (
+              <Button onClick={() => router.push('/write-a-story')}>
+                Create Story
+              </Button>
+            )}
           </div>
         )
       ) : (
