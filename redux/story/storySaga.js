@@ -425,6 +425,13 @@ function* publishStorySaga({
     const { data, errors } = yield call(operation, story);
     if (!_.isNil(errors)) throw errors.items;
 
+    const user = yield select((state) => state.auth.user);
+    const publishedStory = {
+      ...data,
+      user,
+    };
+    yield put(storyActions.publishStorySuccess(publishedStory));
+    if (_.isFunction(onSuccess)) onSuccess();
     if (!_.isEmpty(story.categoryNames)) {
       yield call(StoryService.updateCategoryPairs, categoryPairs);
 
@@ -432,8 +439,6 @@ function* publishStorySaga({
       yield fork(insertTopicsSaga, story, topicsWillCreate);
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
-    yield put(storyActions.publishStorySuccess(data));
-    if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     yield put(storyActions.publishStoryFailure(e));
   }
