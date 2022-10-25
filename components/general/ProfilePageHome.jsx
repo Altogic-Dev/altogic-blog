@@ -120,7 +120,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
                 extraClasses="mt-10"
                 onClick={() => router.push('/write-a-story')}
               >
-                Create Story
+                Create a Story
               </Button>
             )}
           </div>
