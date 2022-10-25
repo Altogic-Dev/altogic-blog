@@ -28,6 +28,7 @@ import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 
 export default function ProfilePage() {
   const BOOKMARK_LIMIT = 10;
+  const FOLLOWING_PAGE_LIMIT = 5;
   const router = useRouter();
   const dispatch = useDispatch();
   const [createNewList, setCreateNewList] = useState(false);
@@ -77,6 +78,7 @@ export default function ProfilePage() {
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(profileUser, '_id'),
         page: followingPage,
+        limit: FOLLOWING_PAGE_LIMIT,
       })
     );
   }, [followingPage, _.get(profileUser, '_id')]);
@@ -87,6 +89,7 @@ export default function ProfilePage() {
         followerConnectionActions.getFollowingUsersRequest({
           userId: _.get(profileUser, '_id'),
           page: followingPage,
+          limit: FOLLOWING_PAGE_LIMIT,
         })
       );
     }
@@ -527,12 +530,16 @@ export default function ProfilePage() {
                       ))}
                     </ul>
                     <div className="text-center">
-                      <Button
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        onClick={() => setFollowingPage((prev) => prev + 1)}
-                      >
-                        Show more
-                      </Button>
+                      {_.size(userFollowings) %
+                        _.get(profileUser, 'followingCount') >=
+                        FOLLOWING_PAGE_LIMIT && (
+                        <Button
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                          onClick={() => setFollowingPage((prev) => prev + 1)}
+                        >
+                          Show more
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </Dialog.Panel>
