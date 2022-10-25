@@ -136,6 +136,7 @@ export default function Editor({
     };
 
     const quill = new Quill('#editor-container', {
+      scrollingContainer: document.documentElement,
       modules: {
         syntax: {
           highlight: (text) => hljs.highlightAuto(text).value,

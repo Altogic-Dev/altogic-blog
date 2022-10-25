@@ -78,10 +78,10 @@ export const storySlice = createSlice({
       state.story = action.payload;
       state.error = null;
       state.isLoading = false;
-      state.userDraftStoriesInfo = {
-        ...state.userDraftStoriesInfo,
-        count: state.userDraftStoriesInfo.count + 1,
-      };
+      // state.userDraftStoriesInfo = {
+      //   ...state.userDraftStoriesInfo,
+      //   count: state.userDraftStoriesInfo.count + 1,
+      // };
     },
     createStoryFailure(state, action) {
       state.story = null;
