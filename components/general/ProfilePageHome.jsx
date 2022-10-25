@@ -16,7 +16,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const userStories = useSelector((state) => state.story.userStories);
-  const user = useSelector((state) => state.auth.user);
+  // const user = useSelector((state) => state.auth.user);
   const userStoriesOwner = useSelector((state) => state.story.userStoriesOwner);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
@@ -24,7 +24,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   const [page, setPage] = useState(1);
   const [deletedStory, setDeletedStory] = useState(null);
   const PAGE_LIMIT = 6;
-  const isMyProfile = userId === _.get(user, '_id');
+  // const isMyProfile = userId === _.get(user, '_id');
 
   const handleEndOfList = () => {
     if (
@@ -109,7 +109,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
         ) : (
           <div
             className={`border-b-2 my-10 pb-10 items-center flex flex-col ${
-              isMyProfile ? 'pb-10' :  ''
+              isMyProfile ? 'pb-10' : ''
             }`}
           >
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
