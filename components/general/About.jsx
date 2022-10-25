@@ -61,7 +61,7 @@ function About(props) {
     <>
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
         {!isMyProfile || isEmpty(htmlToText(about).trim()) ? (
-          <p className="">
+          <p className="text-sm">
             Let others know who you are.
             <Link href="/settings">
               <a className="text-purple-500 no-underline">{' '}Click here to edit your profile.</a>
