@@ -12,7 +12,7 @@ const initialState = {
   popularStories: null,
   story: null,
   moreUserStories: null,
-  userStories: null,
+  userStories: [],
   userStoriesInfo: null,
   userDraftStories: null,
   userDraftStoriesInfo: null,
@@ -24,6 +24,7 @@ const initialState = {
   replyCount: 0,
   replyPageSize: null,
   featureStories: {},
+  userStoriesOwner: null,
 };
 
 // Actual Slice
@@ -218,16 +219,19 @@ export const storySlice = createSlice({
 
     getUserStoriesRequest(state) {
       state.isLoading = true;
+      state.userStoriesOwner = null;
+    },
+
+    getUserStoriesRequestNextPage(state) {
+      state.isLoading = true;
     },
     getUserStoriesSuccess(state, action) {
-      if (_.isArray(state.userStories)) {
-        state.userStories = [
-          ...state.userStories.filter((s) => s.user === action.payload.userId),
-          ...action.payload.data,
-        ];
+      if (state.userStoriesOwner === action.payload.owner) {
+        state.userStories = [...state.userStories, ...action.payload.data];
       } else {
         state.userStories = action.payload.data;
       }
+      state.userStoriesOwner = action.payload.owner;
       state.userStoriesInfo = action.payload.info;
       state.isLoading = false;
     },

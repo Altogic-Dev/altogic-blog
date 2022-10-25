@@ -264,24 +264,23 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const info = yield select((state) => state.story.userStoriesInfo);
-    if (_.isNil(info) || page <= info.totalPages) {
-      const { data, errors } = yield call(
-        StoryService.getUserStories,
-        userID,
-        page,
-        limit
+
+    const { data, errors } = yield call(
+      StoryService.getUserStories,
+      userID,
+      page,
+      limit
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(
+        storyActions.getUserStoriesSuccess({
+          data: data.data,
+          info: data.info,
+          owner: userId,
+          userID,
+        })
       );
-      if (errors) throw errors;
-      if (data) {
-        yield put(
-          storyActions.getUserStoriesSuccess({
-            data: data.data,
-            info: data.info,
-            userID,
-          })
-        );
-      }
     }
   } catch (e) {
     console.error({ e });
@@ -594,6 +593,7 @@ export default function* rootSaga() {
       getMoreUserStoriesSaga
     ),
     takeEvery(storyActions.getUserStoriesRequest.type, getUserStoriesSaga),
+    takeEvery(storyActions.getUserStoriesRequestNextPage.type, getUserStoriesSaga),
     takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(
       storyActions.updateCategoryNamesRequest.type,

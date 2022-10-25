@@ -65,7 +65,7 @@ export default function ProfilePage() {
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [isMyProfile, setIsMyProfile] = useState(true);
   const previousPage = usePrevious(bookmarkListPage);
-  const prevUsername = usePrevious(username);
+  // const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
     toast.success('Copied to clipboard', { hideProgressBar: true });
     const basePath = window.location.origin;
@@ -118,11 +118,14 @@ export default function ProfilePage() {
   }, [followingPage, _.get(profileUser, '_id')]);
 
   useEffect(() => {
-    if (profileUser?.username !== username && username) {
+    if (username && profileUser?.username !== username ) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
     setFollowingModal(false);
   }, [username]);
+
+
+  console.log(username)
 
   useEffect(() => {
     if (profileUser) {
@@ -135,10 +138,10 @@ export default function ProfilePage() {
   }, [profileUser]);
 
   useEffect(() => {
-    if (
-      _.isNil(prevUsername) ||
-      (prevUsername !== username && selectedIndex === 1)
-    ) {
+    console.log(selectedIndex);
+
+    if (!_.isNil(username) && selectedIndex === 1) {
+      console.log(username);
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -149,7 +152,6 @@ export default function ProfilePage() {
       );
     }
   }, [username, selectedIndex]);
-
   const handleBookmarkListEnd = () => {
     if (_.size(bookmarkLists) >= BOOKMARK_LIMIT) {
       setBookmarkListPage((prev) => prev + 1);
@@ -321,7 +323,10 @@ export default function ProfilePage() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <ProfilePageHome userId={_.get(profileUser, '_id')} />
+                    <ProfilePageHome
+                      selectedIndex={selectedIndex}
+                      userId={_.get(profileUser, '_id')}
+                    />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
                     <ListObserver onEnd={handleBookmarkListEnd}>

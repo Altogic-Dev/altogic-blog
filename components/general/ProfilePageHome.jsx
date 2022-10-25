@@ -1,7 +1,9 @@
+/* eslint-disable no-nested-ternary */
 import React, { useEffect, useState, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
+import { ClipLoader } from 'react-spinners';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
 import ListObserver from '@/components/ListObserver';
@@ -9,10 +11,12 @@ import PostCard from '../PostCard';
 import DeleteStoryModal from '../DeleteStoryModal';
 import Button from '../basic/button';
 
-function ProfilePageHome({ userId }) {
+function ProfilePageHome({ userId, selectedIndex }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const userStories = useSelector((state) => state.story.userStories);
+  const userStoriesOwner = useSelector((state) => state.story.userStoriesOwner);
+  const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const firstUpdate = useRef(true);
   const [page, setPage] = useState(1);
@@ -20,7 +24,10 @@ function ProfilePageHome({ userId }) {
   const PAGE_LIMIT = 6;
 
   const handleEndOfList = () => {
-    if (firstUpdate.current) {
+    if (
+      userStories.length === userStoriesInfo.count ||
+      userStories.length > userStoriesInfo.count
+    ) {
       firstUpdate.current = false;
       return;
     }
@@ -28,77 +35,87 @@ function ProfilePageHome({ userId }) {
   };
 
   const getUserStoriesRequest = () => {
-    dispatch(
-      storyActions.getUserStoriesRequest({
-        userId,
-        page,
-        limit: PAGE_LIMIT,
-      })
-    );
+    console.log(page)
+    if (page === 0 || page === 1) {
+      dispatch(
+        storyActions.getUserStoriesRequest({
+          userId,
+          page,
+          limit: PAGE_LIMIT,
+        })
+      );
+    } else {
+      dispatch(
+        storyActions.getUserStoriesRequestNextPage({
+          userId,
+          page,
+          limit: PAGE_LIMIT,
+        })
+      );
+    }
   };
 
+  console.log(userStoriesOwner)
   useEffect(() => {
-    if (
-      userId &&
-      !router.asPath.includes('lists') &&
-      !router.asPath.includes('about')
-    ) {
+    if (userId && selectedIndex === 0 && userStoriesOwner !== userId) {
       getUserStoriesRequest();
     }
-  }, [userId, page]);
+  }, [userId, page, selectedIndex]);
 
   return (
     <>
-      {userStories?.length > 0 ? (
-        <ListObserver onEnd={handleEndOfList}>
-          {_.map(userStories, (story) => (
-            <PostCard
-              key={story._id}
-              normalMenu
-              authorUrl={`/${story.username}`}
-              authorName={story.username}
-              authorImage={story.userProfilePicture}
-              storyUrl={`/story/${story.storySlug}`}
-              timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
-              title={story.title}
-              infoText={story.excerpt}
-              badgeName={_.first(story.categoryNames)}
-              min={story.estimatedReadingTime}
-              images={_.first(story.storyImages)}
-              bookmarkLists={bookmarkLists}
-              story={story}
-              optionButtons={{
-                editStory: () => {
-                  router.push(`/write-a-story?id=${story._id}`);
-                },
-                storySettings: () => {
-                  router.push(`/write-a-story-settings?id=${story._id}`);
-                },
-                storyStats: () => {
-                  router.push(`stats-blog-post?id=${story._id}`);
-                },
-                deleteStory: () => {
-                  setDeletedStory({
-                    storyId: story._id,
-                    categoryNames: story.categoryNames,
-                    isPublished: story.isPublished,
-                  });
-                },
-              }}
-              actionMenu
-            />
-          ))}
-        </ListObserver>
-      ) : (
-        <div className="border-b-2 pb-10">
-          <p className="text-slate-500 text-md my-10 pb-10">
-            No Stories Yet
-          </p>
+      {(userStoriesOwner && userId) ? (
+        userStories?.length > 0 ? (
+          <ListObserver onEnd={handleEndOfList}>
+            {_.map(userStories, (story) => (
+              <PostCard
+                key={story._id}
+                normalMenu
+                authorUrl={`/${story.username}`}
+                authorName={story.username}
+                authorImage={story.userProfilePicture}
+                storyUrl={`/story/${story.storySlug}`}
+                timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+                title={story.title}
+                infoText={story.excerpt}
+                badgeName={_.first(story.categoryNames)}
+                min={story.estimatedReadingTime}
+                images={_.first(story.storyImages)}
+                bookmarkLists={bookmarkLists}
+                story={story}
+                optionButtons={{
+                  editStory: () => {
+                    router.push(`/write-a-story?id=${story._id}`);
+                  },
+                  storySettings: () => {
+                    router.push(`/write-a-story-settings?id=${story._id}`);
+                  },
+                  storyStats: () => {
+                    router.push(`stats-blog-post?id=${story._id}`);
+                  },
+                  deleteStory: () => {
+                    setDeletedStory({
+                      storyId: story._id,
+                      categoryNames: story.categoryNames,
+                      isPublished: story.isPublished,
+                    });
+                  },
+                }}
+                actionMenu
+              />
+            ))}
+          </ListObserver>
+        ) : (
+          <div className="border-b-2 pb-10">
+            <p className="text-slate-500 text-md my-10 pb-10">No Stories Yet</p>
 
-          <Button onClick={() => router.push('/write-a-story')}>
-            Create Story
-          </Button>
-        </div>
+            <Button onClick={() => router.push('/write-a-story')}>
+              Create Story
+            </Button>
+          </div>
+        )
+      ) : (
+        <ClipLoader />
       )}
       {deletedStory && (
         <DeleteStoryModal
