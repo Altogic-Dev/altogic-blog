@@ -28,6 +28,7 @@ import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 
 export default function ProfilePage() {
   const BOOKMARK_LIMIT = 10;
+  const FOLLOWING_PAGE_LIMIT = 5;
   const router = useRouter();
   const dispatch = useDispatch();
   const [createNewList, setCreateNewList] = useState(false);
@@ -43,6 +44,9 @@ export default function ProfilePage() {
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
+  const userFollowingsCount = useSelector(
+    (state) => state.followerConnection.userFollowingsCount
+  );
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
@@ -53,6 +57,7 @@ export default function ProfilePage() {
   const isFollowings = useSelector(
     (state) => state.followerConnection.isFollowings
   );
+
 
   const authLoading = useSelector((state) => state.auth.isLoading);
   const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
@@ -65,7 +70,7 @@ export default function ProfilePage() {
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [isMyProfile, setIsMyProfile] = useState(true);
   const previousPage = usePrevious(bookmarkListPage);
-  const prevUsername = usePrevious(username);
+  // const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
     toast.success('Copied to clipboard', { hideProgressBar: true });
     const basePath = window.location.origin;
@@ -77,6 +82,7 @@ export default function ProfilePage() {
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(profileUser, '_id'),
         page: followingPage,
+        limit: FOLLOWING_PAGE_LIMIT,
       })
     );
   }, [followingPage, _.get(profileUser, '_id')]);
@@ -87,6 +93,7 @@ export default function ProfilePage() {
         followerConnectionActions.getFollowingUsersRequest({
           userId: _.get(profileUser, '_id'),
           page: followingPage,
+          limit: FOLLOWING_PAGE_LIMIT,
         })
       );
     }
@@ -118,7 +125,7 @@ export default function ProfilePage() {
   }, [followingPage, _.get(profileUser, '_id')]);
 
   useEffect(() => {
-    if (profileUser?.username !== username && username) {
+    if (username && profileUser?.username !== username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
     setFollowingModal(false);
@@ -135,10 +142,7 @@ export default function ProfilePage() {
   }, [profileUser]);
 
   useEffect(() => {
-    if (
-      _.isNil(prevUsername) ||
-      (prevUsername !== username && selectedIndex === 1)
-    ) {
+    if (!_.isNil(username) && selectedIndex === 1) {
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -149,7 +153,6 @@ export default function ProfilePage() {
       );
     }
   }, [username, selectedIndex]);
-
   const handleBookmarkListEnd = () => {
     if (_.size(bookmarkLists) >= BOOKMARK_LIMIT) {
       setBookmarkListPage((prev) => prev + 1);
@@ -321,7 +324,11 @@ export default function ProfilePage() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <ProfilePageHome userId={_.get(profileUser, '_id')} />
+                    <ProfilePageHome
+                      isMyProfile={isMyProfile}
+                      selectedIndex={selectedIndex}
+                      userId={_.get(profileUser, '_id')}
+                    />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
                     <ListObserver onEnd={handleBookmarkListEnd}>
@@ -351,7 +358,7 @@ export default function ProfilePage() {
                       followingCount={_.get(profileUser, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfile && !isSubscribed && sessionUser && (
+                    {!isMyProfile && !isSubscribed && sessionUser && !authLoading && (
                       <AboutSubscribeCard
                         profileId={_.get(profileUser, '_id')}
                         name={_.get(profileUser, 'name')}
@@ -367,7 +374,7 @@ export default function ProfilePage() {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(profileUser, 'followingCount'),
+                  count: userFollowingsCount,
                   seeAllButton: toggleFollowingsModal,
                 }}
                 followingTopics={isMyProfile}
@@ -385,7 +392,7 @@ export default function ProfilePage() {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(profileUser, 'followingCount'),
+                  count: _.size(profileUser, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
                 profile={profileUser}
@@ -522,12 +529,16 @@ export default function ProfilePage() {
                       ))}
                     </ul>
                     <div className="text-center">
-                      <Button
-                        className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                        onClick={() => setFollowingPage((prev) => prev + 1)}
-                      >
-                        Show more
-                      </Button>
+                      {_.size(userFollowings) %
+                        _.get(profileUser, 'followingCount') >=
+                        FOLLOWING_PAGE_LIMIT && (
+                        <Button
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                          onClick={() => setFollowingPage((prev) => prev + 1)}
+                        >
+                          Show more
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </Dialog.Panel>

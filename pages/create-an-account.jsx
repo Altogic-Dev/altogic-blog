@@ -7,6 +7,7 @@ import Input from '@/components/Input';
 import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import SocialProviders from '@/components/login/SocialProviders';
+import Button from '@/components/basic/button';
 
 export default function CreateAnAccount() {
   const registerSchema = new yup.ObjectSchema({
@@ -32,7 +33,7 @@ export default function CreateAnAccount() {
   } = useForm({
     resolver: yupResolver(registerSchema),
   });
-  const loading = useSelector((state) => state.auth.loading);
+  const loading = useSelector((state) => state.auth.isLoading);
   const error = useSelector((state) => state.auth.registerError);
   const usernameError = useSelector((state) => state.auth.updateProfileError);
   const isUsernameAvailable = useSelector(
@@ -170,12 +171,13 @@ export default function CreateAnAccount() {
                   </div>
 
                   <div>
-                    <button
+                    <Button
                       type="submit"
                       className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                      loading={loading}
                     >
                       Get started
-                    </button>
+                    </Button>
                   </div>
                   <div className="mt-6 relative">
                     <div

@@ -26,6 +26,7 @@ import { generalActions } from '@/redux/general/generalSlice';
 import { authActions } from '@/redux/auth/authSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { reportActions } from '@/redux/report/reportSlice';
+import { FlagIcon } from '@heroicons/react/outline';
 
 export default function ListDetail() {
   const [deleteListModal, setDeleteListModal] = useState(false);
@@ -151,7 +152,6 @@ export default function ListDetail() {
     }
   }, [bookmarks, profileUser]);
 
-  console.log(bookmarks);
   useEffect(() => {
     if (bookmarkListSlug) {
       dispatch(
@@ -390,9 +390,14 @@ export default function ListDetail() {
                   ))}
                 </ListObserver>
               ) : (
-                <p className="text-slate-500 text-md my-10">
-                  You have not bookmarked any stories to this list yet!
-                </p>
+                <div className='items-center flex flex-col'>
+                  <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                    <FlagIcon className="w-7 h-7 text-purple-600" />
+                  </span>
+                  <p className="text-slate-500 text-md">
+                    You have not bookmarked any stories to this list yet!
+                  </p>
+                </div>
               )}
             </div>
             <div className="hidden lg:block p-8 space-y-10">

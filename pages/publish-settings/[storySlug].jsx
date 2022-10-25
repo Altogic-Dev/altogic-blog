@@ -125,9 +125,7 @@ export default function PublishSettings() {
               ? inpSelectedAuthor.name
               : undefined,
           isPublished: true,
-          categoryNames: inpCategoryNames.map((category) =>
-            _.startCase(category.name)
-          ),
+          categoryNames: inpCategoryNames.map((category) => category.name),
           isRestrictedComments: inpRestrictComments,
           excerpt: parseHtml(story.content).slice(0, 300),
         },
@@ -371,13 +369,13 @@ export default function PublishSettings() {
                       onKeyDown={handleInsert}
                     />
                     {!_.isEmpty(foundTopics) &&
-                      !topicLoading &&
-                      isSearchOpen && (
+                      isSearchOpen &&
+                      _.size(inpCategory) !== 0 && (
                         <PublicationSettingsSuggestions
                           name="Topics"
                           suggestions={foundTopics}
                           onClick={(e, topicId, topic) => handleAddTopic(topic)}
-                          className
+                          loading={topicLoading}
                         />
                       )}
 
@@ -392,27 +390,33 @@ export default function PublishSettings() {
                   </div>
                 </div>
                 <div className="md:mb-20">
-                  <p className="text-slate-600 mb-4 text-sm tracking-sm">
-                    Recommended Categories
-                  </p>
-                  <div className="flex flex-wrap items-center gap-4">
-                    {_.map(user?.recommendedTopics, (categoryName) => (
-                      <button
-                        key={categoryName}
-                        type="button"
-                        className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-5 rounded-md tracking-sm text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                        onClick={() => addCategoryFromRecommended(categoryName)}
-                      >
-                        <PlusIcon
-                          className="mr-2 h-5 w-5 text-gray-700"
-                          aria-hidden="true"
-                        />
-                        {categoryName}
-                      </button>
-                    ))}
-                  </div>
+                  {_.size(user?.recommendedTopics) > 0 && (
+                    <>
+                      <p className="text-slate-600 mb-4 text-sm tracking-sm">
+                        Recommended Categories
+                      </p>
+                      <div className="flex flex-wrap items-center gap-4 mb-10">
+                        {_.map(user?.recommendedTopics, (categoryName) => (
+                          <button
+                            key={categoryName}
+                            type="button"
+                            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-5 rounded-md tracking-sm text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                            onClick={() =>
+                              addCategoryFromRecommended(categoryName)
+                            }
+                          >
+                            <PlusIcon
+                              className="mr-2 h-5 w-5 text-gray-700"
+                              aria-hidden="true"
+                            />
+                            {categoryName}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
 
-                  <div className="flex items-start mt-10">
+                  <div className="flex items-start">
                     <div className="flex items-center h-5">
                       <input
                         id="private-list"
