@@ -277,7 +277,7 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
         storyActions.getUserStoriesSuccess({
           data: data.data,
           info: data.info,
-          owner: userId,
+          owner: userID,
           userID,
         })
       );

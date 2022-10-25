@@ -4,6 +4,7 @@ import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { ClipLoader } from 'react-spinners';
+import { FlagIcon } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
 import ListObserver from '@/components/ListObserver';
@@ -11,7 +12,7 @@ import PostCard from '../PostCard';
 import DeleteStoryModal from '../DeleteStoryModal';
 import Button from '../basic/button';
 
-function ProfilePageHome({ userId, selectedIndex }) {
+function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const userStories = useSelector((state) => state.story.userStories);
@@ -35,7 +36,6 @@ function ProfilePageHome({ userId, selectedIndex }) {
   };
 
   const getUserStoriesRequest = () => {
-    console.log(page)
     if (page === 0 || page === 1) {
       dispatch(
         storyActions.getUserStoriesRequest({
@@ -55,7 +55,6 @@ function ProfilePageHome({ userId, selectedIndex }) {
     }
   };
 
-  console.log(userStoriesOwner)
   useEffect(() => {
     if (userId && selectedIndex === 0 && userStoriesOwner !== userId) {
       getUserStoriesRequest();
@@ -64,7 +63,7 @@ function ProfilePageHome({ userId, selectedIndex }) {
 
   return (
     <>
-      {(userStoriesOwner && userId) ? (
+      {userStoriesOwner && userId ? (
         userStories?.length > 0 ? (
           <ListObserver onEnd={handleEndOfList}>
             {_.map(userStories, (story) => (
@@ -106,16 +105,28 @@ function ProfilePageHome({ userId, selectedIndex }) {
             ))}
           </ListObserver>
         ) : (
-          <div className="border-b-2 pb-10">
-            <p className="text-slate-500 text-md my-10 pb-10">No Stories Yet</p>
+          <div
+            className={`border-b-2 my-10 pb-10 items-center flex flex-col ${
+              isMyProfile ? 'pb-10' :  ''
+            }`}
+          >
+            <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+              <FlagIcon className="w-7 h-7 text-purple-600" />
+            </span>
+            <p className="text-slate-500 text-md  ">No Stories Yet</p>
 
-            <Button onClick={() => router.push('/write-a-story')}>
-              Create Story
-            </Button>
+            {isMyProfile && (
+              <Button
+                extraClasses="mt-10"
+                onClick={() => router.push('/write-a-story')}
+              >
+                Create Story
+              </Button>
+            )}
           </div>
         )
       ) : (
-        <ClipLoader />
+        <ClipLoader className="my-10" />
       )}
       {deletedStory && (
         <DeleteStoryModal

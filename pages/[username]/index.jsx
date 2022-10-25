@@ -43,6 +43,9 @@ export default function ProfilePage() {
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
+  const userFollowingsCount = useSelector(
+    (state) => state.followerConnection.userFollowingsCount
+  );
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
@@ -53,6 +56,7 @@ export default function ProfilePage() {
   const isFollowings = useSelector(
     (state) => state.followerConnection.isFollowings
   );
+
 
   const authLoading = useSelector((state) => state.auth.isLoading);
   const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
@@ -118,14 +122,11 @@ export default function ProfilePage() {
   }, [followingPage, _.get(profileUser, '_id')]);
 
   useEffect(() => {
-    if (username && profileUser?.username !== username ) {
+    if (username && profileUser?.username !== username) {
       dispatch(authActions.getUserByUserNameRequest(username));
     }
     setFollowingModal(false);
   }, [username]);
-
-
-  console.log(username)
 
   useEffect(() => {
     if (profileUser) {
@@ -138,10 +139,7 @@ export default function ProfilePage() {
   }, [profileUser]);
 
   useEffect(() => {
-    console.log(selectedIndex);
-
     if (!_.isNil(username) && selectedIndex === 1) {
-      console.log(username);
       dispatch(
         getBookmarkListsRequest({
           username,
@@ -324,6 +322,7 @@ export default function ProfilePage() {
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <ProfilePageHome
+                      isMyProfile={isMyProfile}
                       selectedIndex={selectedIndex}
                       userId={_.get(profileUser, '_id')}
                     />
@@ -356,7 +355,7 @@ export default function ProfilePage() {
                       followingCount={_.get(profileUser, 'followingCount')}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfile && !isSubscribed && sessionUser && (
+                    {!isMyProfile && !isSubscribed && sessionUser && !authLoading && (
                       <AboutSubscribeCard
                         profileId={_.get(profileUser, '_id')}
                         name={_.get(profileUser, 'name')}
@@ -372,7 +371,7 @@ export default function ProfilePage() {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(profileUser, 'followingCount'),
+                  count: userFollowingsCount,
                   seeAllButton: toggleFollowingsModal,
                 }}
                 followingTopics={isMyProfile}
@@ -390,7 +389,7 @@ export default function ProfilePage() {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(profileUser, 'followingCount'),
+                  count: _.size(profileUser, 'followingCount'),
                   seeAllButton: toggleFollowingsModal,
                 }}
                 profile={profileUser}

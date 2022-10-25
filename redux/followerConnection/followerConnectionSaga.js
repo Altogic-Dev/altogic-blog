@@ -91,10 +91,15 @@ function* getFollowingUsersSaga({ payload: { userId, page } }) {
       userId,
       page
     );
+
     if (errors) throw errors;
-    if (_.isArray(data)) {
+    if (_.isArray(data.data)) {
       yield put(
-        followerConnectionActions.getFollowingUsersSuccess({ data, page })
+        followerConnectionActions.getFollowingUsersSuccess({
+          data: data.data,
+          info: data.info,
+          page,
+        })
       );
     }
   } catch (e) {

@@ -292,7 +292,6 @@ export default function PublicationSettingsInfo({
     }
   }, [doClear]);
 
-  console.log(isEditorSearch)
   return (
     <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}

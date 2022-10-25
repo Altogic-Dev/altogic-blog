@@ -5,7 +5,6 @@ export default class CustomCode extends BlockEmbed {
   static create(value) {
     const node = super.create(value);
     if (value) {
-      console.log(value);
       const { lang, content } = value;
       const code = document.createElement('code');
       code.setAttribute('class', lang);

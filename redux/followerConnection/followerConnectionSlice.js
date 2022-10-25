@@ -15,6 +15,7 @@ const initialState = {
   isLoading: false,
   followingUserLoading: false,
   followingStoriesPage: 1,
+  userFollowingsCount: 0,
 };
 
 // Actual Slice
@@ -98,8 +99,9 @@ export const followerConnectionSlice = createSlice({
     },
     getFollowingUsersSuccess(state, action) {
       state.isLoading = false;
-      state.userFollowings = [...state.userFollowings, ...action.payload.data];
+      state.userFollowings = action.payload.data;
       state.userFollowings.page = action.payload.page;
+      state.userFollowingsCount = action.payload.info.count;
       const isFollowingsFollowings = _.reject(action.payload.data, (person) =>
         _.isNil(person.isFollowing)
       );
