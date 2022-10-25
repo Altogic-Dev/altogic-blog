@@ -13,11 +13,11 @@ export default function ChangeEmail() {
       .string()
       .required('Password is required')
       .email('Please enter a valid email')
-      .min(8, 'Old Password must be at least 8 characters'),
+      .min(8, 'Password must be at least 8 characters'),
     password: yup
       .string()
       .required('Password is required')
-      .min(8, 'Old Password must be at least 8 characters'),
+      .min(8, 'Password must be at least 8 characters'),
   });
   const dispatch = useDispatch();
   const error = useSelector((state) => state.auth.changeEmailError);

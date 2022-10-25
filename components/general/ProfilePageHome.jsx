@@ -16,6 +16,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const userStories = useSelector((state) => state.story.userStories);
+  const user = useSelector((state) => state.auth.user);
   const userStoriesOwner = useSelector((state) => state.story.userStoriesOwner);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
@@ -23,6 +24,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   const [page, setPage] = useState(1);
   const [deletedStory, setDeletedStory] = useState(null);
   const PAGE_LIMIT = 6;
+  const isMyProfile = userId === _.get(user, '_id');
 
   const handleEndOfList = () => {
     if (

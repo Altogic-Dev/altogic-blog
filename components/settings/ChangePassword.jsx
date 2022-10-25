@@ -12,11 +12,11 @@ export default function ChangePassword() {
     currentPassword: yup
       .string()
       .required('Password is required')
-      .min(8, 'Old Password must be at least 8 characters'),
+      .min(8, 'Password must be at least 8 characters'),
     newPassword: yup
       .string()
       .required('Password is required')
-      .min(8, 'Old Password must be at least 8 characters'),
+      .min(8, 'Password must be at least 8 characters'),
     confirmNewPassword: yup
       .string()
       .oneOf([yup.ref('newPassword'), null], 'Passwords must match'),
