@@ -1,15 +1,34 @@
 import Suggestion from '@/components/AutoComplete/Suggestion';
 import { Popover } from '@headlessui/react';
+import { ClipLoader } from 'react-spinners';
 
-function PublicationSettingsSuggestions({ suggestions, name, onClick }) {
+function PublicationSettingsSuggestions({
+  suggestions,
+  name,
+  onClick,
+  loading,
+}) {
   return (
     <div
       className="w-full absolute bg-white border border-gray-100 border-t-0 p-4 shadow top-[45.5px] left-0 z-50 duration-1000"
       id="suggestionUsersList"
     >
-      <ul className="suggestions list-none mt-0 overflow-y-auto pl-0 w-full">
+      <ul className="suggestions list-none mt-0 pl-0 w-full">
         <Popover>
-          <Suggestion suggestions={suggestions} name={name} onClick={onClick} />
+          {!loading ? (
+            <Suggestion
+              suggestions={suggestions}
+              name={name}
+              onClick={onClick}
+            />
+          ) : (
+            <ClipLoader
+              className="mt-3"
+              size={40}
+              color="#9333ea"
+              loading={loading}
+            />
+          )}
         </Popover>
       </ul>
     </div>

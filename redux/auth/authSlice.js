@@ -4,7 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 import { toast } from 'react-toastify';
 // Initial state
 const initialState = {
-  isLoading: true,
+  isLoading: false,
   error: null,
   loginError: null,
   registerError: null,

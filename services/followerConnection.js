@@ -43,7 +43,7 @@ const FollowerConnectionService = {
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
-      .get();
+      .get(true);
   },
 };
 export default FollowerConnectionService;

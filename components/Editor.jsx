@@ -137,6 +137,12 @@ export default function Editor({
 
     const quill = new Quill('#editor-container', {
       modules: {
+        syntax: {
+          highlight: (text) => hljs.highlightAuto(text).value,
+        },
+        clipboard: {
+          matchVisual: false,
+        },
         keyboard: {
           bindings,
         },
@@ -160,6 +166,7 @@ export default function Editor({
     quill.addContainer(input.current);
 
     quill.on(Quill.events.EDITOR_CHANGE, (eventType, range) => {
+      quill.root.dataset.placeholder = '';
       if (eventType !== Quill.events.SELECTION_CHANGE) return;
       if (range == null) return;
       if (range.length === 0) {
@@ -293,11 +300,8 @@ export default function Editor({
     const code = document.createElement('code');
     if (syntax.length > 0) {
       Array.from(syntax).forEach((item) => {
-        if (!item.dataset.isHighlighted) {
-          code.innerHTML = hljs.highlightAuto(item.innerText).value;
-          item.innerHTML = code.outerHTML;
-          item.dataset.isHighlighted = true;
-        }
+        code.innerHTML = hljs.highlightAuto(item.innerText).value;
+        item.innerHTML = code.outerHTML;
       });
     }
   };
@@ -352,6 +356,9 @@ export default function Editor({
   };
   const handleFormat = (type, param) => {
     quillInstance.format(type, param);
+  };
+  const addCodeBlock = () => {
+    quillInstance.format('code-block', true);
   };
   return (
     <div className="text-editor">
@@ -427,6 +434,9 @@ export default function Editor({
           </button>
           <button type="button" id="divider-button" onClick={addDivider}>
             <MinusCircle />
+          </button>
+          <button type="button" id="divider-button" onClick={addCodeBlock}>
+            <Code size={24} />
           </button>
         </span>
       </div>

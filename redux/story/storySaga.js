@@ -264,24 +264,23 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const info = yield select((state) => state.story.userStoriesInfo);
-    if (_.isNil(info) || page <= info.totalPages) {
-      const { data, errors } = yield call(
-        StoryService.getUserStories,
-        userID,
-        page,
-        limit
+
+    const { data, errors } = yield call(
+      StoryService.getUserStories,
+      userID,
+      page,
+      limit
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(
+        storyActions.getUserStoriesSuccess({
+          data: data.data,
+          info: data.info,
+          owner: userID,
+          userID,
+        })
       );
-      if (errors) throw errors;
-      if (data) {
-        yield put(
-          storyActions.getUserStoriesSuccess({
-            data: data.data,
-            info: data.info,
-            userID,
-          })
-        );
-      }
     }
   } catch (e) {
     console.error({ e });
@@ -425,6 +424,13 @@ function* publishStorySaga({
     const { data, errors } = yield call(operation, story);
     if (!_.isNil(errors)) throw errors.items;
 
+    const user = yield select((state) => state.auth.user);
+    const publishedStory = {
+      ...data,
+      user,
+    };
+    yield put(storyActions.publishStorySuccess(publishedStory));
+    if (_.isFunction(onSuccess)) onSuccess();
     if (!_.isEmpty(story.categoryNames)) {
       yield call(StoryService.updateCategoryPairs, categoryPairs);
 
@@ -432,8 +438,6 @@ function* publishStorySaga({
       yield fork(insertTopicsSaga, story, topicsWillCreate);
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
-    yield put(storyActions.publishStorySuccess(data));
-    if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     yield put(storyActions.publishStoryFailure(e));
   }
@@ -594,6 +598,7 @@ export default function* rootSaga() {
       getMoreUserStoriesSaga
     ),
     takeEvery(storyActions.getUserStoriesRequest.type, getUserStoriesSaga),
+    takeEvery(storyActions.getUserStoriesRequestNextPage.type, getUserStoriesSaga),
     takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(
       storyActions.updateCategoryNamesRequest.type,

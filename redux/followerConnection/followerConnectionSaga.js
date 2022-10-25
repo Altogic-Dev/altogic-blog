@@ -58,7 +58,7 @@ function* followSaga({ payload: { followerUser, followingUser, notUpdate } }) {
   }
 }
 
-function* getFollowerUsersSaga({ payload: { userId, page } }) {
+function* getFollowerUsersSaga({ payload: { userId, page, limit } }) {
   try {
     const sessionUserId = yield select((state) =>
       _.get(state.auth.user, '_id')
@@ -67,7 +67,8 @@ function* getFollowerUsersSaga({ payload: { userId, page } }) {
       FollowerConnectionService.getFollowerUsers,
       sessionUserId,
       userId,
-      page
+      page,
+      limit
     );
     if (errors) throw errors;
     if (_.isArray(data)) {
@@ -80,7 +81,7 @@ function* getFollowerUsersSaga({ payload: { userId, page } }) {
   }
 }
 
-function* getFollowingUsersSaga({ payload: { userId, page } }) {
+function* getFollowingUsersSaga({ payload: { userId, page, limit } }) {
   try {
     const sessionUserId = yield select((state) =>
       _.get(state.auth.user, '_id')
@@ -89,12 +90,18 @@ function* getFollowingUsersSaga({ payload: { userId, page } }) {
       FollowerConnectionService.getFollowingUsers,
       sessionUserId,
       userId,
-      page
+      page,
+      limit
     );
+
     if (errors) throw errors;
-    if (_.isArray(data)) {
+    if (_.isArray(data.data)) {
       yield put(
-        followerConnectionActions.getFollowingUsersSuccess({ data, page })
+        followerConnectionActions.getFollowingUsersSuccess({
+          data: data.data,
+          info: data.info,
+          page,
+        })
       );
     }
   } catch (e) {

@@ -81,7 +81,7 @@ export default function WriteAStory() {
   }, [id]);
 
   useEffect(() => {
-    if (content || inpTitle) {
+    if (content !== '<p><br></p>' || inpTitle) {
       setLoading(true);
       const story = {
         user: user._id,

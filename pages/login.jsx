@@ -17,6 +17,8 @@ export default function Login() {
   });
   const dispatch = useDispatch();
   const error = useSelector((state) => state.auth.loginError);
+  const loading = useSelector((state) => state.auth.isLoading);
+
   const {
     handleSubmit,
     register,
@@ -108,6 +110,7 @@ export default function Login() {
                     <Button
                       type="submit"
                       className="w-full flex mb-4 justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                      loading={loading}
                     >
                       Sign in
                     </Button>

@@ -46,7 +46,7 @@ function DeleteStoryModal({ setDeleteStoryModal, clickDelete }) {
                   Delete Story
                 </h3>
                 <span className="text-slate-500 text-sm tracking-sm">
-                  Deleting this story.
+                  Are you sure you would like to delete this story?
                 </span>
               </div>
             </div>

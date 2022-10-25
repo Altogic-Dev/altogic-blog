@@ -1,22 +1,24 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
-import ListObserver from '@/components/ListObserver';
 import { storyActions } from '@/redux/story/storySlice';
 import PostCard from '@/components/PostCard';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
+import { useInView } from 'react-intersection-observer';
 
-function MyStoriesPublished({ setDeletedStory }) {
+function MyStoriesPublished({ setDeletedStory,userStoriesInfo }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const userStories = useSelector((state) => state.story.userStories);
   const PAGE_LIMIT = 6;
+  const ref = useRef();
+  const { ref: inViewRef, inView } = useInView();
 
   const getUserStories = useCallback(() => {
     dispatch(
-      storyActions.getUserStoriesRequest({
+      storyActions.getUserStoriesRequestNextPage({
         page,
         limit: PAGE_LIMIT,
         isPublishedFilter: false,
@@ -25,17 +27,28 @@ function MyStoriesPublished({ setDeletedStory }) {
   }, [page]);
 
   const handleEndOfList = () => {
-    if (!_.isNil(userStories) && _.size(userStories) >= PAGE_LIMIT) {
+    if (!_.isNil(userStories) && _.size(userStories) < userStoriesInfo?.count) {
       setPage((prev) => prev + 1);
     }
   };
 
   useEffect(() => {
-    getUserStories();
+    if (_.size(userStories) < page * PAGE_LIMIT) getUserStories();
   }, [page]);
 
+  const setRefs = useCallback(
+    (node) => {
+      ref.current = node;
+      inViewRef(node);
+    },
+    [inViewRef]
+  );
+
+  useEffect(() => {
+    if (inView) handleEndOfList();
+  }, [inView]);
   return (
-    <ListObserver onEnd={handleEndOfList}>
+    <>
       {_.map(userStories, (story) => (
         <PostCard
           key={story._id}
@@ -72,7 +85,8 @@ function MyStoriesPublished({ setDeletedStory }) {
           story={story}
         />
       ))}
-    </ListObserver>
+      <div ref={setRefs} />
+    </>
   );
 }
 
