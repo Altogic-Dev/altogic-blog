@@ -5,7 +5,6 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   whoToFollow: [],
   whoToFollowLoading: false,
-  whoToFollowMinimizedLoading: false,
   errors: [],
   topicWritersIdList: [],
   topWriters: [],

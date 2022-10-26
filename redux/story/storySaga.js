@@ -293,23 +293,21 @@ function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const info = yield select((state) => state.story.userDraftStoriesInfo);
-    if (_.isNil(info) || page <= info.totalPages) {
-      const { data, errors } = yield call(
-        StoryService.getUserDraftStories,
-        userID,
-        page,
-        limit
+
+    const { data, errors } = yield call(
+      StoryService.getUserDraftStories,
+      userID,
+      page,
+      limit
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(
+        storyActions.getUserDraftStoriesSuccess({
+          data: data.data,
+          info: data.info,
+        })
       );
-      if (errors) throw errors;
-      if (data) {
-        yield put(
-          storyActions.getUserDraftStoriesSuccess({
-            data: data.data,
-            info: data.info,
-          })
-        );
-      }
     }
   } catch (e) {
     console.error({ e });
@@ -424,13 +422,13 @@ function* publishStorySaga({
     const { data, errors } = yield call(operation, story);
     if (!_.isNil(errors)) throw errors.items;
 
+    if (_.isFunction(onSuccess)) onSuccess();
     const user = yield select((state) => state.auth.user);
     const publishedStory = {
       ...data,
       user,
     };
     yield put(storyActions.publishStorySuccess(publishedStory));
-    if (_.isFunction(onSuccess)) onSuccess();
     if (!_.isEmpty(story.categoryNames)) {
       yield call(StoryService.updateCategoryPairs, categoryPairs);
 
@@ -598,7 +596,10 @@ export default function* rootSaga() {
       getMoreUserStoriesSaga
     ),
     takeEvery(storyActions.getUserStoriesRequest.type, getUserStoriesSaga),
-    takeEvery(storyActions.getUserStoriesRequestNextPage.type, getUserStoriesSaga),
+    takeEvery(
+      storyActions.getUserStoriesRequestNextPage.type,
+      getUserStoriesSaga
+    ),
     takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(
       storyActions.updateCategoryNamesRequest.type,

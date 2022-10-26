@@ -14,6 +14,7 @@ const initialState = {
   moreUserStories: null,
   userStories: [],
   userStoriesInfo: null,
+  userStoriesLoading: false,
   userDraftStories: null,
   userDraftStoriesInfo: null,
   publicationsStories: [],
@@ -65,6 +66,7 @@ export const storySlice = createSlice({
     },
 
     getStoryRequest(state) {
+      state.story = null;
       state.isLoading = true;
     },
     getStorySuccess(state, action) {
@@ -78,13 +80,15 @@ export const storySlice = createSlice({
       state.story = action.payload;
       state.error = null;
       state.isLoading = false;
-      // state.userDraftStoriesInfo = {
-      //   ...state.userDraftStoriesInfo,
-      //   count: state.userDraftStoriesInfo.count + 1,
-      // };
+      if (!_.isNil(state.userDraftStoriesInfo)) {
+        state.userDraftStoriesInfo = {
+          ...state.userDraftStoriesInfo,
+          count: state.userDraftStoriesInfo.count + 1,
+        };
+        state.userDraftStories.push(action.payload);
+      }
     },
     createStoryFailure(state, action) {
-      state.story = null;
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -218,12 +222,12 @@ export const storySlice = createSlice({
     },
 
     getUserStoriesRequest(state) {
-      state.isLoading = true;
+      state.userStoriesLoading = true;
       state.userStoriesOwner = null;
     },
 
     getUserStoriesRequestNextPage(state) {
-      state.isLoading = true;
+      state.userStoriesLoading = true;
     },
     getUserStoriesSuccess(state, action) {
       if (state.userStoriesOwner === action.payload.owner) {
@@ -233,14 +237,14 @@ export const storySlice = createSlice({
       }
       state.userStoriesOwner = action.payload.owner;
       state.userStoriesInfo = action.payload.info;
-      state.isLoading = false;
+      state.userStoriesLoading = false;
     },
 
     getUserDraftStoriesRequest(state) {
-      state.isLoading = true;
+      state.userStoriesLoading = true;
     },
     getUserDraftStoriesSuccess(state, action) {
-      state.isLoading = false;
+      state.userStoriesLoading = false;
       if (_.isArray(state.userDraftStories)) {
         state.userDraftStories = [
           ...state.userDraftStories,
@@ -308,10 +312,13 @@ export const storySlice = createSlice({
     publishStorySuccess(state, action) {
       state.story = action.payload;
       state.isLoading = false;
-      state.userDraftStoriesInfo = {
-        ...state.userDraftStoriesInfo,
-        count: state.userDraftStoriesInfo.count - 1,
-      };
+      if (!_.isNil(state.userStoriesInfo)) {
+        state.userStoriesInfo = {
+          ...state.userStoriesInfo,
+          count: state.userStoriesInfo.count + 1,
+        };
+        state.userStories.push(action.payload);
+      }
     },
     publishStoryFailure(state, action) {
       state.error = action.payload;
@@ -374,6 +381,38 @@ export const storySlice = createSlice({
     },
     removeRecommendedStories(state, action) {
       state.recommendedStories = action.payload;
+    },
+    updateUserFromStories(state, action) {
+      if (!_.isNil(state.userDraftStories)) {
+        state.userDraftStories = _.map(state.userDraftStories, (story) =>
+          story.user === action.payload._id
+            ? {
+                ...story,
+                username: action.payload.username,
+                userProfilePicture: action.payload.profilePicture,
+              }
+            : story
+        );
+      }
+      if (!_.isNil(state.userStories)) {
+        state.userStories = _.map(state.userStories, (story) =>
+          story.user === action.payload._id
+            ? {
+                ...story,
+                username: action.payload.username,
+                userProfilePicture: action.payload.profilePicture,
+              }
+            : story
+        );
+      }
+      if (state.story?.user?._id === action.payload._id) {
+        state.story = {
+          ...state.story,
+          username: action.payload.username,
+          userProfilePicture: action.payload.profilePicture,
+          user: action.payload,
+        };
+      }
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

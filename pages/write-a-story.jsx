@@ -90,7 +90,7 @@ export default function WriteAStory() {
         content,
         storyImages: storyImages.filter((item) => item && item !== 'undefined'),
         title: inpTitle,
-        estimatedReadingTime: minRead,
+        estimatedReadingTime: minRead ?? 1,
         isPublished: false,
         publication: !_.isNil(selectedPublication)
           ? selectedPublication._id
@@ -113,6 +113,8 @@ export default function WriteAStory() {
     setMinRead(Math.ceil(content.split(' ').length / 200));
   }, [content, inpTitle]);
 
+
+  console.log(newStory);
   const handleDebounceFn = (inputValue) => {
     setInpTitle(inputValue);
   };
@@ -164,7 +166,6 @@ export default function WriteAStory() {
             </div>
             {isCreated && isShowSaving && (
               <div className="text-green-700 font-semibold">
-                {'  '}
                 {loading ? (
                   <span>
                     <span className="animate-pulse">Saving</span>...
@@ -194,16 +195,20 @@ export default function WriteAStory() {
           )}
         </div>
         <form className="w-full">
-          <Input
-            type="text"
-            name="story-title"
-            className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
-            placeholder="Story Title"
-            required
-            register={register('title')}
-            error={errors.title}
-            onChange={handleChangeTitle}
-          />
+          {!newStory && id ? (
+                <ClipLoader/>
+          ) : (
+            <Input
+              type="text"
+              name="story-title"
+              className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+              placeholder="Story Title"
+              required
+              register={register('title')}
+              error={errors.title}
+              onChange={handleChangeTitle}
+            />
+          )}
 
           <div className="mt-4 w-full">
             <Editor

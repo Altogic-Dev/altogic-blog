@@ -33,9 +33,7 @@ export default function Home() {
   const recommendedStoriesInfo = useSelector(
     (state) => state.story.recommendedStoriesInfo
   );
-  const followingStoriesPage = useSelector(
-    (state) => state.followerConnection.followingStoriesPage
-  );
+
   const isLoading = useSelector((state) => state.story.loading);
 
   const userFromStorage = useSelector((state) => state.auth.user);
@@ -83,21 +81,11 @@ export default function Home() {
     (state) => state.followerConnection.userFollowings.filter(item => item.unreadStories > 0)
   );  
 
-  const getFollowingUsers = () => {
-    dispatch(
-      followerConnectionActions.getFollowingUsersRequest({
-        userId: _.get(userFromStorage, '_id'),
-        page: followingStoriesPage,
-      })
-    );
-  };
+  
 
   useEffect(() => {
     dispatch(storyActions.popularStoriesRequest());
   }, []);
-  useEffect(() => {
-    if (userFromStorage) getFollowingUsers();
-  }, [followingStoriesPage, userFromStorage]);
 
   useEffect(() => {
     if (!followingStories || followingListPage > 1)

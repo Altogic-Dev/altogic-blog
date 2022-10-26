@@ -10,6 +10,7 @@ import {
   debounce,
 } from 'redux-saga/effects';
 import { publicationActions } from '../publication/publicationSlice';
+import { storyActions } from '../story/storySlice';
 import { authActions } from './authSlice';
 
 function* registerSaga({ payload: req }) {
@@ -174,6 +175,7 @@ function* updateUserProfileSaga({ payload }) {
     } else {
       yield call(AuthService.authStateChange, data);
       yield put(authActions.updateUserSuccess(data));
+      yield put(storyActions.updateUserFromStories(data));
     }
   } catch (e) {
     yield put(authActions.updateUserFailure(e));
@@ -217,7 +219,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
       throw errors.items;
     } else {
       yield put(authActions.deleteSessionSuccess(sessionToken));
-      toast.success('Session deleted successfully',{hideProgressBar: true});
+      toast.success('Session deleted successfully', { hideProgressBar: true });
     }
   } catch (e) {
     yield put(authActions.deleteSessionFailure(e));

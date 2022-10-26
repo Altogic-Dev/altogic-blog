@@ -45,6 +45,9 @@ export default function ListDetail() {
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const loading = useSelector((state) => state.bookmark.isLoading);
   const profileUser = useSelector((state) => state.auth.profileUser);
+  const userFollowingsCount = useSelector(
+    (state) => state.followerConnection.userFollowingsCount
+  );
 
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
@@ -390,7 +393,7 @@ export default function ListDetail() {
                   ))}
                 </ListObserver>
               ) : (
-                <div className='items-center flex flex-col'>
+                <div className="items-center flex flex-col">
                   <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
                     <FlagIcon className="w-7 h-7 text-purple-600" />
                   </span>
@@ -404,7 +407,7 @@ export default function ListDetail() {
               <Sidebar
                 following={{
                   followings: _.take(userFollowings, 5),
-                  count: _.get(user, 'followingCount'),
+                  count: userFollowingsCount,
                   seeAllButton: toggleFollowingsModal,
                 }}
                 profile={user}
@@ -462,7 +465,7 @@ export default function ListDetail() {
                     as="h3"
                     className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                   >
-                    {_.get(user, 'followingCount')} Following
+                    {userFollowingsCount} Following
                   </Dialog.Title>
                   <div>
                     <ul className="mb-6">

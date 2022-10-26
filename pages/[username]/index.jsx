@@ -1,5 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import _ from 'lodash';
@@ -10,7 +16,6 @@ import AboutComponent from '@/components/general/About';
 import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import ProfilePageHome from '@/components/general/ProfilePageHome';
-import ListObserver from '@/components/ListObserver';
 import Button from '@/components/basic/button';
 import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
@@ -19,12 +24,12 @@ import { DateTime } from 'luxon';
 import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import { generalActions } from '@/redux/general/generalSlice';
-import usePrevious from '@/hooks/usePrevious';
-import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import UserCard from '@/components/general/UserCard';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
+import { useInView } from 'react-intersection-observer';
+import { ClipLoader } from 'react-spinners';
 
 export default function ProfilePage() {
   const BOOKMARK_LIMIT = 10;
@@ -40,12 +45,18 @@ export default function ProfilePage() {
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
+  const followerConnectionLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
   const userFollowingsCount = useSelector(
     (state) => state.followerConnection.userFollowingsCount
+  );
+  const userFollowingsOwner = useSelector(
+    (state) => state.followerConnection.userFollowingsOwner
   );
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const isFollowing = useSelector(
@@ -58,7 +69,6 @@ export default function ProfilePage() {
     (state) => state.followerConnection.isFollowings
   );
 
-
   const authLoading = useSelector((state) => state.auth.isLoading);
   const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
   const storyLoading = useSelector((state) => state.story.isLoading);
@@ -69,7 +79,9 @@ export default function ProfilePage() {
   const [followingPage, setFollowingPage] = useState(1);
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [isMyProfile, setIsMyProfile] = useState(true);
-  const previousPage = usePrevious(bookmarkListPage);
+  const { ref: inViewRef, inView } = useInView();
+  const ref = useRef();
+
   // const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
     toast.success('Copied to clipboard', { hideProgressBar: true });
@@ -116,13 +128,14 @@ export default function ProfilePage() {
   }, [tab]);
 
   useEffect(() => {
+    if (userFollowingsOwner !== _.get(profileUser, '_id')) setFollowingPage(1);
     if (
-      followingPage > 1 ||
-      (_.isEmpty(userFollowings) && _.get(profileUser, '_id'))
+      profileUser &&
+      (followingPage > 1 || userFollowingsOwner !== _.get(profileUser, '_id'))
     ) {
       getFollowingUsers();
     }
-  }, [followingPage, _.get(profileUser, '_id')]);
+  }, [followingPage, _.get(profileUser, '_id'), userFollowingsOwner]);
 
   useEffect(() => {
     if (username && profileUser?.username !== username) {
@@ -140,36 +153,23 @@ export default function ProfilePage() {
       );
     }
   }, [profileUser]);
+  const getBookmarksList = () => {
+    dispatch(
+      getBookmarkListsRequest({
+        username,
+        includePrivates: username === sessionUser?.username,
+        page: bookmarkListPage,
+        limit: BOOKMARK_LIMIT,
+      })
+    );
+  };
 
-  useEffect(() => {
-    if (!_.isNil(username) && selectedIndex === 1) {
-      dispatch(
-        getBookmarkListsRequest({
-          username,
-          includePrivates: username === sessionUser?.username,
-          page: 1,
-          limit: BOOKMARK_LIMIT,
-        })
-      );
-    }
-  }, [username, selectedIndex]);
   const handleBookmarkListEnd = () => {
     if (_.size(bookmarkLists) >= BOOKMARK_LIMIT) {
       setBookmarkListPage((prev) => prev + 1);
     }
   };
-  useEffect(() => {
-    if (selectedIndex === 1 && username && previousPage !== bookmarkListPage) {
-      dispatch(
-        getBookmarkListsRequest({
-          username,
-          includePrivates: username === sessionUser?.username,
-          page: bookmarkListPage,
-          limit: 10,
-        })
-      );
-    }
-  }, [bookmarkListPage]);
+
   useEffect(() => {
     if (!bookmarkLoading && !_.isNil(bookmarkLists)) {
       setIsLoading(false);
@@ -187,6 +187,27 @@ export default function ProfilePage() {
       setIsMyProfile(sessionUser?._id === profileUser?._id);
     }
   }, [sessionUser, profileUser]);
+
+  useEffect(() => {
+    if (
+      username &&
+      _.size(bookmarkListPage) < bookmarkListPage * BOOKMARK_LIMIT
+    )
+      getBookmarksList();
+  }, [bookmarkListPage, username]);
+
+  const setRefs = useCallback(
+    (node) => {
+      ref.current = node;
+      inViewRef(node);
+    },
+    [inViewRef]
+  );
+
+  useEffect(() => {
+    if (inView) handleBookmarkListEnd();
+  }, [inView]);
+
   return (
     <div>
       <Head>
@@ -331,18 +352,23 @@ export default function ProfilePage() {
                     />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
-                    <ListObserver onEnd={handleBookmarkListEnd}>
-                      {bookmarkLists?.map((list) => (
-                        <PostList
-                          key={list._id}
-                          title={list.name}
-                          storiesNumber={list.storyCount}
-                          url={`/${username}/${list.slug}`}
-                          badges={list.isPrivate}
-                          images={list.coverImages}
-                        />
-                      ))}
-                    </ListObserver>
+                    {bookmarkLoading && bookmarkListPage === 1 ? (
+                      <ClipLoader />
+                    ) : (
+                      <>
+                        {bookmarkLists?.map((list) => (
+                          <PostList
+                            key={list._id}
+                            title={list.name}
+                            storiesNumber={list.storyCount}
+                            url={`/${username}/${list.slug}`}
+                            badges={list.isPrivate}
+                            images={list.coverImages}
+                          />
+                        ))}
+                        <div ref={setRefs} />
+                      </>
+                    )}
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
@@ -355,48 +381,61 @@ export default function ProfilePage() {
                       }
                       topWriterTopics={_.get(profileUser, 'topWriterTopics')}
                       followerCount={_.get(profileUser, 'followerCount')}
-                      followingCount={_.get(profileUser, 'followingCount')}
+                      followingCount={userFollowingsCount}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfile && !isSubscribed && sessionUser && !authLoading && (
-                      <AboutSubscribeCard
-                        profileId={_.get(profileUser, '_id')}
-                        name={_.get(profileUser, 'name')}
-                        mailAddress={_.get(sessionUser, 'email')}
-                      />
-                    )}
+                    {!isMyProfile &&
+                      !isSubscribed &&
+                      sessionUser &&
+                      !authLoading && (
+                        <AboutSubscribeCard
+                          profileId={_.get(profileUser, '_id')}
+                          name={_.get(profileUser, 'name')}
+                          mailAddress={_.get(sessionUser, 'email')}
+                        />
+                      )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar
-                following={{
-                  followings: _.take(userFollowings, 5),
-                  count: userFollowingsCount,
-                  seeAllButton: toggleFollowingsModal,
-                }}
-                followingTopics={isMyProfile}
-                profile={profileUser}
-                followLoading={followLoading}
-                isFollowing={isFollowing}
-                isSubscribed={isSubscribed}
-                popularStories={!isMyProfile}
-                userTopics={profileUser?.topWriterTopics}
-                stories={userStories?.slice(0, 5)}
-              />
+              {(followerConnectionLoading || !profileUser) &&
+              !followingModal ? (
+                <ClipLoader />
+              ) : (
+                <Sidebar
+                  following={{
+                    followings: _.take(userFollowings, 5),
+                    count: userFollowingsCount,
+                    seeAllButton: toggleFollowingsModal,
+                  }}
+                  followingTopics={isMyProfile}
+                  profile={profileUser}
+                  followLoading={followLoading}
+                  isFollowing={isFollowing}
+                  isSubscribed={isSubscribed}
+                  popularStories={!isMyProfile}
+                  userTopics={profileUser?.topWriterTopics}
+                  stories={userStories?.slice(0, 5)}
+                />
+              )}
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar
-                following={{
-                  followings: _.take(userFollowings, 5),
-                  count: _.size(profileUser, 'followingCount'),
-                  seeAllButton: toggleFollowingsModal,
-                }}
-                profile={profileUser}
-              />
+              {(followerConnectionLoading || followLoading || !profileUser) &&
+              !followingModal ? (
+                <ClipLoader />
+              ) : (
+                <Sidebar
+                  following={{
+                    followings: _.take(userFollowings, 5),
+                    count: userFollowingsCount,
+                    seeAllButton: toggleFollowingsModal,
+                  }}
+                  profile={profileUser}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -421,8 +460,7 @@ export default function ProfilePage() {
                         />
                       </svg>
                     </span>
-                    <button
-                      type="button"
+                    <Button
                       onClick={() => setBlockModal(false)}
                       className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
                     >
@@ -440,7 +478,7 @@ export default function ProfilePage() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                   <div className="text-left mb-8">
                     <div className="mb-5">
@@ -507,7 +545,7 @@ export default function ProfilePage() {
                     as="h3"
                     className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                   >
-                    {_.get(profileUser, 'followingCount')} Following
+                    {userFollowingsCount} Following
                   </Dialog.Title>
                   <div>
                     <ul className="mb-6">
@@ -529,8 +567,7 @@ export default function ProfilePage() {
                       ))}
                     </ul>
                     <div className="text-center">
-                      {_.size(userFollowings) %
-                        _.get(profileUser, 'followingCount') >=
+                      {_.size(userFollowings) % userFollowingsCount >=
                         FOLLOWING_PAGE_LIMIT && (
                         <Button
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
