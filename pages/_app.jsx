@@ -109,13 +109,13 @@ function MyApp({ Component, pageProps }) {
   }, [sessionUser, publications]);
 
   useEffect(() => {
+    console.log(sessionUser);
     if (
       sessionUser &&
       (router.asPath === '/login' ||
         router.asPath === '/create-an-account' ||
         router.asPath === '/forgot-password' ||
-        router.asPath === '/forgot-password-email' ||
-        router.asPath === '/my-stories')
+        router.asPath === '/forgot-password-email')
     )
       router.push('/');
     else if (!sessionUser && router.asPath === '/my-stories')
