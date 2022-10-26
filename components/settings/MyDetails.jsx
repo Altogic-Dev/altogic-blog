@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import UserSettingsInput from './UserSettingsInput';
 import EditorToolbar, { modules, formats } from '../EditorToolbar';
+import Button from '../basic/button';
 
 const ReactQuill = dynamic(
   async () => {
@@ -41,10 +42,12 @@ export default function MyDetails({ user }) {
   });
   const dispatch = useDispatch();
   const error = useSelector((state) => state.auth.updateProfileError);
+  const isLoading = useSelector((state) => state.auth.isLoading);
   const isUsernameAvailable = useSelector(
     (state) => state.auth.isUsernameAvailable
   );
   const [about, setAbout] = useState();
+  const [updateProfileLoading, setUpdateProfileLoading] = useState(false);
   const quillRef = useRef();
   const {
     handleSubmit,
@@ -62,6 +65,7 @@ export default function MyDetails({ user }) {
       req._id = user._id;
       req.about = about;
       dispatch(authActions.updateProfileRequest(req));
+      setUpdateProfileLoading(true);
     } else {
       setError('website', {
         type: 'url',
@@ -69,6 +73,12 @@ export default function MyDetails({ user }) {
       });
     }
   };
+
+  useEffect(() => {
+    if (!isLoading) {
+      setUpdateProfileLoading(false);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     if (Symbol.iterator in Object(error)) {
@@ -182,18 +192,23 @@ export default function MyDetails({ user }) {
                 modules={modules}
                 formats={formats}
               />
-            {about?.length > 200 && <p className='text-red-500 text-xs py-2 ml-60'>Reached Max Characters</p>}
+              {about?.length > 200 && (
+                <p className="text-red-500 text-xs py-2 ml-60">
+                  Reached Max Characters
+                </p>
+              )}
             </div>
           </div>
         </div>
 
         <div className="flex items-center justify-end gap-3 py-6 border-t border-gray-200">
-          <button
+          <Button
             type="submit"
             className="inline-flex justify-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            loading={updateProfileLoading}
           >
             Update Profile
-          </button>
+          </Button>
         </div>
       </form>
     </div>
