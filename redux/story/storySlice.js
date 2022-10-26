@@ -14,6 +14,7 @@ const initialState = {
   moreUserStories: null,
   userStories: [],
   userStoriesInfo: null,
+  userStoriesLoading: false,
   userDraftStories: null,
   userDraftStoriesInfo: null,
   publicationsStories: [],
@@ -78,10 +79,12 @@ export const storySlice = createSlice({
       state.story = action.payload;
       state.error = null;
       state.isLoading = false;
-      // state.userDraftStoriesInfo = {
-      //   ...state.userDraftStoriesInfo,
-      //   count: state.userDraftStoriesInfo.count + 1,
-      // };
+      if (!_.isNil(state.userDraftStoriesInfo)) {
+        state.userDraftStoriesInfo = {
+          ...state.userDraftStoriesInfo,
+          count: state.userDraftStoriesInfo.count + 1,
+        };
+      }
     },
     createStoryFailure(state, action) {
       state.story = null;
@@ -218,12 +221,12 @@ export const storySlice = createSlice({
     },
 
     getUserStoriesRequest(state) {
-      state.isLoading = true;
+      state.userStoriesLoading = true;
       state.userStoriesOwner = null;
     },
 
     getUserStoriesRequestNextPage(state) {
-      state.isLoading = true;
+      state.userStoriesLoading = true;
     },
     getUserStoriesSuccess(state, action) {
       if (state.userStoriesOwner === action.payload.owner) {
@@ -233,14 +236,14 @@ export const storySlice = createSlice({
       }
       state.userStoriesOwner = action.payload.owner;
       state.userStoriesInfo = action.payload.info;
-      state.isLoading = false;
+      state.userStoriesLoading = false;
     },
 
     getUserDraftStoriesRequest(state) {
-      state.isLoading = true;
+      state.userStoriesLoading = true;
     },
     getUserDraftStoriesSuccess(state, action) {
-      state.isLoading = false;
+      state.userStoriesLoading = false;
       if (_.isArray(state.userDraftStories)) {
         state.userDraftStories = [
           ...state.userDraftStories,

@@ -17,6 +17,7 @@ import MyStoriesPublished from '@/components/myStories/MyStoriesPublished';
 import MyStoriesDraft from '@/components/myStories/MyStoriesDraft';
 import DeleteStoryModal from '@/components/DeleteStoryModal';
 import { useRouter } from 'next/router';
+import { ClipLoader } from 'react-spinners';
 
 export default function MyStories() {
   const router = useRouter();
@@ -28,6 +29,7 @@ export default function MyStories() {
   );
   const userDraftStories = useSelector((state) => state.story.userDraftStories);
   const userStories = useSelector((state) => state.story.userStories);
+  const userStoriesLoading = useSelector((state) => state.story.userStoriesLoading);
 
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
@@ -100,11 +102,19 @@ export default function MyStories() {
   }, [publishedPage]);
 
   useEffect(() => {
-    if (_.size(userDraftStories) < draftPage * PAGE_LIMIT)
+    if (
+      _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
+      userDraftStoriesInfo?.count !== _.size(userDraftStories)
+    )
       getUserDraftStories();
   }, [draftPage]);
   useEffect(() => {
-    if (_.size(userStories) < publishedPage * PAGE_LIMIT) {
+    if (
+      _.size(userStories) < publishedPage * PAGE_LIMIT &&
+      userStoriesInfo?.count !== _.size(userStories)
+    ) {
+      console.log(userStoriesInfo?.count);
+      console.log(_.size(userStories));
       getUserStories();
     }
   }, [publishedPage]);
@@ -296,20 +306,28 @@ export default function MyStories() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <MyStoriesPublished
-                      userStoriesInfo={userStoriesInfo}
-                      setDeletedStory={setDeletedStory}
-                      setPage={setPublishedPage}
-                      userStories={userStories}
-                    />
+                    {userStoriesLoading ? (
+                      <ClipLoader className="my-10" />
+                    ) : (
+                      <MyStoriesPublished
+                        userStoriesInfo={userStoriesInfo}
+                        setDeletedStory={setDeletedStory}
+                        setPage={setPublishedPage}
+                        userStories={userStories}
+                      />
+                    )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    <MyStoriesDraft
-                      setPage={setDraftPage}
-                      userDraftStories={userDraftStories}
-                      userDraftStoriesInfo={userDraftStoriesInfo}
-                      setDeletedStory={setDeletedStory}
-                    />
+                    {userStoriesLoading ? (
+                      <ClipLoader className="my-10" />
+                    ) : (
+                      <MyStoriesDraft
+                        setPage={setDraftPage}
+                        userDraftStories={userDraftStories}
+                        userDraftStoriesInfo={userDraftStoriesInfo}
+                        setDeletedStory={setDeletedStory}
+                      />
+                    )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
