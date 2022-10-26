@@ -26,9 +26,11 @@ function* unfollowSaga({ payload: { userId, followingUserId, notUpdate } }) {
       followingCount: user.followingCount - 1,
     });
     const userProfile = yield select((state) => state.auth.profileUser);
-    yield fork(updateProfileUserSaga, {
-      followerCount: userProfile.followerCount - 1,
-    });
+
+    if (_.get(userProfile, '_id') !== _.get(user, '_id'))
+      yield fork(updateProfileUserSaga, {
+        followerCount: userProfile.followerCount - 1,
+      });
   } catch (e) {
     yield put(followerConnectionActions.unfollowFailure(e));
   }
@@ -100,6 +102,7 @@ function* getFollowingUsersSaga({ payload: { userId, page, limit } }) {
         followerConnectionActions.getFollowingUsersSuccess({
           data: data.data,
           info: data.info,
+          owner: userId,
           page,
         })
       );

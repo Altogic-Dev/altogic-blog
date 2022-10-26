@@ -1,5 +1,11 @@
 /* eslint-disable no-nested-ternary */
-import React, { Fragment, useState, useEffect, useCallback,useRef } from 'react';
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import Head from 'next/head';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import _ from 'lodash';
@@ -39,12 +45,18 @@ export default function ProfilePage() {
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
+  const followerConnectionLoading = useSelector(
+    (state) => state.followerConnection.isLoading
+  );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
     (state) => state.followerConnection.userFollowings
   );
   const userFollowingsCount = useSelector(
     (state) => state.followerConnection.userFollowingsCount
+  );
+  const userFollowingsOwner = useSelector(
+    (state) => state.followerConnection.userFollowingsOwner
   );
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const isFollowing = useSelector(
@@ -117,12 +129,12 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (
-      followingPage > 1 ||
-      (_.isEmpty(userFollowings) && _.get(profileUser, '_id'))
+      profileUser &&
+      (followingPage > 1 || userFollowingsOwner !== _.get(profileUser, '_id'))
     ) {
       getFollowingUsers();
     }
-  }, [followingPage, _.get(profileUser, '_id')]);
+  }, [followingPage, _.get(profileUser, '_id'), userFollowingsOwner]);
 
   useEffect(() => {
     if (username && profileUser?.username !== username) {
@@ -176,9 +188,12 @@ export default function ProfilePage() {
   }, [sessionUser, profileUser]);
 
   useEffect(() => {
-    if (username && _.size(bookmarkListPage) < bookmarkListPage * BOOKMARK_LIMIT)
+    if (
+      username &&
+      _.size(bookmarkListPage) < bookmarkListPage * BOOKMARK_LIMIT
+    )
       getBookmarksList();
-  }, [bookmarkListPage,username]);
+  }, [bookmarkListPage, username]);
 
   const setRefs = useCallback(
     (node) => {
@@ -191,6 +206,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (inView) handleBookmarkListEnd();
   }, [inView]);
+
   return (
     <div>
       <Head>
@@ -383,21 +399,26 @@ export default function ProfilePage() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar
-                following={{
-                  followings: _.take(userFollowings, 5),
-                  count: userFollowingsCount,
-                  seeAllButton: toggleFollowingsModal,
-                }}
-                followingTopics={isMyProfile}
-                profile={profileUser}
-                followLoading={followLoading}
-                isFollowing={isFollowing}
-                isSubscribed={isSubscribed}
-                popularStories={!isMyProfile}
-                userTopics={profileUser?.topWriterTopics}
-                stories={userStories?.slice(0, 5)}
-              />
+              {(followerConnectionLoading || followLoading || !profileUser) &&
+              !followingModal ? (
+                <ClipLoader />
+              ) : (
+                <Sidebar
+                  following={{
+                    followings: _.take(userFollowings, 5),
+                    count: userFollowingsCount,
+                    seeAllButton: toggleFollowingsModal,
+                  }}
+                  followingTopics={isMyProfile}
+                  profile={profileUser}
+                  followLoading={followLoading}
+                  isFollowing={isFollowing}
+                  isSubscribed={isSubscribed}
+                  popularStories={!isMyProfile}
+                  userTopics={profileUser?.topWriterTopics}
+                  stories={userStories?.slice(0, 5)}
+                />
+              )}
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
@@ -433,8 +454,7 @@ export default function ProfilePage() {
                         />
                       </svg>
                     </span>
-                    <button
-                      type="button"
+                    <Button
                       onClick={() => setBlockModal(false)}
                       className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
                     >
@@ -452,7 +472,7 @@ export default function ProfilePage() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                   <div className="text-left mb-8">
                     <div className="mb-5">
