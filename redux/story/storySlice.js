@@ -318,6 +318,9 @@ export const storySlice = createSlice({
           count: state.userStoriesInfo.count + 1,
         };
         state.userStories.push(action.payload);
+        state.userDraftStories = state.userDraftStories.filter(
+          (story) => story._id !== action.payload._id
+        );
       }
     },
     publishStoryFailure(state, action) {
