@@ -38,6 +38,7 @@ export const followerConnectionSlice = createSlice({
       state.userFollowings = state.userFollowings.filter(
         (following) => following.followingUser !== action.payload
       );
+      state.userFollowingsCount -=1
     },
     unfollowFailure(state, action) {
       state.followingUserLoading = false;
@@ -47,12 +48,18 @@ export const followerConnectionSlice = createSlice({
     followRequest(state) {
       state.followingUserLoading = true;
     },
+
+    handleFollowingCount(state,action) {
+      state.userFollowingsCount += action.payload;
+    },
     followSuccess(state, action) {
       state.isFollowing = true;
       state.isFollowings = [
         ...state.isFollowings,
         action.payload.followingUser,
       ];
+      state.userFollowings.push(action.payload)
+      state.userFollowingsCount += 1
       state.followingUserLoading = false;
     },
     followFailure(state, action) {
@@ -100,8 +107,6 @@ export const followerConnectionSlice = createSlice({
     },
     getFollowingUsersSuccess(state, action) {
       state.isLoading = false;
-      console.log(action.payload)
-      console.log(action.payload.owner,state.userFollowingsOwner)
       if (action.payload.owner === state.userFollowingsOwner) {
         state.userFollowings = [
           ...state.userFollowings,

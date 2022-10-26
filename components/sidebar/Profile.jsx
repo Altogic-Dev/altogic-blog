@@ -30,6 +30,7 @@ export default function Profile({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(profile, '_id'),
           notUpdate: true,
+          fromProfile: true,
         })
       );
     }
@@ -43,6 +44,8 @@ export default function Profile({
           followingUsername: _.get(profile, 'username'),
         },
         notUpdate: true,
+        fromProfile: true,
+
       })
     );
   };

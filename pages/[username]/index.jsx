@@ -128,6 +128,7 @@ export default function ProfilePage() {
   }, [tab]);
 
   useEffect(() => {
+    if (userFollowingsOwner !== _.get(profileUser, '_id')) setFollowingPage(1);
     if (
       profileUser &&
       (followingPage > 1 || userFollowingsOwner !== _.get(profileUser, '_id'))
@@ -399,7 +400,7 @@ export default function ProfilePage() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              {(followerConnectionLoading || followLoading || !profileUser) &&
+              {(followerConnectionLoading || !profileUser) &&
               !followingModal ? (
                 <ClipLoader />
               ) : (
@@ -544,7 +545,7 @@ export default function ProfilePage() {
                     as="h3"
                     className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                   >
-                    {_.get(profileUser, 'followingCount')} Following
+                    {userFollowingsCount} Following
                   </Dialog.Title>
                   <div>
                     <ul className="mb-6">
