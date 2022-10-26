@@ -381,7 +381,7 @@ export default function ProfilePage() {
                       }
                       topWriterTopics={_.get(profileUser, 'topWriterTopics')}
                       followerCount={_.get(profileUser, 'followerCount')}
-                      followingCount={_.get(profileUser, 'followingCount')}
+                      followingCount={userFollowingsCount}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
                     {!isMyProfile &&
@@ -430,7 +430,7 @@ export default function ProfilePage() {
                 <Sidebar
                   following={{
                     followings: _.take(userFollowings, 5),
-                    count: _.size(profileUser, 'followingCount'),
+                    count: userFollowingsCount,
                     seeAllButton: toggleFollowingsModal,
                   }}
                   profile={profileUser}
@@ -567,8 +567,7 @@ export default function ProfilePage() {
                       ))}
                     </ul>
                     <div className="text-center">
-                      {_.size(userFollowings) %
-                        _.get(profileUser, 'followingCount') >=
+                      {_.size(userFollowings) % userFollowingsCount >=
                         FOLLOWING_PAGE_LIMIT && (
                         <Button
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
