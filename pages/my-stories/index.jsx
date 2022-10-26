@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
@@ -17,7 +17,6 @@ import MyStoriesPublished from '@/components/myStories/MyStoriesPublished';
 import MyStoriesDraft from '@/components/myStories/MyStoriesDraft';
 import DeleteStoryModal from '@/components/DeleteStoryModal';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
 
 export default function MyStories() {
   const router = useRouter();
@@ -28,14 +27,18 @@ export default function MyStories() {
     (state) => state.story.userDraftStoriesInfo
   );
   const userDraftStories = useSelector((state) => state.story.userDraftStories);
+  const userStories = useSelector((state) => state.story.userStories);
 
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user, setUser] = useState();
   const [deletedStory, setDeletedStory] = useState(null);
-  const [page, setPage] = useState(1);
-  const DRAFT_PAGE_LIMIT = 3;
+  const [draftPage, setDraftPage] = useState(1);
+
+  const [publishedPage, setPublishedPage] = useState(1);
+
+  const PAGE_LIMIT = 3;
 
   const copyToClipboard = () => {
     const basePath = window.location.origin;
@@ -79,17 +82,32 @@ export default function MyStories() {
   const getUserDraftStories = useCallback(() => {
     dispatch(
       storyActions.getUserDraftStoriesRequest({
-        page,
-        limit: DRAFT_PAGE_LIMIT,
+        draftPage,
+        limit: PAGE_LIMIT,
         isPublishedFilter: false,
       })
     );
-  }, [page]);
+  }, [draftPage]);
+
+  const getUserStories = useCallback(() => {
+    dispatch(
+      storyActions.getUserStoriesRequestNextPage({
+        publishedPage,
+        limit: PAGE_LIMIT,
+        isPublishedFilter: false,
+      })
+    );
+  }, [publishedPage]);
 
   useEffect(() => {
-    if (_.size(userDraftStories) < page * DRAFT_PAGE_LIMIT)
+    if (_.size(userDraftStories) < draftPage * PAGE_LIMIT)
       getUserDraftStories();
-  }, [page]);
+  }, [draftPage]);
+  useEffect(() => {
+    if (_.size(userStories) < publishedPage * PAGE_LIMIT) {
+      getUserStories();
+    }
+  }, [publishedPage]);
 
   return (
     <div>
@@ -281,11 +299,13 @@ export default function MyStories() {
                     <MyStoriesPublished
                       userStoriesInfo={userStoriesInfo}
                       setDeletedStory={setDeletedStory}
+                      setPage={setPublishedPage}
+                      userStories={userStories}
                     />
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <MyStoriesDraft
-                      setPage={setPage}
+                      setPage={setDraftPage}
                       userDraftStories={userDraftStories}
                       userDraftStoriesInfo={userDraftStoriesInfo}
                       setDeletedStory={setDeletedStory}
@@ -324,8 +344,7 @@ export default function MyStories() {
                         />
                       </svg>
                     </span>
-                    <button
-                      type="button"
+                    <Button
                       onClick={() => setBlockModal(false)}
                       className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
                     >
@@ -343,7 +362,7 @@ export default function MyStories() {
                           strokeLinejoin="round"
                         />
                       </svg>
-                    </button>
+                    </Button>
                   </div>
                   <div className="text-left mb-8">
                     <div className="mb-5">
@@ -357,19 +376,15 @@ export default function MyStories() {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
+                    <Button
                       onClick={() => setBlockModal(false)}
                       className="inline-flex items-center justify-center px-[14px] py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                     >
                       Cancel
-                    </button>
-                    <button
-                      type="button"
-                      className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                    >
+                    </Button>
+                    <Button className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                       Block
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </div>

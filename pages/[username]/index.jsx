@@ -422,14 +422,19 @@ export default function ProfilePage() {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              <Sidebar
-                following={{
-                  followings: _.take(userFollowings, 5),
-                  count: _.size(profileUser, 'followingCount'),
-                  seeAllButton: toggleFollowingsModal,
-                }}
-                profile={profileUser}
-              />
+              {(followerConnectionLoading || followLoading || !profileUser) &&
+              !followingModal ? (
+                <ClipLoader />
+              ) : (
+                <Sidebar
+                  following={{
+                    followings: _.take(userFollowings, 5),
+                    count: _.size(profileUser, 'followingCount'),
+                    seeAllButton: toggleFollowingsModal,
+                  }}
+                  profile={profileUser}
+                />
+              )}
             </div>
           </div>
         </div>
