@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Button from '../basic/button';
+import Avatar from '../profile/Avatar';
 import SidebarTitle from '../SidebarTitle';
 
 export default function Following({ followings, count, seeAllButton }) {
@@ -11,8 +12,9 @@ export default function Following({ followings, count, seeAllButton }) {
           {followings?.map((person) => (
             <Link key={person._id} href={`/${person.followingUsername}`}>
               <a className="inline-flex items-center gap-2 text-slate-700 text-sm font-medium tracking-sm hover:text-purple-700">
-                <img
+                <Avatar
                   className="w-6 h-6 rounded-full"
+                  placeholderName={person.followingName}
                   src={person.followingUserProfilePicture}
                   alt={person.followingName}
                 />
