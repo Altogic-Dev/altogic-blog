@@ -106,7 +106,7 @@ function MyApp({ Component, pageProps }) {
       );
       setSelectedPublicationIfIsExist();
     }
-  }, [sessionUser,publications]);
+  }, [sessionUser, publications]);
 
   useEffect(() => {
     if (
@@ -114,9 +114,12 @@ function MyApp({ Component, pageProps }) {
       (router.asPath === '/login' ||
         router.asPath === '/create-an-account' ||
         router.asPath === '/forgot-password' ||
-        router.asPath === '/forgot-password-email')
+        router.asPath === '/forgot-password-email' ||
+        router.asPath === '/my-stories')
     )
       router.push('/');
+    else if (!sessionUser && router.asPath === '/my-stories')
+      router.push('/login');
   }, [router.asPath]);
 
   return (

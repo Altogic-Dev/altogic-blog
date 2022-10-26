@@ -66,6 +66,7 @@ export const storySlice = createSlice({
     },
 
     getStoryRequest(state) {
+      state.story = null;
       state.isLoading = true;
     },
     getStorySuccess(state, action) {
@@ -84,12 +85,10 @@ export const storySlice = createSlice({
           ...state.userDraftStoriesInfo,
           count: state.userDraftStoriesInfo.count + 1,
         };
-        state.userDraftStories.push(action.payload)
-
+        state.userDraftStories.push(action.payload);
       }
     },
     createStoryFailure(state, action) {
-      state.story = null;
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -318,7 +317,7 @@ export const storySlice = createSlice({
           ...state.userStoriesInfo,
           count: state.userStoriesInfo.count + 1,
         };
-        state.userStories.push(action.payload)
+        state.userStories.push(action.payload);
       }
     },
     publishStoryFailure(state, action) {
