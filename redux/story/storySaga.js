@@ -424,13 +424,13 @@ function* publishStorySaga({
     const { data, errors } = yield call(operation, story);
     if (!_.isNil(errors)) throw errors.items;
 
+    if (_.isFunction(onSuccess)) onSuccess();
     const user = yield select((state) => state.auth.user);
     const publishedStory = {
       ...data,
       user,
     };
     yield put(storyActions.publishStorySuccess(publishedStory));
-    if (_.isFunction(onSuccess)) onSuccess();
     if (!_.isEmpty(story.categoryNames)) {
       yield call(StoryService.updateCategoryPairs, categoryPairs);
 
@@ -598,7 +598,10 @@ export default function* rootSaga() {
       getMoreUserStoriesSaga
     ),
     takeEvery(storyActions.getUserStoriesRequest.type, getUserStoriesSaga),
-    takeEvery(storyActions.getUserStoriesRequestNextPage.type, getUserStoriesSaga),
+    takeEvery(
+      storyActions.getUserStoriesRequestNextPage.type,
+      getUserStoriesSaga
+    ),
     takeEvery(storyActions.deleteStoryRequest.type, deleteStorySaga),
     takeEvery(
       storyActions.updateCategoryNamesRequest.type,

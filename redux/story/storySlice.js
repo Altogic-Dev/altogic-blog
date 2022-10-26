@@ -308,10 +308,12 @@ export const storySlice = createSlice({
     publishStorySuccess(state, action) {
       state.story = action.payload;
       state.isLoading = false;
-      state.userDraftStoriesInfo = {
-        ...state.userDraftStoriesInfo,
-        count: state.userDraftStoriesInfo.count - 1,
-      };
+      if (!_.isNil(state.userDraftStoriesInfo)) {
+        state.userDraftStoriesInfo = {
+          ...state.userDraftStoriesInfo,
+          count: state.userDraftStoriesInfo.count - 1,
+        };
+      }
     },
     publishStoryFailure(state, action) {
       state.error = action.payload;
