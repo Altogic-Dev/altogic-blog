@@ -47,9 +47,12 @@ export default function PublishSettings() {
   );
 
   const handleInsert = (e) => {
+    const categoryNames = _.map(inpCategoryNames, (category) =>
+      _.lowerCase(category.name)
+    );
     if (
       _.size(inpCategoryNames) < 5 &&
-      !_.includes(inpCategoryNames, inpCategory)
+      !_.includes(categoryNames, _.lowerCase(inpCategory))
     ) {
       if (e.key === 'Enter') {
         setInpCategoryNames((prev) => [
@@ -60,11 +63,11 @@ export default function PublishSettings() {
           ...prev,
         ]);
         setInpCategory('');
-        setIsSearchOpen(false);
       } else {
         debouncedSearch(inpCategory);
       }
     }
+    setIsSearchOpen(false);
   };
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);

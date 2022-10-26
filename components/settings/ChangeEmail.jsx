@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
@@ -21,7 +21,8 @@ export default function ChangeEmail() {
   });
   const dispatch = useDispatch();
   const error = useSelector((state) => state.auth.changeEmailError);
-  const loading = useSelector((state) => state.auth.loading);
+  const loading = useSelector((state) => state.auth.isLoading);
+  const [changeEmailLoading, setChangeEmailLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -54,6 +55,7 @@ export default function ChangeEmail() {
     }
   }, [error, setError]);
   const formSubmit = async (form) => {
+    setChangeEmailLoading(true);
     dispatch(
       authActions.changeEmailRequest({
         password: form.password,
@@ -67,6 +69,11 @@ export default function ChangeEmail() {
     },
     []
   );
+  useEffect(() => {
+    if (!loading) {
+      setChangeEmailLoading(false);
+    }
+  }, [loading]);
   return (
     <div id="change-email" className="mb-16">
       <form onSubmit={handleSubmit(formSubmit)}>
@@ -124,7 +131,7 @@ export default function ChangeEmail() {
             </div>
             <div className="flex items-center justify-end gap-3 py-6 border-t border-gray-200">
               <Button
-                loading={loading}
+                loading={changeEmailLoading}
                 type="submit"
                 className="inline-flex justify-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
               >

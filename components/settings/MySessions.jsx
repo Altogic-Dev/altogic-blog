@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import { formatDate } from '@/utils/utils';
@@ -11,15 +12,27 @@ import Button from '../basic/button';
 export default function MySessions() {
   const dispatch = useDispatch();
   const sessions = useSelector((state) => state.auth.sessions);
+  const loading = useSelector((state) => state.auth.isLoading);
+  const [sessionLoading, setSessionLoading] = useState({});
   useEffect(() => {
     dispatch(authActions.getSessionsRequest());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!loading) {
+      const loadings = _.mapValues(sessionLoading, () => false);
+      setSessionLoading(loadings);
+    }
+  }, [loading]);
+
   const logout = () => {
     dispatch(authActions.logoutRequest());
   };
-  
+
   const deleteSession = (token, isCurrent) => {
+    setSessionLoading({
+      [token]: true,
+    });
     dispatch(authActions.deleteSessionRequest(token));
 
     if (isCurrent) logout();
@@ -75,6 +88,7 @@ export default function MySessions() {
               <Button
                 className="hidden sm:inline-flex justify-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-medium rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 onClick={() => deleteSession(session.token, session.isCurrent)}
+                loading={sessionLoading[session.token]}
               >
                 Delete Session
               </Button>
