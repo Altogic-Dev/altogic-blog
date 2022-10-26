@@ -17,6 +17,7 @@ import MyStoriesPublished from '@/components/myStories/MyStoriesPublished';
 import MyStoriesDraft from '@/components/myStories/MyStoriesDraft';
 import DeleteStoryModal from '@/components/DeleteStoryModal';
 import { useRouter } from 'next/router';
+import { useCallback } from 'react';
 
 export default function MyStories() {
   const router = useRouter();
@@ -26,12 +27,15 @@ export default function MyStories() {
   const userDraftStoriesInfo = useSelector(
     (state) => state.story.userDraftStoriesInfo
   );
+  const userDraftStories = useSelector((state) => state.story.userDraftStories);
 
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user, setUser] = useState();
   const [deletedStory, setDeletedStory] = useState(null);
+  const [page, setPage] = useState(1);
+  const DRAFT_PAGE_LIMIT = 3;
 
   const copyToClipboard = () => {
     const basePath = window.location.origin;
@@ -72,6 +76,20 @@ export default function MyStories() {
     }
   }, [user]);
 
+  const getUserDraftStories = useCallback(() => {
+    dispatch(
+      storyActions.getUserDraftStoriesRequest({
+        page,
+        limit: DRAFT_PAGE_LIMIT,
+        isPublishedFilter: false,
+      })
+    );
+  }, [page]);
+
+  useEffect(() => {
+    if (_.size(userDraftStories) < page * DRAFT_PAGE_LIMIT)
+      getUserDraftStories();
+  }, [page]);
 
   return (
     <div>
@@ -267,6 +285,8 @@ export default function MyStories() {
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <MyStoriesDraft
+                      setPage={setPage}
+                      userDraftStories={userDraftStories}
                       userDraftStoriesInfo={userDraftStoriesInfo}
                       setDeletedStory={setDeletedStory}
                     />
