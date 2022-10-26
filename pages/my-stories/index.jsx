@@ -106,6 +106,7 @@ export default function MyStories() {
       _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
       userDraftStoriesInfo?.count !== _.size(userDraftStories)
     )
+
       getUserDraftStories();
   }, [draftPage]);
   useEffect(() => {
@@ -113,8 +114,6 @@ export default function MyStories() {
       _.size(userStories) < publishedPage * PAGE_LIMIT &&
       userStoriesInfo?.count !== _.size(userStories)
     ) {
-      console.log(userStoriesInfo?.count);
-      console.log(_.size(userStories));
       getUserStories();
     }
   }, [publishedPage]);
@@ -306,7 +305,7 @@ export default function MyStories() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {userStoriesLoading ? (
+                    {(userStoriesLoading&& publishedPage===1) ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesPublished
@@ -318,7 +317,7 @@ export default function MyStories() {
                     )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {userStoriesLoading ? (
+                    {(userStoriesLoading&& draftPage===1)  ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesDraft

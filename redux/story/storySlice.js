@@ -84,6 +84,8 @@ export const storySlice = createSlice({
           ...state.userDraftStoriesInfo,
           count: state.userDraftStoriesInfo.count + 1,
         };
+        state.userDraftStories.push(action.payload)
+
       }
     },
     createStoryFailure(state, action) {
@@ -311,11 +313,12 @@ export const storySlice = createSlice({
     publishStorySuccess(state, action) {
       state.story = action.payload;
       state.isLoading = false;
-      if (!_.isNil(state.userDraftStoriesInfo)) {
-        state.userDraftStoriesInfo = {
-          ...state.userDraftStoriesInfo,
-          count: state.userDraftStoriesInfo.count - 1,
+      if (!_.isNil(state.userStoriesInfo)) {
+        state.userStoriesInfo = {
+          ...state.userStoriesInfo,
+          count: state.userStoriesInfo.count + 1,
         };
+        state.userStories.push(action.payload)
       }
     },
     publishStoryFailure(state, action) {

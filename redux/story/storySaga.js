@@ -293,23 +293,21 @@ function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
     }
-    const info = yield select((state) => state.story.userDraftStoriesInfo);
-    if (_.isNil(info) || page <= info.totalPages) {
-      const { data, errors } = yield call(
-        StoryService.getUserDraftStories,
-        userID,
-        page,
-        limit
+
+    const { data, errors } = yield call(
+      StoryService.getUserDraftStories,
+      userID,
+      page,
+      limit
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(
+        storyActions.getUserDraftStoriesSuccess({
+          data: data.data,
+          info: data.info,
+        })
       );
-      if (errors) throw errors;
-      if (data) {
-        yield put(
-          storyActions.getUserDraftStoriesSuccess({
-            data: data.data,
-            info: data.info,
-          })
-        );
-      }
     }
   } catch (e) {
     console.error({ e });
