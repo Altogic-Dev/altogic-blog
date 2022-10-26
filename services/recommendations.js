@@ -14,7 +14,7 @@ const RecommendationsService = {
         query: `this._id == lookup.followingUser && lookup.followerUser == "${userId}"`,
       })
       .filter(
-        `!exists(followedByMe) && this._id != "${userId} && this.emailVerified"`
+        `!exists(followedByMe) && this._id != "${userId}" && this.emailVerified`
       )
       .limit(limit)
       .page(page)

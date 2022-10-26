@@ -383,6 +383,38 @@ export const storySlice = createSlice({
     removeRecommendedStories(state, action) {
       state.recommendedStories = action.payload;
     },
+    updateUserFromStories(state, action) {
+      if (!_.isNil(state.userDraftStories)) {
+        state.userDraftStories = _.map(state.userDraftStories, (story) =>
+          story.user === action.payload._id
+            ? {
+                ...story,
+                username: action.payload.username,
+                userProfilePicture: action.payload.profilePicture,
+              }
+            : story
+        );
+      }
+      if (!_.isNil(state.userStories)) {
+        state.userStories = _.map(state.userStories, (story) =>
+          story.user === action.payload._id
+            ? {
+                ...story,
+                username: action.payload.username,
+                userProfilePicture: action.payload.profilePicture,
+              }
+            : story
+        );
+      }
+      if (state.story?.user?._id === action.payload._id) {
+        state.story = {
+          ...state.story,
+          username: action.payload.username,
+          userProfilePicture: action.payload.profilePicture,
+          user: action.payload,
+        };
+      }
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
