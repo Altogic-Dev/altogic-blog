@@ -4,6 +4,7 @@ import UserMutedCard from '@/components/UserMutedCard';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
+import { FlagIcon } from '@heroicons/react/outline';
 import _ from 'lodash';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
@@ -55,20 +56,31 @@ export default function MutedUsers() {
               <h1 className="text-slate-700 mb-10 lg:mb-12 text-2xl lg:text-3xl font-semibold tracking-md">
                 Muted Users
               </h1>
-              <ListObserver onEnd={loadMore}>
-                <ul className="space-y-4">
-                  {_.map(blockedUsers, (person, index) => (
-                    <UserMutedCard
-                      index={index}
-                      key={person._id}
-                      user={person}
-                      unmuteAuthor={() => {
-                        setUnmutedAuthor(person._id);
-                      }}
-                    />
-                  ))}
-                </ul>
-              </ListObserver>
+              {_.size(blockedUsers) > 0 ? (
+                <ListObserver onEnd={loadMore}>
+                  <ul className="space-y-4">
+                    {_.map(blockedUsers, (person, index) => (
+                      <UserMutedCard
+                        index={index}
+                        key={person._id}
+                        user={person}
+                        unmuteAuthor={() => {
+                          setUnmutedAuthor(person._id);
+                        }}
+                      />
+                    ))}
+                  </ul>
+                </ListObserver>
+              ) : (
+                <div className="border-b-2 my-10 pb-10 items-center flex flex-col">
+                  <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                    <FlagIcon className="w-7 h-7 text-purple-600" />
+                  </span>
+                  <p className="text-slate-500 text-md">
+                    You do not have any muted users
+                  </p>
+                </div>
+              )}
             </div>
             <div className="hidden lg:block p-8 space-y-10">
               <Sidebar whoToFollow popularTopics popularStories />
