@@ -12,7 +12,12 @@ import {
 import Input from '../Input';
 import Button from '../basic/button';
 
-export default function CreateBookmarkList({ setCreateNewList, list, story }) {
+export default function CreateBookmarkList({
+  setCreateNewList,
+  list,
+  story,
+  bookmarkList,
+}) {
   const [enabled, setEnabled] = useState(false);
 
   const user = useSelector((state) => state.auth.user);
@@ -89,8 +94,7 @@ export default function CreateBookmarkList({ setCreateNewList, list, story }) {
                   />
                 </svg>
               </span>
-              <button
-                type="button"
+              <Button
                 onClick={() => setCreateNewList(false)}
                 className="inline-flex items-center justify-center w-10 h-10 rounded-lg transition ease-in-out duration-150 hover:bg-gray-100"
               >
@@ -108,15 +112,17 @@ export default function CreateBookmarkList({ setCreateNewList, list, story }) {
                     strokeLinejoin="round"
                   />
                 </svg>
-              </button>
+              </Button>
             </div>
             <div className="text-left">
               <div className="mb-5">
                 <h3 className="text-slate-800 mb-2 text-lg font-medium tracking-sm">
-                  Create List
+                  {bookmarkList ? 'Edit' : 'Create'} List
                 </h3>
                 <span className="text-slate-500 text-sm tracking-sm">
-                  Please enter a name for this list.
+                  {bookmarkList
+                    ? 'Please enter a new name for this list.'
+                    : 'Please enter a name for this list.'}
                 </span>
               </div>
               <form onSubmit={handleSubmit(createNewList)}>
@@ -155,7 +161,6 @@ export default function CreateBookmarkList({ setCreateNewList, list, story }) {
                 </Switch.Group>
                 <div className="grid grid-cols-2 gap-3 mt-8">
                   <Button
-                    type="button"
                     onClick={() => setCreateNewList(false)}
                     className="inline-flex items-center justify-center px-[14px] py-2.5 border border-gray-300 text-base font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   >
@@ -165,7 +170,7 @@ export default function CreateBookmarkList({ setCreateNewList, list, story }) {
                     type="submit"
                     className="inline-flex items-center justify-center px-[14px] py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   >
-                    Create
+                    {bookmarkList ? 'Save' : 'Create'}
                   </Button>
                 </div>
               </form>

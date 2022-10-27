@@ -307,25 +307,12 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
-      ToastMessage.success('Story updated successfully');
+      ToastMessage.success('Story updated successfully', { hideProgressBar: true });
       state.isLoading = false;
-      const updatedStory = {
+      state.story = {
         ...state.story,
         categoryNames: action.payload,
       };
-
-      state.story = updatedStory;
-      if (updatedStory.isPublished) {
-        if (!_.isNil(state.userStories)) {
-          state.userStories = _.map(state.userStories, (story) =>
-            story._id === updatedStory._id ? updatedStory : story
-          );
-        }
-      } else if (!_.isNil(state.userDraftStories)) {
-        state.userDraftStories = _.map(state.userDraftStories, (story) =>
-          story._id === updatedStory._id ? updatedStory : story
-        );
-      }
     },
 
     updateStoryFieldRequest(state) {
