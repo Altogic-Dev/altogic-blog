@@ -1,16 +1,18 @@
+import ToastMessage from '@/utils/toast';
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
-import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
   bookmarks: null,
   bookmarkLists: null,
   bookmarkList: null,
+  bookmarksInList: null,
   createdBookmarkList: null,
   bookmarkListsInfo: null,
   isLoading: false,
+  bookmarkListLoading: true,
   error: null,
   isStoryBookmarked: null,
 };
@@ -104,14 +106,15 @@ export const bookmarkSlice = createSlice({
       state.error = action.payload;
     },
     getBookmarkListDetailRequest(state) {
-      state.isLoading = true;
+      state.bookmarkListLoading = true;
     },
     getBookmarkListDetailSuccess(state, action) {
-      state.isLoading = false;
-      state.bookmarkList = action.payload;
+      state.bookmarkListLoading = false;
+      state.bookmarksInList = action.payload.bookmarks;
+      state.bookmarkList = action.payload.list;
     },
     getBookmarkListDetailFailure(state, action) {
-      state.isLoading = false;
+      state.bookmarkListLoading = false;
       state.error = action.payload;
     },
     deleteBookmarkListRequest(state) {
@@ -123,7 +126,7 @@ export const bookmarkSlice = createSlice({
         (list) => list._id !== action.payload
       );
       state.bookmarkList = null;
-      toast.success('Bookmark list deleted successfully',{hideProgressBar: true});
+      ToastMessage.success('Bookmark list deleted successfully');
     },
     deleteBookmarkListFailure(state, action) {
       state.isLoading = false;
@@ -137,7 +140,7 @@ export const bookmarkSlice = createSlice({
       state.bookmarkList.name = action.payload.name;
       state.bookmarkList.isPrivate = action.payload.isPrivate;
       state.bookmarkList.slug = action.payload.slug;
-      toast.success('Bookmark list updated successfully',{hideProgressBar: true});
+      ToastMessage.success('Bookmark list updated successfully');
     },
     updateBookmarkListFailure(state, action) {
       state.isLoading = false;

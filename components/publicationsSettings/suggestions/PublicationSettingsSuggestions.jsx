@@ -24,7 +24,7 @@ function PublicationSettingsSuggestions({
           ) : (
             <ClipLoader
               className="mt-3"
-              size={30}
+              size={20}
               color="#9333ea"
               loading={loading}
             />

@@ -1,7 +1,7 @@
+import ToastMessage from '@/utils/toast';
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
-import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
@@ -196,6 +196,33 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {
+      if (state.story?.isPublished) {
+        if (!_.isNil(state.userStoriesInfo)) {
+          state.userStoriesInfo = {
+            ...state.userStoriesInfo,
+            count: state.userStoriesInfo.count - 1,
+          };
+        }
+        if (!_.isNil(state.userDraftStoriesInfo)) {
+          state.userDraftStoriesInfo = {
+            ...state.userDraftStoriesInfo,
+            count: state.userDraftStoriesInfo.count + 1,
+          };
+        }
+        if (!_.isNil(state.userStories)) {
+          state.userStories = state.userStories.filter(
+            (story) => story._id !== action.payload._id
+          );
+        }
+        if (!_.isNil(state.userDraftStories)) {
+          state.userDraftStories = _.orderBy(
+            [...state.userDraftStories, action.payload],
+            ['pinnedStory', 'createdAt'],
+            ['desc', 'desc']
+          );
+        }
+      }
+
       state.story = action.payload;
       state.error = null;
       state.isLoading = false;
@@ -280,7 +307,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
-      toast.success('Story updated successfully', { hideProgressBar: true });
+      ToastMessage.success('Story updated successfully', { hideProgressBar: true });
       state.isLoading = false;
       state.story = {
         ...state.story,
@@ -290,11 +317,28 @@ export const storySlice = createSlice({
 
     updateStoryFieldRequest(state) {
       state.isLoading = true;
+      state.error = null;
     },
     updateStoryFieldSuccess(state, action) {
-      toast.success('Story updated successfully', { hideProgressBar: true });
+      ToastMessage.success('Story updated successfully');
+
+      if (state.story?.isPublished) {
+        if (!_.isNil(state.userStories)) {
+          state.userStories = _.map(state.userStories, (story) =>
+            story._id === action.payload._id ? action.payload : story
+          );
+        }
+      } else if (!_.isNil(state.userDraftStories)) {
+        state.userDraftStories = _.map(state.userDraftStories, (story) =>
+          story._id === action.payload._id ? action.payload : story
+        );
+      }
       state.isLoading = false;
       state.story = action.payload;
+    },
+    updateStoryFieldFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload;
     },
     cacheStoryRequest() {},
 
@@ -317,7 +361,18 @@ export const storySlice = createSlice({
           ...state.userStoriesInfo,
           count: state.userStoriesInfo.count + 1,
         };
-        state.userStories.push(action.payload);
+        state.userDraftStoriesInfo = {
+          ...state.userDraftStoriesInfo,
+          count: state.userDraftStoriesInfo.count - 1,
+        };
+        state.userStories = _.orderBy(
+          [...state.userStories, action.payload],
+          ['pinnedStory', 'createdAt'],
+          ['desc', 'desc']
+        );
+        state.userDraftStories = state.userDraftStories.filter(
+          (story) => story._id !== action.payload._id
+        );
       }
     },
     publishStoryFailure(state, action) {

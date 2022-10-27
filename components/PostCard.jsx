@@ -283,24 +283,22 @@ export default function PostCard({
                   <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
                     {!_.isNil(optionButtons?.unBookmark) && (
                       <Menu.Item>
-                        <button
-                          type="button"
+                        <Button
                           onClick={optionButtons?.unBookmark}
                           className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                         >
-                          Delete item
-                        </button>
+                          Remove item
+                        </Button>
                       </Menu.Item>
                     )}
                     {!_.isNil(optionButtons?.report) && (
                       <Menu.Item>
-                        <button
-                          type="button"
+                        <Button
                           className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
                           onClick={optionButtons?.report}
                         >
                           Report
-                        </button>
+                        </Button>
                       </Menu.Item>
                     )}
                   </Menu.Items>

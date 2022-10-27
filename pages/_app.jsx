@@ -109,7 +109,6 @@ function MyApp({ Component, pageProps }) {
   }, [sessionUser, publications]);
 
   useEffect(() => {
-    console.log(sessionUser);
     if (
       sessionUser &&
       (router.asPath === '/login' ||

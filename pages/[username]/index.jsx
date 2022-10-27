@@ -24,12 +24,11 @@ import { DateTime } from 'luxon';
 import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import { generalActions } from '@/redux/general/generalSlice';
-import { toast } from 'react-toastify';
-import Link from 'next/link';
 import UserCard from '@/components/general/UserCard';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import { useInView } from 'react-intersection-observer';
 import { ClipLoader } from 'react-spinners';
+import ToastMessage from '@/utils/toast';
 
 export default function ProfilePage() {
   const BOOKMARK_LIMIT = 10;
@@ -84,9 +83,10 @@ export default function ProfilePage() {
 
   // const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
-    toast.success('Copied to clipboard', { hideProgressBar: true });
+    ToastMessage.success('Copied to clipboard');
     const basePath = window.location.origin;
-    const profileUrl = `${basePath}/${username}`;
+    let profileUrl = `${basePath}/${username}`;
+    if (tab) profileUrl += `?tab=${tab}`;
     navigator.clipboard.writeText(profileUrl);
   };
   const getFollowingUsers = useCallback(() => {
@@ -266,19 +266,15 @@ export default function ProfilePage() {
                             className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             onClick={copyToClipboard}
                           >
-                            Copy link to profile
+                            Copy link to{' '}
+                            {tab === 'list'
+                              ? 'list'
+                              : tab === 'about'
+                              ? 'profile'
+                              : 'stories'}
                           </Button>
                         </Menu.Item>
-                        {isMyProfile && (
-                          <Menu.Item>
-                            <Link href="/muted-users">
-                              <Button className="flex items-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
-                                Muted Users
-                              </Button>
-                            </Link>
-                          </Menu.Item>
-                        )}
-                        {isMyProfile && (
+                        {isMyProfile && tab === 'list' && (
                           <Menu.Item>
                             <Button
                               type="button"

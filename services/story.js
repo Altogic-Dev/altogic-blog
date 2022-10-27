@@ -18,8 +18,8 @@ const StoryService = {
       .get(true);
   },
 
-  getRecommendedStories(page = 1, limit = 10) {
-    return endpoint.get('story/recommended', { page, limit });
+  getRecommendedStories(userId, page = 1, limit = 10) {
+    return endpoint.get('story/recommended', { userId, page, limit });
   },
 
   updateCategoryPairs(categoryPairs) {
@@ -84,12 +84,10 @@ const StoryService = {
       .get(true);
   },
   getStoryReplies(storyId, page, limit) {
-    return endpoint.get(`/story/${storyId}/replies`, page,limit);
-
+    return endpoint.get(`/story/${storyId}/replies`, page, limit);
   },
   getReplyComments(reply) {
     return endpoint.get(`/reply/${reply}/comments`);
-
   },
   createReply(reply) {
     return db.model('replies').create(reply);

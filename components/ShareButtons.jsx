@@ -1,3 +1,4 @@
+import ToastMessage from '@/utils/toast';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -6,7 +7,6 @@ import {
   LinkedinShareButton,
   TwitterShareButton,
 } from 'react-share';
-import { toast } from 'react-toastify';
 import Button from './basic/button';
 
 function ShareButtons({ customLink, backgroundColor }) {
@@ -28,7 +28,7 @@ function ShareButtons({ customLink, backgroundColor }) {
   }, []);
 
   const copyToClipboard = () => {
-    toast.success('Copied to clipboard',{hideProgressBar: true});
+    ToastMessage.success('Copied to clipboard');
     navigator.clipboard.writeText(shareUrl);
   };
 
