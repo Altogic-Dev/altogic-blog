@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { Fragment, useState, useEffect, useCallback } from 'react';
 import Head from 'next/head';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
-import { Tab } from '@headlessui/react';
+import { Tab, Menu, Transition } from '@headlessui/react';
 import Button from '@/components/basic/button';
 import { storyActions } from '@/redux/story/storySlice';
 import Layout from '@/layouts/Layout';
@@ -29,9 +29,7 @@ export default function MyStories() {
   );
   const userDraftStories = useSelector((state) => state.story.userDraftStories);
   const userStories = useSelector((state) => state.story.userStories);
-  const userStoriesLoading = useSelector(
-    (state) => state.story.userStoriesLoading
-  );
+  const userStoriesLoading = useSelector((state) => state.story.userStoriesLoading);
 
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
@@ -43,6 +41,12 @@ export default function MyStories() {
   const [publishedPage, setPublishedPage] = useState(1);
 
   const PAGE_LIMIT = 3;
+
+  const copyToClipboard = () => {
+    const basePath = window.location.origin;
+    const profileUrl = `${basePath}/${_.get(user, 'username')}`;
+    navigator.clipboard.writeText(profileUrl);
+  };
 
   useEffect(() => {
     setUser(sessionUser);
@@ -102,6 +106,7 @@ export default function MyStories() {
       _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
       userDraftStoriesInfo?.count !== _.size(userDraftStories)
     )
+
       getUserDraftStories();
   }, [draftPage]);
   useEffect(() => {
@@ -191,6 +196,56 @@ export default function MyStories() {
                     </Link>
                     {/* <Button>Import a story</Button> */}
                   </div>
+                  <div className="hidden md:flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
+                    <Menu
+                      as="div"
+                      className="relative inline-block text-left ml-2"
+                    >
+                      <div>
+                        <Menu.Button className="inline-flex items-center justify-center px-4 py-3 rounded-md">
+                          <svg
+                            className="w-6 h-6 text-slate-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+                          <Menu.Item>
+                            <button
+                              type="button"
+                              className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={copyToClipboard}
+                            >
+                              Copy link to profile
+                            </button>
+                          </Menu.Item>
+                          <Menu.Item>
+                            <Link href="/settings">
+                              <a className="flex items-center justify-center w-full px-6 py-3 text-slate-600 text-base tracking-sm text-center transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105">
+                                Settings
+                              </a>
+                            </Link>
+                          </Menu.Item>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
                 </div>
               </div>
               <Tab.Group
@@ -249,7 +304,7 @@ export default function MyStories() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {userStoriesLoading && publishedPage === 1 ? (
+                    {(userStoriesLoading&& publishedPage===1) ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesPublished
@@ -261,7 +316,7 @@ export default function MyStories() {
                     )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {userStoriesLoading && draftPage === 1 ? (
+                    {(userStoriesLoading&& draftPage===1)  ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesDraft

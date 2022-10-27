@@ -14,7 +14,6 @@ import {
   clearBookmarkListRequest,
   deleteBookmarkRequest,
   getBookmarkListsRequest,
-  getBookmarksRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
 import { DateTime } from 'luxon';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -33,21 +32,23 @@ import {
 } from '@heroicons/react/outline';
 
 export default function ListDetail() {
+  const BOOKMARK_LIST_LIMIT = 5;
   const [deleteListModal, setDeleteListModal] = useState(false);
   const [editBookmarkList, setEditBookmarkList] = useState(false);
   const [user, setUser] = useState();
   const [isMyProfileState, setIsMyProfileState] = useState(false);
   const [stories, setStories] = useState([]);
 
-  const [bookmarkListLimit, setBookmarkListLimit] = useState(10);
+  const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [followingPage, setFollowingPage] = useState(1);
   const [followingModal, setFollowingModal] = useState(false);
   const [unfollowed, setUnfollowed] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
+  const bookmarkListLoading = useSelector(
+    (state) => state.bookmark.bookmarkListLoading
+  );
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
-  const loading = useSelector((state) => state.bookmark.isLoading);
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowingsCount = useSelector(
     (state) => state.followerConnection.userFollowingsCount
@@ -140,42 +141,37 @@ export default function ListDetail() {
   }, [isMyProfileState, profileUser, sessionUser]);
 
   useEffect(() => {
-    if (bookmarkListSlug) {
+    if (bookmarkListSlug && bookmarkListSlug !== bookmarkList?.slug) {
       dispatch(
         getBookmarkListDetailRequest({
           slug: bookmarkListSlug,
-          limit: bookmarkListLimit,
+          page: bookmarkListPage,
+          limit: BOOKMARK_LIST_LIMIT,
         })
       );
     }
   }, [bookmarkListSlug]);
 
   useEffect(() => {
-    if (!isMyProfileState && bookmarkList?.isPrivate) {
+    if (!sessionUser && bookmarkList?.isPrivate) {
       router.push('/');
     }
     if (_.get(_.get(_.first(bookmarks), 'story'), '_id')) {
       setStories(bookmarks.map((bookmark) => bookmark.story));
     }
-  }, [bookmarks, profileUser]);
+  }, [bookmarks, sessionUser]);
 
   useEffect(() => {
-    if (bookmarkListSlug) {
+    if (bookmarkListSlug && _.size(bookmarks) < bookmarkList?.storyCount) {
       dispatch(
         getBookmarkListDetailRequest({
           slug: bookmarkListSlug,
-          limit: bookmarkListLimit,
+          page: bookmarkListPage,
+          limit: BOOKMARK_LIST_LIMIT,
         })
       );
     }
-  }, [bookmarkListLimit]);
-  useEffect(() => {
-    if (!loading && !_.isEmpty(bookmarkList)) {
-      setIsLoading(loading);
-    } else {
-      setIsLoading(false);
-    }
-  }, [loading]);
+  }, [bookmarkListPage]);
 
   useEffect(() => {
     if (
@@ -194,14 +190,11 @@ export default function ListDetail() {
           includePrivates: true,
         })
       );
-      dispatch(
-        getBookmarksRequest({
-          userId: _.get(user, '_id'),
-        })
-      );
     }
   }, [user]);
 
+
+  console.log(bookmarks)
   return (
     <div>
       <Head>
@@ -211,7 +204,7 @@ export default function ListDetail() {
           content="Altogic Medium Blog App List Detail"
         />
       </Head>
-      <Layout loading={isLoading}>
+      <Layout loading={bookmarkListLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">
@@ -266,92 +259,89 @@ export default function ListDetail() {
                   {bookmarkList?.isPrivate ? 'Private' : 'Public'}
                 </span>
 
-                {bookmarkList?.name !== 'Reading List' && (
-                  <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
-                    <Menu as="div" className="relative inline-block text-left">
-                      <div>
-                        <Menu.Button className="inline-flex items-center justify-center px-4 py-3 rounded-md">
-                          <svg
-                            className="w-6 h-6 text-slate-400"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
+                <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
+                  <Menu as="div" className="relative inline-block text-left">
+                    <div>
+                      <Menu.Button className="inline-flex items-center justify-center px-4 py-3 rounded-md">
+                        <svg
+                          className="w-6 h-6 text-slate-400"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      </Menu.Button>
+                    </div>
+                    <Transition
+                      as={Fragment}
+                      enter="transition ease-out duration-100"
+                      enterFrom="transform opacity-0 scale-95"
+                      enterTo="transform opacity-100 scale-100"
+                      leave="transition ease-in duration-75"
+                      leaveFrom="transform opacity-100 scale-100"
+                      leaveTo="transform opacity-0 scale-95"
+                    >
+                      <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+                        <Menu.Item>
+                          <Button
+                            className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                            onClick={() => setEditBookmarkList(true)}
                           >
-                            <path
-                              d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
-                              fill="currentColor"
-                            />
-                          </svg>
-                        </Menu.Button>
-                      </div>
-                      <Transition
-                        as={Fragment}
-                        enter="transition ease-out duration-100"
-                        enterFrom="transform opacity-0 scale-95"
-                        enterTo="transform opacity-100 scale-100"
-                        leave="transition ease-in duration-75"
-                        leaveFrom="transform opacity-100 scale-100"
-                        leaveTo="transform opacity-0 scale-95"
-                      >
-                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+                            Rename list
+                          </Button>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Button
+                            className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                            onClick={() =>
+                              dispatch(
+                                clearBookmarkListRequest(bookmarkList._id)
+                              )
+                            }
+                          >
+                            Remove items
+                          </Button>
+                        </Menu.Item>
+                        <Menu.Item>
+                          <Button
+                            className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                            onClick={() =>
+                              dispatch(
+                                updateBookmarkListRequest({
+                                  _id: bookmarkList._id,
+                                  isPrivate: !bookmarkList.isPrivate,
+                                })
+                              )
+                            }
+                          >
+                            Make list{' '}
+                            {bookmarkList?.isPrivate ? 'public' : 'private'}
+                          </Button>
+                        </Menu.Item>
+                        {!bookmarkList?.isDefault && (
                           <Menu.Item>
                             <Button
-                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              onClick={() => setEditBookmarkList(true)}
-                            >
-                              Rename list
-                            </Button>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <Button
-                              type="button"
-                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              onClick={() =>
-                                dispatch(
-                                  clearBookmarkListRequest(bookmarkList._id)
-                                )
-                              }
-                            >
-                              Remove items
-                            </Button>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <Button
-                              type="button"
-                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              onClick={() =>
-                                dispatch(
-                                  updateBookmarkListRequest({
-                                    _id: bookmarkList._id,
-                                    isPrivate: !bookmarkList.isPrivate,
-                                  })
-                                )
-                              }
-                            >
-                              Make list{' '}
-                              {bookmarkList?.isPrivate ? 'public' : 'private'}
-                            </Button>
-                          </Menu.Item>
-                          <Menu.Item>
-                            <Button
-                              type="button"
                               onClick={() => setDeleteListModal(true)}
                               className="w-full px-6 py-3 text-red-600 text-base tracking-sm transform transition text-start ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
                             >
                               Delete list
                             </Button>
                           </Menu.Item>
-                        </Menu.Items>
-                      </Transition>
-                    </Menu>
-                  </div>
-                )}
+                        )}
+                      </Menu.Items>
+                    </Transition>
+                  </Menu>
+                </div>
               </div>
 
               {stories.length > 0 ? (
                 <div className="divide-y divide-gray-200">
                   <ListObserver
-                    onEnd={() => setBookmarkListLimit((prev) => prev + 5)}
+                    onEnd={() => setBookmarkListPage((prev) => prev + 1)}
                   >
                     {stories.map((post) => (
                       <PostCard

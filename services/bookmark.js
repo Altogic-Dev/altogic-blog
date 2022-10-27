@@ -12,9 +12,10 @@ const BookmarkService = {
   addBookmark: (bookmark) => endpoint.post('/bookmark', bookmark),
   deleteBookmark: ({ listId, storyId }) =>
     endpoint.delete(`bookmark?storyId=${storyId}&listId=${listId}`),
-  getBookmarkListDetail: ({ slug, limit }) =>
+  getBookmarkListDetail: ({ slug, limit, page }) =>
     endpoint.get(`/bookmark/list/detail`, {
       slug,
+      page,
       limit,
     }),
   deleteBookmarkList: (listId) => endpoint.delete(`/bookmark/list/${listId}`),
