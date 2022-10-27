@@ -29,7 +29,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       list: list._id,
       userId: user._id,
       story: story._id,
-      coverImages: coverImages ?? undefined,
+      coverImages: coverImages ?? 'sa',
     };
 
     dispatch(addBookmarkRequest(req));
