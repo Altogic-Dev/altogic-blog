@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import { Transition, Menu } from '@headlessui/react';
+import { UserMinus } from 'react-feather';
 import {
   CogIcon,
   UserIcon,
@@ -56,22 +57,29 @@ export default function HeaderDropdown({ user, logout, className }) {
         <div className="divide-y divide-gray-200">
           <div>
             <Link href={`/${user?.username}?tab=about`}>
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
-                <UserIcon className="w-4 h-4 text-slate-500" />
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 ">
+                <UserIcon className="w-4 h-4 group-hover:text-purple-700" />
                 View Profile
               </a>
             </Link>
 
             <Link href="/settings">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer ">
-                <CogIcon className="w-4 h-4 text-slate-500" />
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 ">
+                <CogIcon className="w-4 h-4 group-hover:text-purple-700" />
                 Settings
               </a>
             </Link>
 
+            <Link href="/muted-users">
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 ">
+                <UserMinus className="w-4 h-4 group-hover:text-purple-700" />
+                Muted Users
+              </a>
+            </Link>
+
             <Link href="/stats">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <ChartBarIcon className="w-4 h-4 text-slate-500" />
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
+                <ChartBarIcon className="w-4 h-4 group-hover:text-purple-700" />
                 Stats
               </a>
             </Link>
@@ -85,7 +93,7 @@ export default function HeaderDropdown({ user, logout, className }) {
                 key={publication._id}
                 onClick={() => selectPublication(publication)}
               >
-                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
+                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
                   <img
                     src={publication?.logo}
                     alt={publication?.name}
@@ -97,22 +105,22 @@ export default function HeaderDropdown({ user, logout, className }) {
             ))}
 
             <Link href="/publications">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <ClipboardListIcon className="w-4 h-4 text-slate-500" />
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
+                <ClipboardListIcon className="w-4 h-4 group-hover:text-purple-700" />
                 Manage Publications
               </a>
             </Link>
           </div>
           <div>
             {/* <Link href="/help">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <QuestionMarkCircleIcon className="w-4 h-4 text-slate-500" />
+              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
+                <QuestionMarkCircleIcon className="w-4 h-4 hover:text-purple-700" />
                 Help
               </a>
             </Link> */}
             <Menu.Item onClick={logout}>
-              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer">
-                <LogoutIcon className="w-4 h-4 text-slate-500" />
+              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
+                <LogoutIcon className="w-4 h-4 group-over:text-purple-700" />
                 Logout
               </span>
             </Menu.Item>
