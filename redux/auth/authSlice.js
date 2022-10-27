@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import AuthService from '@/services/auth';
 import { HYDRATE } from 'next-redux-wrapper';
-import { toast } from 'react-toastify';
+import ToastMessage from '@/utils/toast';
 // Initial state
 const initialState = {
   isLoading: false,
@@ -119,7 +119,7 @@ export const authSlice = createSlice({
     },
     changePasswordSuccess(state) {
       state.isLoading = false;
-      toast.success('Password changed successfully',{hideProgressBar: true});
+      ToastMessage.success('Password changed successfully');
     },
     changePasswordFailure(state, action) {
       state.isLoading = false;
@@ -134,7 +134,7 @@ export const authSlice = createSlice({
     updateUserSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;
-      toast.success('Profile updated successfully',{hideProgressBar: true});
+      ToastMessage.success('Profile updated successfully');
     },
     updateUserFailure(state, action) {
       state.isLoading = false;

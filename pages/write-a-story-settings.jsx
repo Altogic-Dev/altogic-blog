@@ -11,12 +11,14 @@ import Layout from '@/layouts/Layout';
 import DeleteStoryModal from '@/components/DeleteStoryModal';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
+import Button from '@/components/basic/button';
 
 export default function WriteAStorySettings() {
   const router = useRouter();
   const dispatch = useDispatch();
 
   const story = useSelector((state) => state.story.story);
+  const isLoading = useSelector((state) => state.story.isLoading);
   const user = useSelector((state) => state.auth.user);
   const foundTopics = useSelector((state) => state.topics.searchTopics);
   const topicLoading = useSelector((state) => state.topics.isLoading);
@@ -31,6 +33,13 @@ export default function WriteAStorySettings() {
   const [inpCategoryNames, setInpCategoryNames] = useState([]);
   const [inpPinStory, setInpPinStory] = useState(false);
 
+  const [sortingLoading, setSortingLoading] = useState(false);
+  const [categoryLoading, setCategoryLoading] = useState(false);
+  const [seoTitleLoading, setSeoTitleLoading] = useState(false);
+  const [seoDescLoading, setSeoDescLoading] = useState(false);
+  const [licenseLoading, setLicenseLoading] = useState(false);
+  const [linkLoading, setLinkLoading] = useState(false);
+
   const [radioCustomizeLink, setRadioCustomizeLink] = useState('automatic');
   const [radiolicense, setRadioLicense] = useState('all');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -44,7 +53,7 @@ export default function WriteAStorySettings() {
     _.debounce((category) => {
       dispatch(topicsActions.searchTopicsRequest(category));
       setIsSearchOpen(true);
-    }, 1000),
+    }, 500),
     []
   );
 
@@ -55,7 +64,7 @@ export default function WriteAStorySettings() {
       !foundTopics.some((topic) => topic.name === inpCategory)
     ) {
       if (e.key === 'Enter') {
-        setInpCategoryNames((prev) => [inpCategory, ...prev]);
+        setInpCategoryNames((prev) => [...prev, inpCategory]);
         setInpCategory('');
         setIsSearchOpen(false);
       } else {
@@ -66,7 +75,7 @@ export default function WriteAStorySettings() {
   const handleAddTopic = ({ name }) => {
     if (!_.includes(inpCategoryNames, name)) {
       setIsSearchOpen(false);
-      setInpCategoryNames((prev) => [name, ...prev]);
+      setInpCategoryNames((prev) => [...prev, name]);
       setInpCategory('');
     }
   };
@@ -117,6 +126,17 @@ export default function WriteAStorySettings() {
       setUserState(user);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setSortingLoading(false);
+      setCategoryLoading(false);
+      setSeoTitleLoading(false);
+      setSeoDescLoading(false);
+      setLicenseLoading(false);
+      setLinkLoading(false);
+    }
+  }, [isLoading]);
 
   return (
     <div>
@@ -265,10 +285,12 @@ export default function WriteAStorySettings() {
                       </h2>
                     </label>
                   </div>
-                  <button
+                  <Button
                     type="button"
                     className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[42px] md:h-[48px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                    onClick={() =>
+                    loading={sortingLoading}
+                    onClick={() => {
+                      setSortingLoading(true);
                       dispatch(
                         storyActions.updateStoryFieldRequest({
                           story,
@@ -276,11 +298,11 @@ export default function WriteAStorySettings() {
                             pinnedStory: inpPinStory,
                           },
                         })
-                      )
-                    }
+                      );
+                    }}
                   >
                     Save
-                  </button>
+                  </Button>
                 </div>
                 <hr className="my-14" />
                 <div id="reader-interest">
@@ -333,20 +355,22 @@ export default function WriteAStorySettings() {
                           ))}
                         </div>
                       </div>
-                      <button
+                      <Button
                         type="button"
                         className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[42px] md:h-[48px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                        onClick={() =>
+                        loading={categoryLoading}
+                        onClick={() => {
+                          setCategoryLoading(true);
                           dispatch(
                             storyActions.updateCategoryNamesRequest({
                               storyId: _.get(story, '_id'),
                               newCategoryNames: inpCategoryNames,
                             })
-                          )
-                        }
+                          );
+                        }}
                       >
                         Save
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </div>
@@ -387,10 +411,12 @@ export default function WriteAStorySettings() {
                           onChange={(e) => setInpSeoTitle(e.target.value)}
                           value={inpSeoTitle}
                         />
-                        <button
+                        <Button
                           type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                          onClick={() =>
+                          loading={seoTitleLoading}
+                          onClick={() => {
+                            setSeoTitleLoading(true);
                             dispatch(
                               storyActions.updateStoryFieldRequest({
                                 story,
@@ -398,11 +424,11 @@ export default function WriteAStorySettings() {
                                   seoTitle: inpSeoTitle,
                                 },
                               })
-                            )
-                          }
+                            );
+                          }}
                         >
                           Save
-                        </button>
+                        </Button>
                       </div>
                     </div>
                     <div>
@@ -440,10 +466,12 @@ export default function WriteAStorySettings() {
                           onChange={(e) => setInpSeoDescription(e.target.value)}
                           value={inpSeoDescription}
                         />
-                        <button
+                        <Button
                           type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                          onClick={() =>
+                          loading={seoDescLoading}
+                          onClick={() => {
+                            setSeoDescLoading(true);
                             dispatch(
                               storyActions.updateStoryFieldRequest({
                                 story,
@@ -451,11 +479,11 @@ export default function WriteAStorySettings() {
                                   seoDescription: inpSeoDescription,
                                 },
                               })
-                            )
-                          }
+                            );
+                          }}
                         >
                           Save
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -765,10 +793,12 @@ export default function WriteAStorySettings() {
                     </div>
                   </div>
                   <div className="flex flex-row-reverse">
-                    <button
+                    <Button
                       type="button"
                       className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                      onClick={() =>
+                      loading={licenseLoading}
+                      onClick={() => {
+                        setLicenseLoading(true);
                         dispatch(
                           storyActions.updateStoryFieldRequest({
                             story,
@@ -776,11 +806,11 @@ export default function WriteAStorySettings() {
                               license: radiolicense,
                             },
                           })
-                        )
-                      }
+                        );
+                      }}
                     >
                       Save
-                    </button>
+                    </Button>
                   </div>
                 </div>
                 <hr className="my-14" />
@@ -852,11 +882,13 @@ export default function WriteAStorySettings() {
                           onChange={(e) => setInpStorySlug(e.target.value)}
                           value={inpStorySlug}
                         />
-                        <button
+                        <Button
                           type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                           disabled={radioCustomizeLink === 'automatic'}
-                          onClick={() =>
+                          loading={linkLoading}
+                          onClick={() => {
+                            setLinkLoading(true);
                             dispatch(
                               storyActions.updateStoryFieldRequest({
                                 story,
@@ -864,11 +896,11 @@ export default function WriteAStorySettings() {
                                   storySlug: inpStorySlug,
                                 },
                               })
-                            )
-                          }
+                            );
+                          }}
                         >
                           Save
-                        </button>
+                        </Button>
                       </div>
                     </div>
                   </div>
@@ -900,7 +932,7 @@ export default function WriteAStorySettings() {
                 storyId: _.get(story, '_id'),
                 categoryNames: _.get(story, 'categoryNames'),
                 isPublished: story.isPublished,
-                onSuccess: () => router.back(),
+                onSuccess: () => router.push('/my-stories'),
               })
             );
           }}

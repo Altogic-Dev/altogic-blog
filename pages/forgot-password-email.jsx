@@ -7,7 +7,7 @@ import BackToLogin from '@/components/BackToLogin';
 import AuthSidebar from '@/components/AuthSidebar';
 import { KeyIcon } from '@heroicons/react/outline';
 import Button from '@/components/basic/button';
-import { toast } from 'react-toastify';
+import ToastMessage from '@/utils/toast';
 
 export default function Login() {
   const router = useRouter();
@@ -22,8 +22,7 @@ export default function Login() {
 
   const resendEmail = () => {
     dispatch(authActions.forgotPasswordRequest({ email }));
-    toast.success('Email Sent Successfully',{hideProgressBar: true});
-
+    ToastMessage.success('Email Sent Successfully');
   };
   return (
     <div className="relative h-screen">

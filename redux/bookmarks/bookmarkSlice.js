@@ -1,7 +1,7 @@
+import ToastMessage from '@/utils/toast';
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
-import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
@@ -123,7 +123,7 @@ export const bookmarkSlice = createSlice({
         (list) => list._id !== action.payload
       );
       state.bookmarkList = null;
-      toast.success('Bookmark list deleted successfully',{hideProgressBar: true});
+      ToastMessage.success('Bookmark list deleted successfully');
     },
     deleteBookmarkListFailure(state, action) {
       state.isLoading = false;
@@ -137,7 +137,7 @@ export const bookmarkSlice = createSlice({
       state.bookmarkList.name = action.payload.name;
       state.bookmarkList.isPrivate = action.payload.isPrivate;
       state.bookmarkList.slug = action.payload.slug;
-      toast.success('Bookmark list updated successfully',{hideProgressBar: true});
+      ToastMessage.success('Bookmark list updated successfully');
     },
     updateBookmarkListFailure(state, action) {
       state.isLoading = false;

@@ -1,7 +1,7 @@
+import ToastMessage from '@/utils/toast';
 import { createSlice } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
-import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
@@ -41,7 +41,7 @@ export const blockConnectionSlice = createSlice({
     blockUserSuccess(state) {
       state.isLoading = false;
       state.isBlocked = true;
-      toast.success('Author is muted',{hideProgressBar: true});
+      ToastMessage.success('Author is muted');
     },
     blockUserFailure(state) {
       state.isLoading = false;
@@ -55,7 +55,7 @@ export const blockConnectionSlice = createSlice({
         state.blockedUsers,
         (person) => person._id === action.payload
       );
-      toast.success('Author is unmuted',{hideProgressBar: true});
+      ToastMessage.success('Author is unmuted');
       state.isLoading = false;
     },
     unblockAuthorFailure(state) {
