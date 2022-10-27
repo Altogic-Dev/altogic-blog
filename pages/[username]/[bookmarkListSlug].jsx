@@ -45,10 +45,15 @@ export default function ListDetail() {
   const [unfollowed, setUnfollowed] = useState([]);
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
+  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+
+  const bookmarksInList = useSelector(
+    (state) => state.bookmark.bookmarksInList
+  );
   const bookmarkListLoading = useSelector(
     (state) => state.bookmark.bookmarkListLoading
   );
-  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowingsCount = useSelector(
     (state) => state.followerConnection.userFollowingsCount
@@ -156,13 +161,16 @@ export default function ListDetail() {
     if (!sessionUser && bookmarkList?.isPrivate) {
       router.push('/');
     }
-    if (_.get(_.get(_.first(bookmarks), 'story'), '_id')) {
-      setStories(bookmarks.map((bookmark) => bookmark.story));
+    if (bookmarksInList) {
+      setStories(bookmarksInList.map((bookmark) => bookmark.story));
     }
-  }, [bookmarks, sessionUser]);
+  }, [bookmarksInList, sessionUser]);
 
   useEffect(() => {
-    if (bookmarkListSlug && _.size(bookmarks) < bookmarkList?.storyCount) {
+    if (
+      bookmarkListSlug &&
+      _.size(bookmarksInList) < bookmarkList?.storyCount
+    ) {
       dispatch(
         getBookmarkListDetailRequest({
           slug: bookmarkListSlug,
@@ -193,8 +201,6 @@ export default function ListDetail() {
     }
   }, [user]);
 
-
-  console.log(bookmarks)
   return (
     <div>
       <Head>

@@ -8,10 +8,11 @@ const initialState = {
   bookmarks: null,
   bookmarkLists: null,
   bookmarkList: null,
+  bookmarksInList: null,
   createdBookmarkList: null,
   bookmarkListsInfo: null,
   isLoading: false,
-  bookmarkListLoading: false,
+  bookmarkListLoading: true,
   error: null,
   isStoryBookmarked: null,
 };
@@ -109,7 +110,8 @@ export const bookmarkSlice = createSlice({
     },
     getBookmarkListDetailSuccess(state, action) {
       state.bookmarkListLoading = false;
-      state.bookmarkList = action.payload;
+      state.bookmarksInList = action.payload.bookmarks;
+      state.bookmarkList = action.payload.list;
     },
     getBookmarkListDetailFailure(state, action) {
       state.bookmarkListLoading = false;

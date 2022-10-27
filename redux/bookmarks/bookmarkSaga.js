@@ -121,7 +121,7 @@ function* bookmarkListDetailSaga({ payload }) {
       payload
     );
     if (data) {
-      yield put(getBookmarkListDetailSuccess(data.list));
+      yield put(getBookmarkListDetailSuccess(data));
       yield put(getBookmarksSuccess(data.bookmarks));
     }
     if (errors) throw errors.items;
