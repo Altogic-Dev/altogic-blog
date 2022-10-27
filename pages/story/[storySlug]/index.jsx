@@ -61,6 +61,8 @@ export default function BlogDetail({ ip }) {
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
+  const isMyProfile = _.get(user, '_id') === _.get(story, 'user._id');
+
   const contentRef = useRef();
   const [createNewList, setCreateNewList] = useState(false);
   const [didMount, setDidMount] = useState(true);
@@ -277,94 +279,96 @@ export default function BlogDetail({ ip }) {
                 isMuted={isMuted}
                 isReported={isReported}
               />
-              <div className="bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
-                <div className="flex items-center justify-between gap-2 mb-10">
-                  <div>
-                    <p className="text-slate-600 mb-1 text-xl tracking-md">
-                      More from{' '}
-                      <span className="text-slate-700 font-semibold">
+              {!isMyProfile && _.size(moreUserStories) > 0 && (
+                <div className="bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
+                  <div className="flex items-center justify-between gap-2 mb-10">
+                    <div>
+                      <p className="text-slate-600 mb-1 text-xl tracking-md">
+                        More from{' '}
+                        <span className="text-slate-700 font-semibold">
+                          {_.get(story, 'publication.name') ||
+                            _.get(story, 'user.name')}
+                        </span>
+                      </p>
+                      <p
+                        dangerouslySetInnerHTML={{
+                          __html:
+                            _.get(story, 'publication.description') ||
+                            _.get(story, 'user.about'),
+                        }}
+                        className="max-w-xl text-slate-600 text-xs tracking-sm"
+                      />
+                    </div>
+                    <Button
+                      className="inline-flex itemvisitStorys-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                      onClick={
+                        isPublication ? togglePublicationFollow : toggleFollow
+                      }
+                    >
+                      {moreFromFollowing ? 'Unfollow' : 'Follow'}
+                    </Button>
+                  </div>
+                  <div className="divide-y divide-gray-200">
+                    {_.map(moreUserStories, (moreStory) => (
+                      <PostCard
+                        key={moreStory._id}
+                        noActiveBookmark
+                        normalMenu
+                        authorUrl={`/profile/${moreStory.username}`}
+                        authorName={moreStory.username}
+                        authorImage={moreStory.userProfilePicture}
+                        storyUrl={`/story/${moreStory.storySlug}`}
+                        timeAgo={DateTime.fromISO(
+                          moreStory.createdAt
+                        ).toRelative()}
+                        title={moreStory.title}
+                        infoText={moreStory.excerpt}
+                        badgeUrl="badgeUrl"
+                        badgeName={_.first(moreStory.categoryNames)}
+                        min={moreStory.estimatedReadingTime}
+                        images={_.first(moreStory.storyImages)}
+                        actionMenu
+                        story={moreStory}
+                        optionButtons={{
+                          unfollow: () =>
+                            dispatch(
+                              followerConnectionActions.unfollowRequest({
+                                userId: _.get(user, '_id'),
+                                followingUserId: _.get(moreStory, 'user'),
+                              })
+                            ),
+                          report: () =>
+                            dispatch(
+                              reportActions.reportStoryRequest({
+                                userId: _.get(user, '_id'),
+                                storyId: _.get(moreStory, '_id'),
+                                reportedUserId: _.get(moreStory, 'user'),
+                              })
+                            ),
+                        }}
+                      />
+                    ))}
+                  </div>
+                  <div className="pt-10 border-t border-gray-200 text-center">
+                    <Link
+                      href={
+                        isPublication
+                          ? `/publication/${_.get(
+                              story,
+                              'publication.publicationName'
+                            )}`
+                          : `/${_.get(story, 'username')}`
+                      }
+                    >
+                      <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
+                        Read more from{' '}
                         {_.get(story, 'publication.name') ||
                           _.get(story, 'user.name')}
-                      </span>
-                    </p>
-                    <p
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          _.get(story, 'publication.description') ||
-                          _.get(story, 'user.about'),
-                      }}
-                      className="max-w-xl text-slate-600 text-xs tracking-sm"
-                    />
+                      </a>
+                    </Link>
                   </div>
-                  <Button
-                    className="inline-flex itemvisitStorys-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                    onClick={
-                      isPublication ? togglePublicationFollow : toggleFollow
-                    }
-                  >
-                    {moreFromFollowing ? 'Unfollow' : 'Follow'}
-                  </Button>
                 </div>
-                <div className="divide-y divide-gray-200">
-                  {_.map(moreUserStories, (moreStory) => (
-                    <PostCard
-                      key={moreStory._id}
-                      noActiveBookmark
-                      normalMenu
-                      authorUrl={`/profile/${moreStory.username}`}
-                      authorName={moreStory.username}
-                      authorImage={moreStory.userProfilePicture}
-                      storyUrl={`/story/${moreStory.storySlug}`}
-                      timeAgo={DateTime.fromISO(
-                        moreStory.createdAt
-                      ).toRelative()}
-                      title={moreStory.title}
-                      infoText={moreStory.excerpt}
-                      badgeUrl="badgeUrl"
-                      badgeName={_.first(moreStory.categoryNames)}
-                      min={moreStory.estimatedReadingTime}
-                      images={_.first(moreStory.storyImages)}
-                      actionMenu
-                      story={moreStory}
-                      optionButtons={{
-                        unfollow: () =>
-                          dispatch(
-                            followerConnectionActions.unfollowRequest({
-                              userId: _.get(user, '_id'),
-                              followingUserId: _.get(moreStory, 'user'),
-                            })
-                          ),
-                        report: () =>
-                          dispatch(
-                            reportActions.reportStoryRequest({
-                              userId: _.get(user, '_id'),
-                              storyId: _.get(moreStory, '_id'),
-                              reportedUserId: _.get(moreStory, 'user'),
-                            })
-                          ),
-                      }}
-                    />
-                  ))}
-                </div>
-                <div className="pt-10 border-t border-gray-200 text-center">
-                  <Link
-                    href={
-                      isPublication
-                        ? `/publication/${_.get(
-                            story,
-                            'publication.publicationName'
-                          )}`
-                        : `/${_.get(story, 'username')}`
-                    }
-                  >
-                    <a className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500">
-                      Read more from{' '}
-                      {_.get(story, 'publication.name') ||
-                        _.get(story, 'user.name')}
-                    </a>
-                  </Link>
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="hidden lg:block p-8 space-y-10">
