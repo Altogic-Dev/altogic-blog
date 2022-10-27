@@ -131,6 +131,7 @@ function* getRecommendedStoriesSaga({ payload: { page } }) {
       } else {
         const { data, errors } = yield call(
           StoryService.getRecommendedStories,
+          user?._id,
           page
         );
         if (!_.isNil(data) && _.isNil(errors)) {

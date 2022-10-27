@@ -24,12 +24,12 @@ import { DateTime } from 'luxon';
 import Sidebar from '@/layouts/Sidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import { generalActions } from '@/redux/general/generalSlice';
-import { toast } from 'react-toastify';
 import Link from 'next/link';
 import UserCard from '@/components/general/UserCard';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import { useInView } from 'react-intersection-observer';
 import { ClipLoader } from 'react-spinners';
+import ToastMessage from '@/utils/toast';
 
 export default function ProfilePage() {
   const BOOKMARK_LIMIT = 10;
@@ -84,7 +84,7 @@ export default function ProfilePage() {
 
   // const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
-    toast.success('Copied to clipboard', { hideProgressBar: true });
+    ToastMessage.success('Copied to clipboard');
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${username}`;
     navigator.clipboard.writeText(profileUrl);

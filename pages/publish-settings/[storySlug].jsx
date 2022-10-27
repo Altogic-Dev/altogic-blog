@@ -42,25 +42,22 @@ export default function PublishSettings() {
     _.debounce((category) => {
       dispatch(topicsActions.searchTopicsRequest(category));
       setIsSearchOpen(true);
-    }, 1000),
+    }, 500),
     []
   );
 
   const handleInsert = (e) => {
-    const categoryNames = _.map(inpCategoryNames, (category) =>
-      _.lowerCase(category.name)
-    );
     if (
       _.size(inpCategoryNames) < 5 &&
-      !_.includes(categoryNames, _.lowerCase(inpCategory))
+      !_.includes(_.map(inpCategoryNames, 'name'), inpCategory)
     ) {
       if (e.key === 'Enter') {
         setInpCategoryNames((prev) => [
+          ...prev,
           {
             name: inpCategory,
             isExisting: foundTopics.some((topic) => topic.name === inpCategory),
           },
-          ...prev,
         ]);
         setInpCategory('');
       } else {
@@ -72,11 +69,11 @@ export default function PublishSettings() {
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);
     setInpCategoryNames((prev) => [
+      ...prev,
       {
         name: topic.name,
         isExisting: true,
       },
-      ...prev,
     ]);
     setInpCategory('');
   };
@@ -156,7 +153,12 @@ export default function PublishSettings() {
 
   useEffect(() => {
     if (!_.isNil(story)) {
-      setInpCategoryNames(story.categoryNames || []);
+      setInpCategoryNames(
+        _.map(story.categoryNames, (category) => ({
+          name: category,
+          isExisting: true,
+        }))
+      );
       setInpRestrictComments(story.isRestrictedComments);
     }
   }, [story]);

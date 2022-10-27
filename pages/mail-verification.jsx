@@ -6,7 +6,7 @@ import Button from '@/components/basic/button';
 import { useDispatch } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import BackToLogin from '@/components/BackToLogin';
-import { toast } from 'react-toastify';
+import ToastMessage from '@/utils/toast';
 
 export default function Login() {
   const router = useRouter();
@@ -21,8 +21,7 @@ export default function Login() {
 
   const resendVerificationEmail = () => {
     dispatch(authActions.resendVerificationEmailRequest(email));
-    toast.success('Email Sent Successfully',{hideProgressBar: true});
-
+    ToastMessage.success('Email Sent Successfully');
   };
 
   return (

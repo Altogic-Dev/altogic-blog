@@ -1,6 +1,6 @@
 import AuthService from '@/services/auth';
 import PublicationService from '@/services/publication';
-import { toast } from 'react-toastify';
+import ToastMessage from '@/utils/toast';
 import {
   takeEvery,
   put,
@@ -219,7 +219,7 @@ function* deleteSessionSaga({ payload: sessionToken }) {
       throw errors.items;
     } else {
       yield put(authActions.deleteSessionSuccess(sessionToken));
-      toast.success('Session deleted successfully', { hideProgressBar: true });
+      ToastMessage.success('Session deleted successfully');
     }
   } catch (e) {
     yield put(authActions.deleteSessionFailure(e));

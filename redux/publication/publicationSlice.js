@@ -1,6 +1,6 @@
+import ToastMessage from '@/utils/toast';
 import { createSlice } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
-import { toast } from 'react-toastify';
 
 // Initial state
 const initialState = {
@@ -112,7 +112,7 @@ export const publicationSlice = createSlice({
 
     updatePublicationRequest() {},
     updatePublicationSuccess(state, action) {
-      toast.success('Publication updated successfully',{hideProgressBar: true});
+      ToastMessage.success('Publication updated successfully');
       state.publication = action.payload;
     },
 
@@ -337,7 +337,7 @@ export const publicationSlice = createSlice({
     },
     updatePublicationHomeLayoutSuccess(state, action) {
       state.homeLayout = action.payload;
-      toast.success('Publication layout updated successfully',{hideProgressBar: true});
+      ToastMessage.success('Publication layout updated successfully');
       state.isLoading = false;
     },
     updatePublicationHomeLayoutFailure(state, action) {
