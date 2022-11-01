@@ -1,6 +1,5 @@
 import Suggestion from '@/components/AutoComplete/Suggestion';
 import { Popover } from '@headlessui/react';
-import { ClipLoader } from 'react-spinners';
 
 function PublicationSettingsSuggestions({
   suggestions,
@@ -22,12 +21,7 @@ function PublicationSettingsSuggestions({
               onClick={onClick}
             />
           ) : (
-            <ClipLoader
-              className="mt-3"
-              size={20}
-              color="#9333ea"
-              loading={loading}
-            />
+            <span className='text-xs text-slate-500'>Loading Categories...</span>
           )}
         </Popover>
       </ul>

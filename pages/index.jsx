@@ -9,10 +9,7 @@ import _ from 'lodash';
 import YourTopics from '@/components/general/YourTopics';
 import ListObserver from '@/components/ListObserver';
 import { classNames } from '@/utils/utils';
-import {
-  getBookmarkListsRequest,
-  getBookmarksRequest,
-} from '@/redux/bookmarks/bookmarkSlice';
+
 import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
@@ -37,7 +34,9 @@ export default function Home() {
   const isLoading = useSelector((state) => state.story.loading);
 
   const userFromStorage = useSelector((state) => state.auth.user);
-  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarkLists = useSelector((state) =>
+    _.get(state.bookmark.bookmarkLists, userFromStorage?.username)
+  );
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const popularStories = useSelector((state) => state.story.popularStories);
   const [user, setUser] = useState();
@@ -45,7 +44,6 @@ export default function Home() {
   const dispatch = useDispatch();
 
 
-  
   const getFollowingStories = (page) => {
     if (userFromStorage) {
       dispatch(
@@ -77,11 +75,11 @@ export default function Home() {
     }
   };
 
-  const storiesYouFollow = useSelector(
-    (state) => state.followerConnection.userFollowings.filter(item => item.unreadStories > 0)
-  );  
-
-  
+  const storiesYouFollow = useSelector((state) =>
+    state.followerConnection.userFollowings.filter(
+      (item) => item.unreadStories > 0
+    )
+  );
 
   useEffect(() => {
     dispatch(storyActions.popularStoriesRequest());
@@ -110,23 +108,6 @@ export default function Home() {
       getRecommendedStories(followingListPage);
     }
   }, [selectedIndex]);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(
-        getBookmarkListsRequest({
-          username: user.username,
-          includePrivates: true,
-        })
-      );
-      dispatch(
-        getBookmarksRequest({
-          userId: _.get(user, '_id'),
-        })
-      );
-    }
-    setSelectedIndex(() => (_.isNil(user) ? 1 : 0));
-  }, [user]);
 
   useEffect(() => {
     if (

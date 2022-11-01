@@ -90,7 +90,9 @@ export default function WhoToFollow({
   if (!isLoading)
     return (
       <div>
-        <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />
+        {people.length > 0 && (
+          <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />
+        )}
         <div>
           <ul className="divide-y divide-gray-200">
             {people?.slice(0, 5).map((person, index) => (

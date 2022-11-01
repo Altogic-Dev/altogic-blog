@@ -79,7 +79,7 @@ function MyStoriesPublished({
           <div ref={setRefs} />
         </div>
       ) : (
-        <div className="border-b-2 my-10 pb-10 items-center flex flex-col pb-10">
+        <div className="border-b-2 my-10 pb-10 items-center flex flex-col">
           <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
             <FlagIcon className="w-7 h-7 text-purple-600" />
           </span>

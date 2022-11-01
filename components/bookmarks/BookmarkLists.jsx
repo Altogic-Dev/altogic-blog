@@ -13,12 +13,15 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
-  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
-  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const myBookmarks = useSelector((state) => state.bookmark.myBookmarks);
+  const bookmarkLists = useSelector(
+    (state) =>
+      _.get(state.bookmark.bookmarkLists, user?.username)?.bookmarkLists
+  );
 
   const addBookmark = (list) => {
     let { coverImages } = list;
-    const storyImages = _.map(story.storyImages, (image) => image);
+    const storyImages = _.map(story?.storyImages, (image) => image);
     if (coverImages.length < 4) {
       coverImages = [...coverImages, storyImages[0]];
     } else {
@@ -28,8 +31,9 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
     const req = {
       list: list._id,
       userId: user._id,
+      username: user.username,
       story: story._id,
-      coverImages: coverImages ?? 'sa',
+      coverImages: null,
     };
 
     dispatch(addBookmarkRequest(req));
@@ -69,7 +73,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
                     id="private-list"
                     name="list"
                     type="checkbox"
-                    checked={bookmarks?.some(
+                    checked={myBookmarks?.some(
                       (bk) =>
                         bk.bookmarkList === list._id &&
                         (bk.story._id === story?._id || bk.story === story?._id)

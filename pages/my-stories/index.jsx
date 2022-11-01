@@ -9,10 +9,6 @@ import { storyActions } from '@/redux/story/storySlice';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
-import {
-  getBookmarkListsRequest,
-  getBookmarksRequest,
-} from '@/redux/bookmarks/bookmarkSlice';
 import MyStoriesPublished from '@/components/myStories/MyStoriesPublished';
 import MyStoriesDraft from '@/components/myStories/MyStoriesDraft';
 import DeleteStoryModal from '@/components/DeleteStoryModal';
@@ -29,7 +25,9 @@ export default function MyStories() {
   );
   const userDraftStories = useSelector((state) => state.story.userDraftStories);
   const userStories = useSelector((state) => state.story.userStories);
-  const userStoriesLoading = useSelector((state) => state.story.userStoriesLoading);
+  const userStoriesLoading = useSelector(
+    (state) => state.story.userStoriesLoading
+  );
 
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
@@ -65,22 +63,6 @@ export default function MyStories() {
     }
   }, [tab]);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(
-        getBookmarkListsRequest({
-          username: user.username,
-          includePrivates: true,
-        })
-      );
-      dispatch(
-        getBookmarksRequest({
-          userId: _.get(user, '_id'),
-        })
-      );
-    }
-  }, [user]);
-
   const getUserDraftStories = useCallback(() => {
     dispatch(
       storyActions.getUserDraftStoriesRequest({
@@ -106,7 +88,6 @@ export default function MyStories() {
       _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
       userDraftStoriesInfo?.count !== _.size(userDraftStories)
     )
-
       getUserDraftStories();
   }, [draftPage]);
   useEffect(() => {
@@ -304,7 +285,7 @@ export default function MyStories() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {(userStoriesLoading&& publishedPage===1) ? (
+                    {userStoriesLoading && publishedPage === 1 ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesPublished
@@ -316,7 +297,7 @@ export default function MyStories() {
                     )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {(userStoriesLoading&& draftPage===1)  ? (
+                    {userStoriesLoading && draftPage === 1 ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesDraft

@@ -1,7 +1,3 @@
-import {
-  getBookmarkListsRequest,
-  getBookmarksRequest,
-} from '@/redux/bookmarks/bookmarkSlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import { storyActions } from '@/redux/story/storySlice';
@@ -54,22 +50,6 @@ function PublicationTabStory({ tab, publication }) {
       dispatch(storyActions.getStoryRequest(tab.contents));
     }
   }, [publication]);
-
-  useEffect(() => {
-    if (user) {
-      dispatch(
-        getBookmarkListsRequest({
-          username: _.get(user, 'username'),
-          includePrivates: true,
-        })
-      );
-      dispatch(
-        getBookmarksRequest({
-          userId: _.get(user, '_id'),
-        })
-      );
-    }
-  }, [user]);
 
   useEffect(() => {
     if (!_.isNil(story) && didMount) {

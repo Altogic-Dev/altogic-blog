@@ -21,8 +21,8 @@ const BookmarkService = {
   deleteBookmarkList: (listId) => endpoint.delete(`/bookmark/list/${listId}`),
   updateBookmarkList: (list) =>
     db.model('bookmark_list').object(list._id).update(list),
-  getBookmarks: ({ userId }) =>
-    db.model('bookmark').filter(`user == '${userId}'`).get(),
+  getMyBookmarks: (userId) =>
+    db.model('bookmark').filter(`user == '${userId}'`).lookup({ field: 'story' }).get(),
   clearBookmarkList: (listId) =>
     endpoint.delete(`/bookmark-list/${listId}/clear`),
 };

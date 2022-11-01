@@ -30,9 +30,10 @@ export default function PostCard({
 }) {
   const [createNewList, setCreateNewList] = useState(false);
   const [deleteListModal, setDeleteListModal] = useState(false);
-  const bookmarkList = useSelector((state) => state.bookmark.bookmarkLists);
-  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+
+  const myBookmarks = useSelector((state) => state.bookmark.myBookmarks);
   const sessionUser = useSelector((state) => state.auth.user);
+
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2">
@@ -113,7 +114,7 @@ export default function PostCard({
             <Menu as="div" className="relative inline-block text-left ml-4">
               <div>
                 <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50">
-                  {bookmarks?.some(
+                  {myBookmarks?.some(
                     (bk) =>
                       bk.story._id === story?._id || bk.story === story?._id
                   ) ? (
@@ -148,7 +149,6 @@ export default function PostCard({
               </div>
 
               <BookmarkLists
-                bookmarkLists={bookmarkList}
                 setCreateNewList={setCreateNewList}
                 story={story}
               />
