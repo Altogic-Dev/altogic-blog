@@ -50,12 +50,14 @@ export default function UserCard({ user, isFollowing }) {
       <Link href={`/${user.username}`}>
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
-            <Avatar
-              className="w-10 h-10 rounded-full"
-              placeholderName={user?.name}
-              src={user.profilePicture}
-              alt={user.name}
-            />
+            <div className="inline-flex flex-shrink-0">
+              <Avatar
+                className="w-10 h-10 rounded-full"
+                placeholderName={user?.name}
+                src={user.profilePicture}
+                alt={user.name}
+              />
+            </div>
             <div className="flex flex-col">
               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
                 {user.name}
