@@ -9,12 +9,7 @@ import _ from 'lodash';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
-import { authActions } from '@/redux/auth/authSlice';
 import { reportActions } from '@/redux/report/reportSlice';
-import {
-  getBookmarkListsRequest,
-  getBookmarksRequest,
-} from '@/redux/bookmarks/bookmarkSlice';
 import { generalActions } from '@/redux/general/generalSlice';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import Sidebar from '@/layouts/Sidebar';
@@ -58,8 +53,11 @@ export default function BlogDetail({ ip }) {
   );
 
   const isReported = useSelector((state) => state.report.isReported);
-  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
-  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
+  const bookmarkLists = useSelector(
+    (state) =>
+      _.get(state.bookmark.bookmarkLists, user?.username)?.bookmarkLists
+  );
+  const myBookmarks = useSelector((state) => state.bookmark.myBookmarks);
 
   const isMyProfile = _.get(user, '_id') === _.get(story, 'user._id');
 
@@ -218,21 +216,7 @@ export default function BlogDetail({ ip }) {
       setIsLoading(false);
     }
   }, [storySlug]);
-  useEffect(() => {
-    if (user) {
-      dispatch(
-        getBookmarkListsRequest({
-          username: _.get(user, 'username'),
-          includePrivates: true,
-        })
-      );
-      dispatch(
-        getBookmarksRequest({
-          userId: _.get(user, '_id'),
-        })
-      );
-    }
-  }, [_.get(user, '_id')]);
+
   useEffect(() => {
     if (!loading && story?.storySlug === storySlug) {
       setIsLoading(false);
@@ -273,7 +257,7 @@ export default function BlogDetail({ ip }) {
                 forwardedRef={contentRef}
                 bookmarkLists={bookmarkLists}
                 setCreateNewList={setCreateNewList}
-                bookmarks={bookmarks}
+                bookmarks={myBookmarks}
                 toggleFollow={toggleFollow}
                 isFollowing={isFollowing}
                 isMuted={isMuted}

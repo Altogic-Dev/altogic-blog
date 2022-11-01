@@ -9,6 +9,10 @@ import 'highlight.js/styles/tokyo-night-dark.css';
 import { DateTime } from 'luxon';
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect, useState } from 'react';
+import {
+  getUserBookmarkListsRequest,
+  getMyBookmarksRequest,
+} from '@/redux/bookmarks/bookmarkSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/react';
@@ -30,6 +34,22 @@ function MyApp({ Component, pageProps }) {
     enter: 'animate__animated animate__slideInDown',
     exit: 'animate__animated animate__slideOutUp',
   });
+
+  const getBookmarksAndLists = (user) => {
+    dispatch(
+      getUserBookmarkListsRequest({
+        username: user.username,
+        includePrivates: true,
+      })
+    );
+    dispatch(
+      getMyBookmarksRequest({
+        userId: _.get(user, '_id'),
+        username: _.get(user, 'username'),
+      })
+    );
+  };
+
   const visitPublicationRequest = (publicationName) => {
     dispatch(
       publicationActions.visitPublicationRequest({
@@ -89,6 +109,7 @@ function MyApp({ Component, pageProps }) {
     if (sessionUser && !isMounted) {
       setIsMounted(true);
       checkFollowing();
+      getBookmarksAndLists(sessionUser);
     }
   }, [sessionUser]);
 

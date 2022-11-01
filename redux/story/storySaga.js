@@ -386,6 +386,8 @@ function* updateStorySaga({ payload: { story, onSuccess } }) {
       throw errors.items;
     }
   } catch (e) {
+    console.log(e)
+
     yield put(storyActions.updateStoryFailure(e));
   }
 }
@@ -568,6 +570,7 @@ export function* removeRecommendedStories(authorId) {
   yield put(storyActions.removeRecommendedStories(newRecommendedStories));
 }
 function* updateStoryWorkerSaga({ payload: { data, errors } }) {
+
   try {
     if (!_.isNil(data)) {
       yield put(storyActions.updateStorySuccess(data));

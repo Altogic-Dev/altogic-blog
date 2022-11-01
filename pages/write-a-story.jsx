@@ -9,6 +9,7 @@ import Input from '@/components/Input';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import useStorage from '@/hooks/useStorage';
 import dynamic from 'next/dynamic';
 import { ClipLoader } from 'react-spinners';
 import Layout from '../layouts/Layout';
@@ -29,6 +30,9 @@ export default function WriteAStory() {
   const user = useSelector((state) => state.auth.user);
   const newStory = useSelector((state) => state.story.story);
   const [webworker, setWebworker] = useState();
+  const [isMounted, setIsMounted] = useState(false);
+
+  const session = useStorage();
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -53,6 +57,7 @@ export default function WriteAStory() {
   useEffect(() => {
     setWebworker(new Worker(new URL('@/utils/worker', import.meta.url)));
   }, []);
+
   useEffect(() => {
     if (user) {
       setUsername(user.name);
@@ -79,6 +84,9 @@ export default function WriteAStory() {
       dispatch(storyActions.clearStory());
     }
   }, [id]);
+  useEffect(() => {
+    if (router.isReady) setIsMounted(true);
+  }, [router.isReady]);
 
   useEffect(() => {
     if (content !== '<p><br></p>' || inpTitle) {
@@ -100,10 +108,14 @@ export default function WriteAStory() {
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));
       } else if (!_.isNil(newStory)) {
-        webworker.postMessage({
-          _id: newStory._id,
-          ...story,
-        });
+        const dataObject = {
+          story: {
+            _id: newStory._id,
+            ...story,
+          },
+          session,
+        };
+        webworker.postMessage(dataObject);
         webworker.onmessage = (e) => {
           setLoading(false);
           dispatch(storyActions.updateStoryWorkerRequest(e.data));
@@ -113,8 +125,6 @@ export default function WriteAStory() {
     setMinRead(Math.ceil(content.split(' ').length / 200));
   }, [content, inpTitle]);
 
-
-  console.log(newStory);
   const handleDebounceFn = (inputValue) => {
     setInpTitle(inputValue);
   };
@@ -154,7 +164,7 @@ export default function WriteAStory() {
   );
 
   return (
-    <Layout>
+    <Layout loading={!isMounted || (id && !newStory)}>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
         <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
           <div className="text-slate-800 text-lg tracking-sm w-1/3 flex">
@@ -195,20 +205,16 @@ export default function WriteAStory() {
           )}
         </div>
         <form className="w-full">
-          {!newStory && id ? (
-                <ClipLoader/>
-          ) : (
-            <Input
-              type="text"
-              name="story-title"
-              className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
-              placeholder="Story Title"
-              required
-              register={register('title')}
-              error={errors.title}
-              onChange={handleChangeTitle}
-            />
-          )}
+          <Input
+            type="text"
+            name="story-title"
+            className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+            placeholder="Story Title"
+            required
+            register={register('title')}
+            error={errors.title}
+            onChange={handleChangeTitle}
+          />
 
           <div className="mt-4 w-full">
             <Editor

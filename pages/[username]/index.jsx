@@ -17,7 +17,7 @@ import PostList from '@/components/PostList';
 import AboutSubscribeCard from '@/components/AboutSubscribeCard';
 import ProfilePageHome from '@/components/general/ProfilePageHome';
 import Button from '@/components/basic/button';
-import { getBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
+import { getUserBookmarkListsRequest } from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
 import Layout from '@/layouts/Layout';
 import { DateTime } from 'luxon';
@@ -57,7 +57,18 @@ export default function ProfilePage() {
   const userFollowingsOwner = useSelector(
     (state) => state.followerConnection.userFollowingsOwner
   );
-  const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
+  const bookmarkLists = useSelector(
+    (state) =>
+      _.get(state.bookmark.bookmarkLists, profileUser?.username)?.bookmarkLists
+  );
+
+  const bookmarkListsProfileLoading = useSelector(
+    (state) => state.bookmark.bookmarkListsProfileLoading
+  );
+  const bookmarkListCounts = useSelector(
+    (state) => state.bookmark.bookmarkListsProfileInfo
+  );
+
   const isFollowing = useSelector(
     (state) => state.followerConnection.isFollowing
   );
@@ -69,14 +80,18 @@ export default function ProfilePage() {
   );
 
   const authLoading = useSelector((state) => state.auth.isLoading);
-  const bookmarkLoading = useSelector((state) => state.bookmark.isLoading);
-  const storyLoading = useSelector((state) => state.story.isLoading);
 
+  const storyLoading = useSelector((state) => state.story.isLoading);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
-  const [bookmarkListPage, setBookmarkListPage] = useState(1);
+
+  const [bookmarkListPage, setBookmarkListPage] = useState(
+    Math.ceil(
+      _.isEmpty(bookmarkLists) ? 1 : _.size(bookmarkLists) / BOOKMARK_LIMIT
+    )
+  );
   const [isMyProfile, setIsMyProfile] = useState(true);
   const { ref: inViewRef, inView } = useInView();
   const ref = useRef();
@@ -153,13 +168,14 @@ export default function ProfilePage() {
       );
     }
   }, [profileUser]);
-  const getBookmarksList = () => {
+  const getUserBookmarkLists = () => {
     dispatch(
-      getBookmarkListsRequest({
+      getUserBookmarkListsRequest({
         username,
         includePrivates: username === sessionUser?.username,
         page: bookmarkListPage,
         limit: BOOKMARK_LIMIT,
+        fromProfile: true,
       })
     );
   };
@@ -171,7 +187,7 @@ export default function ProfilePage() {
   };
 
   useEffect(() => {
-    if (!bookmarkLoading && !_.isNil(bookmarkLists)) {
+    if (!bookmarkListsProfileLoading && !_.isNil(bookmarkLists)) {
       setIsLoading(false);
     }
     if (!storyLoading && !_.isNil(userStories)) {
@@ -180,7 +196,7 @@ export default function ProfilePage() {
     if (!authLoading && !_.isNil(profileUser)) {
       setIsLoading(false);
     }
-  }, [bookmarkLoading, authLoading, storyLoading]);
+  }, [bookmarkListsProfileLoading, authLoading, storyLoading]);
 
   useEffect(() => {
     if (sessionUser && profileUser) {
@@ -189,11 +205,13 @@ export default function ProfilePage() {
   }, [sessionUser, profileUser]);
 
   useEffect(() => {
-    if (
-      username &&
-      _.size(bookmarkListPage) < bookmarkListPage * BOOKMARK_LIMIT
-    )
-      getBookmarksList();
+    if (username)
+      if (
+        _.size(bookmarkLists) < bookmarkListPage * BOOKMARK_LIMIT &&
+        _.get(bookmarkListCounts, username) !== _.size(bookmarkLists)
+      ) {
+        getUserBookmarkLists();
+      }
   }, [bookmarkListPage, username]);
 
   const setRefs = useCallback(
@@ -348,7 +366,7 @@ export default function ProfilePage() {
                     />
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
-                    {bookmarkLoading && bookmarkListPage === 1 ? (
+                    {bookmarkListsProfileLoading ? (
                       <ClipLoader />
                     ) : (
                       <>

@@ -46,6 +46,7 @@ export default function PublishSettings() {
     []
   );
 
+
   const handleInsert = (e) => {
     if (
       _.size(inpCategoryNames) < 5 &&
@@ -68,14 +69,17 @@ export default function PublishSettings() {
   };
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);
-    setInpCategoryNames((prev) => [
-      ...prev,
-      {
-        name: topic.name,
-        isExisting: true,
-      },
-    ]);
-    setInpCategory('');
+
+    if (!inpCategoryNames?.some(item => item.name.toLowerCase() === topic.name.toLowerCase()) && _.size(inpCategoryNames) < 5) {
+      setInpCategoryNames((prev) => [
+        ...prev,
+        {
+          name: topic.name,
+          isExisting: true,
+        },
+      ]);
+      setInpCategory('');
+    }
   };
 
   const handleDelete = (categoryName) => {
@@ -87,6 +91,8 @@ export default function PublishSettings() {
   };
 
   const addCategoryFromRecommended = (categoryName) => {
+    console.log(categoryName);
+
     if (
       !_.includes(inpCategoryNames, categoryName) &&
       _.size(inpCategoryNames) < 5
@@ -402,9 +408,8 @@ export default function PublishSettings() {
                       </p>
                       <div className="flex flex-wrap items-center gap-4 mb-10">
                         {_.map(user?.recommendedTopics, (categoryName) => (
-                          <button
+                          <Button
                             key={categoryName}
-                            type="button"
                             className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-5 rounded-md tracking-sm text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
                             onClick={() =>
                               addCategoryFromRecommended(categoryName)
@@ -415,7 +420,7 @@ export default function PublishSettings() {
                               aria-hidden="true"
                             />
                             {categoryName}
-                          </button>
+                          </Button>
                         ))}
                       </div>
                     </>
@@ -444,7 +449,6 @@ export default function PublishSettings() {
                 </div>
                 <Button
                   className="hidden md:flex items-center justify-center gap-2 w-full px-3.5 py-2.5 text-base font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                  type="button"
                   onClick={handlePublish}
                   loading={loading}
                 >

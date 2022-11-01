@@ -1,9 +1,6 @@
-import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
+import { call, takeEvery, put, all, fork } from 'redux-saga/effects';
 import BookmarkService from '@/services/bookmark';
 import {
-  getBookmarkListsRequest,
-  getBookmarkListsSuccess,
-  getBookmarkListsFailure,
   createBookmarkListRequest,
   createBookmarkListSuccess,
   createBookmarkListFailure,
@@ -22,9 +19,12 @@ import {
   updateBookmarkListRequest,
   updateBookmarkListSuccess,
   updateBookmarkListFailure,
-  getBookmarksRequest,
-  getBookmarksSuccess,
-  getBookmarksFailure,
+  getMyBookmarksRequest,
+  getMyBookmarksSuccess,
+  getMyBookmarksFailure,
+  getUserBookmarkListsRequest,
+  getUserBookmarkListsSuccess,
+  getUserBookmarkListsFailure,
   clearBookmarkListRequest,
   clearBookmarkListSuccess,
   clearBookmarkListFailure,
@@ -32,32 +32,30 @@ import {
 import _ from 'lodash';
 
 // Get bookmark lists
-function* getBookmarkListsSaga({ payload }) {
+function* getUserBookmarkListsSaga({ payload }) {
   try {
-    const info = yield select((state) => state.bookmark.bookmarkListsInfo);
-
-    if (_.isNil(info) || payload.page <= info.totalPages) {
-      const { data, errors } = yield call(
-        BookmarkService.getBookmarkList,
-        payload
-      );
-      if (errors) throw errors.items;
-      yield put(
-        getBookmarkListsSuccess({
-          username: payload.username,
-          data: data.result,
-          info: data.countInfo,
-        })
-      );
-    }
+    const { data, errors } = yield call(
+      BookmarkService.getBookmarkList,
+      payload
+    );
+    if (errors) throw errors.items;
+    yield put(
+      getUserBookmarkListsSuccess({
+        username: payload.username,
+        data: data.result,
+        info: data.countInfo,
+        page: payload.page,
+      })
+    );
   } catch (error) {
-    yield put(getBookmarkListsFailure(error));
+    yield put(getUserBookmarkListsFailure(error));
   }
 }
 function* addBookmarkSaga({ payload }) {
   try {
     const { data, errors } = yield call(BookmarkService.addBookmark, payload);
     if (data) {
+      data.username = payload.username
       yield put(addBookmarkSuccess(data));
     }
     if (errors) throw errors.items;
@@ -122,7 +120,7 @@ function* bookmarkListDetailSaga({ payload }) {
     );
     if (data) {
       yield put(getBookmarkListDetailSuccess(data));
-      yield put(getBookmarksSuccess(data.bookmarks));
+
     }
     if (errors) throw errors.items;
   } catch (error) {
@@ -157,15 +155,17 @@ function* updateBookmarkListSaga({ payload }) {
     yield put(updateBookmarkListFailure(error));
   }
 }
-function* getBookmarksSaga({ payload }) {
+function* getMyBookmarksSaga({ payload: { userId, username } }) {
   try {
-    const { data, errors } = yield call(BookmarkService.getBookmarks, payload);
+    const { data, errors } = yield call(BookmarkService.getMyBookmarks, userId);
     if (data) {
-      yield put(getBookmarksSuccess(data));
+      yield put(getMyBookmarksSuccess({ data, username }));
     }
     if (errors) throw errors.items;
   } catch (error) {
-    yield put(getBookmarksFailure(error));
+    console.log(error);
+
+    yield put(getMyBookmarksFailure(error));
   }
 }
 function* clearBookmarkListSaga({ payload }) {
@@ -185,14 +185,14 @@ function* clearBookmarkListSaga({ payload }) {
 
 export default function* bookmarkSaga() {
   yield all([
-    yield takeEvery(getBookmarkListsRequest.type, getBookmarkListsSaga),
     yield takeEvery(createBookmarkListRequest.type, createBookmarkListSaga),
+    yield takeEvery(getUserBookmarkListsRequest.type, getUserBookmarkListsSaga),
     yield takeEvery(addBookmarkRequest.type, addBookmarkSaga),
     yield takeEvery(deleteBookmarkRequest.type, deleteBookmarkSaga),
     yield takeEvery(getBookmarkListDetailRequest.type, bookmarkListDetailSaga),
     yield takeEvery(deleteBookmarkListRequest.type, deleteBookmarkListSaga),
     yield takeEvery(updateBookmarkListRequest.type, updateBookmarkListSaga),
-    yield takeEvery(getBookmarksRequest.type, getBookmarksSaga),
+    yield takeEvery(getMyBookmarksRequest.type, getMyBookmarksSaga),
     yield takeEvery(clearBookmarkListRequest.type, clearBookmarkListSaga),
   ]);
 }

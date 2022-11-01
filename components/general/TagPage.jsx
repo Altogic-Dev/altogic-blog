@@ -8,10 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { DateTime } from 'luxon';
 import { reportActions } from '@/redux/report/reportSlice';
-import {
-  getBookmarkListsRequest,
-  getBookmarksRequest,
-} from '@/redux/bookmarks/bookmarkSlice';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
 import Layout from '@/layouts/Layout';
@@ -79,21 +75,6 @@ export default function TagPage({ Home, Latest, Best }) {
     }
   }, [latestTopics, bestTopics, trendingTopics]);
 
-  useEffect(() => {
-    if (user && _.isNil(bookmarkLists) && _.isNil(bookmarks)) {
-      dispatch(
-        getBookmarkListsRequest({
-          username: user.username,
-          includePrivates: true,
-        })
-      );
-      dispatch(
-        getBookmarksRequest({
-          userId: _.get(user, '_id'),
-        })
-      );
-    }
-  }, [user]);
   return (
     <div>
       <Head>

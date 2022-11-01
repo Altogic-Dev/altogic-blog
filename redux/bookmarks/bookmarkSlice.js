@@ -5,14 +5,23 @@ import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
-  bookmarks: null,
-  bookmarkLists: null,
+  myBookmarks: [],
+  myBookmarksLoading: true,
+
+  bookmarkLists: {},
+  bookmarkListCounts: {},
+
+  bookmarks: {},
+
+  bookmarkListsUser: [],
   bookmarkList: null,
-  bookmarksInList: null,
+
   createdBookmarkList: null,
-  bookmarkListsInfo: null,
+
+
   isLoading: false,
   bookmarkListLoading: true,
+  bookmarkListsUserLoading: true,
   error: null,
   isStoryBookmarked: null,
 };
@@ -22,49 +31,57 @@ export const bookmarkSlice = createSlice({
   name: 'bookmark',
   initialState,
   reducers: {
-    getBookmarksRequest(state) {
-      state.isLoading = true;
+
+
+    getMyBookmarksRequest(state) {
+      state.myBookmarksLoading = true;
     },
-    getBookmarksSuccess(state, action) {
+
+    getMyBookmarksSuccess(state, action) {
+      state.myBookmarks = action.payload.data
+      action.payload.data.forEach(item => {
+        state.bookmarks[item.bookmarkList] = [...state.bookmarks[item.bookmarkList] ?? [], item]
+      }
+      )
+
       state.isLoading = false;
-      state.bookmarks = action.payload;
+
     },
-    getBookmarksFailure(state, action) {
+
+    getMyBookmarksFailure(state, action) {
+
       state.isLoading = false;
       state.error = action.payload;
     },
-    getBookmarkListsRequest(state) {
-      state.isLoading = true;
+    getUserBookmarkListsRequest(state) {
+      state.bookmarkListsUserLoading = true;
     },
-    getBookmarkListsSuccess(state, action) {
-      state.isLoading = false;
-      const dataIds = _.map(action.payload.data, '_id');
-      if (_.isArray(state.bookmarkLists)) {
-        state.bookmarkLists = [
-          ..._.reject(
-            state.bookmarkLists,
-            (bookmark) =>
-              bookmark.username !== action.payload.username ||
-              _.includes(dataIds, bookmark._id)
-          ),
-          ...action.payload.data,
-        ];
-      } else {
-        state.bookmarkLists = action.payload.data;
+    getUserBookmarkListsSuccess(state, action) {
+      state.bookmarkListsUserLoading = false;
+      state.bookmarkLists[action.payload.username] = {
+        bookmarkLists: [...(_.get(state.bookmarkList, `${action.payload.username}.data`) ?? []), ...action.payload.data],
+        totalPages: action.payload.info.totalPages,
+        page: action.payload.page
       }
-      state.bookmarkListsInfo = action.payload.info;
+
     },
-    getBookmarkListsFailure(state, action) {
-      state.isLoading = false;
+    getUserBookmarkListsFailure(state, action) {
+      state.bookmarkListsUserLoading = false;
       state.error = action.payload;
     },
     createBookmarkListRequest(state) {
       state.isLoading = true;
     },
     createBookmarkListSuccess(state, action) {
-      state.isLoading = false;
-      state.bookmarkLists = [...state.bookmarkLists, action.payload];
-      state.createdBookmarkList = action.payload;
+      console.log(action.payload)
+
+      try {
+        state.isLoading = false;
+        state.bookmarkLists[action.payload.username].bookmarkLists = [...state.bookmarkLists[action.payload.username].bookmarkLists, action.payload]
+        state.createdBookmarkList = action.payload;
+      } catch (error) {
+        console.log(error)
+      }
     },
     createBookmarkListFailure(state, action) {
       state.isLoading = false;
@@ -78,15 +95,15 @@ export const bookmarkSlice = createSlice({
       state.isLoading = true;
     },
     addBookmarkSuccess(state, action) {
-      state.isLoading = false;
-      state.bookmarks = [...state.bookmarks, action.payload.bookmark];
-      state.bookmarkLists = state.bookmarkLists.map((list) => {
-        if (list._id === action.payload.bookmarkList._id) {
-          return action.payload.bookmarkList;
-        }
-        return list;
-      });
-      state.createdBookmarkList = null;
+      try {
+        state.isLoading = false;
+        state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
+        state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
+
+        state.createdBookmarkList = null;
+      } catch (error) {
+        console.log(error)
+      }
     },
     addBookmarkFailure(state, action) {
       state.isLoading = false;
@@ -97,7 +114,13 @@ export const bookmarkSlice = createSlice({
     },
     deleteBookmarkSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarks = state.bookmarks.filter(
+      state.bookmarks[action.payload.bookmarkList] = state.bookmarks[action.payload.bookmarkList].filter(
+        (bookmark) => bookmark._id !== action.payload._id
+      );
+
+
+
+      state.myBookmarks = state.myBookmarks.filter(
         (bookmark) => bookmark._id !== action.payload._id
       );
     },
@@ -110,8 +133,8 @@ export const bookmarkSlice = createSlice({
     },
     getBookmarkListDetailSuccess(state, action) {
       state.bookmarkListLoading = false;
-      state.bookmarksInList = action.payload.bookmarks;
-      state.bookmarkList = action.payload.list;
+      state.bookmarkLists[action.payload.username].bookmarkLists.bookmarks = [...(state.bookmarkLists[action.payload.username].bookmarkLists.bookmarks ?? []), ...action.payload.bookmarks]
+
     },
     getBookmarkListDetailFailure(state, action) {
       state.bookmarkListLoading = false;
@@ -175,12 +198,13 @@ export const bookmarkSlice = createSlice({
 });
 
 export const {
-  getBookmarksRequest,
-  getBookmarksSuccess,
-  getBookmarksFailure,
-  getBookmarkListsRequest,
-  getBookmarkListsSuccess,
-  getBookmarkListsFailure,
+
+  getMyBookmarksRequest,
+  getMyBookmarksSuccess,
+  getMyBookmarksFailure,
+  getUserBookmarkListsRequest,
+  getUserBookmarkListsSuccess,
+  getUserBookmarkListsFailure,
   createBookmarkListRequest,
   createBookmarkListSuccess,
   createBookmarkListFailure,
@@ -192,6 +216,7 @@ export const {
   deleteBookmarkSuccess,
   deleteBookmarkFailure,
   getBookmarkListDetailRequest,
+  getMyBookmarksProfileRequest,
   getBookmarkListDetailSuccess,
   getBookmarkListDetailFailure,
   deleteBookmarkListRequest,

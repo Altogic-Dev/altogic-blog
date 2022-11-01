@@ -13,7 +13,6 @@ import {
   updateBookmarkListRequest,
   clearBookmarkListRequest,
   deleteBookmarkRequest,
-  getBookmarkListsRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
 import { DateTime } from 'luxon';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -33,6 +32,11 @@ import {
 
 export default function ListDetail() {
   const BOOKMARK_LIST_LIMIT = 5;
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const { username, bookmarkListSlug } = router.query;
+
   const [deleteListModal, setDeleteListModal] = useState(false);
   const [editBookmarkList, setEditBookmarkList] = useState(false);
   const [user, setUser] = useState();
@@ -44,14 +48,20 @@ export default function ListDetail() {
   const [followingModal, setFollowingModal] = useState(false);
   const [unfollowed, setUnfollowed] = useState([]);
   const sessionUser = useSelector((state) => state.auth.user);
-  const bookmarkList = useSelector((state) => state.bookmark.bookmarkList);
-  const bookmarks = useSelector((state) => state.bookmark.bookmarks);
 
-  const bookmarksInList = useSelector(
-    (state) => state.bookmark.bookmarksInList
+  const bookmarkList = useSelector((state) =>
+    _.get(
+      state.bookmark.bookmarkLists,
+      sessionUser?.username
+    )?.bookmarkLists.find((list) => list.slug === bookmarkListSlug)
   );
-  const bookmarkListLoading = useSelector(
-    (state) => state.bookmark.bookmarkListLoading
+
+  const bookmarks = useSelector((state) =>
+    _.get(state.bookmark.bookmarks, bookmarkList?._id)
+  );
+
+  const bookmarkListsUserLoading = useSelector(
+    (state) => state.bookmark.bookmarkListsUserLoading
   );
 
   const profileUser = useSelector((state) => state.auth.profileUser);
@@ -68,10 +78,6 @@ export default function ListDetail() {
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
   );
-  const router = useRouter();
-  const dispatch = useDispatch();
-
-  const { username, bookmarkListSlug } = router.query;
 
   const getFollowingUsers = useCallback(() => {
     dispatch(
@@ -161,15 +167,16 @@ export default function ListDetail() {
     if (!sessionUser && bookmarkList?.isPrivate) {
       router.push('/');
     }
-    if (bookmarksInList) {
-      setStories(bookmarksInList.map((bookmark) => bookmark.story));
+    if (bookmarks) {
+      setStories(bookmarks.map((bookmark) => bookmark.story));
     }
-  }, [bookmarksInList, sessionUser]);
+  }, [bookmarks, sessionUser]);
 
+  console.log(stories);
   useEffect(() => {
     if (
       bookmarkListSlug &&
-      _.size(bookmarksInList) < bookmarkList?.storyCount
+      _.size(_.get(bookmarkList, 'bookmarks')) < bookmarkList?.storyCount
     ) {
       dispatch(
         getBookmarkListDetailRequest({
@@ -190,17 +197,6 @@ export default function ListDetail() {
     }
   }, [followingPage, _.get(user, '_id')]);
 
-  useEffect(() => {
-    if (user) {
-      dispatch(
-        getBookmarkListsRequest({
-          username: user.username,
-          includePrivates: true,
-        })
-      );
-    }
-  }, [user]);
-
   return (
     <div>
       <Head>
@@ -210,7 +206,7 @@ export default function ListDetail() {
           content="Altogic Medium Blog App List Detail"
         />
       </Head>
-      <Layout loading={bookmarkListLoading}>
+      <Layout loading={bookmarkListsUserLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">
