@@ -37,7 +37,6 @@ export default function Settings() {
     getSubscriptions(page);
   }, [page]);
 
-  console.log(subscriptions);
   return (
     <div>
       {user ? (
