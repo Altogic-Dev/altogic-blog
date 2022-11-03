@@ -65,9 +65,10 @@ export default function WriteAStory() {
   }, [user]);
 
   useEffect(() => {
-    if (newStory && !_.isNil(id)) {
+    if (!inpTitle && newStory && !_.isNil(id)) {
       setInpTitle(newStory.title);
       setValue('title', newStory.title);
+      setMinRead(newStory.estimatedReadingTime);
     }
     if (_.get(newStory, '_id') && !isCreated) {
       setIsCreated(true);
@@ -122,13 +123,14 @@ export default function WriteAStory() {
         };
       }
     }
-    setMinRead(Math.ceil(content.split(' ').length / 200));
+    if (content) setMinRead(Math.ceil(content.split(' ').length / 200));
+
   }, [content, inpTitle]);
 
   const handleDebounceFn = (inputValue) => {
     setInpTitle(inputValue);
   };
-  const debounceFn = useCallback(_.debounce(handleDebounceFn, 1000), []);
+  const debounceFn = useCallback(_.debounce(handleDebounceFn, 200), []);
 
   const handleChangeTitle = (e) => {
     debounceFn(e.target.value);

@@ -15,6 +15,7 @@ export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
   const [user, setUser] = useState();
   const router = useRouter();
+
   useEffect(() => {
     if (_user) {
       setUser(_user);
@@ -27,7 +28,7 @@ export default function Settings() {
   const invoices = useSelector((state) => state.payment.invoices);
   return (
     <div>
-      {_user ? (
+      {user ? (
         <div>
           <Head>
             <title>Altogic Medium Blog App Settings</title>
@@ -59,6 +60,7 @@ export default function Settings() {
                     </li>
                   ))}
                 </ul>
+
                 <div>
                   {/* My Details */}
                   <MyDetails user={user} id="my-details" className="mb-16" />

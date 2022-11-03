@@ -63,14 +63,9 @@ const StoryService = {
   },
 
   getUserStories(userId, page = 1, limit = 6) {
-    return db
-      .model('story')
-      .filter(`user == '${userId}' && !isDeleted && isPublished`)
-      .sort('pinnedStory', 'desc')
-      .sort('createdAt', 'desc')
-      .page(page)
-      .limit(limit)
-      .get(true);
+    return endpoint.get(`/user/${userId}/stories`, page, limit);
+
+
   },
 
   getUserDraftStories(userId, page = 1, limit = 6) {
@@ -90,7 +85,7 @@ const StoryService = {
     return endpoint.get(`/reply/${reply}/comments`);
   },
   createReply(reply) {
-    return db.model('replies').create(reply);
+    return endpoint.post(`/story/${reply.story}/reply`,reply);
   },
   editReply(reply) {
     return db
@@ -116,8 +111,8 @@ const StoryService = {
     return db.model('story').object(story._id).create(story);
   },
   async updateStory(story) {
-    const data = db.model('story').object(story._id).update(story);
-    return data
+
+    return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {
     return endpoint.delete(`/story/${storyId}`);

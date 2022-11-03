@@ -12,6 +12,7 @@ import DeleteStoryModal from '@/components/DeleteStoryModal';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 import Button from '@/components/basic/button';
+import Input from '@/components/Input';
 
 export default function WriteAStorySettings() {
   const router = useRouter();
@@ -19,6 +20,7 @@ export default function WriteAStorySettings() {
 
   const story = useSelector((state) => state.story.story);
   const isLoading = useSelector((state) => state.story.isLoading);
+  const error = useSelector((state) => state.story.error);
   const user = useSelector((state) => state.auth.user);
   const foundTopics = useSelector((state) => state.topics.searchTopics);
   const topicLoading = useSelector((state) => state.topics.isLoading);
@@ -26,7 +28,8 @@ export default function WriteAStorySettings() {
   const [userState, setUserState] = useState(null);
   const [basePath, setBasePath] = useState();
 
-  const [inpSeoTitle, setInpSeoTitle] = useState(story?.seoTitle);
+  console.log(story);
+  const [inpSeoTitle, setInpSeoTitle] = useState();
   const [inpSeoDescription, setInpSeoDescription] = useState('');
   const [inpStorySlug, setInpStorySlug] = useState('');
   const [inpCategory, setInpCategory] = useState('');
@@ -60,8 +63,9 @@ export default function WriteAStorySettings() {
   const handleInsert = (e) => {
     if (
       _.size(inpCategoryNames) < 5 &&
-      !_.includes(inpCategoryNames, inpCategory) &&
-      !foundTopics.some((topic) => topic.name === inpCategory)
+      !inpCategoryNames?.some(
+        (item) => item.toLowerCase() === inpCategory.toLowerCase()
+      )
     ) {
       if (e.key === 'Enter') {
         setInpCategoryNames((prev) => [...prev, inpCategory]);
@@ -73,7 +77,12 @@ export default function WriteAStorySettings() {
     }
   };
   const handleAddTopic = ({ name }) => {
-    if (!_.includes(inpCategoryNames, name)) {
+    if (
+      !inpCategoryNames?.some(
+        (item) => item.toLowerCase() === name.toLowerCase()
+      ) &&
+      _.size(inpCategoryNames) < 5
+    ) {
       setIsSearchOpen(false);
       setInpCategoryNames((prev) => [...prev, name]);
       setInpCategory('');
@@ -92,10 +101,11 @@ export default function WriteAStorySettings() {
     setRadioLicense(e.target.value);
   };
 
+
   const fillInputs = useCallback(() => {
     if (!_.isNil(story)) {
-      setInpSeoTitle(story.seoTitle);
-      setInpSeoDescription(story.seoDescription);
+      setInpSeoTitle(story?.seoTitle || _.get(story, 'title'));
+      setInpSeoDescription(story.seoDescription || _.get(story, 'excerpt').slice(0,156));
       setInpStorySlug(story.storySlug);
       setInpCategoryNames(story.categoryNames);
       setRadioLicense(story.license);
@@ -319,17 +329,15 @@ export default function WriteAStorySettings() {
                         about.
                       </span>
                     </div>
-                    <div className="flex flex-col md:flex-row items-center gap-4">
+                    <div className="flex flex-col md:flex-row items-start">
                       <div className="flex flex-wrap items-center flex-1 w-full md:w-auto">
-                        <div className="flex items-center">
+                        <div className="flex items-start flex-col gap-5">
                           <div className="relative">
                             <input
                               className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                               placeholder="Category Name"
                               value={inpCategory}
-                              onChange={(e) =>
-                                setInpCategory(_.startCase(e.target.value))
-                              }
+                              onChange={(e) => setInpCategory(e.target.value)}
                               disabled={_.size(story?.categoryNames) >= 5}
                               onKeyDown={handleInsert}
                             />
@@ -345,18 +353,19 @@ export default function WriteAStorySettings() {
                                 />
                               )}
                           </div>
-                          {_.map(inpCategoryNames, (category) => (
-                            <Category
-                              key={category}
-                              tag={category}
-                              onClick={() => handleDelete(category)}
-                              className="ml-2 text-xs"
-                            />
-                          ))}
+                          <div className="flex flex-row mb-5">
+                            {_.map(inpCategoryNames, (category) => (
+                              <Category
+                                key={category}
+                                tag={category}
+                                onClick={() => handleDelete(category)}
+                                className="mr-2 text-xs"
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
                       <Button
-                        type="button"
                         className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[42px] md:h-[48px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                         loading={categoryLoading}
                         onClick={() => {
@@ -412,7 +421,6 @@ export default function WriteAStorySettings() {
                           value={inpSeoTitle}
                         />
                         <Button
-                          type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                           loading={seoTitleLoading}
                           onClick={() => {
@@ -421,7 +429,8 @@ export default function WriteAStorySettings() {
                               storyActions.updateStoryFieldRequest({
                                 story,
                                 newStoryField: {
-                                  seoTitle: inpSeoTitle,
+                                  seoTitle:
+                                    inpSeoTitle || _.get(story, 'title'),
                                 },
                               })
                             );
@@ -476,7 +485,9 @@ export default function WriteAStorySettings() {
                               storyActions.updateStoryFieldRequest({
                                 story,
                                 newStoryField: {
-                                  seoDescription: inpSeoDescription,
+                                  seoDescription:
+                                    inpSeoDescription ||
+                                    _.get(story, 'excerpt').slice(0,156),
                                 },
                               })
                             );
@@ -871,7 +882,12 @@ export default function WriteAStorySettings() {
                         </span>
                       </div>
                       <div className="flex flex-col md:flex-row items-center gap-4">
-                        <input
+                        <Input
+                          error={
+                            error
+                              ? { message: 'This slug is already taken' }
+                              : null
+                          }
                           id="title"
                           name="title"
                           type="text"
@@ -879,11 +895,12 @@ export default function WriteAStorySettings() {
                           required
                           disabled={radioCustomizeLink === 'automatic'}
                           className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
-                          onChange={(e) => setInpStorySlug(e.target.value)}
+                          onChange={(e) =>
+                            setInpStorySlug(e.target.value.toLowerCase())
+                          }
                           value={inpStorySlug}
                         />
                         <Button
-                          type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                           disabled={radioCustomizeLink === 'automatic'}
                           loading={linkLoading}
@@ -893,7 +910,7 @@ export default function WriteAStorySettings() {
                               storyActions.updateStoryFieldRequest({
                                 story,
                                 newStoryField: {
-                                  storySlug: inpStorySlug,
+                                  storySlug: inpStorySlug.toLowerCase(),
                                 },
                               })
                             );

@@ -16,7 +16,8 @@ const initialState = {
   followingUserLoading: false,
   followingStoriesPage: 1,
   userFollowingsCount: 0,
-  userFollowingsOwner: null
+  userFollowingsOwner: null,
+  subscriptions: [],
 };
 
 // Actual Slice
@@ -38,7 +39,7 @@ export const followerConnectionSlice = createSlice({
       state.userFollowings = state.userFollowings.filter(
         (following) => following.followingUser !== action.payload
       );
-      state.userFollowingsCount -=1
+      state.userFollowingsCount -= 1
     },
     unfollowFailure(state, action) {
       state.followingUserLoading = false;
@@ -49,7 +50,7 @@ export const followerConnectionSlice = createSlice({
       state.followingUserLoading = true;
     },
 
-    handleFollowingCount(state,action) {
+    handleFollowingCount(state, action) {
       state.userFollowingsCount += action.payload;
     },
     followSuccess(state, action) {
@@ -89,7 +90,7 @@ export const followerConnectionSlice = createSlice({
       state.error = action.payload;
     },
 
-    getFollowerUsersRequest() {},
+    getFollowerUsersRequest() { },
     getFollowerUsersSuccess(state, action) {
       state.userFollowers = [...state.userFollowers, ...action.payload.data];
       const isFollowingsFollowers = _.reject(action.payload.data, (person) =>
@@ -126,6 +127,20 @@ export const followerConnectionSlice = createSlice({
         'followingUser'
       );
       state.isFollowings = [...state.isFollowings, ...isFollowingFollowingIds];
+    },
+
+    getSubscriptionsRequest(state) {
+      state.isLoading = true
+    },
+    getSubscriptionsSuccess(state, action) {
+      state.isLoading = false
+      state.subscriptions = action.payload.data
+
+    },
+    getSubscriptionsFailure(state, action) {
+      state.isLoading = false
+      state.error = action.payload
+
     },
 
     setIsFollowing(state, action) {

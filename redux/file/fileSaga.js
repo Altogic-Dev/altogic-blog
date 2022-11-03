@@ -22,6 +22,7 @@ function* uploadFileSaga({ payload }) {
           data: data.publicPath,
         })
       );
+      
     }
     if (errors) {
       throw errors.items;

@@ -9,7 +9,7 @@ export default function Avatar({
     <div>
       {src ? (
         <img
-          className={`rounded-full object-cover ${className}`}
+          className={` max-w-none rounded-full object-cover ${className}`}
           src={src}
           alt={alt}
         />

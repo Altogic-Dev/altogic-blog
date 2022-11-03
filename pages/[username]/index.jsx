@@ -145,6 +145,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (userFollowingsOwner !== _.get(profileUser, '_id')) setFollowingPage(1);
     if (
+      sessionUser &&
       profileUser &&
       (followingPage > 1 || userFollowingsOwner !== _.get(profileUser, '_id'))
     ) {
@@ -160,7 +161,7 @@ export default function ProfilePage() {
   }, [username]);
 
   useEffect(() => {
-    if (profileUser) {
+    if (profileUser && sessionUser) {
       dispatch(
         generalActions.getFollowAndSubscribedInfoRequest(
           _.get(profileUser, '_id')
@@ -226,6 +227,7 @@ export default function ProfilePage() {
     if (inView) handleBookmarkListEnd();
   }, [inView]);
 
+  console.log(profileUser);
   return (
     <div>
       <Head>
@@ -420,7 +422,7 @@ export default function ProfilePage() {
               ) : (
                 <Sidebar
                   following={{
-                    followings: _.take(userFollowings, 5),
+                    followings: sessionUser ? _.take(userFollowings, 5) : null,
                     count: userFollowingsCount,
                     seeAllButton: toggleFollowingsModal,
                   }}
@@ -443,7 +445,7 @@ export default function ProfilePage() {
               ) : (
                 <Sidebar
                   following={{
-                    followings: _.take(userFollowings, 5),
+                    followings: sessionUser ? _.take(userFollowings, 5) : null,
                     count: userFollowingsCount,
                     seeAllButton: toggleFollowingsModal,
                   }}

@@ -129,6 +129,29 @@ function* getFollowingUsersSaga({ payload: { userId, page, limit } }) {
     console.error({ e });
   }
 }
+function* getSubscriptionsSaga({ payload: { userId, page, limit } }) {
+  try {
+    const { data, errors } = yield call(
+      FollowerConnectionService.getSubscriptions,
+      userId,
+      page,
+      limit
+    );
+
+    if (errors) throw errors;
+    if (_.isArray(data.data)) {
+      yield put(
+        followerConnectionActions.getSubscriptionsSuccess({
+          data: data.data,
+          info: data.info,
+          owner: userId,
+        })
+      );
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
 
 export default function* rootSaga() {
   yield all([
@@ -141,6 +164,10 @@ export default function* rootSaga() {
     takeEvery(
       followerConnectionActions.getFollowingUsersRequest.type,
       getFollowingUsersSaga
+    ),
+    takeEvery(
+      followerConnectionActions.getSubscriptionsRequest.type,
+      getSubscriptionsSaga
     ),
   ]);
 }

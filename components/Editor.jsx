@@ -120,7 +120,7 @@ export default function Editor({
       })
     );
   };
-  const debounceFn = useCallback(_.debounce(handleDebounceFn, 500), []);
+  const debounceFn = useCallback(_.debounce(handleDebounceFn, 200), []);
 
   useEffect(() => {
     const bindings = {

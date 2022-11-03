@@ -61,6 +61,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
     }
   }, [userId, page, selectedIndex]);
 
+  console.log(userStories)
   return (
     <>
       {userStoriesOwner && userId ? (

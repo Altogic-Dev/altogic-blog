@@ -276,14 +276,18 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
     if (data) {
       yield put(
         storyActions.getUserStoriesSuccess({
-          data: data.data,
-          info: data.info,
+          data: data.result,
+          info: data.countInfo,
           owner: userID,
           userID,
         })
       );
     }
   } catch (e) {
+    yield put(
+      storyActions.getUserStoriesFailure(e)
+    );
+
     console.error({ e });
   }
 }
@@ -358,6 +362,8 @@ function* updateStoryFieldSaga({ payload: { story, newStoryField } }) {
     if (errors) throw errors;
     yield put(storyActions.updateStoryFieldSuccess(newStory));
   } catch (e) {
+    yield put(storyActions.updateStoryFieldFailure(e));
+
     console.error({ e });
   }
 }

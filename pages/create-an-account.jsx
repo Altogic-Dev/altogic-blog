@@ -158,7 +158,6 @@ export default function CreateAnAccount() {
                           id="password"
                           name="password"
                           register={register('password')}
-                          placeholder="************ "
                           type="password"
                           error={errors.password}
                         />

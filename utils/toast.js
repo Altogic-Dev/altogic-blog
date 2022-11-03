@@ -7,6 +7,12 @@ const ToastMessage = {
       autoClose: 100,
       ...options,
     }),
+  error: (message, options) =>
+    toast.error(message, {
+      hideProgressBar: true,
+      autoClose: 100,
+      ...options,
+    }),
 };
 
 export default ToastMessage;

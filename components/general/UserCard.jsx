@@ -7,12 +7,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function UserCard({ user, isFollowing }) {
+export default function UserCard({ subscription, user, isFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
+
+  const buttonTexts = subscription
+    ? ['Unsubscribe', 'Subscribe']
+    : ['Unfollow', 'Follow'];
   const router = useRouter();
   const [followingLoad, setFollowingLoad] = useState(false);
   const toggleFollow = () => {
@@ -81,7 +85,7 @@ export default function UserCard({ user, isFollowing }) {
         )}
         disabled={followingLoad}
       >
-        {isFollowing ? 'Unfollow' : 'Follow'}
+        {isFollowing ? buttonTexts[0] : buttonTexts[1]}
       </Button>
     </li>
   );
