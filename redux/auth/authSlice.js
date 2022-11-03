@@ -108,7 +108,7 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
-    resetErrorsRequest() {},
+    resetErrorsRequest() { },
 
     resetErrors(state) {
       state.isLoading = false;
@@ -134,6 +134,9 @@ export const authSlice = createSlice({
     updateUserSuccess(state, action) {
       state.isLoading = false;
       state.user = action.payload;
+      if (state.profileUser?._id === state.user?._id) {
+        state.profileUser = action.payload;
+      }
       ToastMessage.success('Profile updated successfully');
     },
     updateUserFailure(state, action) {

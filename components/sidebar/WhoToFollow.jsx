@@ -19,8 +19,7 @@ export default function WhoToFollow({
   );
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
-  const isLoading = useSelector((state) => state.recommendations.isLoading);
-  let page = 1;
+    let page = 1;
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
@@ -87,12 +86,11 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
-  if (!isLoading)
+  if (people.length > 0)
     return (
       <div>
-        {people.length > 0 && (
-          <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />
-        )}
+        <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />
+
         <div>
           <ul className="divide-y divide-gray-200">
             {people?.slice(0, 5).map((person, index) => (
@@ -195,6 +193,4 @@ export default function WhoToFollow({
         </div>
       </div>
     );
-
-  return <div> Loading</div>;
 }

@@ -1,33 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
-import ChangePassword from '@/components/settings/ChangePassword';
-import MySessions from '@/components/settings/MySessions';
-import MyPlans from '@/components/settings/MyPlans';
-import ChangeEmail from '@/components/settings/ChangeEmail';
+import { useDispatch, useSelector } from 'react-redux';
 import Layout from '@/layouts/Layout';
 import constants from '@/constants';
-import ChangeProfilePicture from '@/components/settings/ChangeProfilePicture';
-import MyDetails from '@/components/settings/MyDetails';
 import { useRouter } from 'next/router';
+import UserCard from '@/components/general/UserCard';
+import _ from 'lodash';
+import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 
 export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
+  const subscriptions = useSelector(
+    (state) => state.followerConnection.subscriptions
+  );
   const [user, setUser] = useState();
   const router = useRouter();
+  const dispatch = useDispatch();
+  const page = 1;
+
   useEffect(() => {
     if (_user) {
       setUser(_user);
     } else router.push('/login');
   }, [_user]);
-  const currentSubscription = useSelector(
-    (state) => state.payment.currentSubscription
-  );
 
-  const invoices = useSelector((state) => state.payment.invoices);
+  const getSubscriptions = () => {
+    dispatch(
+      followerConnectionActions.getSubscriptionsRequest({
+        userId: _.get(_user, '_id'),
+        page,
+      })
+    );
+  };
+
+  useEffect(() => {
+    getSubscriptions(page);
+  }, [page]);
+
+  console.log(subscriptions);
   return (
     <div>
-      {_user ? (
+      {user ? (
         <div>
           <Head>
             <title>Altogic Medium Blog App Settings</title>
@@ -59,33 +72,16 @@ export default function Settings() {
                     </li>
                   ))}
                 </ul>
+
                 <div>
-                  {/* My Details */}
-                  <MyDetails user={user} id="my-details" className="mb-16" />
-                  {/* My Details */}
-                  <ChangeProfilePicture
-                    user={user}
-                    id="change-profile-picture"
-                    className="mb-16"
-                  />
-                  {/* Password */}
-                  {user?.provider === 'altogic' && (
-                    <ChangePassword id="password" className="mb-16" />
-                  )}
-                  {user?.provider === 'altogic' && (
-                    <ChangeEmail id="change-email" className="mb-16" />
-                  )}
-                  {/* My Sessions */}
-                  <MySessions id="my-sessions" className="mb-16" />
-                  {/* My Plans */}
-                  {(currentSubscription || invoices.length > 0) && (
-                    <MyPlans
-                      id="my-plans"
-                      className="mb-16"
-                      currentSubscription={currentSubscription}
-                      invoices={invoices}
+                  {_.map(subscriptions, (subscription) => (
+                    <UserCard
+                      isFollowing
+                      subscription
+                      user={subscription?.subscribingUser}
+                      key={subscription?.subscribingUser?._id}
                     />
-                  )}
+                  ))}
                 </div>
               </div>
             </div>

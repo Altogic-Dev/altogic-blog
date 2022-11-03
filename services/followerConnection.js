@@ -45,5 +45,15 @@ const FollowerConnectionService = {
       .limit(limit)
       .get(true);
   },
+  getSubscriptions(userId, page = 1, limit = 5) {
+    return db
+      .model('subscribe_connection')
+      .filter(`subscribeUser == '${userId}'`)
+      .lookup({ field: 'subscribingUser' })
+      .sort('createdAt', 'desc')
+      .page(page)
+      .limit(limit)
+      .get(true);
+  },
 };
 export default FollowerConnectionService;

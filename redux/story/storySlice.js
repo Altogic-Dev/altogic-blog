@@ -19,6 +19,7 @@ const initialState = {
   userDraftStoriesInfo: null,
   publicationsStories: [],
   isLoading: false,
+  publishLoading: false,
   replyLoading: false,
   deletingIsLoading: false,
   replies: [],
@@ -66,7 +67,6 @@ export const storySlice = createSlice({
     },
 
     getStoryRequest(state) {
-      state.story = null;
       state.isLoading = true;
     },
     getStorySuccess(state, action) {
@@ -113,6 +113,7 @@ export const storySlice = createSlice({
       state.isLoading = false;
     },
     createReplyFailure(state, action) {
+      ToastMessage.error("This story doesn't exist any longer");
       state.error = action.payload;
       state.isLoading = false;
     },
@@ -197,23 +198,27 @@ export const storySlice = createSlice({
     },
     updateStorySuccess(state, action) {
       if (state.story?.isPublished) {
+        /// userStoriesCount--
         if (!_.isNil(state.userStoriesInfo)) {
           state.userStoriesInfo = {
             ...state.userStoriesInfo,
             count: state.userStoriesInfo.count - 1,
           };
         }
+        /// userStoriesCount++
         if (!_.isNil(state.userDraftStoriesInfo)) {
           state.userDraftStoriesInfo = {
             ...state.userDraftStoriesInfo,
             count: state.userDraftStoriesInfo.count + 1,
           };
         }
+        /// userStoriesState Update
         if (!_.isNil(state.userStories)) {
           state.userStories = state.userStories.filter(
             (story) => story._id !== action.payload._id
           );
         }
+        /// userDraftStoriesState Update
         if (!_.isNil(state.userDraftStories)) {
           state.userDraftStories = _.orderBy(
             [...state.userDraftStories, action.payload],
@@ -221,7 +226,18 @@ export const storySlice = createSlice({
             ['desc', 'desc']
           );
         }
+
       }
+      else {
+
+        state.userDraftStories = _.orderBy(
+          [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+          ['pinnedStory', 'createdAt'],
+          ['desc', 'desc']
+        );
+
+      }
+
 
       state.story = action.payload;
       state.error = null;
@@ -264,6 +280,11 @@ export const storySlice = createSlice({
       }
       state.userStoriesOwner = action.payload.owner;
       state.userStoriesInfo = action.payload.info;
+      state.userStoriesLoading = false;
+    },
+
+
+    getUserStoriesFailure(state) {
       state.userStoriesLoading = false;
     },
 
@@ -338,24 +359,24 @@ export const storySlice = createSlice({
     },
     updateStoryFieldFailure(state, action) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.error = _.first(action.payload.items)
     },
-    cacheStoryRequest() {},
+    cacheStoryRequest() { },
 
     getCacheStoryRequest(state) {
       state.isLoading = true;
     },
     getCacheStorySuccess(state, action) {
-      state.isLoading = false;
+      state.publishLoading = false;
       state.story = action.payload;
     },
 
     publishStoryRequest(state) {
-      state.isLoading = true;
+      state.publishLoading = true;
     },
     publishStorySuccess(state, action) {
       state.story = action.payload;
-      state.isLoading = false;
+      state.publishLoading = false;
       if (!_.isNil(state.userStoriesInfo)) {
         state.userStoriesInfo = {
           ...state.userStoriesInfo,
@@ -427,9 +448,9 @@ export const storySlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    visitStoryRequest() {},
-    visitStorySuccess() {},
-    visitStoryFailure() {},
+    visitStoryRequest() { },
+    visitStorySuccess() { },
+    visitStoryFailure() { },
 
     removeUnfollowingStories(state, action) {
       state.followingStories = action.payload;
@@ -442,10 +463,10 @@ export const storySlice = createSlice({
         state.userDraftStories = _.map(state.userDraftStories, (story) =>
           story.user === action.payload._id
             ? {
-                ...story,
-                username: action.payload.username,
-                userProfilePicture: action.payload.profilePicture,
-              }
+              ...story,
+              username: action.payload.username,
+              userProfilePicture: action.payload.profilePicture,
+            }
             : story
         );
       }
@@ -453,10 +474,10 @@ export const storySlice = createSlice({
         state.userStories = _.map(state.userStories, (story) =>
           story.user === action.payload._id
             ? {
-                ...story,
-                username: action.payload.username,
-                userProfilePicture: action.payload.profilePicture,
-              }
+              ...story,
+              username: action.payload.username,
+              userProfilePicture: action.payload.profilePicture,
+            }
             : story
         );
       }

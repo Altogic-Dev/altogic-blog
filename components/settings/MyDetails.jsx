@@ -10,6 +10,7 @@ import * as yup from 'yup';
 import Avatar from '@/components/profile/Avatar';
 import constants from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { authActions } from '@/redux/auth/authSlice';
 import UserSettingsInput from './UserSettingsInput';
 import EditorToolbar, { modules, formats } from '../EditorToolbar';
@@ -27,6 +28,8 @@ const ReactQuill = dynamic(
 );
 
 export default function MyDetails({ user }) {
+  const [basePath, setBasePath] = useState();
+
   const urlRegex =
     /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
   const settingsSchema = new yup.ObjectSchema({
@@ -128,6 +131,9 @@ export default function MyDetails({ user }) {
   };
 
   useEffect(() => {
+    setBasePath(`${window.location.host}/`);
+  }, []);
+  useEffect(() => {
     setAbout(user?.about);
   }, [user]);
   return (
@@ -157,7 +163,7 @@ export default function MyDetails({ user }) {
               register={register}
               errors={errors}
               icon={field.icon ?? ''}
-              prefix={field.prefix ?? ''}
+              prefix={field.name === 'username' ? basePath : field.prefix ?? ''}
               className={field.className ?? ''}
               id={field.name}
               type={field.type ?? 'text'}

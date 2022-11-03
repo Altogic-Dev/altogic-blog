@@ -10,6 +10,8 @@ export default function ChangeProfilePicture({ user }) {
   const userAvatarLink = useSelector((state) => state.file.fileLink);
   const loading = useSelector((state) => state.file.isLoading);
   const dispatch = useDispatch();
+  const profileUser = useSelector((state) => state.auth.profileUser);
+  const sessionUser = useSelector((state) => state.auth.user);
 
   const [didMount, setDidMount] = useState(false);
 
@@ -47,6 +49,9 @@ export default function ChangeProfilePicture({ user }) {
       );
     } else if (userAvatarLink) {
       setDidMount(true);
+    }
+    if (profileUser?._id === sessionUser._id) {
+      dispatch(authActions.getUserByUserNameRequest(sessionUser.username));
     }
   }, [userAvatarLink]);
 

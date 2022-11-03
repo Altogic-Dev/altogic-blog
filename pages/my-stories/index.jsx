@@ -99,6 +99,7 @@ export default function MyStories() {
     }
   }, [publishedPage]);
 
+  console.log(userStoriesLoading)
   return (
     <div>
       <Head>

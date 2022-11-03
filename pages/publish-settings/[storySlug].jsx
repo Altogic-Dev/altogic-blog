@@ -21,7 +21,7 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
-  const loading = useSelector((state) => state.story.isLoading);
+  const [loading, setLoading] = useState(false)
   const topicLoading = useSelector((state) => state.topics.isLoading);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
@@ -46,11 +46,12 @@ export default function PublishSettings() {
     []
   );
 
-
   const handleInsert = (e) => {
     if (
       _.size(inpCategoryNames) < 5 &&
-      !_.includes(_.map(inpCategoryNames, 'name'), inpCategory)
+      !inpCategoryNames?.some(
+        (item) => item.name.toLowerCase() === inpCategory.toLowerCase()
+      )
     ) {
       if (e.key === 'Enter') {
         setInpCategoryNames((prev) => [
@@ -70,7 +71,12 @@ export default function PublishSettings() {
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);
 
-    if (!inpCategoryNames?.some(item => item.name.toLowerCase() === topic.name.toLowerCase()) && _.size(inpCategoryNames) < 5) {
+    if (
+      !inpCategoryNames?.some(
+        (item) => item.name.toLowerCase() === topic.name.toLowerCase()
+      ) &&
+      _.size(inpCategoryNames) < 5
+    ) {
       setInpCategoryNames((prev) => [
         ...prev,
         {
@@ -91,10 +97,10 @@ export default function PublishSettings() {
   };
 
   const addCategoryFromRecommended = (categoryName) => {
-    console.log(categoryName);
-
     if (
-      !_.includes(inpCategoryNames, categoryName) &&
+      !inpCategoryNames?.some(
+        (item) => item.name.toLowerCase() === categoryName.toLowerCase()
+      ) &&
       _.size(inpCategoryNames) < 5
     ) {
       setInpCategoryNames((prev) => [
@@ -107,6 +113,7 @@ export default function PublishSettings() {
     }
   };
   const handlePublish = () => {
+    setLoading(true)
     const tempInpCategoryNames = inpCategoryNames.sort();
     const categoryPairs = [];
     for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {
@@ -263,13 +270,13 @@ export default function PublishSettings() {
                   </button>
                 </Link>
                 <hr className="block md:hidden my-16" />
-                <button
-                  type="button"
+                <Button
                   className="flex md:hidden items-center justify-center gap-2 w-full px-3.5 py-2.5 mb-16 text-base font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   onClick={handlePublish}
+                  loading={loading}
                 >
                   Publish Now
-                </button>
+                </Button>
               </div>
               <div>
                 <Listbox

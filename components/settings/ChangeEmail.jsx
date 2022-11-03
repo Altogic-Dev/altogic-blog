@@ -22,6 +22,7 @@ export default function ChangeEmail() {
   const dispatch = useDispatch();
   const error = useSelector((state) => state.auth.changeEmailError);
   const loading = useSelector((state) => state.auth.isLoading);
+  const user = useSelector((state) => state.auth.user);
   const [changeEmailLoading, setChangeEmailLoading] = useState(false);
   const {
     register,
@@ -89,6 +90,22 @@ export default function ChangeEmail() {
               </p>
             </div>
             <div className="divide-y divide-gray-200">
+              <div>
+                <div className="grid md:grid-cols-[280px,1fr] gap-1 md:gap-8 max-w-[824px] w-full py-6 md:pb-6">
+                  <label
+                    htmlFor="newEmail"
+                    className="block text-sm font-medium text-gray-700 tracking-sm"
+                  >
+                    Current Email
+                  </label>
+                  <Input
+                    value={user.email}
+                    disabled
+                    type="email"
+                    className="flex-1 min-w-0"
+                  />
+                </div>
+              </div>
               <div>
                 <div className="grid md:grid-cols-[280px,1fr] gap-1 md:gap-8 max-w-[824px] w-full py-6 md:pb-6">
                   <label
