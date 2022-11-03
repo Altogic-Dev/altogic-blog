@@ -16,7 +16,7 @@ export default function Settings() {
   const [user, setUser] = useState();
   const router = useRouter();
   const dispatch = useDispatch();
-  const [page, setPage] = useState(1);
+  const page = 1;
 
   useEffect(() => {
     if (_user) {
