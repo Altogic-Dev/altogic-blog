@@ -20,6 +20,7 @@ const Editor = dynamic(() => import('@/components/Editor'), {
 
 export default function WriteAStory() {
   const [content, setContent] = useState('');
+  const [isChanged, setIsChanged] = useState(false);
   const [storyImages, setStoryImages] = useState([]);
   const [isCreated, setIsCreated] = useState(false);
   const [username, setUsername] = useState('');
@@ -90,7 +91,7 @@ export default function WriteAStory() {
   }, [router.isReady]);
 
   useEffect(() => {
-    if (content !== '<p><br></p>' || inpTitle) {
+    if ((content !== '<p><br></p>' || inpTitle) && isChanged) {
       setLoading(true);
       const story = {
         user: user._id,
@@ -124,9 +125,14 @@ export default function WriteAStory() {
       }
     }
     if (content) setMinRead(Math.ceil(content.split(' ').length / 200));
-
   }, [content, inpTitle]);
 
+  const handleChange = (e) => {
+    if (!isChanged) {
+      setIsChanged(true);
+    }
+    setContent(e);
+  };
   const handleDebounceFn = (inputValue) => {
     setInpTitle(inputValue);
   };
@@ -221,9 +227,13 @@ export default function WriteAStory() {
           <div className="mt-4 w-full">
             <Editor
               setIsShowSaving={setIsShowSaving}
-              onChange={setContent}
+              onChange={handleChange}
               setImages={setStoryImages}
-              value={!_.isNil(id) && _.get(newStory, 'content')}
+              value={
+                !_.isNil(id) && _.get(newStory, 'content') !== '<p><br></p>'
+                  ? _.get(newStory, 'content')
+                  : null
+              }
             />
           </div>
         </form>

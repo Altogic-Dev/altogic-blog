@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Transition, Menu } from '@headlessui/react';
+import { Transition, Disclosure } from '@headlessui/react';
 import { UserMinus } from 'react-feather';
 import {
   CogIcon,
@@ -7,14 +7,16 @@ import {
   ChartBarIcon,
   ClipboardListIcon,
   LogoutIcon,
+  UsersIcon,
 } from '@heroicons/react/outline';
-import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
+import { useRouter } from 'next/router';
 import Avatar from './profile/Avatar';
 
 export default function HeaderDropdown({ user, logout, className }) {
   const dispatch = useDispatch();
+  const router = useRouter();
   const publications = useSelector((state) => state.publication.publications);
   const selectPublication = (publication) => {
     dispatch(publicationActions.selectPublicationRequest(publication));
@@ -35,7 +37,7 @@ export default function HeaderDropdown({ user, logout, className }) {
       leaveFrom="transform opacity-100 scale-100"
       leaveTo="transform opacity-0 scale-95"
     >
-      <Menu.Items
+      <Disclosure.Panel
         className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50 `}
       >
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
@@ -54,62 +56,73 @@ export default function HeaderDropdown({ user, logout, className }) {
             </p>
           </div>
         </div>
-        <div className="divide-y divide-gray-200">
+        <div className="divide-y divide-gray-200 w-full">
           <div>
-            <Link href={`/${user?.username}?tab=about`}>
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 ">
-                <UserIcon className="w-4 h-4 group-hover:text-purple-700" />
-                View Profile
-              </a>
-            </Link>
+            <Disclosure.Button
+              onClick={() => router.push(`/${user?.username}?tab=about`)}
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
+            >
+              <UserIcon className="w-4 h-4 group-hover:text-purple-700" />
+              View Profile
+            </Disclosure.Button>
 
-            <Link href="/settings">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 ">
-                <CogIcon className="w-4 h-4 group-hover:text-purple-700" />
-                Settings
-              </a>
-            </Link>
+            <Disclosure.Button
+              className='w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "'
+              onClick={() => router.push(`/settings`)}
+            >
+              <CogIcon className="w-4 h-4 group-hover:text-purple-700" />
+              Settings
+            </Disclosure.Button>
 
-            <Link href="/muted-users">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 ">
-                <UserMinus className="w-4 h-4 group-hover:text-purple-700" />
-                Muted Users
-              </a>
-            </Link>
+            <Disclosure.Button
+              onClick={() => router.push(`/muted-users`)}
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
+            >
+              <UserMinus className="w-4 h-4 group-hover:text-purple-700" />
+              Muted Users
+            </Disclosure.Button>
 
-            <Link href="/stats">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
-                <ChartBarIcon className="w-4 h-4 group-hover:text-purple-700" />
-                Stats
-              </a>
-            </Link>
+            <Disclosure.Button
+              onClick={() => router.push(`/stats`)}
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
+            >
+              <ChartBarIcon className="w-4 h-4 group-hover:text-purple-700" />
+              Stats
+            </Disclosure.Button>
+            <Disclosure.Button
+              onClick={() => router.push(`/subscriptions`)}
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
+            >
+              <UsersIcon className="w-4 h-4 group-hover:text-purple-700" />
+              Subscribtions
+            </Disclosure.Button>
           </div>
           <div>
-            <span className="inline-flex px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
+            <span className="flex flex-col px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
               Publications
             </span>
             {publiationsState?.slice(0, 3).map((publication) => (
-              <Menu.Item
+              <Disclosure.Button
                 key={publication._id}
                 onClick={() => selectPublication(publication)}
+                className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
               >
-                <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
-                  <img
-                    src={publication?.logo}
-                    alt={publication?.name}
-                    className="w-5 h-5 rounded-full"
-                  />
-                  {publication?.name}
-                </span>
-              </Menu.Item>
+                <img
+                  src={publication?.logo}
+                  alt={publication?.name}
+                  className="w-5 h-5 rounded-full"
+                />
+                {publication?.name}
+              </Disclosure.Button>
             ))}
 
-            <Link href="/publications">
-              <a className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
-                <ClipboardListIcon className="w-4 h-4 group-hover:text-purple-700" />
-                Manage Publications
-              </a>
-            </Link>
+            <Disclosure.Button
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
+              onClick={() => router.push(`/publications`)}
+            >
+              <ClipboardListIcon className="w-4 h-4 group-hover:text-purple-700" />
+              Manage Publications
+            </Disclosure.Button>
           </div>
           <div>
             {/* <Link href="/help">
@@ -118,15 +131,16 @@ export default function HeaderDropdown({ user, logout, className }) {
                 Help
               </a>
             </Link> */}
-            <Menu.Item onClick={logout}>
-              <span className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50">
-                <LogoutIcon className="w-4 h-4 group-over:text-purple-700" />
-                Logout
-              </span>
-            </Menu.Item>
+            <Disclosure.Button
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
+              onClick={logout}
+            >
+              <LogoutIcon className="w-4 h-4 group-over:text-purple-700" />
+              Logout
+            </Disclosure.Button>
           </div>
         </div>
-      </Menu.Items>
+      </Disclosure.Panel>
     </Transition>
   );
 }

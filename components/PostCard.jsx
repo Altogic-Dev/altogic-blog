@@ -2,6 +2,7 @@ import { Fragment, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import _ from 'lodash';
 import Link from 'next/link';
+import { Pin } from '@icon-park/react';
 import { useSelector } from 'react-redux';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import CreateBookmarkList from './bookmarks/CreateBookmarkList';
@@ -34,7 +35,8 @@ export default function PostCard({
   const myBookmarks = useSelector((state) => state.bookmark.myBookmarks);
   const sessionUser = useSelector((state) => state.auth.user);
 
-  console.log(story);
+
+
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2">
@@ -62,11 +64,7 @@ export default function PostCard({
                 <span className="text-slate-500 text-sm tracking-sm">
                   {timeAgo}
                 </span>
-                {story?.pinnedStory && (
-                  <span className="inline-flex items-center justify-center px-2 py-1 text-sm rounded-full font-medium cursor-default text-white bg-purple-500">
-                    Pinned
-                  </span>
-                )}
+                {story?.pinnedStory && <Pin className="text-purple-500" />}
               </div>
             </a>
           </Link>

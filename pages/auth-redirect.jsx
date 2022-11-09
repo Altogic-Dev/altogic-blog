@@ -43,7 +43,10 @@ export default function AuthRedirect(props) {
       });
     }
   }, []);
-  if (router.query.action === 'change-email')
+  if (
+    router.query.action === 'change-email' ||
+    router.query.action === 'email-confirm'
+  )
     return (
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
         <ClipLoader />

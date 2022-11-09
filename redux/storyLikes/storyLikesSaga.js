@@ -40,6 +40,8 @@ function* likeStorySaga({
     yield put(storyLikesActions.likeStorySuccess());
     yield fork(updateStoryLikeCountSaga, true);
   } catch (e) {
+    yield put(storyLikesActions.likeStoryFailure(e));
+
     console.error({ e });
   }
 }
@@ -62,6 +64,7 @@ function* unlikeStorySaga({ payload: { userId, storyId } }) {
     yield fork(updateStoryLikeCountSaga, false);
   } catch (e) {
     console.error({ e });
+
   }
 }
 

@@ -21,7 +21,7 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const topicLoading = useSelector((state) => state.topics.isLoading);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
@@ -46,6 +46,39 @@ export default function PublishSettings() {
     []
   );
 
+  const orderInDate = () => {
+    if (
+      _.size(inpCategoryNames) < 5 &&
+      !inpCategoryNames?.some(
+        (item) => item.name.toLowerCase() === inpCategory.toLowerCase()
+      )
+    ) {
+     
+    foundTopics.order((item) => item.name);
+  };
+
+  const arrowKey = (e) => {
+    if (e.key === 'Dowm') {
+      setInpCategoryNames((prev) => [
+        ...prev,
+        {
+          name: inpCategory,
+          isExisting: foundTopics.some((topic) => topic.name === inpCategory),
+        },
+      ]);
+      setInpCategory('');
+    }
+    else if (e.key === 'Up') {
+      setInpCategoryNames((prev) => [
+        ...prev,
+        {
+          name: inpCategory,
+          isExisting: foundTopics.some((topic) => topic.name === inpCategory),
+        },
+      ]);
+      setInpCategory('');
+    } 
+  }
   const handleInsert = (e) => {
     if (
       _.size(inpCategoryNames) < 5 &&
@@ -113,7 +146,7 @@ export default function PublishSettings() {
     }
   };
   const handlePublish = () => {
-    setLoading(true)
+    setLoading(true);
     const tempInpCategoryNames = inpCategoryNames.sort();
     const categoryPairs = [];
     for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {

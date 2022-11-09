@@ -198,7 +198,6 @@ function StoryContent(props) {
     }
   }, [sessionUser]);
 
-  console.log(user);
   return (
     <div ref={forwardedRef}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
@@ -232,6 +231,7 @@ function StoryContent(props) {
               >
                 <circle cx={4} cy={4} r={3} />
               </svg>
+              <span>{_.get(story, 'estimatedReadingTime')} Minutes</span>
             </div>
           </div>
         </div>

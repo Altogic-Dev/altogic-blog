@@ -3,8 +3,10 @@ import PostCard from '@/components/PostCard';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
 import { useEffect, useCallback, useRef } from 'react';
+import { parseHtml } from '@/utils/utils';
 import { useInView } from 'react-intersection-observer';
 import { FlagIcon } from '@heroicons/react/outline';
+import Button from '../basic/button';
 
 function MyStoriesDraft({
   setDeletedStory,
@@ -37,6 +39,7 @@ function MyStoriesDraft({
   useEffect(() => {
     if (inView) handleEndOfList();
   }, [inView]);
+
   return (
     <div>
       {_.size(userDraftStories) > 0 ? (
@@ -52,7 +55,7 @@ function MyStoriesDraft({
               storyUrl={`/write-a-story?id=${story._id}`}
               timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
               title={story.title}
-              infoText={story.excerpt}
+              infoText={parseHtml(story.content).slice(0, 300)}
               badgeName={_.first(story.categoryNames)}
               min={story.estimatedReadingTime}
               images={_.first(story.storyImages)}
@@ -86,8 +89,14 @@ function MyStoriesDraft({
             <FlagIcon className="w-7 h-7 text-purple-600" />
           </span>
           <p className="text-slate-500 text-md  ">
-            You don{`'`}t have draft stories{' '}
+            You don{`'`}t have any draft stories{' '}
           </p>
+          <Button
+            extraClasses="mt-10"
+            onClick={() => router.push('/write-a-story')}
+          >
+            Write a Story
+          </Button>
         </div>
       )}
     </div>
