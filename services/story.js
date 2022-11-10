@@ -62,13 +62,13 @@ const StoryService = {
       .get();
   },
 
-  getUserStories(userId, page = 1, limit = 6) {
+  getUserStories(userId, page = 1, limit = 3) {
     return endpoint.get(`/user/${userId}/stories`, page, limit);
 
 
   },
 
-  getUserDraftStories(userId, page = 1, limit = 6) {
+  getUserDraftStories(userId, page = 1, limit = 3) {
     return db
       .model('story')
       .filter(`user == '${userId}' && !isDeleted && !isPublished`)
