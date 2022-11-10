@@ -294,6 +294,7 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
 
 function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
   try {
+    console.log(page)
     let userID = userId;
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));

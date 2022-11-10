@@ -197,6 +197,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {
+
       if (state.story?.isPublished) {
         /// userStoriesCount--
         if (!_.isNil(state.userStoriesInfo)) {
@@ -218,26 +219,16 @@ export const storySlice = createSlice({
             (story) => story._id !== action.payload._id
           );
         }
-        /// userDraftStoriesState Update
-        if (!_.isNil(state.userDraftStories)) {
-          state.userDraftStories = _.orderBy(
-            [...state.userDraftStories, action.payload],
-            ['pinnedStory', 'createdAt'],
-            ['desc', 'desc']
-          );
-        }
+
 
       }
-      else {
+      /// userDraftStoriesState Update
 
-        state.userDraftStories = _.orderBy(
-          [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
-          ['pinnedStory', 'createdAt'],
-          ['desc', 'desc']
-        );
-
-      }
-
+      state.userDraftStories = _.orderBy(
+        [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+        ['pinnedStory', 'createdAt'],
+        ['desc', 'desc']
+      );
 
       state.story = action.payload;
       state.error = null;

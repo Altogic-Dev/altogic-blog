@@ -36,6 +36,8 @@ function MyStoriesPublished({
   useEffect(() => {
     if (inView) handleEndOfList();
   }, [inView]);
+  console.log(userStories)
+
   return (
     <div>
       {_.size(userStories) > 0 ? (

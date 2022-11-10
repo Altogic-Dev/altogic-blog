@@ -39,20 +39,20 @@ export default function Settings() {
             <link rel="icon" href="/favicon.svg" />
           </Head>
           <Layout>
-            <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0">
+            <div className="max-w-screen-xl mx-auto px-4 lg:px-4 pt-8 pb-[72px] lg:pb-0">
               <div className="hidden md:flex items-center justify-between py-6 mb-6 border-b border-gray-200">
                 <h1 className="text-slate-800 mb-4 text-3xl font-medium tracking-md">
                   Settings
                 </h1>
               </div>
-              <div className="xl:grid xl:grid-cols-[145px,1fr] gap-24">
+              <div className="xl:grid xl:grid-cols-[160px,1fr] gap-24">
                 <ul className="hidden xl:block sticky bottom-0">
                   {constants.SETTINGS_MENU.map((setting) => (
                     <li key={setting.id}>
                       {setting.provider(user?.provider) && (
                         <a
                           href={setting.href}
-                          className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
+                          className="flex text-slate-500 px-5 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
                         >
                           {setting.name}
                         </a>

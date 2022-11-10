@@ -64,9 +64,10 @@ export default function MyStories() {
   }, [tab]);
 
   const getUserDraftStories = useCallback(() => {
+
     dispatch(
       storyActions.getUserDraftStoriesRequest({
-        draftPage,
+        page: draftPage,
         limit: PAGE_LIMIT,
         isPublishedFilter: false,
       })
@@ -76,7 +77,7 @@ export default function MyStories() {
   const getUserStories = useCallback(() => {
     dispatch(
       storyActions.getUserStoriesRequestNextPage({
-        publishedPage,
+        page: publishedPage,
         limit: PAGE_LIMIT,
         isPublishedFilter: false,
       })
@@ -88,8 +89,9 @@ export default function MyStories() {
       _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
       userDraftStoriesInfo?.count !== _.size(userDraftStories)
     )
-      getUserDraftStories();
+    getUserDraftStories();
   }, [draftPage]);
+
   useEffect(() => {
     if (
       _.size(userStories) < publishedPage * PAGE_LIMIT &&
@@ -99,7 +101,15 @@ export default function MyStories() {
     }
   }, [publishedPage]);
 
-  console.log(userStoriesLoading)
+  useEffect(() => {
+    if (
+      _.size(userStories) < publishedPage * PAGE_LIMIT &&
+      userStoriesInfo?.count !== _.size(userStories)
+    ) {
+      getUserStories();
+    }
+  }, [publishedPage, publishedPage]);
+
   return (
     <div>
       <Head>
@@ -183,21 +193,6 @@ export default function MyStories() {
                       as="div"
                       className="relative inline-block text-left ml-2"
                     >
-                      <div>
-                        <Menu.Button className="inline-flex items-center justify-center px-4 py-3 rounded-md">
-                          <svg
-                            className="w-6 h-6 text-slate-400"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
-                              fill="currentColor"
-                            />
-                          </svg>
-                        </Menu.Button>
-                      </div>
                       <Transition
                         as={Fragment}
                         enter="transition ease-out duration-100"

@@ -95,8 +95,10 @@ export const bookmarkSlice = createSlice({
       state.isLoading = true;
     },
     addBookmarkSuccess(state, action) {
+
       try {
         state.isLoading = false;
+        console.log(action.payload)
         state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
         state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
 
@@ -106,6 +108,7 @@ export const bookmarkSlice = createSlice({
       }
     },
     addBookmarkFailure(state, action) {
+      ToastMessage.error("This story doesn't exist any longer");
       state.isLoading = false;
       state.error = action.payload;
     },
