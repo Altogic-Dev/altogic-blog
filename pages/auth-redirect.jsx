@@ -29,7 +29,7 @@ export default function AuthRedirect(props) {
   }
   useEffect(() => {
     checkProps();
-    if (router.query.status === '401') {
+    if (router.query.status === '401' || router.query.status === '400' ) {
       alert(router.query.error);
       router.push('/login');
     } else if (router.query.action === 'reset-pwd') {
@@ -44,13 +44,13 @@ export default function AuthRedirect(props) {
     }
   }, []);
   if (
-    router.query.action === 'change-email' ||
+    (router.query.action === 'change-email') ||
     router.query.action === 'email-confirm'
   )
     return (
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
-        <ClipLoader />
-        Verifying Email
+        <ClipLoader color="#9333ea" size={100} />
+        <p className=" text-xl text-purple-500">Verifying Email</p>
       </div>
     );
 }
