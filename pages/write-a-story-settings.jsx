@@ -105,7 +105,7 @@ export default function WriteAStorySettings() {
   const fillInputs = useCallback(() => {
     if (!_.isNil(story)) {
       setInpSeoTitle(story?.seoTitle || _.get(story, 'title'));
-      setInpSeoDescription(story.seoDescription || _.get(story, 'excerpt').slice(0,156));
+      setInpSeoDescription(story.seoDescription || _.get(story, 'excerpt')?.slice(0,156));
       setInpStorySlug(story.storySlug);
       setInpCategoryNames(story.categoryNames);
       setRadioLicense(story.license);
