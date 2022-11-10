@@ -32,9 +32,8 @@ export default function WriteAStory() {
   const newStory = useSelector((state) => state.story.story);
   const [webworker, setWebworker] = useState();
   const [isMounted, setIsMounted] = useState(false);
-
+  const [prevId, setPrevId] = useState('');
   const session = useStorage();
-
   const dispatch = useDispatch();
   const router = useRouter();
   const { id } = router.query;
@@ -55,7 +54,15 @@ export default function WriteAStory() {
   } = useForm({
     resolver: yupResolver(storySchema),
   });
+
   useEffect(() => {
+    if (prevId && !id) {
+      setValue('title','') 
+    }
+  }, [id]);
+
+  useEffect(() => {
+    setPrevId(id);
     setWebworker(new Worker(new URL('@/utils/worker', import.meta.url)));
   }, []);
 
