@@ -15,6 +15,8 @@ import DeleteStoryModal from '@/components/DeleteStoryModal';
 import { useRouter } from 'next/router';
 import { ClipLoader } from 'react-spinners';
 
+const PAGE_LIMIT = 3;
+
 export default function MyStories() {
   const router = useRouter();
   const { tab } = router.query;
@@ -34,11 +36,14 @@ export default function MyStories() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [user, setUser] = useState();
   const [deletedStory, setDeletedStory] = useState(null);
-  const [draftPage, setDraftPage] = useState(1);
 
-  const [publishedPage, setPublishedPage] = useState(1);
+  const [draftPage, setDraftPage] = useState(
+    _.size(userDraftStories) / PAGE_LIMIT || 1
+  );
 
-  const PAGE_LIMIT = 3;
+  const [publishedPage, setPublishedPage] = useState(
+    _.size(userStories) / PAGE_LIMIT || 1
+  );
 
   const copyToClipboard = () => {
     const basePath = window.location.origin;
@@ -64,7 +69,6 @@ export default function MyStories() {
   }, [tab]);
 
   const getUserDraftStories = useCallback(() => {
-
     dispatch(
       storyActions.getUserDraftStoriesRequest({
         page: draftPage,
@@ -89,7 +93,7 @@ export default function MyStories() {
       _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
       userDraftStoriesInfo?.count !== _.size(userDraftStories)
     )
-    getUserDraftStories();
+      getUserDraftStories();
   }, [draftPage]);
 
   useEffect(() => {
