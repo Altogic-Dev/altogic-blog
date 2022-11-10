@@ -282,6 +282,7 @@ export const storySlice = createSlice({
       state.userStoriesOwner = action.payload.owner;
       state.userStoriesInfo = action.payload.info;
       state.userStoriesLoading = false;
+
     },
 
 
@@ -344,9 +345,10 @@ export const storySlice = createSlice({
     updateStoryFieldSuccess(state, action) {
       ToastMessage.success('Story updated successfully');
 
+
       if (state.story?.isPublished) {
         if (!_.isNil(state.userStories)) {
-          _.orderBy(
+          state.userStories = _.orderBy(
             _.map(state.userStories, (story) =>
               story._id === action.payload._id ? action.payload : story
             ),
@@ -354,13 +356,12 @@ export const storySlice = createSlice({
             ['desc', 'desc'])
         }
       } else if (!_.isNil(state.userDraftStories)) {
-        state.userDraftStories =
-          _.orderBy(
-            _.map(state.userDraftStories, (story) =>
-              story._id === action.payload._id ? action.payload : story), ['pinnedStory', 'createdAt'],
-            ['desc', 'desc'])
-
+        state.userDraftStories = _.orderBy(_.map(state.userDraftStories, (story) =>
+          story._id === action.payload._id ? action.payload : story
+        ), ['pinnedStory', 'createdAt'],
+          ['desc', 'desc'])
       }
+
       state.isLoading = false;
       state.story = action.payload;
     },

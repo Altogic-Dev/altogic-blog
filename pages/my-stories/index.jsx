@@ -79,7 +79,6 @@ export default function MyStories() {
   }, [draftPage]);
 
   const getUserStories = useCallback(() => {
-    console.log(publishedPage)
     dispatch(
       storyActions.getUserStoriesRequestNextPage({
         page: publishedPage,
