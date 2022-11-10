@@ -270,7 +270,12 @@ export const storySlice = createSlice({
     },
     getUserStoriesSuccess(state, action) {
       if (state.userStoriesOwner === action.payload.owner) {
-        state.userStories = [...state.userStories, ...action.payload.data];
+        state.userStories =
+          _.orderBy(
+            [...state.userStories, ...action.payload.data],
+            ['pinnedStory', 'createdAt'],
+            ['desc', 'desc'])
+
       } else {
         state.userStories = action.payload.data;
       }
@@ -341,14 +346,20 @@ export const storySlice = createSlice({
 
       if (state.story?.isPublished) {
         if (!_.isNil(state.userStories)) {
-          state.userStories = _.map(state.userStories, (story) =>
-            story._id === action.payload._id ? action.payload : story
-          );
+          _.orderBy(
+            _.map(state.userStories, (story) =>
+              story._id === action.payload._id ? action.payload : story
+            ),
+            ['pinnedStory', 'createdAt'],
+            ['desc', 'desc'])
         }
       } else if (!_.isNil(state.userDraftStories)) {
-        state.userDraftStories = _.map(state.userDraftStories, (story) =>
-          story._id === action.payload._id ? action.payload : story
-        );
+        state.userDraftStories =
+          _.orderBy(
+            _.map(state.userDraftStories, (story) =>
+              story._id === action.payload._id ? action.payload : story), ['pinnedStory', 'createdAt'],
+            ['desc', 'desc'])
+
       }
       state.isLoading = false;
       state.story = action.payload;

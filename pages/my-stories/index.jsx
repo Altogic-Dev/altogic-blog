@@ -79,6 +79,7 @@ export default function MyStories() {
   }, [draftPage]);
 
   const getUserStories = useCallback(() => {
+    console.log(publishedPage)
     dispatch(
       storyActions.getUserStoriesRequestNextPage({
         page: publishedPage,
@@ -104,15 +105,6 @@ export default function MyStories() {
       getUserStories();
     }
   }, [publishedPage]);
-
-  useEffect(() => {
-    if (
-      _.size(userStories) < publishedPage * PAGE_LIMIT &&
-      userStoriesInfo?.count !== _.size(userStories)
-    ) {
-      getUserStories();
-    }
-  }, [publishedPage, publishedPage]);
 
   return (
     <div>
