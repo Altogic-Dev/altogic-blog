@@ -1,6 +1,6 @@
 import ToastMessage from '@/utils/toast';
 import { createSlice } from '@reduxjs/toolkit';
-import _, { orderBy } from 'lodash';
+import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
@@ -223,7 +223,7 @@ export const storySlice = createSlice({
 
       }
       /// userDraftStoriesState Update
-      console.log(action.payload)
+
       state.userDraftStories = _.orderBy(
         [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
         ['pinnedStory', 'createdAt'],
@@ -250,25 +250,6 @@ export const storySlice = createSlice({
     getMoreUserStoriesRequest(state) {
       state.isLoading = true;
     },
-
-
-
-    
-    getDraftStoriesExample(state) {
-      state.isLoading = true;
-    },
-    getDraftStoriesExampleSuccess(state, action) {
-      state.isLoading = false;
-      state.story = action.payload;
-    },
-
-    getDraftStoriesExampleRequest(state) {
-      state.isLoading = true;
-    },
-
-
-
-
     getMoreUserStoriesSuccess(state, action) {
       state.isLoading = false;
       state.moreUserStories = action.payload;
@@ -284,12 +265,7 @@ export const storySlice = createSlice({
     },
     getUserStoriesSuccess(state, action) {
       if (state.userStoriesOwner === action.payload.owner) {
-        orderBy(
-          state.userStories = [...state.userStories, ...action.payload.data],
-          ['pinnedStory', 'createdAt'],
-          ['desc', 'desc']
-        );
-
+        state.userStories = [...state.userStories, ...action.payload.data];
       } else {
         state.userStories = action.payload.data;
       }

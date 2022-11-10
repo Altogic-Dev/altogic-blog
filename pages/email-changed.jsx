@@ -1,22 +1,15 @@
-import { useEffect,useState } from 'react';
+import { useEffect } from 'react';
 import { authActions } from '@/redux/auth/authSlice';
 import { useDispatch } from 'react-redux';
 import AuthSidebar from '@/components/AuthSidebar';
 import { MailOpenIcon, ArrowLeftIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 export default function ChangedEmail() {
   const dispatch = useDispatch();
-  const router = useRouter();
-  const [error, setError] = useState();
   useEffect(() => {
     dispatch(authActions.updateUserSuccess());
   }, []);
-
-  useEffect(() => {
-    setError(router.query);
-  }, [router.isReady]);
   return (
     <div className="relative h-screen">
       <div className="grid xl:grid-cols-2 h-full">
@@ -30,10 +23,7 @@ export default function ChangedEmail() {
                 Welcome Back!
               </h1>
               <p className="mb-6 text-base tracking-sm text-slate-500">
-                {error
-                  ? 'Your email has been changed successfully'
-                  : 'Email has been expired'}
-                <br />
+                Your email has been changed successfully <br />{' '}
               </p>
               <div className="text-center mt-8">
                 <Link href="/">

@@ -76,25 +76,6 @@ export default function WriteAStorySettings() {
       }
     }
   };
-
-  const checkExistince = (topic) => {
-    setIsSearchOpen(false);
-
-    if (
-      !inpCategoryNames?.some(
-        (item) => item.name.toLowerCase() === topic.name.toLowerCase()
-      ) &&
-      _.size(inpCategoryNames) < 5
-    ) {
-      setInpCategoryNames((prev) => [
-        ...prev,
-        {
-          name: topic.name,
-          isExisting: true,
-        },
-      ]);
-    }
-  };
   const handleAddTopic = ({ name }) => {
     if (
       !inpCategoryNames?.some(
@@ -120,12 +101,11 @@ export default function WriteAStorySettings() {
     setRadioLicense(e.target.value);
   };
 
+
   const fillInputs = useCallback(() => {
     if (!_.isNil(story)) {
       setInpSeoTitle(story?.seoTitle || _.get(story, 'title'));
-      setInpSeoDescription(
-        story.seoDescription || _.get(story, 'excerpt').slice(0, 156)
-      );
+      setInpSeoDescription(story.seoDescription || _.get(story, 'excerpt').slice(0,156));
       setInpStorySlug(story.storySlug);
       setInpCategoryNames(story.categoryNames);
       setRadioLicense(story.license);
@@ -507,7 +487,7 @@ export default function WriteAStorySettings() {
                                 newStoryField: {
                                   seoDescription:
                                     inpSeoDescription ||
-                                    _.get(story, 'excerpt').slice(0, 156),
+                                    _.get(story, 'excerpt').slice(0,156),
                                 },
                               })
                             );

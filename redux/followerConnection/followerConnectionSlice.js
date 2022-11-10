@@ -143,20 +143,6 @@ export const followerConnectionSlice = createSlice({
 
     },
 
-    getSubscriptionsRequestByPage(state) {
-      state.isLoading = true
-    },
-    getSubscriptionsRequestByPageSuccess(state, action) {
-      state.isLoading = false
-      state.subscriptions = action.payload.data
-
-    },
-    getSubscriptionsRequestByPageFailure(state, action) {
-      state.isLoading = false
-      state.error = action.payload
-
-    },
-
     setIsFollowing(state, action) {
       state.isFollowing = action.payload;
     },

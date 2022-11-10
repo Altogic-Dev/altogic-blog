@@ -64,9 +64,10 @@ export default function MyStories() {
   }, [tab]);
 
   const getUserDraftStories = useCallback(() => {
+
     dispatch(
       storyActions.getUserDraftStoriesRequest({
-        draftPage,
+        page: draftPage,
         limit: PAGE_LIMIT,
         isPublishedFilter: false,
       })
@@ -76,7 +77,7 @@ export default function MyStories() {
   const getUserStories = useCallback(() => {
     dispatch(
       storyActions.getUserStoriesRequestNextPage({
-        publishedPage,
+        page: publishedPage,
         limit: PAGE_LIMIT,
         isPublishedFilter: false,
       })
@@ -88,8 +89,9 @@ export default function MyStories() {
       _.size(userDraftStories) < draftPage * PAGE_LIMIT &&
       userDraftStoriesInfo?.count !== _.size(userDraftStories)
     )
-      getUserDraftStories();
+    getUserDraftStories();
   }, [draftPage]);
+
   useEffect(() => {
     if (
       _.size(userStories) < publishedPage * PAGE_LIMIT &&
@@ -100,17 +102,13 @@ export default function MyStories() {
   }, [publishedPage]);
 
   useEffect(() => {
-    if (userDraftStoriesInfo?.count !== _.size(userDraftStories))
-      getUserDraftStories();
-  }, [draftPage,publishedPage]);
-  useEffect(() => {
     if (
       _.size(userStories) < publishedPage * PAGE_LIMIT &&
       userStoriesInfo?.count !== _.size(userStories)
     ) {
       getUserStories();
     }
-  }, [publishedPage,publishedPage]);
+  }, [publishedPage, publishedPage]);
 
   return (
     <div>

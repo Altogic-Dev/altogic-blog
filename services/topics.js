@@ -57,6 +57,7 @@ const TopicsService = {
   searchTopics(topic) {
     return endpoint.get('/topic/search', { topic });
   },
+  
 };
 
 export default TopicsService;
