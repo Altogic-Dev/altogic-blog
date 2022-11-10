@@ -99,10 +99,7 @@ export default function WriteAStory() {
   }, [router.isReady]);
 
   useEffect(() => {
-    console.log('girdi')
-    console.log(inpTitle,isChanged)
     if ((content !== '<p><br></p>' || inpTitle) && isChanged) {
-      console.log('girdi2')
       setLoading(true);
       const story = {
         user: user._id,
@@ -117,7 +114,6 @@ export default function WriteAStory() {
           ? selectedPublication._id
           : undefined,
       };
-      console.log('here')
       setIsShowSaving(true);
       if (!isCreated) {
         dispatch(storyActions.createStoryRequest(story));

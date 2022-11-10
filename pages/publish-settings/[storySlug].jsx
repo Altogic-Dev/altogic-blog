@@ -21,7 +21,7 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const topicLoading = useSelector((state) => state.topics.isLoading);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
@@ -40,8 +40,10 @@ export default function PublishSettings() {
 
   const debouncedSearch = useCallback(
     _.debounce((category) => {
-      dispatch(topicsActions.searchTopicsRequest(category));
-      setIsSearchOpen(true);
+      if (category) {
+        dispatch(topicsActions.searchTopicsRequest(category));
+        setIsSearchOpen(true);
+      }
     }, 500),
     []
   );
@@ -62,11 +64,8 @@ export default function PublishSettings() {
           },
         ]);
         setInpCategory('');
-      } else {
-        debouncedSearch(inpCategory);
       }
     }
-    setIsSearchOpen(false);
   };
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);
@@ -113,7 +112,7 @@ export default function PublishSettings() {
     }
   };
   const handlePublish = () => {
-    setLoading(true)
+    setLoading(true);
     const tempInpCategoryNames = inpCategoryNames.sort();
     const categoryPairs = [];
     for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {
@@ -159,6 +158,9 @@ export default function PublishSettings() {
       dispatch(storyActions.getCacheStoryRequest(storySlug));
     }
   }, [storySlug]);
+  useEffect(() => {
+    if (inpCategory) debouncedSearch(inpCategory);
+  }, [inpCategory]);
 
   useEffect(() => {
     setUser(userFromStorage);
@@ -386,16 +388,14 @@ export default function PublishSettings() {
                       disabled={_.size(story?.categoryNames) >= 5}
                       onKeyDown={handleInsert}
                     />
-                    {!_.isEmpty(foundTopics) &&
-                      isSearchOpen &&
-                      _.size(inpCategory) !== 0 && (
-                        <PublicationSettingsSuggestions
-                          name="Topics"
-                          suggestions={foundTopics}
-                          onClick={(e, topicId, topic) => handleAddTopic(topic)}
-                          loading={topicLoading}
-                        />
-                      )}
+                    {isSearchOpen && _.size(inpCategory) !== 0 && (
+                      <PublicationSettingsSuggestions
+                        name="Topics"
+                        suggestions={foundTopics}
+                        onClick={(e, topicId, topic) => handleAddTopic(topic)}
+                        loading={topicLoading}
+                      />
+                    )}
 
                     {_.map(inpCategoryNames, (category) => (
                       <Category
