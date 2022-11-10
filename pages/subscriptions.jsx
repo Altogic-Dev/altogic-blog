@@ -6,11 +6,15 @@ import { useRouter } from 'next/router';
 import UserCard from '@/components/general/UserCard';
 import _ from 'lodash';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import { ClipLoader } from 'react-spinners';
 
 export default function Settings() {
   const _user = useSelector((state) => state.auth.user);
   const subscriptions = useSelector(
     (state) => state.followerConnection.subscriptions
+  );
+  const isLoading = useSelector(
+    (state) => state.followerConnection.subscriptionsLoading
   );
   const [user, setUser] = useState();
   const router = useRouter();
@@ -36,7 +40,6 @@ export default function Settings() {
     getSubscriptions(page);
   }, [page]);
 
-  console.log(subscriptions);
   return (
     <div>
       {user ? (
@@ -56,17 +59,22 @@ export default function Settings() {
                   Subscriptions
                 </h1>
               </div>
-
-              <div>
-                {_.map(subscriptions, (subscription) => (
-                  <UserCard
-                    isFollowing
-                    subscription
-                    user={subscription?.subscribingUser}
-                    key={subscription?.subscribingUser?._id}
-                  />
-                ))}
-              </div>
+              {isLoading ? (
+                <ClipLoader />
+              ) : (
+                <div>
+                  {_.size(subscriptions) ? _.map(subscriptions, (subscription) => (
+                    <UserCard
+                      isFollowing
+                      subscription
+                      user={subscription?.subscribingUser}
+                      key={subscription?.subscribingUser?._id}
+                    />
+                  )) : 
+                  <p>No subscriptions found</p>
+                  }
+                </div>
+              )}
             </div>
           </Layout>
         </div>

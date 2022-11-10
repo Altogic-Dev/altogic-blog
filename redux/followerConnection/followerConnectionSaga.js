@@ -139,7 +139,7 @@ function* getSubscriptionsSaga({ payload: { userId, page, limit } }) {
     );
 
     if (errors) throw errors;
-    if (_.isArray(data.data)) {
+    if (data) {
       yield put(
         followerConnectionActions.getSubscriptionsSuccess({
           data: data.data,
@@ -149,7 +149,7 @@ function* getSubscriptionsSaga({ payload: { userId, page, limit } }) {
       );
     }
   } catch (e) {
-    console.error({ e });
+    yield put(followerConnectionActions.getSubscriptionsFailure(e))
   }
 }
 
