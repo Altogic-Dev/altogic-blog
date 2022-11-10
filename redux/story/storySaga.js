@@ -287,14 +287,11 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
     yield put(
       storyActions.getUserStoriesFailure(e)
     );
-
-    console.error({ e });
   }
 }
 
 function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
   try {
-    console.log(page)
     let userID = userId;
     if (!userID) {
       userID = yield select((state) => _.get(state.auth.user, '_id'));
@@ -316,7 +313,9 @@ function* getUserDraftStoriesSaga({ payload: { userId, page, limit } }) {
       );
     }
   } catch (e) {
-    console.error({ e });
+    yield put(
+      storyActions.getUserDraftStoriesFailure(e)
+    );
   }
 }
 

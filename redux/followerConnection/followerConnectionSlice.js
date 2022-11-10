@@ -18,6 +18,7 @@ const initialState = {
   userFollowingsCount: 0,
   userFollowingsOwner: null,
   subscriptions: [],
+  subscriptionsLoading: false,
 };
 
 // Actual Slice
@@ -130,15 +131,19 @@ export const followerConnectionSlice = createSlice({
     },
 
     getSubscriptionsRequest(state) {
-      state.isLoading = true
+      state.subscriptionsLoading = true
     },
     getSubscriptionsSuccess(state, action) {
-      state.isLoading = false
-      state.subscriptions = action.payload.data
+      try {
+        state.subscriptionsLoading = false
+        state.subscriptions = action.payload.data
+      } catch (error) {
+        console.log(error)
+      }
 
     },
     getSubscriptionsFailure(state, action) {
-      state.isLoading = false
+      state.subscriptionsLoading = false
       state.error = action.payload
 
     },

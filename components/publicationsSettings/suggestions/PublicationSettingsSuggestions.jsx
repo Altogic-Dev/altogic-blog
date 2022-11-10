@@ -6,7 +6,12 @@ function PublicationSettingsSuggestions({
   name,
   onClick,
   loading,
+  selectedIndex
 }) {
+ 
+
+ 
+  
   return (
     <div
       className="w-full absolute bg-white border border-gray-100 border-t-0 p-4 shadow top-[45.5px] left-0 z-50 duration-1000"
@@ -19,9 +24,12 @@ function PublicationSettingsSuggestions({
               suggestions={suggestions}
               name={name}
               onClick={onClick}
+              selected={selectedIndex}
             />
           ) : (
-            <span className='text-xs text-slate-500'>Loading Categories...</span>
+            <span className="text-xs text-slate-500">
+              Loading Categories...
+            </span>
           )}
         </Popover>
       </ul>

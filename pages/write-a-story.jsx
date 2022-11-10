@@ -51,6 +51,7 @@ export default function WriteAStory() {
     formState: { errors },
     setError,
     setValue,
+    getValues
   } = useForm({
     resolver: yupResolver(storySchema),
   });
@@ -132,7 +133,7 @@ export default function WriteAStory() {
       }
     }
     if (content) setMinRead(Math.ceil(content.split(' ').length / 200));
-  }, [content, inpTitle]);
+  }, [content, inpTitle,getValues('title')]);
 
   const handleChange = (e) => {
     if (!isChanged) {

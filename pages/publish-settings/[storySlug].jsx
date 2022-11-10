@@ -8,10 +8,10 @@ import { storyActions } from '@/redux/story/storySlice';
 import Category from '@/components/Category';
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/react/solid';
 import { classNames, parseHtml } from '@/utils/utils';
+import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 import { Listbox, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import Button from '@/components/basic/button';
-import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 import { topicsActions } from '@/redux/topics/topicsSlice';
 
 export default function PublishSettings() {
@@ -21,7 +21,7 @@ export default function PublishSettings() {
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const topicLoading = useSelector((state) => state.topics.isLoading);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
@@ -37,37 +37,18 @@ export default function PublishSettings() {
   const [inpCategoryNames, setInpCategoryNames] = useState([]);
   const [inpRestrictComments, setInpRestrictComments] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const debouncedSearch = useCallback(
     _.debounce((category) => {
-      dispatch(topicsActions.searchTopicsRequest(category));
-      setIsSearchOpen(true);
+      if (category) {
+        dispatch(topicsActions.searchTopicsRequest(category));
+        setIsSearchOpen(true);
+      }
     }, 500),
     []
   );
 
-  const handleInsert = (e) => {
-    if (
-      _.size(inpCategoryNames) < 5 &&
-      !inpCategoryNames?.some(
-        (item) => item.name.toLowerCase() === inpCategory.toLowerCase()
-      )
-    ) {
-      if (e.key === 'Enter') {
-        setInpCategoryNames((prev) => [
-          ...prev,
-          {
-            name: inpCategory,
-            isExisting: foundTopics.some((topic) => topic.name === inpCategory),
-          },
-        ]);
-        setInpCategory('');
-      } else {
-        debouncedSearch(inpCategory);
-      }
-    }
-    setIsSearchOpen(false);
-  };
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);
 
@@ -87,6 +68,42 @@ export default function PublishSettings() {
       setInpCategory('');
     }
   };
+  const handleInsert = (e) => {
+    if (
+      _.size(inpCategoryNames) < 5 &&
+      !inpCategoryNames?.some(
+        (item) => item.name.toLowerCase() === inpCategory.toLowerCase()
+      )
+    ) {
+      if (e.key === 'Enter') {
+        if (!_.size(foundTopics)) {
+          setInpCategoryNames((prev) => [
+            ...prev,
+            {
+              name: inpCategory,
+              isExisting: foundTopics.some(
+                (topic) => topic.name === inpCategory
+              ),
+            },
+          ]);
+          setInpCategory('');
+        }
+        else{
+          handleAddTopic(foundTopics[selectedIndex])
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (selectedIndex < foundTopics.length - 1) {
+          setSelectedIndex((state) => state + 1);
+        } else {
+          setSelectedIndex(0);
+        }
+      } else if (e.key === 'ArrowUp') {
+        if (selectedIndex > 0) setSelectedIndex((state) => state - 1);
+        else setSelectedIndex(foundTopics.length - 1);
+      }
+    }
+  };
+
 
   const handleDelete = (categoryName) => {
     const newCategoryNames = _.reject(
@@ -113,7 +130,7 @@ export default function PublishSettings() {
     }
   };
   const handlePublish = () => {
-    setLoading(true)
+    setLoading(true);
     const tempInpCategoryNames = inpCategoryNames.sort();
     const categoryPairs = [];
     for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {
@@ -140,7 +157,7 @@ export default function PublishSettings() {
           isPublished: true,
           categoryNames: inpCategoryNames.map((category) => category.name),
           isRestrictedComments: inpRestrictComments,
-          excerpt: parseHtml(story.content).slice(0, 300),
+          excerpt: parseHtml(story.content)?.slice(0, 300),
         },
         isEdited: isEdited === 'true',
         categoryPairs,
@@ -155,10 +172,16 @@ export default function PublishSettings() {
   };
 
   useEffect(() => {
+    setSelectedIndex(0);
+  }, [foundTopics]);
+  useEffect(() => {
     if (storySlug) {
       dispatch(storyActions.getCacheStoryRequest(storySlug));
     }
   }, [storySlug]);
+  useEffect(() => {
+    if (inpCategory) debouncedSearch(inpCategory);
+  }, [inpCategory]);
 
   useEffect(() => {
     setUser(userFromStorage);
@@ -386,11 +409,12 @@ export default function PublishSettings() {
                       disabled={_.size(story?.categoryNames) >= 5}
                       onKeyDown={handleInsert}
                     />
-                    {!_.isEmpty(foundTopics) &&
-                      isSearchOpen &&
-                      _.size(inpCategory) !== 0 && (
+                    {isSearchOpen &&
+                      _.size(inpCategory) !== 0 &&
+                      _.size(foundTopics) > 0 && (
                         <PublicationSettingsSuggestions
                           name="Topics"
+                          selectedIndex={selectedIndex}
                           suggestions={foundTopics}
                           onClick={(e, topicId, topic) => handleAddTopic(topic)}
                           loading={topicLoading}
