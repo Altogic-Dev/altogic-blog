@@ -4,7 +4,7 @@ import { Popover } from '@headlessui/react';
 import { TagIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
 
-export default function Suggestion({ suggestions, name, onClick }) {
+export default function Suggestion({ suggestions, name, onClick, selected }) {
   const router = useRouter();
   // eslint-disable-next-line consistent-return
   const setSuggestionLink = (suggestion) => {
@@ -25,6 +25,7 @@ export default function Suggestion({ suggestions, name, onClick }) {
         return () => {};
     }
   };
+
   return (
     <>
       <div className="my-2 flex justify-between">
@@ -32,7 +33,7 @@ export default function Suggestion({ suggestions, name, onClick }) {
       </div>
       <hr className="border-gray-300 h-px mb-2" />
       {suggestions?.length ? (
-        suggestions?.map((suggestion) => (
+        suggestions?.map((suggestion, index) => (
           <Popover.Button
             key={suggestion._id}
             onClick={
@@ -42,7 +43,11 @@ export default function Suggestion({ suggestions, name, onClick }) {
             }
             className="w-full"
           >
-            <li className="hover:cursor-pointer hover:text-slate-300 hover:bg-gray-100">
+            <li
+              className={`hover:cursor-pointer hover:text-slate-300 hover:bg-gray-100 ${
+                selected === index ? 'bg-purple-200' : ''
+              }`}
+            >
               <div className="flex items-center p-2 w-full">
                 {name === 'Topics' ? (
                   <TagIcon className="w-6 h-6 rounded-full mr-2 text-gray-600" />
@@ -64,7 +69,7 @@ export default function Suggestion({ suggestions, name, onClick }) {
                   </div>
                 )}
                 <div className="ml-2 w-full text-start">
-                  <p className="text-sm font-semibold text-slate-500 inline-block w-96 truncate">
+                  <p className="text-sm font-semibold text-slate-500 w-96 truncate flex items-center">
                     {name === 'Stories' ? suggestion.title : suggestion.name}
                   </p>
                 </div>
