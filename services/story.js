@@ -63,8 +63,7 @@ const StoryService = {
   },
 
   getUserStories(userId, page = 1, limit = 3) {
-    return endpoint.get(`/user/${userId}/stories`, page, limit);
-
+    return endpoint.get(`/user/${userId}/stories`, { page, limit });
 
   },
 
@@ -85,7 +84,7 @@ const StoryService = {
     return endpoint.get(`/reply/${reply}/comments`);
   },
   createReply(reply) {
-    return endpoint.post(`/story/${reply.story}/reply`,reply);
+    return endpoint.post(`/story/${reply.story}/reply`, reply);
   },
   editReply(reply) {
     return db
