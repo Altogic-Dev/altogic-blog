@@ -85,8 +85,12 @@ export const storySlice = createSlice({
           ...state.userDraftStoriesInfo,
           count: state.userDraftStoriesInfo.count + 1,
         };
-        state.userDraftStories.push(action.payload);
+        state.userDraftStories = _.orderBy(
+          [...state.userDraftStories, action.payload],
+          ['pinnedStory', 'createdAt'],
+          ['desc', 'desc'])
       }
+
     },
     createStoryFailure(state, action) {
       state.error = action.payload;
@@ -228,6 +232,7 @@ export const storySlice = createSlice({
         [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
         ['pinnedStory', 'createdAt'],
         ['desc', 'desc']
+
       );
 
       state.story = action.payload;
