@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
+import TopicsService from '@/services/topics';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 import { deleteTopicWritersSaga, insertTopicsSaga } from '../topics/topicsSaga';
@@ -344,6 +345,14 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
       storyId,
       newCategoryNames
     );
+    yield call(
+      TopicsService.insertTopics,
+      newCategoryNames.map(item => {
+        const topic = { name: item }
+        return topic
+      }));
+
+
     if (errors) throw errors;
     yield put(storyActions.updateCategoryNamesSuccess(newCategoryNames));
   } catch (e) {
@@ -421,7 +430,7 @@ function* getCacheStorySaga({ payload: storySlug }) {
 }
 
 function* publishStorySaga({
-  payload: { story, isEdited, onSuccess, categoryPairs, topicsWillCreate },
+  payload: { story, isEdited, onSuccess, categoryPairs },
 }) {
   try {
     const operation = isEdited
@@ -439,10 +448,13 @@ function* publishStorySaga({
     };
     yield put(storyActions.publishStorySuccess(publishedStory));
     if (!_.isEmpty(story.categoryNames)) {
-      yield call(StoryService.updateCategoryPairs, categoryPairs);
 
-      yield fork(insertTopicsSaga, story);
-      yield fork(insertTopicsSaga, story, topicsWillCreate);
+
+      yield call(StoryService.updateCategoryPairs, categoryPairs)
+      yield fork(insertTopicsSaga, story, story.categoryNames.map(item => {
+        const topic = { name: item }
+        return topic
+      }));
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
   } catch (e) {

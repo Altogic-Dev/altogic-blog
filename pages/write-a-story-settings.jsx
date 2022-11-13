@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Head from 'next/head';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
@@ -17,7 +17,7 @@ import Input from '@/components/Input';
 export default function WriteAStorySettings() {
   const router = useRouter();
   const dispatch = useDispatch();
-
+  const categoryInputRef = useRef(null);
   const story = useSelector((state) => state.story.story);
   const isLoading = useSelector((state) => state.story.isLoading);
   const error = useSelector((state) => state.story.error);
@@ -28,13 +28,13 @@ export default function WriteAStorySettings() {
   const [userState, setUserState] = useState(null);
   const [basePath, setBasePath] = useState();
 
-  console.log(story);
   const [inpSeoTitle, setInpSeoTitle] = useState();
   const [inpSeoDescription, setInpSeoDescription] = useState('');
   const [inpStorySlug, setInpStorySlug] = useState('');
   const [inpCategory, setInpCategory] = useState('');
   const [inpCategoryNames, setInpCategoryNames] = useState([]);
   const [inpPinStory, setInpPinStory] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [sortingLoading, setSortingLoading] = useState(false);
   const [categoryLoading, setCategoryLoading] = useState(false);
@@ -60,35 +60,41 @@ export default function WriteAStorySettings() {
     []
   );
 
-  const handleInsert = (e) => {
-    if (
-      _.size(inpCategoryNames) < 5 &&
-      !inpCategoryNames?.some(
-        (item) => item.toLowerCase() === inpCategory.toLowerCase()
-      )
-    ) {
-      if (e.key === 'Enter') {
-        setInpCategoryNames((prev) => [...prev, inpCategory]);
-        setInpCategory('');
-        setIsSearchOpen(false);
-      } else {
-        debouncedSearch(inpCategory);
-      }
-    }
-  };
-  const handleAddTopic = ({ name }) => {
+  const handleAddTopic = (topic) => {
+    setIsSearchOpen(false);
     if (
       !inpCategoryNames?.some(
-        (item) => item.toLowerCase() === name.toLowerCase()
+        (item) => item.toLowerCase() === topic.name.toLowerCase()
       ) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setIsSearchOpen(false);
-      setInpCategoryNames((prev) => [...prev, name]);
+      setInpCategoryNames((prev) => [...prev, topic.name]);
       setInpCategory('');
     }
   };
-
+  const handleInsert = (e) => {
+    if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
+      if (!isSearchOpen) {
+        setInpCategoryNames((prev) => [...prev, inpCategory]);
+        setInpCategory('');
+      } else if (
+        _.some(foundTopics, (topic) =>
+          _.includes(topic.name.toLowerCase(), inpCategory.toLowerCase())
+        )
+      ) {
+        handleAddTopic(foundTopics[selectedIndex]);
+      }
+    } else if (e.key === 'ArrowDown') {
+      if (selectedIndex < foundTopics.length - 1) {
+        setSelectedIndex((state) => state + 1);
+      } else {
+        setSelectedIndex(0);
+      }
+    } else if (e.key === 'ArrowUp') {
+      if (selectedIndex > 0) setSelectedIndex((state) => state - 1);
+      else setSelectedIndex(foundTopics.length - 1);
+    }
+  };
   const handleDelete = (categoryName) => {
     const newCategoryNames = _.reject(
       inpCategoryNames,
@@ -101,11 +107,12 @@ export default function WriteAStorySettings() {
     setRadioLicense(e.target.value);
   };
 
-
   const fillInputs = useCallback(() => {
     if (!_.isNil(story)) {
       setInpSeoTitle(story?.seoTitle || _.get(story, 'title'));
-      setInpSeoDescription(story.seoDescription || _.get(story, 'excerpt')?.slice(0,156));
+      setInpSeoDescription(
+        story.seoDescription || _.get(story, 'excerpt')?.slice(0, 156)
+      );
       setInpStorySlug(story.storySlug);
       setInpCategoryNames(story.categoryNames);
       setRadioLicense(story.license);
@@ -121,6 +128,15 @@ export default function WriteAStorySettings() {
       document.body.removeEventListener('click', () => {});
     };
   }, []);
+
+  useEffect(() => {
+    setIsSearchOpen(false);
+    if (inpCategory) debouncedSearch(inpCategory);
+  }, [inpCategory]);
+
+  useEffect(() => {
+    categoryInputRef.current.focus();
+  }, [isSearchOpen]);
 
   useEffect(() => {
     setBasePath(window.location.origin);
@@ -338,14 +354,15 @@ export default function WriteAStorySettings() {
                               placeholder="Category Name"
                               value={inpCategory}
                               onChange={(e) => setInpCategory(e.target.value)}
-                              disabled={_.size(story?.categoryNames) >= 5}
                               onKeyDown={handleInsert}
+                              ref={categoryInputRef}
                             />
                             {!_.isEmpty(foundTopics) &&
                               !topicLoading &&
                               isSearchOpen && (
                                 <PublicationSettingsSuggestions
                                   name="Topics"
+                                  selectedIndex={selectedIndex}
                                   suggestions={foundTopics}
                                   onClick={(e, topicId, topic) =>
                                     handleAddTopic(topic)
@@ -476,7 +493,6 @@ export default function WriteAStorySettings() {
                           value={inpSeoDescription}
                         />
                         <Button
-                          type="button"
                           className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[44px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                           loading={seoDescLoading}
                           onClick={() => {
@@ -487,7 +503,7 @@ export default function WriteAStorySettings() {
                                 newStoryField: {
                                   seoDescription:
                                     inpSeoDescription ||
-                                    _.get(story, 'excerpt').slice(0,156),
+                                    _.get(story, 'excerpt').slice(0, 156),
                                 },
                               })
                             );

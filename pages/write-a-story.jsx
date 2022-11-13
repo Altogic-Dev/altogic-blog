@@ -32,7 +32,6 @@ export default function WriteAStory() {
   const newStory = useSelector((state) => state.story.story);
   const [webworker, setWebworker] = useState();
   const [isMounted, setIsMounted] = useState(false);
-  const [prevId, setPrevId] = useState('');
   const session = useStorage();
   const dispatch = useDispatch();
   const router = useRouter();
@@ -42,7 +41,7 @@ export default function WriteAStory() {
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  // const isLoading = useSelector((state) => state.story.isLoading);
+
   const storySchema = new yup.ObjectSchema({
     title: yup.string(),
   });
@@ -51,19 +50,21 @@ export default function WriteAStory() {
     formState: { errors },
     setError,
     setValue,
-    getValues
+    getValues,
   } = useForm({
     resolver: yupResolver(storySchema),
   });
 
   useEffect(() => {
-    if (prevId && !id) {
-      setValue('title','') 
+    if (!id) {
+      setValue('title', '');
+      setInpTitle();
+      setIsChanged(false);
+      setIsCreated(false);
     }
   }, [id]);
 
   useEffect(() => {
-    setPrevId(id);
     setWebworker(new Worker(new URL('@/utils/worker', import.meta.url)));
   }, []);
 
@@ -133,7 +134,7 @@ export default function WriteAStory() {
       }
     }
     if (content) setMinRead(Math.ceil(content.split(' ').length / 200));
-  }, [content, inpTitle,getValues('title')]);
+  }, [content, inpTitle, getValues('title')]);
 
   const handleChange = (e) => {
     if (!isChanged) {
@@ -174,6 +175,7 @@ export default function WriteAStory() {
   };
   useEffect(
     () => () => {
+      setLoading(false);
       dispatch(storyActions.clearStory());
     },
     []
