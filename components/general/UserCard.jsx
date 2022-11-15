@@ -28,6 +28,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
           userId: _.get(me, '_id'),
           followingUserId: _.get(user, '_id'),
           notUpdate: true,
+          fromProfile: true,
         })
       );
     }

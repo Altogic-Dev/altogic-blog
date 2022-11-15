@@ -33,26 +33,29 @@ export const followerConnectionSlice = createSlice({
     unfollowSuccess(state, action) {
       state.followingUserLoading = false;
       state.isFollowing = false;
+
       state.isFollowings = _.reject(
         state.isFollowings,
-        (followingId) => followingId === action.payload
+        (followingId) => followingId === action.payload.followingUserId
       );
-      state.userFollowings = state.userFollowings.filter(
-        (following) => following.followingUser !== action.payload
-      );
-      state.userFollowingsCount -= 1
+      if (!action.payload.fromProfile) {
+        state.userFollowings = state.userFollowings.filter(
+          (following) => following.followingUser !== action.payload.followingUserId
+        );
+
+
+        state.userFollowingsCount -= 1
+      }
     },
     unfollowFailure(state, action) {
       state.followingUserLoading = false;
       state.error = action.payload;
     },
-
-    followRequest(state) {
-      state.followingUserLoading = true;
-    },
-
     handleFollowingCount(state, action) {
       state.userFollowingsCount += action.payload;
+    },
+    followRequest(state) {
+      state.followingUserLoading = true;
     },
     followSuccess(state, action) {
       state.isFollowing = true;
@@ -60,8 +63,6 @@ export const followerConnectionSlice = createSlice({
         ...state.isFollowings,
         action.payload.followingUser,
       ];
-      state.userFollowings.push(action.payload)
-      state.userFollowingsCount += 1
       state.followingUserLoading = false;
     },
     followFailure(state, action) {
@@ -74,18 +75,6 @@ export const followerConnectionSlice = createSlice({
     getFollowingStoriesSuccess(state, action) {
       state.followingStories = action.payload;
     },
-
-    followUserRequest(state) {
-      state.followingUserLoading = true;
-    },
-    followUserSuccess(state, action) {
-      state.followingUserLoading = false;
-      state.followingActionResult = action.payload;
-    },
-    followUserFailure(state, action) {
-      state.followingUserLoading = false;
-      state.error = action.payload;
-    },
     getFollowingUsersFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
@@ -94,14 +83,14 @@ export const followerConnectionSlice = createSlice({
     getFollowerUsersRequest() { },
     getFollowerUsersSuccess(state, action) {
       state.userFollowers = [...state.userFollowers, ...action.payload.data];
-      const isFollowingsFollowers = _.reject(action.payload.data, (person) =>
-        _.isNil(person.isFollowing)
-      );
-      const isFollowingFollowerIds = _.map(
-        isFollowingsFollowers,
-        'followerUser'
-      );
-      state.isFollowings = [...state.isFollowings, ...isFollowingFollowerIds];
+      // const isFollowingsFollowers = _.reject(action.payload.data, (person) =>
+      //   _.isNil(person.isFollowing)
+      // );
+      // const isFollowingFollowerIds = _.map(
+      //   isFollowingsFollowers,
+      //   'followerUser'
+      // );
+      // state.isFollowings = [...state.isFollowings, ...isFollowingFollowerIds];
     },
 
     getFollowingUsersRequest(state) {

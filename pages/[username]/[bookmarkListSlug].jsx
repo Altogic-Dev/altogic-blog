@@ -172,7 +172,6 @@ export default function ListDetail() {
     }
   }, [bookmarks, sessionUser]);
 
-  console.log(stories);
   useEffect(() => {
     if (
       bookmarkListSlug &&

@@ -227,7 +227,6 @@ export default function ProfilePage() {
     if (inView) handleBookmarkListEnd();
   }, [inView]);
 
-  console.log(profileUser);
   return (
     <div>
       <Head>

@@ -110,7 +110,6 @@ export default function Editor({
     return false;
   };
   const handleDebounceFn = (quill) => {
-    console.log(quill.root.innerHTML)
     onChange(quill.root.innerHTML);
     setImages(
       // eslint-disable-next-line array-callback-return, consistent-return

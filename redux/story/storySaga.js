@@ -186,33 +186,33 @@ export function* updateFollowerCountSaga(isIncrease) {
   }
 }
 
-function* getStoryBySlugSaga({ payload: slug }) {
+function* getStoryBySlugSaga({ payload: {storySlug,userId} }) {
   try {
-    const sessionUser = yield select((state) => state.auth.user);
 
-    if (!_.isNil(sessionUser)) {
-      const { data: story, errors } = yield call(
+    if (!_.isNil(userId)) {
+      const { data, errors } = yield call(
         StoryService.getStoryBySlug,
-        slug
+        storySlug,
+        userId
       );
       if (errors) throw errors;
-      if (story) {
-        if (sessionUser._id === story.user._id) {
-          yield put(storyActions.getStoryBySlugSuccess(story));
-        } else if (story.isPublished && !story.isPrivate && !story.isDeleted) {
-          yield put(storyActions.getStoryBySlugSuccess(story));
+      if (data.story) {
+        if (userId=== data.story.user._id) {
+          yield put(storyActions.getStoryBySlugSuccess(data));
+        } else if (data.story.isPublished && !data.story.isPrivate && !data.story.isDeleted) {
+          yield put(storyActions.getStoryBySlugSuccess(data));
         } else {
           throw new Error('This user cannot see the story');
         }
       }
     } else {
-      const { data: story, errors } = yield call(
+      const { data, errors } = yield call(
         StoryService.getStoryBySlug,
-        slug
+        storySlug,
       );
       if (errors) throw errors;
-      if (story && story.isPublished && !story.isPrivate && !story.isDeleted) {
-        yield put(storyActions.getStoryBySlugSuccess(story));
+      if (data.story && data.story.isPublished && !data.story.isPrivate && !data.story.isDeleted) {
+        yield put(storyActions.getStoryBySlugSuccess(data));
       } else {
         throw new Error('This user cannot see the story');
       }

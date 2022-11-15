@@ -69,7 +69,7 @@ export default function BlogDetail({ ip }) {
   const [isLoading, setIsLoading] = useState(false);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
 
-  const isFollowing = _.includes(isFollowings, _.get(story, 'user._id'));
+  const isFollowing = useSelector((state) => state.story.userFollows);
 
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -210,7 +210,12 @@ export default function BlogDetail({ ip }) {
 
   useEffect(() => {
     if (storySlug && story?.storySlug !== storySlug) {
-      dispatch(storyActions.getStoryBySlugRequest(storySlug));
+      dispatch(
+        storyActions.getStoryBySlugRequest({
+          storySlug,
+          userId: user?._id,
+        })
+      );
       setIsLoading(true);
     } else {
       setIsLoading(false);

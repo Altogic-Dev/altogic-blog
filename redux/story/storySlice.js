@@ -27,6 +27,7 @@ const initialState = {
   replyPageSize: null,
   featureStories: {},
   userStoriesOwner: null,
+  userFollows: false,
 };
 
 // Actual Slice
@@ -101,9 +102,9 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getStoryRepliesSuccess(state, action) {
+      state.isLoading = false;
       state.replies = action.payload.result;
       state.replyCount = action.payload.countInfo.count;
-      state.isLoading = false;
     },
     getStoryRepliesFailure(state, action) {
       state.error = action.payload;
@@ -206,17 +207,19 @@ export const storySlice = createSlice({
 
       if (state.story?.isPublished) {
         /// userStoriesCount--
-        state.userStoriesInfo = {
-          ...state.userStoriesInfo,
-          count: state.userStoriesInfo.count - 1,
-        };
-
+        if (!_.isEmpty(state.userStories)) {
+          state.userStoriesInfo = {
+            ...state.userStoriesInfo,
+            count: state.userStoriesInfo.count - 1,
+          };
+        }
         /// userStoriesCount++
-
-        state.userDraftStoriesInfo = {
-          ...state.userDraftStoriesInfo,
-          count: state.userDraftStoriesInfo.count + 1,
-        };
+        if (!_.isEmpty(state.userDraftStories)) {
+          state.userDraftStoriesInfo = {
+            ...state.userDraftStoriesInfo,
+            count: state.userDraftStoriesInfo.count + 1,
+          };
+        }
         /// userStoriesState Update
         if (!_.isEmpty(state.userStories)) {
           state.userStories = state.userStories.filter(
@@ -244,10 +247,12 @@ export const storySlice = createSlice({
 
     getStoryBySlugRequest(state) {
       state.isLoading = true;
+      state.userFollows = false
     },
     getStoryBySlugSuccess(state, action) {
+      state.userFollows  = !!action.payload.userFollows.length
       state.isLoading = false;
-      state.story = action.payload;
+      state.story = action.payload.story;
     },
 
     getMoreUserStoriesRequest(state) {
