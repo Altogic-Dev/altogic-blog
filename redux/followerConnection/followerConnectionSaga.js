@@ -9,7 +9,7 @@ import {
 import { updateProfileUserSaga, updateUserSaga } from '../auth/authSaga';
 
 function* unfollowSaga({
-  payload: { userId, followingUserId, notUpdate, fromProfile },
+  payload: { userId, followingUserId, notUpdate, fromProfile,dontUpdateFollowing },
 }) {
   try {
     const { errors } = yield call(
@@ -18,7 +18,7 @@ function* unfollowSaga({
       followingUserId
     );
     if (errors) throw errors;
-    yield put(followerConnectionActions.unfollowSuccess(followingUserId));
+    yield put(followerConnectionActions.unfollowSuccess({ followingUserId, fromProfile ,dontUpdateFollowing}));
     if (!notUpdate) {
       yield fork(updateFollowerCountSaga, false);
     }
@@ -27,12 +27,10 @@ function* unfollowSaga({
     yield fork(updateUserSaga, {
       followingCount: user.followingCount - 1,
     });
-    yield fork(updateUserSaga, {
-      followingCount: user.followingCount - 1,
-    });
 
-    if (fromProfile) {
-      const userProfile = yield select((state) => state.auth.profileUser);
+    const userProfile = yield select((state) => state.auth.profileUser);
+
+    if (fromProfile && followingUserId === userProfile._id) {
       if (_.get(userProfile, '_id') === userId)
         yield put(followerConnectionActions.handleFollowingCount(-1));
 
@@ -46,7 +44,7 @@ function* unfollowSaga({
 }
 
 function* followSaga({
-  payload: { followerUser, followingUser, notUpdate, fromProfile },
+  payload: { followerUser, followingUser, notUpdate, fromProfile,dontUpdateFollowing },
 }) {
   try {
     const { errors } = yield call(
@@ -55,7 +53,7 @@ function* followSaga({
       followingUser
     );
     if (errors) throw errors;
-    yield put(followerConnectionActions.followSuccess(followingUser));
+    yield put(followerConnectionActions.followSuccess({ followerUser, followingUser,dontUpdateFollowing }));
     if (!notUpdate) {
       yield fork(updateFollowerCountSaga, true);
     }
@@ -63,8 +61,8 @@ function* followSaga({
     if (fromProfile) {
       const userProfile = yield select((state) => state.auth.profileUser);
 
-      if (_.get(userProfile, '_id') === followerUser._id)
-        yield put(followerConnectionActions.handleFollowingCount(+1));
+      // if (_.get(userProfile, '_id') === followerUser._id)
+      //   yield put(followerConnectionActions.handleFollowingCount(+1));
 
       yield fork(updateProfileUserSaga, {
         followerCount: userProfile.followerCount + 1,
@@ -74,6 +72,8 @@ function* followSaga({
       followingCount: followerUser.followingCount + 1,
     });
   } catch (e) {
+
+    console.log(e)
     yield put(followerConnectionActions.followFailure(e));
   }
 }
@@ -116,12 +116,14 @@ function* getFollowingUsersSaga({ payload: { userId, page, limit } }) {
 
     if (errors) throw errors;
     if (_.isArray(data.data)) {
+      const user = yield select((state) => state.auth.user);
       yield put(
         followerConnectionActions.getFollowingUsersSuccess({
           data: data.data,
           info: data.info,
           owner: userId,
           page,
+          sessionUser: user?._id === userId
         })
       );
     }

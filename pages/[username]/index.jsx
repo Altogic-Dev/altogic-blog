@@ -49,11 +49,23 @@ export default function ProfilePage() {
   );
   const profileUser = useSelector((state) => state.auth.profileUser);
   const userFollowings = useSelector(
-    (state) => state.followerConnection.userFollowings
+    (state) =>
+      state.followerConnection[
+        sessionUser?.username === username
+          ? 'userFollowings'
+          : 'profileFollowings'
+      ]
   );
+
   const userFollowingsCount = useSelector(
-    (state) => state.followerConnection.userFollowingsCount
+    (state) =>
+      state.followerConnection[
+        sessionUser?.username === username
+          ? 'userFollowingsCount'
+          : 'profileFollowingsCount'
+      ]
   );
+
   const userFollowingsOwner = useSelector(
     (state) => state.followerConnection.userFollowingsOwner
   );
@@ -227,7 +239,6 @@ export default function ProfilePage() {
     if (inView) handleBookmarkListEnd();
   }, [inView]);
 
-  console.log(profileUser);
   return (
     <div>
       <Head>
@@ -567,6 +578,7 @@ export default function ProfilePage() {
                     <ul className="mb-6">
                       {_.map(userFollowings, (person) => (
                         <UserCard
+                          dontUpdateFollowing
                           key={person._id}
                           user={{
                             _id: person.followingUser,

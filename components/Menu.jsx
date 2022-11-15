@@ -164,7 +164,7 @@ export default function HeaderMenu() {
                 <Button
                   onClick={() => {
                     dispatch(storyActions.clearStory());
-                    router.push('/write-a-story');
+                    router.push('/write-a-story', undefined, { shallow: false });
                   }}
                   className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >

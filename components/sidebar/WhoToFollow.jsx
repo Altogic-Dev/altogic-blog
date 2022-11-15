@@ -86,6 +86,7 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
+  console.log(people)
   if (people.length > 0)
     return (
       <div>
@@ -98,7 +99,7 @@ export default function WhoToFollow({
                 index={index}
                 key={person._id}
                 user={person}
-                isFollowing={_.includes(isFollowings, person._id)}
+                isFollowing={person?.isFollowing}
               />
             ))}
           </ul>

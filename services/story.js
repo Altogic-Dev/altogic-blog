@@ -43,8 +43,8 @@ const StoryService = {
       .get();
   },
 
-  getStoryBySlug(storySlug) {
-    return endpoint.get(`/story/bySlug`, { storySlug });
+  getStoryBySlug(storySlug,userId) {
+    return endpoint.get(`/story/bySlug`, { storySlug,userId });
   },
 
   getMoreUserStories(authorId, storyId, publicationId, page = 1, limit = 2) {

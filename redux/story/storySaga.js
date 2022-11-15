@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
+import TopicsService from '@/services/topics';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 import { deleteTopicWritersSaga, insertTopicsSaga } from '../topics/topicsSaga';
@@ -185,33 +186,33 @@ export function* updateFollowerCountSaga(isIncrease) {
   }
 }
 
-function* getStoryBySlugSaga({ payload: slug }) {
+function* getStoryBySlugSaga({ payload: {storySlug,userId} }) {
   try {
-    const sessionUser = yield select((state) => state.auth.user);
 
-    if (!_.isNil(sessionUser)) {
-      const { data: story, errors } = yield call(
+    if (!_.isNil(userId)) {
+      const { data, errors } = yield call(
         StoryService.getStoryBySlug,
-        slug
+        storySlug,
+        userId
       );
       if (errors) throw errors;
-      if (story) {
-        if (sessionUser._id === story.user._id) {
-          yield put(storyActions.getStoryBySlugSuccess(story));
-        } else if (story.isPublished && !story.isPrivate && !story.isDeleted) {
-          yield put(storyActions.getStoryBySlugSuccess(story));
+      if (data.story) {
+        if (userId=== data.story.user._id) {
+          yield put(storyActions.getStoryBySlugSuccess(data));
+        } else if (data.story.isPublished && !data.story.isPrivate && !data.story.isDeleted) {
+          yield put(storyActions.getStoryBySlugSuccess(data));
         } else {
           throw new Error('This user cannot see the story');
         }
       }
     } else {
-      const { data: story, errors } = yield call(
+      const { data, errors } = yield call(
         StoryService.getStoryBySlug,
-        slug
+        storySlug,
       );
       if (errors) throw errors;
-      if (story && story.isPublished && !story.isPrivate && !story.isDeleted) {
-        yield put(storyActions.getStoryBySlugSuccess(story));
+      if (data.story && data.story.isPublished && !data.story.isPrivate && !data.story.isDeleted) {
+        yield put(storyActions.getStoryBySlugSuccess(data));
       } else {
         throw new Error('This user cannot see the story');
       }
@@ -344,6 +345,14 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
       storyId,
       newCategoryNames
     );
+    yield call(
+      TopicsService.insertTopics,
+      newCategoryNames.map(item => {
+        const topic = { name: item }
+        return topic
+      }));
+
+
     if (errors) throw errors;
     yield put(storyActions.updateCategoryNamesSuccess(newCategoryNames));
   } catch (e) {
@@ -421,7 +430,7 @@ function* getCacheStorySaga({ payload: storySlug }) {
 }
 
 function* publishStorySaga({
-  payload: { story, isEdited, onSuccess, categoryPairs, topicsWillCreate },
+  payload: { story, isEdited, onSuccess, categoryPairs },
 }) {
   try {
     const operation = isEdited
@@ -439,10 +448,13 @@ function* publishStorySaga({
     };
     yield put(storyActions.publishStorySuccess(publishedStory));
     if (!_.isEmpty(story.categoryNames)) {
-      yield call(StoryService.updateCategoryPairs, categoryPairs);
 
-      yield fork(insertTopicsSaga, story);
-      yield fork(insertTopicsSaga, story, topicsWillCreate);
+
+      yield call(StoryService.updateCategoryPairs, categoryPairs)
+      yield fork(insertTopicsSaga, story, story.categoryNames.map(item => {
+        const topic = { name: item }
+        return topic
+      }));
     }
     yield call(StoryService.deleteCacheStory, story.storySlug);
   } catch (e) {

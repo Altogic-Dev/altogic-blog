@@ -100,6 +100,7 @@ export const topicsSlice = createSlice({
       state.publicationStoriesByTopic = action.payload;
     },
     searchTopicsRequest(state) {
+      state.searchTopics = []
       state.isLoading = true;
     },
     searchTopicsSuccess(state, action) {

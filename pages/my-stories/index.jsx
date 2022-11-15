@@ -178,9 +178,14 @@ export default function MyStories() {
                 </div>
                 <div className="flex items-center gap-6">
                   <div className="grid grid-cols-2 md:flex items-center w-full sm:w-auto gap-6">
-                    <Link href="/write-a-story">
-                      <Button> Write a story</Button>
-                    </Link>
+                    <Button
+                      onClick={() => {
+                        dispatch(storyActions.clearStory());
+                        router.push('/write-a-story');
+                      }}
+                    >
+                      Write a story
+                    </Button>
                     {/* <Button>Import a story</Button> */}
                   </div>
                   <div className="hidden md:flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">

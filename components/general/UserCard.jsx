@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function UserCard({ subscription, user, isFollowing }) {
+export default function UserCard({ subscription, user, isFollowing,dontUpdateFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
   const followingUserLoading = useSelector(
@@ -28,11 +28,14 @@ export default function UserCard({ subscription, user, isFollowing }) {
           userId: _.get(me, '_id'),
           followingUserId: _.get(user, '_id'),
           notUpdate: true,
+          fromProfile: true,
+          dontUpdateFollowing,
         })
       );
     }
     return dispatch(
       followerConnectionActions.followRequest({
+        dontUpdateFollowing,
         followerUser: me,
         followingUser: {
           followingUser: _.get(user, '_id'),

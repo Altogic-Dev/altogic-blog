@@ -27,6 +27,7 @@ const initialState = {
   replyPageSize: null,
   featureStories: {},
   userStoriesOwner: null,
+  userFollows: false,
 };
 
 // Actual Slice
@@ -75,6 +76,7 @@ export const storySlice = createSlice({
     },
     createStoryRequest(state) {
       state.isLoading = true;
+
     },
     createStorySuccess(state, action) {
       state.story = action.payload;
@@ -100,9 +102,9 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getStoryRepliesSuccess(state, action) {
+      state.isLoading = false;
       state.replies = action.payload.result;
       state.replyCount = action.payload.countInfo.count;
-      state.isLoading = false;
     },
     getStoryRepliesFailure(state, action) {
       state.error = action.payload;
@@ -201,55 +203,56 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {
+      state.isLoading = false;
 
       if (state.story?.isPublished) {
         /// userStoriesCount--
-        if (!_.isNil(state.userStoriesInfo)) {
+        if (!_.isEmpty(state.userStories)) {
           state.userStoriesInfo = {
             ...state.userStoriesInfo,
             count: state.userStoriesInfo.count - 1,
           };
         }
         /// userStoriesCount++
-        if (!_.isNil(state.userDraftStoriesInfo)) {
+        if (!_.isEmpty(state.userDraftStories)) {
           state.userDraftStoriesInfo = {
             ...state.userDraftStoriesInfo,
             count: state.userDraftStoriesInfo.count + 1,
           };
         }
         /// userStoriesState Update
-        if (!_.isNil(state.userStories)) {
+        if (!_.isEmpty(state.userStories)) {
           state.userStories = state.userStories.filter(
             (story) => story._id !== action.payload._id
           );
         }
-
-
       }
       /// userDraftStoriesState Update
-
-      state.userDraftStories = _.orderBy(
-        [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
-        ['pinnedStory', 'createdAt'],
-        ['desc', 'desc']
-
-      );
+      if (!_.isEmpty(state.userDraftStories)) {
+        state.userDraftStories = _.orderBy(
+          [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+          ['pinnedStory', 'createdAt'],
+          ['desc', 'desc']
+        );
+      }
 
       state.story = action.payload;
       state.error = null;
-      state.isLoading = false;
     },
     updateStoryFailure(state, action) {
-      state.error = action.payload;
       state.isLoading = false;
+
+      state.error = action.payload;
     },
 
     getStoryBySlugRequest(state) {
       state.isLoading = true;
+      state.userFollows = false
     },
     getStoryBySlugSuccess(state, action) {
+      state.userFollows  = !!action.payload.userFollows.length
       state.isLoading = false;
-      state.story = action.payload;
+      state.story = action.payload.story;
     },
 
     getMoreUserStoriesRequest(state) {
@@ -304,6 +307,10 @@ export const storySlice = createSlice({
         state.userDraftStories = action.payload.data;
       }
       state.userDraftStoriesInfo = action.payload.info;
+    },
+
+    getUserDraftStoriesFailure(state) {
+      state.userStoriesLoading = false;
     },
 
     deleteStoryRequest(state) {

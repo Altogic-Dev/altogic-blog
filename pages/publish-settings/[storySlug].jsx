@@ -1,4 +1,10 @@
-import React, { Fragment, useState, useEffect, useCallback } from 'react';
+import React, {
+  Fragment,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -17,6 +23,7 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 export default function PublishSettings() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const categoryInputRef = useRef(null);
 
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
@@ -51,93 +58,69 @@ export default function PublishSettings() {
 
   const handleAddTopic = (topic) => {
     setIsSearchOpen(false);
-
     if (
       !inpCategoryNames?.some(
-        (item) => item.name.toLowerCase() === topic.name.toLowerCase()
+        (item) => item.toLowerCase() === topic.name.toLowerCase()
       ) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setInpCategoryNames((prev) => [
-        ...prev,
-        {
-          name: topic.name,
-          isExisting: true,
-        },
-      ]);
+      setInpCategoryNames((prev) => [...prev, topic.name]);
       setInpCategory('');
     }
   };
   const handleInsert = (e) => {
-    if (
-      _.size(inpCategoryNames) < 5 &&
-      !inpCategoryNames?.some(
-        (item) => item.name.toLowerCase() === inpCategory.toLowerCase()
-      )
-    ) {
-      if (e.key === 'Enter') {
-        if (!_.size(foundTopics)) {
-          setInpCategoryNames((prev) => [
-            ...prev,
-            {
-              name: inpCategory,
-              isExisting: foundTopics.some(
-                (topic) => topic.name === inpCategory
-              ),
-            },
-          ]);
-          setInpCategory('');
-        }
-        else{
-          handleAddTopic(foundTopics[selectedIndex])
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (selectedIndex < foundTopics.length - 1) {
-          setSelectedIndex((state) => state + 1);
-        } else {
-          setSelectedIndex(0);
-        }
-      } else if (e.key === 'ArrowUp') {
-        if (selectedIndex > 0) setSelectedIndex((state) => state - 1);
-        else setSelectedIndex(foundTopics.length - 1);
+    if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
+      if (!isSearchOpen) {
+        setInpCategoryNames((prev) => [...prev, inpCategory]);
+        setInpCategory('');
+      } else if (
+        _.some(foundTopics, (topic) =>
+          _.includes(topic.name.toLowerCase(), inpCategory.toLowerCase())
+        )
+      ) {
+        handleAddTopic(foundTopics[selectedIndex]);
       }
+    } else if (e.key === 'ArrowDown') {
+      if (selectedIndex < foundTopics.length - 1) {
+        setSelectedIndex((state) => state + 1);
+      } else {
+        setSelectedIndex(0);
+      }
+    } else if (e.key === 'ArrowUp') {
+      if (selectedIndex > 0) setSelectedIndex((state) => state - 1);
+      else setSelectedIndex(foundTopics.length - 1);
     }
   };
-
 
   const handleDelete = (categoryName) => {
     const newCategoryNames = _.reject(
       inpCategoryNames,
-      (category) => category.name === categoryName
+      (category) => category === categoryName
     );
+
     setInpCategoryNames(newCategoryNames);
   };
 
   const addCategoryFromRecommended = (categoryName) => {
     if (
       !inpCategoryNames?.some(
-        (item) => item.name.toLowerCase() === categoryName.toLowerCase()
+        (item) => item.toLowerCase() === categoryName.toLowerCase()
       ) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setInpCategoryNames((prev) => [
-        ...prev,
-        {
-          name: categoryName,
-          isExisting: true,
-        },
-      ]);
+      setInpCategoryNames((prev) => [...prev, categoryName.name]);
     }
   };
   const handlePublish = () => {
     setLoading(true);
-    const tempInpCategoryNames = inpCategoryNames.sort();
-    const categoryPairs = [];
-    for (let i = 0; i < tempInpCategoryNames.length - 1; i += 1) {
-      for (let j = i; j < tempInpCategoryNames.length - 1; j += 1) {
-        categoryPairs.push({
-          topicA: tempInpCategoryNames[i],
-          topicB: tempInpCategoryNames[j + 1],
+
+    const categoryNamesSorted = [...inpCategoryNames].sort();
+    const categoryPairsEdited = [];
+    for (let i = 0; i < categoryNamesSorted.length - 1; i += 1) {
+      for (let j = i; j < categoryNamesSorted.length - 1; j += 1) {
+        categoryPairsEdited.push({
+          topicA: categoryNamesSorted[i],
+          topicB: categoryNamesSorted[j + 1],
         });
       }
     }
@@ -155,17 +138,12 @@ export default function PublishSettings() {
               ? inpSelectedAuthor.name
               : undefined,
           isPublished: true,
-          categoryNames: inpCategoryNames.map((category) => category.name),
+          categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,
           excerpt: parseHtml(story.content)?.slice(0, 300),
         },
         isEdited: isEdited === 'true',
-        categoryPairs,
-        topicsWillCreate: inpCategoryNames
-          .filter((t) => !t.isExisting)
-          .map((topic) => ({
-            name: topic.name,
-          })),
+        categoryPairs: categoryPairsEdited,
         onSuccess: () => router.push(`/story/${story.storySlug}`),
       })
     );
@@ -179,7 +157,13 @@ export default function PublishSettings() {
       dispatch(storyActions.getCacheStoryRequest(storySlug));
     }
   }, [storySlug]);
+
   useEffect(() => {
+    categoryInputRef.current.focus();
+  }, [isSearchOpen]);
+
+  useEffect(() => {
+    setIsSearchOpen(false);
     if (inpCategory) debouncedSearch(inpCategory);
   }, [inpCategory]);
 
@@ -188,13 +172,8 @@ export default function PublishSettings() {
   }, [userFromStorage]);
 
   useEffect(() => {
-    if (!_.isNil(story)) {
-      setInpCategoryNames(
-        _.map(story.categoryNames, (category) => ({
-          name: category,
-          isExisting: true,
-        }))
-      );
+    if (_.isEmpty(inpCategoryNames) && !_.isNil(story)) {
+      setInpCategoryNames(story.categoryNames);
       setInpRestrictComments(story.isRestrictedComments);
     }
   }, [story]);
@@ -202,7 +181,7 @@ export default function PublishSettings() {
     if (topic) {
       setInpCategoryNames((prev) => [...prev, topic]);
     }
-  }, [topic, story]);
+  }, [topic]);
 
   useEffect(() => {
     const userAuthor = {
@@ -405,9 +384,12 @@ export default function PublishSettings() {
                       className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                       placeholder="Category Name"
                       value={inpCategory}
-                      onChange={(e) => setInpCategory(e.target.value)}
+                      onChange={(e) => {
+                        setInpCategory(e.target.value);
+                      }}
                       disabled={_.size(story?.categoryNames) >= 5}
                       onKeyDown={handleInsert}
+                      ref={categoryInputRef}
                     />
                     {isSearchOpen &&
                       _.size(inpCategory) !== 0 &&
@@ -423,9 +405,9 @@ export default function PublishSettings() {
 
                     {_.map(inpCategoryNames, (category) => (
                       <Category
-                        key={category.name}
-                        tag={category.name}
-                        onClick={() => handleDelete(category.name)}
+                        key={category}
+                        tag={category}
+                        onClick={() => handleDelete(category)}
                         className="mt-2 text-xs"
                       />
                     ))}
