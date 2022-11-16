@@ -4,20 +4,22 @@ export default function Avatar({
   alt = '',
   fontClassName,
   placeholderName,
+  id
 }) {
   return (
-    <div>
+    <div id={id}>
       {src ? (
         <img
-          className={` max-w-none rounded-full object-cover ${className}`}
+          className={`max-w-none rounded-full object-cover ${className}`}
           src={src}
           alt={alt}
+          id={id}
         />
       ) : (
         <div
           className={`rounded-full bg-gray-400 flex items-center justify-center ${className}`}
         >
-          <span className={`text-white ${fontClassName}`}>
+          <span id={id} className={`text-white ${fontClassName}`}>
             {placeholderName?.charAt(0).toUpperCase()}
           </span>
         </div>

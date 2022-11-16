@@ -84,6 +84,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
                 story={story}
                 optionButtons={{
                   editStory: () => {
+                    dispatch(storyActions.clearStory());
                     router.push(`/write-a-story?id=${story._id}`);
                   },
                   storySettings: () => {

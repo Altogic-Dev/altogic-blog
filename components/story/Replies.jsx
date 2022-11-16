@@ -50,6 +50,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
         story: story._id,
         limit: replyLimit,
         page: 1,
+        userId: user?._id,
       })
     );
   };
@@ -129,6 +130,23 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     sendNotification('reply');
   };
 
+  const handleReplyLike = (reply) => {
+    if (user && !reply.reply_likes)
+      dispatch(
+        storyActions.likeReplyRequest({
+          replyId: reply._id,
+          userId: user._id,
+        })
+      );
+    else if (reply.reply_likes) {
+      dispatch(
+        storyActions.unlikeReplyRequest({
+          replyId: reply._id,
+          userId: user._id,
+        })
+      );
+    }
+  };
   const handleComment = (e, reply, index) => {
     setCommentBoxes(
       commentBoxes.map((item, i) => {
@@ -443,11 +461,15 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   }}
                                 />
                               )}
-
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
                                   <Button className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm">
-                                    <HeartIcon className="w-6" />
+                                    <HeartIcon
+                                      onClick={() => handleReplyLike(reply)}
+                                      className={`w-6 ${
+                                        reply.reply_likes ? 'text-red-500' : ''
+                                      }`}
+                                    />
                                     {reply.likeCount}
                                   </Button>
                                   <Button
@@ -517,9 +539,12 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                       </div>
                                     </div>
 
-                                    <p className="text-slate-700 text-sm tracking-sm mt-5">
-                                      {comment.content}
-                                    </p>
+                                    <p
+                                      className="text-slate-700 text-sm tracking-sm mt-5"
+                                      dangerouslySetInnerHTML={{
+                                        __html: comment.content,
+                                      }}
+                                    ></p>
                                   </div>
                                 ))}
                               {_.nth(commentBoxes, index) && (

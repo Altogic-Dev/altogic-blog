@@ -2,7 +2,7 @@ import { call, takeEvery, put } from 'redux-saga/effects';
 import GeneralService from '@/services/general';
 import { generalActions } from './generalSlice';
 import { followerConnectionActions } from '../followerConnection/followerConnectionSlice';
-import { storyLikesActions } from '../storyLikes/storyLikesSlice';
+import { storyActions } from '../story/storySlice';
 import { reportActions } from '../report/reportSlice';
 import { subscribeConnectionActions } from '../subscribeConnection/subscribeConnectionSlice';
 import { blockConnectionActions } from '../blockConnection/blockConnectionSlice';
@@ -17,7 +17,7 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     if (errors) throw errors;
     if (data) {
       yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
-      yield put(storyLikesActions.isLikedStorySuccess(data.isStoryLiked));
+      yield put(storyActions.isLikedStorySuccess(data.isStoryLiked));
       yield put(
         reportActions.getReportedStoryByUserSuccess(data.isStoryReported)
       );

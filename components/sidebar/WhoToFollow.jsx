@@ -87,7 +87,8 @@ export default function WhoToFollow({
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
   console.log(people)
-  if (people.length > 0)
+
+  if (people?.length > 0)
     return (
       <div>
         <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />
@@ -99,7 +100,8 @@ export default function WhoToFollow({
                 index={index}
                 key={person._id}
                 user={person}
-                isFollowing={person?.isFollowing}
+                isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
+
               />
             ))}
           </ul>
@@ -169,7 +171,7 @@ export default function WhoToFollow({
                               index={index}
                               key={person._id}
                               user={person}
-                              isFollowing={_.includes(isFollowings, person._id)}
+                              isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
                               onClick={() => setwhoToFollowDataModal(false)}
                               role="button"
                               tabIndex={0}

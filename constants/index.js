@@ -38,12 +38,6 @@ const constants = {
       href: '#my-plans',
       provider: () => true,
     },
-    {
-      id: 6,
-      name: 'My Subscribtions',
-      href: '/settings/subscriptions',
-      provider: () => true,
-    },
   ],
   USER_SETTINGS_FIELDS: [
     {

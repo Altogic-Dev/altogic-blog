@@ -140,7 +140,7 @@ export default function PublishSettings() {
           isPublished: true,
           categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,
-          excerpt: parseHtml(story.content)?.slice(0, 300),
+          excerpt: parseHtml(story?.content)?.slice(0, 300),
         },
         isEdited: isEdited === 'true',
         categoryPairs: categoryPairsEdited,

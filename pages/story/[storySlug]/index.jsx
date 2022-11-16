@@ -39,9 +39,7 @@ export default function BlogDetail({ ip }) {
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
   const user = useSelector((state) => state.auth.user);
   const isMuted = useSelector((state) => state.blockConnection.isBlocked);
-  const isFollowings = useSelector(
-    (state) => state.followerConnection.isFollowings
-  );
+
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );

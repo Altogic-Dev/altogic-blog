@@ -43,8 +43,8 @@ const StoryService = {
       .get();
   },
 
-  getStoryBySlug(storySlug,userId) {
-    return endpoint.get(`/story/bySlug`, { storySlug,userId });
+  getStoryBySlug(storySlug, userId) {
+    return endpoint.get(`/story/bySlug`, { storySlug, userId });
   },
 
   getMoreUserStories(authorId, storyId, publicationId, page = 1, limit = 2) {
@@ -77,8 +77,8 @@ const StoryService = {
       .limit(limit)
       .get(true);
   },
-  getStoryReplies(storyId, page, limit) {
-    return endpoint.get(`/story/${storyId}/replies`, page, limit);
+  getStoryReplies(storyId, page, limit, userId) {
+    return endpoint.get(`/story/${storyId}/replies`, { page, limit, userId });
   },
   getReplyComments(reply) {
     return endpoint.get(`/reply/${reply}/comments`);
@@ -164,6 +164,41 @@ const StoryService = {
       .lookup({ field: 'user' })
       .sort('createdAt', 'desc')
       .limit(limit)
+      .get();
+  },
+
+
+  like(userId, storyId, authorId, publicationId, categoryNames) {
+    return endpoint.post(`/story_like/${userId}/${storyId}/${authorId}`, {
+      topics: categoryNames,
+      publicationId,
+    });
+  },
+
+  unlike(userId, storyId) {
+    return endpoint.delete(`/story_like/${userId}/${storyId}`);
+  },
+
+  likeReply(userId, replyId) {
+    return endpoint.post(`/reply/${replyId}/like/${userId}`);
+  },
+  unlikeReply(userId, replyId) {
+    return endpoint.post(`/reply/${replyId}/unlike/${userId}`);
+
+  },
+  likeNormalize(likeNormalizedBody) {
+    return endpoint.post('/story_likes_normalized/like', likeNormalizedBody);
+  },
+
+
+  unlikeNormalize(storyId) {
+    return endpoint.delete(`/story_likes_normalized/${storyId}`);
+  },
+
+  isLiked(userId, storyId) {
+    return db
+      .model('story_likes')
+      .filter(`user == '${userId}' && story == '${storyId}'`)
       .get();
   },
 };

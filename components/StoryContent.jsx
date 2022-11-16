@@ -1,6 +1,5 @@
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { reportActions } from '@/redux/report/reportSlice';
-import { storyLikesActions } from '@/redux/storyLikes/storyLikesSlice';
 import { Menu, Transition } from '@headlessui/react';
 import { storyActions } from '@/redux/story/storySlice';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
@@ -35,7 +34,7 @@ function StoryContent(props) {
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const isLiked = useSelector((state) => state.storyLikes.isLiked);
+  const isLiked = useSelector((state) => state.story.isLiked);
   const story = useSelector((state) => state.story.story);
   const sessionUser = useSelector((state) => state.auth.user);
   const replyCount = useSelector((state) => state.story.replyCount);
@@ -70,14 +69,14 @@ function StoryContent(props) {
   const handleLikeStory = () => {
     if (isLiked) {
       dispatch(
-        storyLikesActions.unlikeStoryRequest({
+        storyActions.unlikeStoryRequest({
           userId: _.get(user, '_id'),
           storyId: _.get(story, '_id'),
         })
       );
     } else {
       dispatch(
-        storyLikesActions.likeStoryRequest({
+        storyActions.likeStoryRequest({
           userId: _.get(user, '_id'),
           storyId: _.get(story, '_id'),
           authorId: _.get(story, 'user._id'),

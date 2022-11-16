@@ -587,10 +587,8 @@ export default function ProfilePage() {
                             profilePicture: person.followingUserProfilePicture,
                             about: person.followingAbout,
                           }}
-                          isFollowing={_.includes(
-                            isFollowings,
-                            person.followingUser
-                          )}
+                          isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
+
                         />
                       ))}
                     </ul>
