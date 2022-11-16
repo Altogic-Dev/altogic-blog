@@ -19,7 +19,7 @@ export default function WhoToFollow({
   );
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
-    let page = 1;
+  let page = 1;
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
@@ -86,7 +86,6 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
-
   if (people?.length > 0)
     return (
       <div>
@@ -99,8 +98,10 @@ export default function WhoToFollow({
                 index={index}
                 key={person._id}
                 user={person}
-                isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
-
+                isFollowing={_.some(
+                  isFollowings,
+                  (item) => item.followingUser === person._id
+                )}
               />
             ))}
           </ul>
@@ -170,21 +171,26 @@ export default function WhoToFollow({
                               index={index}
                               key={person._id}
                               user={person}
-                              isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
+                              isFollowing={_.some(
+                                isFollowings,
+                                (item) => item.followingUser === person._id
+                              )}
                               onClick={() => setwhoToFollowDataModal(false)}
                               role="button"
                               tabIndex={0}
                             />
                           ))}
                         </ul>
-                        <div className="text-center">
-                          <Button
-                            onClick={handleShowMore}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                          >
-                            Show more
-                          </Button>
-                        </div>
+                        {people?.length >= 20 && (
+                          <div className="text-center">
+                            <Button
+                              onClick={handleShowMore}
+                              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                            >
+                              Show more
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </Dialog.Panel>
                   </Transition.Child>
