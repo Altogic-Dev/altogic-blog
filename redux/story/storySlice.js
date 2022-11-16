@@ -227,304 +227,304 @@ export const storySlice = createSlice({
             count: state.userDraftStoriesInfo.count + 1,
           };
 
-          state.userDraftStories = _.orderBy(
-            [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+
+        }
+      }
+      state.userDraftStories = _.orderBy(
+        [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+        ['pinnedStory', 'createdAt'],
+        ['desc', 'desc']
+      );
+      state.story = action.payload;
+      state.error = null;
+    },
+    updateStoryFailure(state, action) {
+      state.isLoading = false;
+
+      state.error = action.payload;
+    },
+
+    getStoryBySlugRequest(state) {
+      state.isLoading = true;
+      state.userFollows = false
+    },
+    getStoryBySlugSuccess(state, action) {
+      state.userFollows = !!action.payload.userFollows.length
+      state.isLoading = false;
+      state.story = action.payload.story;
+    },
+
+    getMoreUserStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    getMoreUserStoriesSuccess(state, action) {
+      state.isLoading = false;
+      state.moreUserStories = action.payload;
+    },
+
+    getUserStoriesRequest(state) {
+      state.userStoriesLoading = true;
+      state.userStoriesOwner = null;
+    },
+
+    getUserStoriesRequestNextPage(state) {
+      state.userStoriesLoading = true;
+    },
+    getUserStoriesSuccess(state, action) {
+      if (state.userStoriesOwner === action.payload.owner) {
+        state.userStories =
+          _.orderBy(
+            [...state.userStories, ...action.payload.data],
             ['pinnedStory', 'createdAt'],
-            ['desc', 'desc']
-          );
-        }
-        }
+            ['desc', 'desc'])
 
-        state.story = action.payload;
-        state.error = null;
-      },
-      updateStoryFailure(state, action) {
-        state.isLoading = false;
+      } else {
+        state.userStories = action.payload.data;
+      }
+      state.userStoriesOwner = action.payload.owner;
+      state.userStoriesInfo = action.payload.info;
+      state.userStoriesLoading = false;
 
-        state.error = action.payload;
-      },
-
-      getStoryBySlugRequest(state) {
-        state.isLoading = true;
-        state.userFollows = false
-      },
-      getStoryBySlugSuccess(state, action) {
-        state.userFollows = !!action.payload.userFollows.length
-        state.isLoading = false;
-        state.story = action.payload.story;
-      },
-
-      getMoreUserStoriesRequest(state) {
-        state.isLoading = true;
-      },
-      getMoreUserStoriesSuccess(state, action) {
-        state.isLoading = false;
-        state.moreUserStories = action.payload;
-      },
-
-      getUserStoriesRequest(state) {
-        state.userStoriesLoading = true;
-        state.userStoriesOwner = null;
-      },
-
-      getUserStoriesRequestNextPage(state) {
-        state.userStoriesLoading = true;
-      },
-      getUserStoriesSuccess(state, action) {
-        if (state.userStoriesOwner === action.payload.owner) {
-          state.userStories =
-            _.orderBy(
-              [...state.userStories, ...action.payload.data],
-              ['pinnedStory', 'createdAt'],
-              ['desc', 'desc'])
-
-        } else {
-          state.userStories = action.payload.data;
-        }
-        state.userStoriesOwner = action.payload.owner;
-        state.userStoriesInfo = action.payload.info;
-        state.userStoriesLoading = false;
-
-      },
+    },
 
 
-      getUserStoriesFailure(state) {
-        state.userStoriesLoading = false;
-      },
+    getUserStoriesFailure(state) {
+      state.userStoriesLoading = false;
+    },
 
-      getUserDraftStoriesRequest(state) {
-        state.userStoriesLoading = true;
-      },
-      getUserDraftStoriesSuccess(state, action) {
-        state.userStoriesLoading = false;
-        if (_.isArray(state.userDraftStories)) {
-          state.userDraftStories = [
-            ...state.userDraftStories,
-            ...action.payload.data,
-          ];
-        } else {
-          state.userDraftStories = action.payload.data;
-        }
-        state.userDraftStoriesInfo = action.payload.info;
-      },
+    getUserDraftStoriesRequest(state) {
+      state.userStoriesLoading = true;
+    },
+    getUserDraftStoriesSuccess(state, action) {
+      state.userStoriesLoading = false;
+      if (_.isArray(state.userDraftStories)) {
+        state.userDraftStories = [
+          ...state.userDraftStories,
+          ...action.payload.data,
+        ];
+      } else {
+        state.userDraftStories = action.payload.data;
+      }
+      state.userDraftStoriesInfo = action.payload.info;
+    },
 
-      getUserDraftStoriesFailure(state) {
-        state.userStoriesLoading = false;
-      },
+    getUserDraftStoriesFailure(state) {
+      state.userStoriesLoading = false;
+    },
 
-      deleteStoryRequest(state) {
-        state.isLoading = true;
-      },
-      deleteStorySuccess(state, action) {
-        state.isLoading = false;
-        if (action.payload.isPublished) {
-          state.userStories = _.reject(
-            state.userStories,
-            (story) => story._id === action.payload.storyId
-          );
-          state.userStoriesInfo.count -= 1;
-        } else {
-          state.userDraftStories = _.reject(
-            state.userDraftStories,
-            (story) => story._id === action.payload.storyId
-          );
-          state.userDraftStoriesInfo.count -= 1;
-        }
-      },
+    deleteStoryRequest(state) {
+      state.isLoading = true;
+    },
+    deleteStorySuccess(state, action) {
+      state.isLoading = false;
+      if (action.payload.isPublished) {
+        state.userStories = _.reject(
+          state.userStories,
+          (story) => story._id === action.payload.storyId
+        );
+        state.userStoriesInfo.count -= 1;
+      } else {
+        state.userDraftStories = _.reject(
+          state.userDraftStories,
+          (story) => story._id === action.payload.storyId
+        );
+        state.userDraftStoriesInfo.count -= 1;
+      }
+    },
 
-      updateCategoryNamesRequest(state) {
-        state.isLoading = true;
-      },
-      updateCategoryNamesSuccess(state, action) {
-        ToastMessage.success('Story updated successfully', { hideProgressBar: true });
-        state.isLoading = false;
-        state.story = {
-          ...state.story,
-          categoryNames: action.payload,
-        };
-      },
+    updateCategoryNamesRequest(state) {
+      state.isLoading = true;
+    },
+    updateCategoryNamesSuccess(state, action) {
+      ToastMessage.success('Story updated successfully', { hideProgressBar: true });
+      state.isLoading = false;
+      state.story = {
+        ...state.story,
+        categoryNames: action.payload,
+      };
+    },
 
-      updateStoryFieldRequest(state) {
-        state.isLoading = true;
-        state.error = null;
-      },
-      updateStoryFieldSuccess(state, action) {
-        ToastMessage.success('Story updated successfully');
+    updateStoryFieldRequest(state) {
+      state.isLoading = true;
+      state.error = null;
+    },
+    updateStoryFieldSuccess(state, action) {
+      ToastMessage.success('Story updated successfully');
 
 
-        if (state.story?.isPublished) {
-          if (!_.isNil(state.userStories)) {
-            state.userStories = _.orderBy(
-              _.map(state.userStories, (story) =>
-                story._id === action.payload._id ? action.payload : story
-              ),
-              ['pinnedStory', 'createdAt'],
-              ['desc', 'desc'])
-          }
-        } else if (!_.isNil(state.userDraftStories)) {
-          state.userDraftStories = _.orderBy(_.map(state.userDraftStories, (story) =>
-            story._id === action.payload._id ? action.payload : story
-          ), ['pinnedStory', 'createdAt'],
+      if (state.story?.isPublished) {
+        if (!_.isNil(state.userStories)) {
+          state.userStories = _.orderBy(
+            _.map(state.userStories, (story) =>
+              story._id === action.payload._id ? action.payload : story
+            ),
+            ['pinnedStory', 'createdAt'],
             ['desc', 'desc'])
         }
-
-        state.isLoading = false;
-        state.story = action.payload;
-      },
-      updateStoryFieldFailure(state, action) {
-        state.isLoading = false;
-        state.error = _.first(action.payload.items)
-      },
-      cacheStoryRequest() { },
-
-      getCacheStoryRequest(state) {
-        state.isLoading = true;
-      },
-      getCacheStorySuccess(state, action) {
-        state.publishLoading = false;
-        state.story = action.payload;
-      },
-
-      publishStoryRequest(state) {
-        state.publishLoading = true;
-      },
-      publishStorySuccess(state, action) {
-        state.story = action.payload;
-        state.publishLoading = false;
-        if (!_.isNil(state.userStoriesInfo)) {
-          state.userStoriesInfo = {
-            ...state.userStoriesInfo,
-            count: state.userStoriesInfo.count + 1,
-          };
-          state.userDraftStoriesInfo = {
-            ...state.userDraftStoriesInfo,
-            count: state.userDraftStoriesInfo.count - 1,
-          };
-          state.userStories = _.orderBy(
-            [...state.userStories, action.payload],
-            ['pinnedStory', 'createdAt'],
-            ['desc', 'desc']
-          );
-          state.userDraftStories = state.userDraftStories.filter(
-            (story) => story._id !== action.payload._id
-          );
-        }
-      },
-      publishStoryFailure(state, action) {
-        state.error = action.payload;
-        state.isLoading = false;
-      },
-
-      clearStory(state) {
-        state.story = null;
-      },
-      popularStoriesRequest(state) {
-        state.isLoading = true;
-      },
-      popularStoriesSuccess(state, action) {
-        state.isLoading = false;
-        state.popularStories = action.payload;
-      },
-      popularStoriesFailure(state, action) {
-        state.error = action.payload;
-        state.isLoading = false;
-      },
-      getPublicationsStoriesRequest(state) {
-        state.isLoading = true;
-      },
-      getPublicationsStoriesSuccess(state, action) {
-        state.isLoading = false;
-        state.publicationsStories = action.payload;
-      },
-      getPublicationsStoriesFailure(state, action) {
-        state.error = action.payload;
-        state.isLoading = false;
-      },
-      getPublicationsStoriesByTopicRequest(state) {
-        state.isLoading = true;
-      },
-      getPublicationsStoriesByTopicSuccess(state, action) {
-        state.isLoading = false;
-        state.publicationsStories[action.payload.sectionIndex] =
-          action.payload.data;
-      },
-      getPublicationsStoriesByTopicFailure(state, action) {
-        state.error = action.payload;
-        state.isLoading = false;
-      },
-      selectFeatureStoriesRequest(state) {
-        state.isLoading = true;
-      },
-      selectFeatureStoriesSuccess(state, action) {
-        state.featureStories = action.payload;
-      },
-      selectFeatureStoriesFailure(state, action) {
-        state.error = action.payload;
-        state.isLoading = false;
-      },
-      visitStoryRequest() { },
-      visitStorySuccess() { },
-      visitStoryFailure() { },
-
-      removeUnfollowingStories(state, action) {
-        state.followingStories = action.payload;
-      },
-      removeRecommendedStories(state, action) {
-        state.recommendedStories = action.payload;
-      },
-      updateUserFromStories(state, action) {
-        if (!_.isNil(state.userDraftStories)) {
-          state.userDraftStories = _.map(state.userDraftStories, (story) =>
-            story.user === action.payload._id
-              ? {
-                ...story,
-                username: action.payload.username,
-                userProfilePicture: action.payload.profilePicture,
-              }
-              : story
-          );
-        }
-        if (!_.isNil(state.userStories)) {
-          state.userStories = _.map(state.userStories, (story) =>
-            story.user === action.payload._id
-              ? {
-                ...story,
-                username: action.payload.username,
-                userProfilePicture: action.payload.profilePicture,
-              }
-              : story
-          );
-        }
-        if (state.story?.user?._id === action.payload._id) {
-          state.story = {
-            ...state.story,
-            username: action.payload.username,
-            userProfilePicture: action.payload.profilePicture,
-            user: action.payload,
-          };
-        }
-      },
-
-      likeStoryRequest() { },
-      likeStorySuccess(state) {
-        state.isLiked = true;
-      },
-      likeStoryFailure() {
-        ToastMessage.error("This story doesn't exist any longer");
-
-      },
-      unlikeStoryRequest() { },
-      unlikeStorySuccess(state) {
-        state.isLiked = false;
-      },
-
-      isLikedStoryRequest() { },
-      isLikedStorySuccess(state, action) {
-        state.isLiked = action.payload;
-      },
-
-      likeReplyRequest() {
+      } else if (!_.isNil(state.userDraftStories)) {
+        state.userDraftStories = _.orderBy(_.map(state.userDraftStories, (story) =>
+          story._id === action.payload._id ? action.payload : story
+        ), ['pinnedStory', 'createdAt'],
+          ['desc', 'desc'])
       }
+
+      state.isLoading = false;
+      state.story = action.payload;
+    },
+    updateStoryFieldFailure(state, action) {
+      state.isLoading = false;
+      state.error = _.first(action.payload.items)
+    },
+    cacheStoryRequest() { },
+
+    getCacheStoryRequest(state) {
+      state.isLoading = true;
+    },
+    getCacheStorySuccess(state, action) {
+      state.publishLoading = false;
+      state.story = action.payload;
+    },
+
+    publishStoryRequest(state) {
+      state.publishLoading = true;
+    },
+    publishStorySuccess(state, action) {
+      state.story = action.payload;
+      state.publishLoading = false;
+      if (!_.isNil(state.userStoriesInfo)) {
+        state.userStoriesInfo = {
+          ...state.userStoriesInfo,
+          count: state.userStoriesInfo.count + 1,
+        };
+        state.userDraftStoriesInfo = {
+          ...state.userDraftStoriesInfo,
+          count: state.userDraftStoriesInfo.count - 1,
+        };
+        state.userStories = _.orderBy(
+          [...state.userStories, action.payload],
+          ['pinnedStory', 'createdAt'],
+          ['desc', 'desc']
+        );
+        state.userDraftStories = state.userDraftStories.filter(
+          (story) => story._id !== action.payload._id
+        );
+      }
+    },
+    publishStoryFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+
+    clearStory(state) {
+      state.story = null;
+    },
+    popularStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    popularStoriesSuccess(state, action) {
+      state.isLoading = false;
+      state.popularStories = action.payload;
+    },
+    popularStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationsStories = action.payload;
+    },
+    getPublicationsStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    getPublicationsStoriesByTopicRequest(state) {
+      state.isLoading = true;
+    },
+    getPublicationsStoriesByTopicSuccess(state, action) {
+      state.isLoading = false;
+      state.publicationsStories[action.payload.sectionIndex] =
+        action.payload.data;
+    },
+    getPublicationsStoriesByTopicFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    selectFeatureStoriesRequest(state) {
+      state.isLoading = true;
+    },
+    selectFeatureStoriesSuccess(state, action) {
+      state.featureStories = action.payload;
+    },
+    selectFeatureStoriesFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
+    visitStoryRequest() { },
+    visitStorySuccess() { },
+    visitStoryFailure() { },
+
+    removeUnfollowingStories(state, action) {
+      state.followingStories = action.payload;
+    },
+    removeRecommendedStories(state, action) {
+      state.recommendedStories = action.payload;
+    },
+    updateUserFromStories(state, action) {
+      if (!_.isNil(state.userDraftStories)) {
+        state.userDraftStories = _.map(state.userDraftStories, (story) =>
+          story.user === action.payload._id
+            ? {
+              ...story,
+              username: action.payload.username,
+              userProfilePicture: action.payload.profilePicture,
+            }
+            : story
+        );
+      }
+      if (!_.isNil(state.userStories)) {
+        state.userStories = _.map(state.userStories, (story) =>
+          story.user === action.payload._id
+            ? {
+              ...story,
+              username: action.payload.username,
+              userProfilePicture: action.payload.profilePicture,
+            }
+            : story
+        );
+      }
+      if (state.story?.user?._id === action.payload._id) {
+        state.story = {
+          ...state.story,
+          username: action.payload.username,
+          userProfilePicture: action.payload.profilePicture,
+          user: action.payload,
+        };
+      }
+    },
+
+    likeStoryRequest() { },
+    likeStorySuccess(state) {
+      state.isLiked = true;
+    },
+    likeStoryFailure() {
+      ToastMessage.error("This story doesn't exist any longer");
+
+    },
+    unlikeStoryRequest() { },
+    unlikeStorySuccess(state) {
+      state.isLiked = false;
+    },
+
+    isLikedStoryRequest() { },
+    isLikedStorySuccess(state, action) {
+      state.isLiked = action.payload;
+    },
+
+    likeReplyRequest() {
+    }
     ,
     likeReplySuccess(state, action) {
       try {
