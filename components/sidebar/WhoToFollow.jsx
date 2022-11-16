@@ -99,7 +99,7 @@ export default function WhoToFollow({
                 index={index}
                 key={person._id}
                 user={person}
-                isFollowing={person?.isFollowing}
+                isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
               />
             ))}
           </ul>
@@ -169,7 +169,7 @@ export default function WhoToFollow({
                               index={index}
                               key={person._id}
                               user={person}
-                              isFollowing={_.includes(isFollowings, person._id)}
+                              isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
                               onClick={() => setwhoToFollowDataModal(false)}
                               role="button"
                               tabIndex={0}

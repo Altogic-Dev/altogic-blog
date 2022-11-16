@@ -7,7 +7,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function UserCard({ subscription, user, isFollowing,dontUpdateFollowing }) {
+export default function UserCard({
+  subscription,
+  user,
+  isFollowing,
+  dontUpdateFollowing,
+}) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
   const followingUserLoading = useSelector(
@@ -23,6 +28,7 @@ export default function UserCard({ subscription, user, isFollowing,dontUpdateFol
     setFollowingLoad(true);
 
     if (isFollowing) {
+
       return dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(me, '_id'),
@@ -77,7 +83,8 @@ export default function UserCard({ subscription, user, isFollowing,dontUpdateFol
           </div>
         </a>
       </Link>
-      <Button
+      { me._id !== user._id &&
+        <Button
         loading={followingUserLoading && followingLoad}
         onClick={() => (me ? toggleFollow() : router.push('/login'))}
         className={`inline-flex items-center px-4 py-2 border gap-2 border-transparent text-sm font-medium rounded-full tracking-sm  transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
@@ -90,6 +97,7 @@ export default function UserCard({ subscription, user, isFollowing,dontUpdateFol
       >
         {isFollowing ? buttonTexts[0] : buttonTexts[1]}
       </Button>
+      }
     </li>
   );
 }
