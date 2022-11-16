@@ -544,7 +544,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                       dangerouslySetInnerHTML={{
                                         __html: comment.content,
                                       }}
-                                    ></p>
+                                    />
                                   </div>
                                 ))}
                               {_.nth(commentBoxes, index) && (
