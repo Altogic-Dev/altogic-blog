@@ -28,13 +28,14 @@ function* getFollowingStoriesSaga({ payload: { userId, page } }) {
     console.error({ e });
   }
 }
-function* getStoryReplies({ payload: { story, page, limit } }) {
+function* getStoryReplies({ payload: { story, page, limit,userId } }) {
   try {
     const { data, errors } = yield call(
       StoryService.getStoryReplies,
       story,
       page,
-      limit
+      limit,
+      userId
     );
     if (errors) throw errors;
     if (data) {
@@ -186,7 +187,7 @@ export function* updateFollowerCountSaga(isIncrease) {
   }
 }
 
-function* getStoryBySlugSaga({ payload: {storySlug,userId} }) {
+function* getStoryBySlugSaga({ payload: { storySlug, userId } }) {
   try {
 
     if (!_.isNil(userId)) {
@@ -197,7 +198,7 @@ function* getStoryBySlugSaga({ payload: {storySlug,userId} }) {
       );
       if (errors) throw errors;
       if (data.story) {
-        if (userId=== data.story.user._id) {
+        if (userId === data.story.user._id) {
           yield put(storyActions.getStoryBySlugSuccess(data));
         } else if (data.story.isPublished && !data.story.isPrivate && !data.story.isDeleted) {
           yield put(storyActions.getStoryBySlugSuccess(data));
@@ -601,6 +602,113 @@ function* updateStoryWorkerSaga({ payload: { data, errors } }) {
   }
 }
 
+function* likeNormalizeStorySaga(likeNormalizedBody) {
+  try {
+    const { errors } = yield call(
+      StoryService.likeNormalize,
+      likeNormalizedBody
+    );
+    if (errors) throw errors;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* likeStorySaga({
+  payload: { userId, storyId, authorId, publicationId, categoryNames },
+}) {
+  try {
+    const likeNormalizedBody = _.map(categoryNames, (category) => ({
+      topic: category,
+      storyId,
+      userId,
+    }));
+    const { errors } = yield call(
+      StoryService.like,
+      userId,
+      storyId,
+      authorId,
+      publicationId,
+      categoryNames
+    );
+    if (errors) throw errors;
+    if (!_.isEmpty(categoryNames)) {
+      yield fork(likeNormalizeStorySaga, likeNormalizedBody);
+    }
+    yield put(storyActions.likeStorySuccess());
+    yield fork(updateStoryLikeCountSaga, true);
+  } catch (e) {
+    console.log(e)
+    yield put(storyActions.likeStoryFailure(e));
+
+    console.error({ e });
+  }
+}
+
+function* unlikeNormalizeStorySaga(storyId) {
+  try {
+    const { errors } = yield call(StoryService.unlikeNormalize, storyId);
+    if (errors) throw errors;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function* unlikeStorySaga({ payload: { userId, storyId } }) {
+  try {
+    const { errors } = yield call(StoryService.unlike, userId, storyId);
+    if (errors) throw errors;
+    yield fork(unlikeNormalizeStorySaga, storyId);
+    yield put(storyActions.unlikeStorySuccess());
+    yield fork(updateStoryLikeCountSaga, false);
+  } catch (e) {
+    console.error({ e });
+
+  }
+}
+
+function* isLikedSaga({ payload: { userId, storyId } }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.isLiked,
+      userId,
+      storyId
+    );
+    if (errors) throw errors;
+    if (!_.isNil(data) && !_.isEmpty(data)) {
+      yield put(storyActions.isLikedStorySuccess(true));
+    } else {
+      yield put(storyActions.isLikedStorySuccess(false));
+    }
+  } catch (e) {
+    console.error({ e });
+  }
+}
+
+function* likeReplySaga({ payload: { userId, replyId } }) {
+  try {
+    const { data, errors } = yield call(StoryService.likeReply, userId, replyId);
+    if (errors) throw errors;
+    yield put(storyActions.likeReplySuccess(data));
+  } catch (e) {
+    yield put(storyActions.likeReplyFailure(e));
+
+    console.error({ e });
+
+  }
+}
+function* unlikeReplySaga({ payload: { userId, replyId } }) {
+  try {
+    const { data,errors } = yield call(StoryService.unlikeReply, userId, replyId);
+    if (errors) throw errors;
+    yield put(storyActions.unlikeReplySuccess(data));
+  } catch (e) {
+    yield put(storyActions.likeReplyFailure(e));
+
+    console.error({ e });
+
+  }
+}
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -661,5 +769,10 @@ export default function* rootSaga() {
       storyActions.updateStoryWorkerRequest.type,
       updateStoryWorkerSaga
     ),
+    takeEvery(storyActions.likeStoryRequest.type, likeStorySaga),
+    takeEvery(storyActions.unlikeStoryRequest.type, unlikeStorySaga),
+    takeEvery(storyActions.isLikedStoryRequest.type, isLikedSaga),
+    takeEvery(storyActions.likeReplyRequest.type, likeReplySaga),
+    takeEvery(storyActions.unlikeReplyRequest.type, unlikeReplySaga),
   ]);
 }

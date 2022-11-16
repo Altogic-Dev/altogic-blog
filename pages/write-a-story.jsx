@@ -75,7 +75,8 @@ export default function WriteAStory() {
   }, [user]);
 
   useEffect(() => {
-    if (!inpTitle && newStory && !_.isNil(id)) {
+    if (newStory?.title && inpTitle !== newStory?.title && !_.isNil(id)) {
+      console.log(newStory?.title )
       setInpTitle(newStory.title);
       setValue('title', newStory.title);
       setMinRead(newStory.estimatedReadingTime);
@@ -129,7 +130,7 @@ export default function WriteAStory() {
         webworker.postMessage(dataObject);
         webworker.onmessage = (e) => {
           setLoading(false);
-          dispatch(storyActions.updateStoryWorkerRequest(e.data));
+          dispatch(storyActions.updateStoryWorkerRequest(e.data, story));
         };
       }
     }
@@ -173,6 +174,7 @@ export default function WriteAStory() {
       });
     }
   };
+
   useEffect(
     () => () => {
       setLoading(false);

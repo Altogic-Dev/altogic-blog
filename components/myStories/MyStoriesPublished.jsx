@@ -5,9 +5,12 @@ import _ from 'lodash';
 import PostCard from '@/components/PostCard';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
-import { useInView } from 'react-intersection-observer';
 import { FlagIcon } from '@heroicons/react/outline';
+import { storyActions } from '@/redux/story/storySlice';
+import { useInView } from 'react-intersection-observer';
+import { useDispatch } from 'react-redux';
 import Button from '../basic/button';
+
 
 function MyStoriesPublished({
   setDeletedStory,
@@ -15,6 +18,7 @@ function MyStoriesPublished({
   setPage,
   userStories,
 }) {
+  const dispatch = useDispatch();
   const router = useRouter();
   const ref = useRef();
   const { ref: inViewRef, inView } = useInView();
@@ -40,7 +44,7 @@ function MyStoriesPublished({
   return (
     <div>
       {_.size(userStories) > 0 ? (
-        <div className='divide-y divide-gray-200'>
+        <div className="divide-y divide-gray-200">
           {_.map(userStories, (story) => (
             <PostCard
               key={story._id}
@@ -57,6 +61,7 @@ function MyStoriesPublished({
               images={_.first(story.storyImages)}
               optionButtons={{
                 editStory: () => {
+                  dispatch(storyActions.clearStory());
                   router.push(`/write-a-story?id=${story._id}`);
                 },
                 storySettings: () => {

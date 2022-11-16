@@ -86,8 +86,8 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
-  console.log(people)
-  if (people.length > 0)
+
+  if (people?.length > 0)
     return (
       <div>
         <SidebarTitle title={whoToFollow ? 'Who To Follow' : 'Top Writers'} />

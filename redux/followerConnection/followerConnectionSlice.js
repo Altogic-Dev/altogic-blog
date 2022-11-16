@@ -66,6 +66,7 @@ export const followerConnectionSlice = createSlice({
     followSuccess(state, action) {
       if (!action.payload.dontUpdateFollowing)
         state.isFollowing = true;
+
       state.isFollowings = [
         ...state.isFollowings,
         action.payload.followingUser.followingUser,
@@ -105,7 +106,6 @@ export const followerConnectionSlice = createSlice({
     },
     getFollowingUsersSuccess(state, action) {
       state.isLoading = false;
-      console.log(state.profileFollowings)
 
       if (action.payload.sessionUser) {
         if (action.payload.page === 1) {

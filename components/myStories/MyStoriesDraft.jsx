@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import { useEffect, useCallback, useRef } from 'react';
 import { parseHtml } from '@/utils/utils';
 import { useInView } from 'react-intersection-observer';
+import { useDispatch } from 'react-redux';
+import { storyActions } from '@/redux/story/storySlice';
 import { FlagIcon } from '@heroicons/react/outline';
 import Button from '../basic/button';
 
@@ -18,6 +20,7 @@ function MyStoriesDraft({
 
   const { ref: inViewRef, inView } = useInView();
   const ref = useRef();
+  const dispatch = useDispatch()
 
   const handleEndOfList = () => {
     if (
@@ -55,12 +58,13 @@ function MyStoriesDraft({
               storyUrl={`/write-a-story?id=${story._id}`}
               timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
               title={story.title}
-              infoText={parseHtml(story.content).slice(0, 300)}
+              infoText={parseHtml(story?.content).slice(0, 300)}
               badgeName={_.first(story.categoryNames)}
               min={story.estimatedReadingTime}
               images={_.first(story.storyImages)}
               optionButtons={{
                 editStory: () => {
+                  dispatch(storyActions.clearStory());
                   router.push(`/write-a-story?id=${story._id}`);
                 },
                 storySettings: () => {
