@@ -30,6 +30,7 @@ export default function HeaderMenu() {
   const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
   );
+  const [isOpen, setIsOpen] = useState(true);
   const [user, setUser] = useState();
   const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -164,7 +165,9 @@ export default function HeaderMenu() {
                 <Button
                   onClick={() => {
                     dispatch(storyActions.clearStory());
-                    router.push('/write-a-story', undefined, { shallow: false });
+                    router.push('/write-a-story', undefined, {
+                      shallow: false,
+                    });
                   }}
                   className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
@@ -175,11 +178,17 @@ export default function HeaderMenu() {
                   setMobileNotifications={setMobileNotifications}
                 />
                 <Disclosure
+                  id="dropdown-menu"
                   as="div"
                   className="relative hidden lg:inline-flex items-center"
                 >
-                  <Disclosure.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+                  <Disclosure.Button
+                    id="dropdown-menu button"
+                    onClick={() => setIsOpen(true)}
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
+                  >
                     <Avatar
+                      id="dropdown-menu avatar"
                       className="inline-block w-10 h-10 rounded-full"
                       placeholderName={user?.name}
                       src={user?.profilePicture}
@@ -190,6 +199,8 @@ export default function HeaderMenu() {
                   <HeaderDropdown
                     user={user}
                     logout={logout}
+                    setIsOpen={setIsOpen}
+                    isOpen={isOpen}
                     className="origin-top-right absolute top-10 w-56"
                   />
                 </Disclosure>
@@ -265,7 +276,10 @@ export default function HeaderMenu() {
             as="div"
             className="relative inline-flex lg:hidden items-center"
           >
-            <Disclosure.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+            <Disclosure.Button
+              onClick={() => setIsOpen(true)}
+              className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
+            >
               <Avatar
                 className="inline-block w-10 h-10 rounded-full"
                 placeholderName={user?.name}
@@ -277,6 +291,8 @@ export default function HeaderMenu() {
             <HeaderDropdown
               user={user}
               logout={logout}
+              setIsOpen={setIsOpen}
+              isOpen={isOpen}
               className="fixed bottom-20 w-full"
             />
           </Disclosure>

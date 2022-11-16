@@ -14,9 +14,16 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useRouter } from 'next/router';
 import Avatar from './profile/Avatar';
 
-export default function HeaderDropdown({ user, logout, className }) {
+export default function HeaderDropdown({
+  user,
+  logout,
+  className,
+  isOpen,
+  setIsOpen,
+}) {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const publications = useSelector((state) => state.publication.publications);
   const selectPublication = (publication) => {
     dispatch(publicationActions.selectPublicationRequest(publication));
@@ -27,6 +34,21 @@ export default function HeaderDropdown({ user, logout, className }) {
   useEffect(() => {
     setPublicationState(publications);
   }, [publications]);
+
+  useEffect(() => {
+    document.body.addEventListener('click', (e) => {
+      console.log(e.target)
+      console.log(e.target.id)
+      if (!e.target.id.includes('dropdown-menu') && isOpen) {
+        setIsOpen(false);
+      }
+    });
+    return () => {
+      document.body.removeEventListener('click', () => {});
+    };
+  }, []);
+
+  if(isOpen)
   return (
     <Transition
       as={Fragment}

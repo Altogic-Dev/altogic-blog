@@ -83,7 +83,7 @@ export default function UserCard({
           </div>
         </a>
       </Link>
-      { me._id !== user._id &&
+      { me?._id !== user?._id &&
         <Button
         loading={followingUserLoading && followingLoad}
         onClick={() => (me ? toggleFollow() : router.push('/login'))}
