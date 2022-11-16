@@ -105,7 +105,7 @@ function About(props) {
         )}
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
-        <Button onClick={followerCount ? toggleFollowingsModal : null}>
+        <Button onClick={followerCount ? toggleFollowersModal : null}>
           {followerCount} Followers
         </Button>
         <svg
