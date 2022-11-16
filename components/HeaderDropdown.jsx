@@ -37,8 +37,6 @@ export default function HeaderDropdown({
 
   useEffect(() => {
     document.body.addEventListener('click', (e) => {
-      console.log(e.target)
-      console.log(e.target.id)
       if (!e.target.id.includes('dropdown-menu') && isOpen) {
         setIsOpen(false);
       }

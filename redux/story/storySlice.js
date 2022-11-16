@@ -206,9 +206,6 @@ export const storySlice = createSlice({
     },
     updateStorySuccess(state, action) {
       state.isLoading = false;
-      console.log(_.some(current(state.userStories), item => item._id === action.payload._id))
-      console.log(current(state.userStories))
-      console.log(action.payload)
 
       if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
         /// userStoriesCount--
@@ -553,7 +550,6 @@ export const storySlice = createSlice({
     ,
     unlikeReplySuccess(state, action) {
       try {
-        console.log(action.payload)
         state.replies = state.replies.map(reply => {
           if (reply._id === action.payload.ids.id) {
             const temp = { ...reply }

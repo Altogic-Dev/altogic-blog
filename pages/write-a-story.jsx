@@ -76,7 +76,6 @@ export default function WriteAStory() {
 
   useEffect(() => {
     if (newStory?.title && inpTitle !== newStory?.title && !_.isNil(id)) {
-      console.log(newStory?.title )
       setInpTitle(newStory.title);
       setValue('title', newStory.title);
       setMinRead(newStory.estimatedReadingTime);
