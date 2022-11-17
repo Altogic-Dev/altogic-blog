@@ -29,6 +29,7 @@ import {
   LockClosedIcon,
   LockOpenIcon,
 } from '@heroicons/react/outline';
+import { parseHtml } from '@/utils/utils';
 
 export default function ListDetail() {
   const BOOKMARK_LIST_LIMIT = 5;
@@ -42,7 +43,7 @@ export default function ListDetail() {
   const [user, setUser] = useState();
   const [isMyProfileState, setIsMyProfileState] = useState(false);
   const [stories, setStories] = useState([]);
-
+  const [bookmarkListState, setBookmarkListState] = useState();
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [followingPage, setFollowingPage] = useState(1);
   const [followingModal, setFollowingModal] = useState(false);
@@ -58,6 +59,9 @@ export default function ListDetail() {
 
   const bookmarks = useSelector((state) =>
     _.get(state.bookmark.bookmarks, bookmarkList?._id)
+  );
+  const updatedBookmark = useSelector(
+    (state) => state.bookmark.updatedBookmark
   );
 
   const bookmarkListsUserLoading = useSelector(
@@ -196,6 +200,25 @@ export default function ListDetail() {
     }
   }, [followingPage, _.get(user, '_id')]);
 
+  useEffect(() => {
+    console.log(bookmarkListSlug);
+    console.log(bookmarkListState);
+    console.log(updatedBookmark);
+    console.log(bookmarkList);
+    if (
+      bookmarkListSlug &&
+      bookmarkListState &&
+      updatedBookmark &&
+      bookmarkListState._id === updatedBookmark._id &&
+      bookmarkListState.slug !== updatedBookmark.slug
+    ) {
+      router.push(`/${username}/${updatedBookmark.slug}`);
+    } else {
+      console.log('here');
+
+      setBookmarkListState(bookmarkList);
+    }
+  }, [updatedBookmark]);
   return (
     <div>
       <Head>
@@ -250,7 +273,11 @@ export default function ListDetail() {
                   {bookmarkList?.name}
                 </h1>
 
-                <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+                <span
+                  className={`inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium ${
+                    bookmarkList?.isPrivate ? 'bg-purple-100 text-purple-800 ' : 'bg-green-100 text-green-800 '
+                  }`}
+                >
                   {bookmarkList?.isPrivate ? (
                     <LockClosedIcon className="w-3 h-3 mr-1" />
                   ) : (
@@ -354,12 +381,13 @@ export default function ListDetail() {
                         storyUrl={`/story/${post.storySlug}`}
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
-                        infoText={post.infoText}
+                        infoText={parseHtml(post?.content).slice(0, 300)}
                         badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
                         actionMenu
+                        
                         story={post}
                         bookmarks={bookmarks}
                         optionButtons={{

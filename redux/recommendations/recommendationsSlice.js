@@ -4,6 +4,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 // Initial state
 const initialState = {
   whoToFollow: [],
+  whoToFollowInfo: null,
   whoToFollowLoading: false,
   errors: [],
   topicWritersIdList: [],
@@ -24,7 +25,9 @@ export const recommendationsSlice = createSlice({
     },
     getWhoToFollowSuccess(state, action) {
       state.whoToFollowLoading = false;
-      state.whoToFollow = [...state.whoToFollow, ...action.payload];
+      state.whoToFollow = [...state.whoToFollow, ...action.payload.result];
+      state.whoToFollowInfo = action.payload.countInfo
+      
     },
     getWhoToFollowFailure(state, action) {
       state.whoToFollowLoading = false;

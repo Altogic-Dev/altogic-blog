@@ -68,7 +68,7 @@ function MyStoriesPublished({
                   router.push(`/write-a-story-settings?id=${story._id}`);
                 },
                 storyStats: () => {
-                  router.push(`stats-blog-post?id=${story._id}`);
+                  router.push(`/story/stats-blog-post?id=${story._id}`);
                 },
                 deleteStory: () => {
                   setDeletedStory({
@@ -79,6 +79,7 @@ function MyStoriesPublished({
                 },
               }}
               actionMenu
+              pinnedStory={_.get(story,'pinnedStory')}
               story={story}
             />
           ))}

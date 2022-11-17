@@ -1,15 +1,11 @@
 import { call, takeEvery, put, select } from 'redux-saga/effects';
 import RecommendationsService from '@/services/recommendations';
-import _ from 'lodash';
 import { recommendationsActions } from './recommendationsSlice';
 
 function* getWhoToFollowSaga({ payload: { page, limit } }) {
+  console.log(limit)
   try {
     const user = yield select((state) => state.auth.user);
-    const whoToFollow = yield select(
-      (state) => state.recommendations.whoToFollow
-    );
-    if (!_.isEmpty(whoToFollow) && page === 1) throw new Error('');
     const { data, errors } = yield call(
       RecommendationsService.getWhoToFollow,
       page,

@@ -336,11 +336,19 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
+      if (_.some(state.userStories, story => story._id === action.payload.storyId)) {
+        const index = _.findIndex(state.userStories, story => story._id === action.payload.storyId)
+        state.userStories[index].categoryNames = action.payload.newCategoryNames
+      }
+      else {
+        const index = _.findIndex(state.userDraftStories, story => story._id === action.payload.storyId)
+        state.userDraftStories[index].categoryNames = action.payload.newCategoryNames
+      }
       ToastMessage.success('Story updated successfully', { hideProgressBar: true });
       state.isLoading = false;
       state.story = {
         ...state.story,
-        categoryNames: action.payload,
+        categoryNames: action.payload.newCategoryNames,
       };
     },
 

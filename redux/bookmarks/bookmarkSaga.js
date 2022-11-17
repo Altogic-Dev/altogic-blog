@@ -53,6 +53,7 @@ function* getUserBookmarkListsSaga({ payload }) {
 }
 function* addBookmarkSaga({ payload }) {
   try {
+    console.log(payload)
     const { data, errors } = yield call(BookmarkService.addBookmark, payload);
     if (data) {
       data.username = payload.username
@@ -60,6 +61,7 @@ function* addBookmarkSaga({ payload }) {
     }
     if (errors) throw errors.items;
   } catch (error) {
+    console.log(payload)
     yield put(addBookmarkFailure(error));
   }
 }

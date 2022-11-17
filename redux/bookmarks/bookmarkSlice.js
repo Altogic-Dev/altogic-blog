@@ -7,7 +7,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 const initialState = {
   myBookmarks: [],
   myBookmarksLoading: true,
-
+  updatedBookmark: null,
   bookmarkLists: {},
   bookmarkListCounts: {},
 
@@ -93,7 +93,7 @@ export const bookmarkSlice = createSlice({
       state.isLoading = true;
     },
     addBookmarkSuccess(state, action) {
-
+      
       try {
         state.isLoading = false;
         state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
@@ -160,9 +160,12 @@ export const bookmarkSlice = createSlice({
     },
     updateBookmarkListSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarkList.name = action.payload.name;
-      state.bookmarkList.isPrivate = action.payload.isPrivate;
-      state.bookmarkList.slug = action.payload.slug;
+      state.bookmarkLists[action.payload.username].bookmarkLists = state.bookmarkLists[action.payload.username].bookmarkLists.map(list => {
+        if (list._id === action.payload._id)
+          return action.payload
+        return list
+      })
+      state.updatedBookmark = action.payload
       ToastMessage.success('Bookmark list updated successfully');
     },
     updateBookmarkListFailure(state, action) {

@@ -387,7 +387,6 @@ export default function PublishSettings() {
                       onChange={(e) => {
                         setInpCategory(e.target.value);
                       }}
-                      disabled={_.size(story?.categoryNames) >= 5}
                       onKeyDown={handleInsert}
                       ref={categoryInputRef}
                     />
