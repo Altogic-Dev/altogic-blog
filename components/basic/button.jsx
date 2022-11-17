@@ -32,6 +32,7 @@ export default function Button({
     >
       {loading && (
         <ClipLoader
+        className='mr-2'
           color={primaryColor ? '#000' : '#fff'}
           loading={loading}
           size={20}

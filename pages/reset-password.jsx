@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '@/components/Input';
 import { authActions } from '@/redux/auth/authSlice';
+import Button from '@/components/basic/button';
 
 export default function ResetPassword() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function ResetPassword() {
   });
   const dispatch = useDispatch();
   const error = useSelector((state) => state.auth.error);
+  const isLoading = useSelector((state) => state.auth.isLoading);
   async function formSubmit(form) {
     const pswChangeForm = {
       newPassword: form.password,
@@ -86,12 +88,13 @@ export default function ResetPassword() {
                   />
 
                   <div>
-                    <button
+                    <Button
+                      loading={isLoading}
                       type="submit"
                       className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                     >
                       Continue
-                    </button>
+                    </Button>
                   </div>
                 </form>
                 <BackToLogin />

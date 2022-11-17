@@ -50,7 +50,7 @@ export default function AuthRedirect(props) {
     return (
       <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
         <ClipLoader color="#9333ea" size={100} />
-        <p className="mt-3 text-xl text-purple-500">Verifying Email</p>
+        <p className="mt-3 text-md text-slate-500">Verifying Email</p>
       </div>
     );
 }

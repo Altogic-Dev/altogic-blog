@@ -245,6 +245,7 @@ export default function Editor({
 
   const removeFormat = () => {
     const range = quillInstance.getSelection(true);
+    if(quillInstance.getLeaf(range.index)[0])
     if (range.length === 0) {
       let leaf;
       const offset = quillInstance.getLeaf(range.index);

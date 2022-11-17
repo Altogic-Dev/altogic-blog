@@ -7,7 +7,7 @@ import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
 import UserCard from '../general/UserCard';
 
-const sizeLimit = 20;
+const size = 20;
 export default function WhoToFollow({
   topWriters,
   whoToFollow,
@@ -31,7 +31,9 @@ export default function WhoToFollow({
     (state) => state.recommendations.topWriters
   );
 
-  const count = useSelector((state) => state.recommendations.count);
+  const count = useSelector((state) =>
+    _.get(state.recommendations.whoToFollowInfo, 'count')
+  );
 
   const dispatch = useDispatch();
 
@@ -50,9 +52,9 @@ export default function WhoToFollow({
   const handleSeeMoreSuggestions = () => {
     if (Tag && _.isNil(topicWritersData)) {
       getTopicWriters(Tag);
-    } else if (whoToFollow && whoToFollowData.length <= sizeLimit) {
-      getWhoToFollow(1, sizeLimit);
-    } else if (topWriters && topWritersData.length <= sizeLimit) {
+    } else if (whoToFollow && whoToFollowData.length <= size) {
+      getWhoToFollow(1, size);
+    } else if (topWriters && topWritersData.length <= size) {
       getTopWriters();
     }
   };
@@ -60,7 +62,7 @@ export default function WhoToFollow({
   const handleShowMore = () => {
     page += 1;
     if (whoToFollow && whoToFollowData.length < count) {
-      getWhoToFollow(page, sizeLimit);
+      getWhoToFollow(page, size);
     }
   };
 
@@ -105,7 +107,7 @@ export default function WhoToFollow({
               />
             ))}
           </ul>
-          {whoToFollow && (
+          {whoToFollow && people?.length < count && (
             <Button
               onClick={() => setwhoToFollowDataModal(true)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
@@ -181,7 +183,7 @@ export default function WhoToFollow({
                             />
                           ))}
                         </ul>
-                        {people?.length >= 20 && (
+                        {people?.length < count && (
                           <div className="text-center">
                             <Button
                               onClick={handleShowMore}

@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthSidebar from '@/components/AuthSidebar';
 import { authActions } from '@/redux/auth/authSlice';
 import BackToLogin from '@/components/BackToLogin';
+import Button from '@/components/basic/button';
 
 export default function Login() {
   const registerSchema = new yup.ObjectSchema({
@@ -19,6 +20,7 @@ export default function Login() {
     dispatch(authActions.forgotPasswordRequest({ ...form }));
   }
   const error = useSelector((state) => state.auth.error);
+  const isLoading = useSelector((state) => state.auth.isLoading);
   const {
     handleSubmit,
     register,
@@ -65,12 +67,13 @@ export default function Login() {
                     placeholder="johndoe@example.com"
                   />
                   <div>
-                    <button
+                    <Button
                       type="submit"
+                      loading={isLoading}
                       className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                     >
                       Reset password
-                    </button>
+                    </Button>
                   </div>
                 </form>
                 <BackToLogin />

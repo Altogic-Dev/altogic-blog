@@ -20,7 +20,7 @@ function MyStoriesDraft({
 
   const { ref: inViewRef, inView } = useInView();
   const ref = useRef();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleEndOfList = () => {
     if (
@@ -70,9 +70,6 @@ function MyStoriesDraft({
                 storySettings: () => {
                   router.push(`/write-a-story-settings?id=${story._id}`);
                 },
-                storyStats: () => {
-                  router.push(`stats-blog-post?id=${story._id}`);
-                },
                 deleteStory: () => {
                   setDeletedStory({
                     storyId: story._id,
@@ -81,6 +78,7 @@ function MyStoriesDraft({
                   });
                 },
               }}
+              pinnedStory={_.get(story, 'pinnedStory')}
               actionMenu
               draft
             />

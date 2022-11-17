@@ -56,7 +56,7 @@ export default function WriteAStory() {
   });
 
   useEffect(() => {
-    if (!id) {
+    if (!id || !newStory) {
       setValue('title', '');
       setInpTitle();
       setIsChanged(false);
@@ -177,6 +177,10 @@ export default function WriteAStory() {
   useEffect(
     () => () => {
       setLoading(false);
+      setValue('title', '');
+      setInpTitle();
+      setIsChanged(false);
+      setIsCreated(false);
       dispatch(storyActions.clearStory());
     },
     []

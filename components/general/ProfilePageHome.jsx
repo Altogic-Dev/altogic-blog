@@ -114,7 +114,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
               <FlagIcon className="w-7 h-7 text-purple-600" />
             </span>
-            <p className="text-slate-500 text-md  ">No Stories Yet</p>
+            <p className="text-slate-500 text-md  ">No stories yet</p>
 
             {isMyProfile && (
               <Button

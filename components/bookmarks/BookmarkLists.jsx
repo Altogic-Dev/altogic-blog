@@ -32,7 +32,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       list: list._id,
       userId: user._id,
       username: user.username,
-      story: story._id,
+      story: story?._id,
       coverImages: null,
     };
 

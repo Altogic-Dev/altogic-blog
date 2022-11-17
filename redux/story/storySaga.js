@@ -28,7 +28,7 @@ function* getFollowingStoriesSaga({ payload: { userId, page } }) {
     console.error({ e });
   }
 }
-function* getStoryReplies({ payload: { story, page, limit,userId } }) {
+function* getStoryReplies({ payload: { story, page, limit, userId } }) {
   try {
     const { data, errors } = yield call(
       StoryService.getStoryReplies,
@@ -355,7 +355,7 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
 
 
     if (errors) throw errors;
-    yield put(storyActions.updateCategoryNamesSuccess(newCategoryNames));
+    yield put(storyActions.updateCategoryNamesSuccess({ newCategoryNames, storyId }));
   } catch (e) {
     console.error({ e });
   }
@@ -699,7 +699,7 @@ function* likeReplySaga({ payload: { userId, replyId } }) {
 }
 function* unlikeReplySaga({ payload: { userId, replyId } }) {
   try {
-    const { data,errors } = yield call(StoryService.unlikeReply, userId, replyId);
+    const { data, errors } = yield call(StoryService.unlikeReply, userId, replyId);
     if (errors) throw errors;
     yield put(storyActions.unlikeReplySuccess(data));
   } catch (e) {
