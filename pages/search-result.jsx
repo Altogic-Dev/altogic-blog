@@ -14,6 +14,7 @@ import Topic from '@/components/basic/topic';
 import PublicationCard from '@/components/Publications/PublicationCard';
 import ListObserver from '@/components/ListObserver';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
+import _ from 'lodash';
 
 export default function SearchResult() {
   const dispatch = useDispatch();
@@ -43,7 +44,8 @@ export default function SearchResult() {
       );
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
-          userId: user?._id,
+          userId: _.get(user, '_id'),
+          username: _.get(user, 'username'),
         })
       );
     }
@@ -62,7 +64,6 @@ export default function SearchResult() {
       );
     }
   }, [topicLimit, userLimit, publicationLimit, postLimit]);
-
 
   return (
     <div>

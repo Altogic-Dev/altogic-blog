@@ -87,6 +87,7 @@ export default function ListDetail() {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(user, '_id'),
+        username: _.get(user, 'username'),
         page: followingPage,
       })
     );
@@ -97,6 +98,7 @@ export default function ListDetail() {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
           userId: _.get(user, '_id'),
+          username: _.get(user, 'username'),
           page: followingPage,
         })
       );
@@ -110,6 +112,7 @@ export default function ListDetail() {
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(user, '_id'),
+          followingUsername: _.get(user, 'username'),
         })
       );
     else {
@@ -275,7 +278,9 @@ export default function ListDetail() {
 
                 <span
                   className={`inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium ${
-                    bookmarkList?.isPrivate ? 'bg-purple-100 text-purple-800 ' : 'bg-green-100 text-green-800 '
+                    bookmarkList?.isPrivate
+                      ? 'bg-purple-100 text-purple-800 '
+                      : 'bg-green-100 text-green-800 '
                   }`}
                 >
                   {bookmarkList?.isPrivate ? (
@@ -387,7 +392,6 @@ export default function ListDetail() {
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}
                         actionMenu
-                        
                         story={post}
                         bookmarks={bookmarks}
                         optionButtons={{

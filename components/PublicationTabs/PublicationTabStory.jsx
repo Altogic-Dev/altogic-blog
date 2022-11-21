@@ -29,6 +29,8 @@ function PublicationTabStory({ tab, publication }) {
         followerConnectionActions.unfollowRequest({
           userId: _.get(user, '_id'),
           followingUserId: _.get(story, 'user._id'),
+          followingUsername: _.get(story, 'username'),
+
         })
       );
     }

@@ -3,7 +3,6 @@ import RecommendationsService from '@/services/recommendations';
 import { recommendationsActions } from './recommendationsSlice';
 
 function* getWhoToFollowSaga({ payload: { page, limit } }) {
-  console.log(limit)
   try {
     const user = yield select((state) => state.auth.user);
     const { data, errors } = yield call(

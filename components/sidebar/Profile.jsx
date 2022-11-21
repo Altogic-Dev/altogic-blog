@@ -22,6 +22,7 @@ export default function Profile({
   const [clickedIsLoading, setClickedIsLoading] = useState(false);
   const dispatch = useDispatch();
 
+  
   const toggleFollow = () => {
     setClickedIsLoading(true);
     if (isFollowing) {
@@ -29,6 +30,7 @@ export default function Profile({
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
           followingUserId: _.get(profile, '_id'),
+          followingUsername: _.get(profile, 'username'),
           notUpdate: true,
           fromProfile: true,
         })
@@ -45,7 +47,6 @@ export default function Profile({
         },
         notUpdate: true,
         fromProfile: true,
-
       })
     );
   };

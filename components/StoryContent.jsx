@@ -417,6 +417,7 @@ function StoryContent(props) {
                     </Menu.Button>
                   </div>
                   <BookmarkLists
+                    className="-top-32"
                     bookmarkLists={bookmarkLists}
                     setCreateNewList={setCreateNewList}
                     story={story}
@@ -448,7 +449,7 @@ function StoryContent(props) {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    {getMenuItems()}
+                    {getMenuItems(true)}
                   </Transition>
                 </Menu>
               </div>
@@ -544,7 +545,7 @@ function StoryContent(props) {
                     <BookmarkLists
                       bookmarkLists={bookmarkLists}
                       setCreateNewList={setCreateNewList}
-                      className="-top-48"
+                      className="-top-32"
                       story={story}
                       bookmarks={bookmarks}
                     />
