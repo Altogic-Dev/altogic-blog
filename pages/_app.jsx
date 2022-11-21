@@ -49,6 +49,7 @@ function MyApp({ Component, pageProps }) {
       })
     );
   };
+  
 
   const visitPublicationRequest = (publicationName) => {
     dispatch(

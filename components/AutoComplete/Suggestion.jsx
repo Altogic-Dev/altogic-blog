@@ -44,8 +44,8 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
             className="w-full"
           >
             <li
-              className={`hover:cursor-pointer hover:text-slate-300 hover:bg-gray-100 ${
-                selected === index ? 'bg-purple-200' : ''
+              className={`hover:cursor-pointer hover:text-slate-300 hover:bg-purple-100 ${
+                selected === index ? 'bg-gray-100' : ''
               }`}
             >
               <div className="flex items-center p-2 w-full">
@@ -69,7 +69,7 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
                   </div>
                 )}
                 <div className="ml-2 w-full text-start">
-                  <p className="text-sm font-semibold text-slate-500 w-96 truncate flex items-center">
+                  <p className={`text-sm w-96 truncate flex items-center ${ selected === index ? 'text-purple-500 font-semibold'  : 'text-gray-600'}`}>
                     {name === 'Stories' ? suggestion.title : suggestion.name}
                   </p>
                 </div>

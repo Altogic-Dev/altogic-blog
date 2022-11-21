@@ -24,6 +24,7 @@ export const recommendationsSlice = createSlice({
       state.whoToFollowLoading = true;
     },
     getWhoToFollowSuccess(state, action) {
+      console.log(action.payload)
       state.whoToFollowLoading = false;
       state.whoToFollow = [...state.whoToFollow, ...action.payload.result];
       state.whoToFollowInfo = action.payload.countInfo

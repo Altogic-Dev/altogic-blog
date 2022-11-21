@@ -25,7 +25,7 @@ export default function PostList({
                 Private
               </span>
             ) : (
-              <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-100 text-purple-800">
+              <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
                 <LockOpenIcon className="w-3 h-3 mr-1" />
                 Public
               </span>

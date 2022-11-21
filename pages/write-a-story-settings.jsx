@@ -13,6 +13,7 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 import Button from '@/components/basic/button';
 import Input from '@/components/Input';
+import { parseHtml } from '@/utils/utils';
 
 export default function WriteAStorySettings() {
   const router = useRouter();
@@ -55,7 +56,6 @@ export default function WriteAStorySettings() {
   const debouncedSearch = useCallback(
     _.debounce((category) => {
       dispatch(topicsActions.searchTopicsRequest(category));
-      setIsSearchOpen(true);
     }, 500),
     []
   );
@@ -74,9 +74,8 @@ export default function WriteAStorySettings() {
   };
   const handleInsert = (e) => {
     if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
-      if (!isSearchOpen) {
-        setInpCategoryNames((prev) => [...prev, inpCategory]);
-        setInpCategory('');
+      if (!isSearchOpen && inpCategory.trim()) {
+        handleAddTopic({ name: inpCategory });
       } else if (
         _.some(foundTopics, (topic) =>
           _.includes(topic.name.toLowerCase(), inpCategory.toLowerCase())
@@ -135,8 +134,14 @@ export default function WriteAStorySettings() {
   }, [inpCategory]);
 
   useEffect(() => {
-    categoryInputRef.current.focus();
+    if (inpCategory && !isSearchOpen) categoryInputRef.current.focus();
   }, [isSearchOpen]);
+
+  useEffect(() => {
+    setSelectedIndex(0);
+    if (_.size(foundTopics) === 0) setIsSearchOpen(false);
+    else setIsSearchOpen(true);
+  }, [foundTopics]);
 
   useEffect(() => {
     setBasePath(window.location.origin);
@@ -251,11 +256,11 @@ export default function WriteAStorySettings() {
                       authorName={_.get(userState, 'username')}
                       authorImage={_.get(userState, 'profilePicture')}
                       storyUrl={`/story/${_.get(story, 'storySlug')}`}
+                      infoText={parseHtml(story?.content).slice(0, 300)}
                       timeAgo={DateTime.fromISO(
                         _.get(story, 'createdAt')
                       ).toRelative()}
                       title={_.get(story, 'title')}
-                      infoText={_.get(story, 'excerpt')}
                       badgeUrl="badgeUrl"
                       badgeName={_.first(_.get(story, 'categoryNames'))}
                       min={_.get(story, 'estimatedReadingTime')}
@@ -350,7 +355,7 @@ export default function WriteAStorySettings() {
                         <div className="flex items-start flex-col gap-5">
                           <div className="relative">
                             <input
-                              className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                              className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                               placeholder="Category Name"
                               value={inpCategory}
                               onChange={(e) => setInpCategory(e.target.value)}
@@ -860,7 +865,11 @@ export default function WriteAStorySettings() {
                           type="radio"
                           className="h-5 w-5 text-purple-600 border-gray-300 focus:ring-purple-500"
                           value="automatic"
-                          checked={radioCustomizeLink === 'automatic'}
+                          disabled={story?.slugChanged}
+                          checked={
+                            radioCustomizeLink === 'automatic' &&
+                            !story?.slugChanged
+                          }
                         />
                         <label
                           htmlFor="automatic"
@@ -876,7 +885,10 @@ export default function WriteAStorySettings() {
                           type="radio"
                           className="h-5 w-5 text-purple-600 border-gray-300 focus:ring-purple-500"
                           value="custom"
-                          checked={radioCustomizeLink === 'custom'}
+                          checked={
+                            radioCustomizeLink === 'custom' ||
+                            story?.slugChanged
+                          }
                         />
                         <label
                           htmlFor="custom"
@@ -927,6 +939,7 @@ export default function WriteAStorySettings() {
                                 story,
                                 newStoryField: {
                                   storySlug: inpStorySlug.toLowerCase(),
+                                  slugChanged: true,
                                 },
                               })
                             );

@@ -43,7 +43,6 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
-
   const getFollowingStories = (page) => {
     if (userFromStorage) {
       dispatch(
@@ -76,7 +75,8 @@ export default function Home() {
   };
 
   const storiesYouFollow = useSelector((state) =>
-    state.followerConnection.userFollowings.filter(
+    _.filter(
+      state.followerConnection.followingsData,
       (item) => item.unreadStories > 0
     )
   );
@@ -189,6 +189,11 @@ export default function Home() {
                                     followerConnectionActions.unfollowRequest({
                                       userId: user._id,
                                       followingUserId: story.user,
+                                      followingUsername: _.get(
+                                        story,
+                                        'username'
+                                      ),
+
                                       notUpdate: true,
                                     })
                                   ),

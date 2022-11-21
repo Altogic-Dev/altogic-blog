@@ -4,12 +4,11 @@ import FollowerConnectionService from '@/services/followerConnection';
 import { followerConnectionActions } from './followerConnectionSlice';
 import {
   removeUnfollowingStories,
-  updateFollowerCountSaga,
 } from '../story/storySaga';
 import { updateProfileUserSaga, updateUserSaga } from '../auth/authSaga';
 
 function* unfollowSaga({
-  payload: { userId, followingUserId, notUpdate, fromProfile,dontUpdateFollowing },
+  payload: { userId, followingUserId, fromProfile, followingUsername },
 }) {
   try {
     const { errors } = yield call(
@@ -18,33 +17,31 @@ function* unfollowSaga({
       followingUserId
     );
     if (errors) throw errors;
-    yield put(followerConnectionActions.unfollowSuccess({ followingUserId, fromProfile ,dontUpdateFollowing}));
-    if (!notUpdate) {
-      yield fork(updateFollowerCountSaga, false);
-    }
-    yield fork(removeUnfollowingStories, followingUserId);
     const user = yield select((state) => state.auth.user);
-    yield fork(updateUserSaga, {
-      followingCount: user.followingCount - 1,
-    });
 
-    const userProfile = yield select((state) => state.auth.profileUser);
+    yield put(followerConnectionActions.unfollowSuccess({ sessionUsername: user.username, personId: followingUserId, followingUsername }));
 
-    if (fromProfile && followingUserId === userProfile._id) {
-      if (_.get(userProfile, '_id') === userId)
-        yield put(followerConnectionActions.handleFollowingCount(-1));
-
+    if (fromProfile) {
+      const userProfile = yield select((state) => state.auth.profileUser);
       yield fork(updateProfileUserSaga, {
         followerCount: userProfile.followerCount - 1,
       });
     }
+
+
+    yield fork(removeUnfollowingStories, followingUserId);
+    yield fork(updateUserSaga, {
+      followingCount: user.followingCount - 1,
+    });
+
+
   } catch (e) {
     yield put(followerConnectionActions.unfollowFailure(e));
   }
 }
 
 function* followSaga({
-  payload: { followerUser, followingUser, notUpdate, fromProfile,dontUpdateFollowing },
+  payload: { followerUser, followingUser, fromProfile },
 }) {
   try {
     const { errors } = yield call(
@@ -53,21 +50,16 @@ function* followSaga({
       followingUser
     );
     if (errors) throw errors;
-    yield put(followerConnectionActions.followSuccess({ followerUser, followingUser,dontUpdateFollowing }));
-    if (!notUpdate) {
-      yield fork(updateFollowerCountSaga, true);
-    }
+    yield put(followerConnectionActions.followSuccess({ followingUser, followerUser }));
 
     if (fromProfile) {
       const userProfile = yield select((state) => state.auth.profileUser);
-
-      // if (_.get(userProfile, '_id') === followerUser._id)
-      //   yield put(followerConnectionActions.handleFollowingCount(+1));
-
       yield fork(updateProfileUserSaga, {
         followerCount: userProfile.followerCount + 1,
       });
     }
+
+
     yield fork(updateUserSaga, {
       followingCount: followerUser.followingCount + 1,
     });
@@ -78,7 +70,7 @@ function* followSaga({
   }
 }
 
-function* getFollowerUsersSaga({ payload: { userId, page, limit } }) {
+function* getFollowerUsersSaga({ payload: { username, userId, page, limit } }) {
   try {
     const sessionUserId = yield select((state) =>
       _.get(state.auth.user, '_id')
@@ -101,7 +93,7 @@ function* getFollowerUsersSaga({ payload: { userId, page, limit } }) {
   }
 }
 
-function* getFollowingUsersSaga({ payload: { userId, page, limit } }) {
+function* getFollowingUsersSaga({ payload: { username, userId, page, limit } }) {
   try {
     const sessionUserId = yield select((state) =>
       _.get(state.auth.user, '_id')
@@ -116,14 +108,13 @@ function* getFollowingUsersSaga({ payload: { userId, page, limit } }) {
 
     if (errors) throw errors;
     if (_.isArray(data.data)) {
-      const user = yield select((state) => state.auth.user);
       yield put(
         followerConnectionActions.getFollowingUsersSuccess({
+          sessionUser: userId === sessionUserId,
           data: data.data,
           info: data.info,
-          owner: userId,
+          username,
           page,
-          sessionUser: user?._id === userId
         })
       );
     }
