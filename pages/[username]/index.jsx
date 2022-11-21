@@ -31,7 +31,7 @@ import { ClipLoader } from 'react-spinners';
 import ToastMessage from '@/utils/toast';
 
 export default function ProfilePage() {
-  const BOOKMARK_LIMIT = 10;
+  const BOOKMARK_LIST_LIMIT = 3;
   const FOLLOWING_PAGE_LIMIT = 5;
   const router = useRouter();
   const dispatch = useDispatch();
@@ -48,37 +48,36 @@ export default function ProfilePage() {
     (state) => state.followerConnection.isLoading
   );
   const profileUser = useSelector((state) => state.auth.profileUser);
-  const userFollowings = useSelector(
-    (state) =>
-      state.followerConnection[
-        sessionUser?.username === username
-          ? 'userFollowings'
-          : 'profileFollowings'
-      ]
+
+  const userFollowings = useSelector((state) =>
+    _.get(state.followerConnection.followingsData[username], 'userFollowings')
+  );
+  const myFollowings = useSelector(
+    (state) => state.followerConnection.myFollowings
   );
 
-  const userFollowingsCount = useSelector(
-    (state) =>
-      state.followerConnection[
-        sessionUser?.username === username
-          ? 'userFollowingsCount'
-          : 'profileFollowingsCount'
-      ]
+  const userFollowingsCount = useSelector((state) =>
+    _.get(state.followerConnection.followingsData[username], 'count')
   );
 
-  const userFollowingsOwner = useSelector(
-    (state) => state.followerConnection.userFollowingsOwner
-  );
   const bookmarkLists = useSelector(
     (state) =>
       _.get(state.bookmark.bookmarkLists, profileUser?.username)?.bookmarkLists
   );
+  const bookmarkListTotalPages = useSelector(
+    (state) =>
+      _.get(state.bookmark.bookmarkLists, profileUser?.username)?.totalPages
+  );
+
+  const [bookmarkListPage, setBookmarkListPage] = useState(
+    useSelector(
+      (state) =>
+        _.get(state.bookmark.bookmarkLists, profileUser?.username)?.page
+    ) || 1
+  );
 
   const bookmarkListsProfileLoading = useSelector(
     (state) => state.bookmark.bookmarkListsProfileLoading
-  );
-  const bookmarkListCounts = useSelector(
-    (state) => state.bookmark.bookmarkListsProfileInfo
   );
 
   const isFollowing = useSelector(
@@ -86,9 +85,6 @@ export default function ProfilePage() {
   );
   const isSubscribed = useSelector(
     (state) => state.subscribeConnection.isSubscribed
-  );
-  const isFollowings = useSelector(
-    (state) => state.followerConnection.isFollowings
   );
 
   const authLoading = useSelector((state) => state.auth.isLoading);
@@ -99,16 +95,10 @@ export default function ProfilePage() {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
 
-  const [bookmarkListPage, setBookmarkListPage] = useState(
-    Math.ceil(
-      _.isEmpty(bookmarkLists) ? 1 : _.size(bookmarkLists) / BOOKMARK_LIMIT
-    )
-  );
   const [isMyProfile, setIsMyProfile] = useState(true);
   const { ref: inViewRef, inView } = useInView();
   const ref = useRef();
 
-  // const prevUsername = usePrevious(username);
   const copyToClipboard = () => {
     ToastMessage.success('Copied to clipboard');
     const basePath = window.location.origin;
@@ -120,6 +110,7 @@ export default function ProfilePage() {
     dispatch(
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(profileUser, '_id'),
+        username: _.get(profileUser, 'username'),
         page: followingPage,
         limit: FOLLOWING_PAGE_LIMIT,
       })
@@ -131,6 +122,7 @@ export default function ProfilePage() {
       dispatch(
         followerConnectionActions.getFollowingUsersRequest({
           userId: _.get(profileUser, '_id'),
+          username: _.get(profileUser, 'username'),
           page: followingPage,
           limit: FOLLOWING_PAGE_LIMIT,
         })
@@ -155,15 +147,10 @@ export default function ProfilePage() {
   }, [tab]);
 
   useEffect(() => {
-    if (userFollowingsOwner !== _.get(profileUser, '_id')) setFollowingPage(1);
-    if (
-      sessionUser &&
-      profileUser &&
-      (followingPage > 1 || userFollowingsOwner !== _.get(profileUser, '_id'))
-    ) {
+    if (sessionUser && profileUser && !userFollowings) {
       getFollowingUsers();
     }
-  }, [followingPage, _.get(profileUser, '_id'), userFollowingsOwner]);
+  }, [followingPage, _.get(profileUser, '_id')]);
 
   useEffect(() => {
     if (username && profileUser?.username !== username) {
@@ -187,14 +174,14 @@ export default function ProfilePage() {
         username,
         includePrivates: username === sessionUser?.username,
         page: bookmarkListPage,
-        limit: BOOKMARK_LIMIT,
+        limit: BOOKMARK_LIST_LIMIT,
         fromProfile: true,
       })
     );
   };
 
   const handleBookmarkListEnd = () => {
-    if (_.size(bookmarkLists) >= BOOKMARK_LIMIT) {
+    if (bookmarkListPage < bookmarkListTotalPages) {
       setBookmarkListPage((prev) => prev + 1);
     }
   };
@@ -218,13 +205,9 @@ export default function ProfilePage() {
   }, [sessionUser, profileUser]);
 
   useEffect(() => {
-    if (username)
-      if (
-        _.size(bookmarkLists) < bookmarkListPage * BOOKMARK_LIMIT &&
-        _.get(bookmarkListCounts, username) !== _.size(bookmarkLists)
-      ) {
-        getUserBookmarkLists();
-      }
+    if (username && username !== sessionUser?.username) {
+      getUserBookmarkLists();
+    }
   }, [bookmarkListPage, username]);
 
   const setRefs = useCallback(
@@ -440,7 +423,13 @@ export default function ProfilePage() {
                   followingTopics={isMyProfile}
                   profile={profileUser}
                   followLoading={followLoading}
-                  isFollowing={isFollowing}
+                  isFollowing={
+                    isFollowing ||
+                    _.some(
+                      myFollowings,
+                      (user) => user?.followingUser === profileUser?._id
+                    )
+                  }
                   isSubscribed={isSubscribed}
                   popularStories={!isMyProfile}
                   userTopics={profileUser?.topWriterTopics}
@@ -578,7 +567,6 @@ export default function ProfilePage() {
                     <ul className="mb-6">
                       {_.map(userFollowings, (person) => (
                         <UserCard
-                          dontUpdateFollowing
                           key={person._id}
                           user={{
                             _id: person.followingUser,
@@ -587,8 +575,10 @@ export default function ProfilePage() {
                             profilePicture: person.followingUserProfilePicture,
                             about: person.followingAbout,
                           }}
-                          isFollowing={_.some(isFollowings,item => item.followingUser === person._id)}
-
+                          isFollowing={_.some(
+                            myFollowings,
+                            (user) => user.followingUser === person.followingUser
+                          )}
                         />
                       ))}
                     </ul>

@@ -66,9 +66,9 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       >
         {bookmarkLists?.map((list) => (
           <Menu.Item key={list._id} disabled>
-            <div className="relative flex items-center justify-between w-full px-6 py-4">
+            <div className="relative flex items-center justify-between w-full px-6 py-4 cursor-pointer hover:bg-slate-50">
               <div className="flex items-start">
-                <Menu.Button className="flex items-center h-5">
+                <Menu.Button className="flex items-center h-5 cursor-pointer">
                   <Input
                     id="private-list"
                     name="list"
@@ -78,14 +78,14 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
                         bk.bookmarkList === list._id &&
                         (bk.story._id  === story?._id || bk.story === story?._id)
                     )}
-                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded"
+                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded cursor-pointer"
                     onChange={(e) => handleAddBookmark(e, list)}
                   />
                 </Menu.Button>
                 <div className="ml-3 text-sm">
                   <label
                     htmlFor="private-list"
-                    className="text-sm font-medium text-slate-800 tracking-sm"
+                    className="text-sm font-medium text-slate-800 tracking-sm cursor-pointer"
                   >
                     {list.name}
                   </label>

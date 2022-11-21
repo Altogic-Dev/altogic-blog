@@ -14,9 +14,6 @@ export default function WhoToFollow({
   topicWriters,
   Tag,
 }) {
-  const isFollowings = useSelector(
-    (state) => state.followerConnection.isFollowings
-  );
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
   let page = 1;
@@ -35,6 +32,10 @@ export default function WhoToFollow({
     _.get(state.recommendations.whoToFollowInfo, 'count')
   );
 
+  const myFollowings = useSelector(
+    (state) => state.followerConnection.myFollowings
+  );
+
   const dispatch = useDispatch();
 
   const getTopicWriters = () => {
@@ -42,7 +43,9 @@ export default function WhoToFollow({
   };
 
   const getWhoToFollow = (page, size) => {
-    dispatch(recommendationsActions.getWhoToFollowRequest({ page, size }));
+    dispatch(
+      recommendationsActions.getWhoToFollowRequest({ page, limit: size })
+    );
   };
 
   const getTopWriters = () => {
@@ -67,7 +70,8 @@ export default function WhoToFollow({
   };
 
   useEffect(() => {
-    handleSeeMoreSuggestions();
+    if (!count) handleSeeMoreSuggestions();
+
     document.body.addEventListener('click', (e) => {
       if (e.target.id !== 'who-to-follow-modal' && whoToFollowDataModal) {
         setwhoToFollowDataModal(false);
@@ -101,8 +105,8 @@ export default function WhoToFollow({
                 key={person._id}
                 user={person}
                 isFollowing={_.some(
-                  isFollowings,
-                  (item) => item.followingUser === person._id
+                  myFollowings,
+                  (user) => user.followingUser === person._id
                 )}
               />
             ))}
@@ -174,8 +178,8 @@ export default function WhoToFollow({
                               key={person._id}
                               user={person}
                               isFollowing={_.some(
-                                isFollowings,
-                                (item) => item.followingUser === person._id
+                                _.get(myFollowings),
+                                (user) => user.followingUser === person._id
                               )}
                               onClick={() => setwhoToFollowDataModal(false)}
                               role="button"

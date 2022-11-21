@@ -162,30 +162,30 @@ function* getStorySaga({ payload: id }) {
   }
 }
 
-export function* updateFollowerCountSaga(isIncrease) {
-  const story = yield select((state) => state.story.story);
-  if (isIncrease) {
-    yield put(
-      storyActions.getStorySuccess({
-        ...story,
-        user: {
-          ...story.user,
-          followerCount: story.user.followerCount + 1,
-        },
-      })
-    );
-  } else {
-    yield put(
-      storyActions.getStorySuccess({
-        ...story,
-        user: {
-          ...story.user,
-          followerCount: story.user.followerCount - 1,
-        },
-      })
-    );
-  }
-}
+// export function* updateFollowerCountSaga(isIncrease) {
+//   const story = yield select((state) => state.story.story);
+//   if (isIncrease) {
+//     yield put(
+//       storyActions.getStorySuccess({
+//         ...story,
+//         user: {
+//           ...story.user,
+//           followerCount: story.user.followerCount + 1,
+//         },
+//       })
+//     );
+//   } else {
+//     yield put(
+//       storyActions.getStorySuccess({
+//         ...story,
+//         user: {
+//           ...story.user,
+//           followerCount: story.user.followerCount - 1,
+//         },
+//       })
+//     );
+//   }
+// }
 
 function* getStoryBySlugSaga({ payload: { storySlug, userId } }) {
   try {

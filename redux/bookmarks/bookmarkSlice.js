@@ -59,7 +59,7 @@ export const bookmarkSlice = createSlice({
     getUserBookmarkListsSuccess(state, action) {
       state.bookmarkListsUserLoading = false;
       state.bookmarkLists[action.payload.username] = {
-        bookmarkLists: [...(_.get(state.bookmarkList, `${action.payload.username}.data`) ?? []), ...action.payload.data],
+        bookmarkLists: [...(_.get(state.bookmarkLists, `${action.payload.username}.bookmarkLists`) ?? []), ...action.payload.data],
         totalPages: action.payload.info.totalPages,
         page: action.payload.page
       }
@@ -93,16 +93,11 @@ export const bookmarkSlice = createSlice({
       state.isLoading = true;
     },
     addBookmarkSuccess(state, action) {
-      
-      try {
-        state.isLoading = false;
-        state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
-        state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
 
-        state.createdBookmarkList = null;
-      } catch (error) {
-        console.log(error)
-      }
+      state.isLoading = false;
+      state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
+      state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
+      state.createdBookmarkList = null;
     },
     addBookmarkFailure(state, action) {
       ToastMessage.error("This story doesn't exist any longer");
@@ -145,10 +140,9 @@ export const bookmarkSlice = createSlice({
     },
     deleteBookmarkListSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarkLists = state.bookmarkLists.filter(
-        (list) => list._id !== action.payload
-      );
-      state.bookmarkList = null;
+      state.bookmarkLists[action.payload.username].bookmarkLists = state.bookmarkLists[action.payload.username].bookmarkLists.filter(list => list._id !== action.payload.listId)
+      state.myBookmarks = state.myBookmarks.filter(item => item.bookmarkList !== action.payload.listId)
+      delete state.bookmarks[action.payload.listId]
       ToastMessage.success('Bookmark list deleted successfully');
     },
     deleteBookmarkListFailure(state, action) {
@@ -177,15 +171,8 @@ export const bookmarkSlice = createSlice({
     },
     clearBookmarkListSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarkLists = state.bookmarkLists.map((list) => {
-        if (list._id === action.payload._id) {
-          return action.payload;
-        }
-        return list;
-      });
-      state.bookmarks = state.bookmarks.filter(
-        (bookmark) => bookmark.bookmarkList !== action.payload._id
-      );
+      state.myBookmarks = state.myBookmarks.filter(item => item.bookmarkList !== action.payload._id)
+      state.bookmarks[action.payload._id] = []
     },
     clearBookmarkListFailure(state, action) {
       state.isLoading = false;

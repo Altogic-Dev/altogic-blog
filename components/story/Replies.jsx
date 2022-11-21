@@ -210,7 +210,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const italicButton = () => {
     quillInstance.format('italic', true);
   };
-
+console.log(replies)
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
@@ -248,7 +248,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                           </Dialog.Title>
                           <div className="ml-3 flex h-7 items-center">
                             <Button
-                              className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 focus:ring-2 focus:ring-purple-500"
+                              className="bg-white p-3 text-gray-400 rounded-md hover:text-gray-500 "
                               onClick={() => setSlideOvers(!slideOvers)}
                             >
                               <span className="sr-only">Close panel</span>
@@ -330,7 +330,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   }
                                   type="submit"
                                 >
-                                  Respond
+                                  Post
                                 </Button>
                               </div>
                             </div>
@@ -351,7 +351,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                         <ul className="divide-y divide-gray-200">
                           {replies?.map((reply, index) => (
                             <li key={reply._id} className="py-6 space-y-4">
-                              <div className="flex items-center gap-[13rem]">
+                              <div className="flex items-center justify-between ">
                                 <div className="flex items-center gap-3">
                                   <Avatar
                                     className="w-10 h-10 rounded-full object-cover"
@@ -370,7 +370,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     </span>
                                   </div>
                                 </div>
-                                {reply?.user === user?._id && (
+                                {reply?.user?._id === user?._id && (
                                   <div className="flex gap-2">
                                     <PencilIcon
                                       onClick={() => {

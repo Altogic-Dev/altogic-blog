@@ -27,8 +27,8 @@ function About(props) {
   const userFollowers = useSelector(
     (state) => state.followerConnection.userFollowers
   );
-  const isFollowings = useSelector(
-    (state) => state.followerConnection.isFollowings
+  const myFollowings = useSelector(
+    (state) => state.followerConnection.myFollowings
   );
 
   const [followersModal, setFollowersModal] = useState(false);
@@ -166,9 +166,10 @@ function About(props) {
                               profilePicture: person.followerUserProfilePicture,
                               about: person.followerAbout,
                             }}
-                            isFollowing={_.includes(
-                              isFollowings,
-                              person.followerUser
+                            isFollowing={_.some(
+                              myFollowings,
+                              (user) =>
+                                user.followingUser === person.followingUser
                             )}
                           />
                         ))}

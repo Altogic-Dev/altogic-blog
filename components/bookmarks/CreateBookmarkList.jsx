@@ -40,7 +40,9 @@ export default function CreateBookmarkList({
       dispatch(
         updateBookmarkListRequest({
           name: data.name,
-          slug: data.name.replace(/\s+/g, '-').toLowerCase(),
+          slug: `${data.name.replace(/\s+/g, '-').toLowerCase()}-${
+            bookmarkList.slug.split('-')[1]
+          }`,
           isPrivate: enabled,
           _id: list._id,
         })

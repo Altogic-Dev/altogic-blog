@@ -190,7 +190,7 @@ export default function WriteAStory() {
     <Layout loading={!isMounted || (id && !newStory)}>
       <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
         <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
-          <div className="text-slate-800 text-lg tracking-sm w-1/3 flex">
+          <div className="text-slate-800 text-lg tracking-sm w-1/3 flex h-10 items-center">
             <div className="mr-4">
               Draft in{' '}
               <span className="font-semibold">

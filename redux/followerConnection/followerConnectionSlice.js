@@ -9,20 +9,16 @@ const initialState = {
   isFollowing: false,
   profileFollowings: [],
   profileFollowingsCount: 0,
-  isFollowings: [],
+
   myFollowings: [],
+  followingsData: {},
+  followersData: {},
   followingStoriesLoading: false,
   followingActionResult: null,
-  userFollowers: [],
-  userFollowings: [],
   isLoading: false,
   followingUserLoading: false,
-  followingStoriesPage: 1,
-  userFollowingsCount: 0,
-  userFollowingsOwner: null,
   subscriptions: [],
   subscriptionsLoading: false,
-  userFollowingsPage: 1,
 };
 
 // Actual Slice
@@ -35,21 +31,20 @@ export const followerConnectionSlice = createSlice({
       state.followingUserLoading = true;
     },
     unfollowSuccess(state, action) {
+      if (!_.isEmpty(state.myFollowings)) {
+        state.myFollowings = _.filter(state.myFollowings, following => !(following.followingUser === action.payload.personId || following.followingUser === action.payload.personId))
+
+      }
+      if (!_.isNil(_.get(state.followingsData[action.payload.sessionUsername], 'userFollowings'))) {
+        state.followingsData[action.payload.sessionUsername].userFollowings = _.filter(state.followingsData[action.payload.sessionUsername].userFollowings, (following) => !(following._id === action.payload.personId || following.followingUser === action.payload.personId))
+        state.followingsData[action.payload.sessionUsername].count -= 1
+      }
+
+      if (!_.isNil(_.get(state.followersData[action.payload.followingUsername], 'userFollowers'))) {
+        state.followersData[action.payload.followingUsername].userFollowers = _.filter(state.followingsData[action.payload.followingUsername].userFollowers, follower => follower.followerUsername !== action.payload.sessionUsername)
+        state.followersData[action.payload.followingUsername].count -= 1
+      }
       state.followingUserLoading = false;
-      if (!action.payload.dontUpdateFollowing)
-        state.isFollowing = false;
-
-      state.isFollowings = _.reject(
-        state.isFollowings,
-        (followingId) => followingId === action.payload.followingUserId
-      );
-
-      state.userFollowings = state.userFollowings.filter(
-        (following) => following.followingUser !== action.payload.followingUserId
-      );
-
-
-      state.userFollowingsCount -= 1
 
     },
     unfollowFailure(state, action) {
@@ -58,19 +53,27 @@ export const followerConnectionSlice = createSlice({
     },
     handleFollowingCount(state, action) {
 
-      state.userFollowingsCount += action.payload;
+      state.followersData[action.payload.username].count += action.payload;
     },
     followRequest(state) {
       state.followingUserLoading = true;
     },
     followSuccess(state, action) {
-      if (!action.payload.dontUpdateFollowing)
-        state.isFollowing = true;
 
-      state.isFollowings = [
-        ...state.isFollowings,
-        action.payload.followingUser,
-      ];
+      const newFollowing = {
+        followingUser: action.payload.followingUser.followingUser,
+        followingUsername: action.payload.followingUser.followingUsername
+      }
+      state.myFollowings.push(newFollowing)
+      if (!_.isNil(_.get(state.followingsData[action.payload.followerUser.username], 'userFollowings'))) {
+        state.followingsData[action.payload.followerUser.username].userFollowings = [...(_.get(state.followingsData[action.payload.followerUser.username], 'userFollowings') || []), action.payload.followingUser]
+        state.followingsData[action.payload.followerUser.username].count += 1
+      }
+      if (!_.isNil(_.get(state.followersData[action.payload.followingUser], 'userFollowers'))) {
+        state.followersData[action.payload.followingUser].userFollowers = [...state.followersData[action.payload.followingUser].userFollowers, action.payload.followingUser]
+        state.followersData[action.payload.followingUser].count += 1
+      }
+
       state.followingUserLoading = false;
     },
     followFailure(state, action) {
@@ -88,58 +91,48 @@ export const followerConnectionSlice = createSlice({
       state.error = action.payload;
     },
 
-    getFollowerUsersRequest() { },
+    getFollowerUsersRequest(state) {
+      state.isLoading = true;
+
+    },
     getFollowerUsersSuccess(state, action) {
-      state.userFollowers = [...state.userFollowers, ...action.payload.data];
-      // const isFollowingsFollowers = _.reject(action.payload.data, (person) =>
-      //   _.isNil(person.isFollowing)
-      // );
-      // const isFollowingFollowerIds = _.map(
-      //   isFollowingsFollowers,
-      //   'followerUser'
-      // );
-      // state.isFollowings = [...state.isFollowings, ...isFollowingFollowerIds];
+      state.followersData[action.payload.username] = {
+        userFollowers: [...(_.get(state.followersData, `${action.payload.username}.userFollowers`) ?? []), ...action.payload.data],
+        count: action.payload.count,
+        totalPages: action.payload.info.totalPages,
+        page: action.payload.page
+      }
+      state.isLoading = false;
+
     },
 
     getFollowingUsersRequest(state) {
       state.isLoading = true;
     },
     getFollowingUsersSuccess(state, action) {
-      state.isLoading = false;
-
+      state.followingsData[action.payload.username] = {
+        userFollowings: [...(_.get(state.followingsData, `${action.payload.username}.userFollowings`) ?? []), ...action.payload.data],
+        count: action.payload.info.count,
+        totalPages: action.payload.info.totalPages,
+        page: action.payload.page
+      }
       if (action.payload.sessionUser) {
-        if (action.payload.page === 1) {
-          state.userFollowings = action.payload.data
-        }
-        else {
-          state.userFollowings = [
-            ...state.userFollowings,
-            ...action.payload.data,
-          ];
-        }
-        state.userFollowingsCount = action.payload.info.count;
-      }
-      else if (action.payload.owner === state.userFollowingsOwner) {
-        state.profileFollowings = [
-          ...state.profileFollowings,
-          ...action.payload.data,
-        ];
-        state.profileFollowingsCount = action.payload.info.count;
-      } else {
-        state.profileFollowingsCount = action.payload.info.count;
-        state.profileFollowings = action.payload.data;
-      }
-      state.userFollowingsOwner = action.payload.owner;
-      state.userFollowingsPage = action.payload.page;
 
-      const isFollowingsFollowings = _.reject(action.payload.data, (person) =>
-        _.isNil(person.isFollowing)
-      );
-      const isFollowingFollowingIds = _.map(
-        isFollowingsFollowings,
-        'followingUser'
-      );
-      state.isFollowings = [...state.isFollowings, ...isFollowingFollowingIds];
+        state.myFollowings = [...state.myFollowings, ...action.payload.data]
+      }
+      else {
+        action.payload.data.forEach(item => {
+          if (item.isFollowing) {
+            const followingUser = {
+              followingUser: item.followingUser,
+              followingUsername: item.followingUsername
+            }
+            state.myFollowings.push(followingUser)
+          }
+        })
+      }
+
+      state.isLoading = false
     },
 
     getSubscriptionsRequest(state) {
@@ -162,6 +155,7 @@ export const followerConnectionSlice = createSlice({
 
     setIsFollowing(state, action) {
       state.isFollowing = action.payload;
+      state.isLoading = false
     },
     increaseFollowingStoriesPage(state) {
       if (state.userFollowings?.length > 0) state.followingStoriesPage += 1;

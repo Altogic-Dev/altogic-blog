@@ -50,7 +50,6 @@ export default function PublishSettings() {
     _.debounce((category) => {
       if (category) {
         dispatch(topicsActions.searchTopicsRequest(category));
-        setIsSearchOpen(true);
       }
     }, 500),
     []
@@ -70,9 +69,8 @@ export default function PublishSettings() {
   };
   const handleInsert = (e) => {
     if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
-      if (!isSearchOpen) {
-        setInpCategoryNames((prev) => [...prev, inpCategory]);
-        setInpCategory('');
+      if (!isSearchOpen && inpCategory.trim()) {
+        handleAddTopic({ name: inpCategory });
       } else if (
         _.some(foundTopics, (topic) =>
           _.includes(topic.name.toLowerCase(), inpCategory.toLowerCase())
@@ -151,6 +149,8 @@ export default function PublishSettings() {
 
   useEffect(() => {
     setSelectedIndex(0);
+    if (_.size(foundTopics) === 0) setIsSearchOpen(false);
+    else setIsSearchOpen(true)
   }, [foundTopics]);
   useEffect(() => {
     if (storySlug) {
@@ -159,9 +159,8 @@ export default function PublishSettings() {
   }, [storySlug]);
 
   useEffect(() => {
-    categoryInputRef.current.focus();
+    if (inpCategory && !isSearchOpen) categoryInputRef.current.focus();
   }, [isSearchOpen]);
-
   useEffect(() => {
     setIsSearchOpen(false);
     if (inpCategory) debouncedSearch(inpCategory);
@@ -381,7 +380,7 @@ export default function PublishSettings() {
                   </span>
                   <div className="relative flex flex-wrap items-center gap-2 py-1 mb-8 rounded-md">
                     <input
-                      className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+                      className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
                       placeholder="Category Name"
                       value={inpCategory}
                       onChange={(e) => {

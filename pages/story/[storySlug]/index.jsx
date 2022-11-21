@@ -79,6 +79,7 @@ export default function BlogDetail({ ip }) {
         followerConnectionActions.unfollowRequest({
           userId: _.get(user, '_id'),
           followingUserId: _.get(story, 'user._id'),
+          followingUsername: _.get(story, 'username'),
         })
       );
     }
@@ -322,6 +323,7 @@ export default function BlogDetail({ ip }) {
                               followerConnectionActions.unfollowRequest({
                                 userId: _.get(user, '_id'),
                                 followingUserId: _.get(moreStory, 'user'),
+                                followingUsername: _.get(moreStory, 'username'),
                               })
                             ),
                           report: () =>
