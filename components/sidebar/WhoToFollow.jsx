@@ -7,16 +7,21 @@ import SidebarTitle from '../SidebarTitle';
 import Button from '../basic/button';
 import UserCard from '../general/UserCard';
 
-const size = 20;
+const size = 5;
 export default function WhoToFollow({
   topWriters,
   whoToFollow,
   topicWriters,
   Tag,
 }) {
+  const whoToFollowInfo = useSelector(
+    (state) => state.recommendations.whoToFollowInfo
+  );
+
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
-  let page = 1;
+
+  const [page, setPage] = useState(whoToFollowInfo?.currentPage || 1);
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
   );
@@ -63,14 +68,13 @@ export default function WhoToFollow({
   };
 
   const handleShowMore = () => {
-    page += 1;
-    if (whoToFollow && whoToFollowData.length < count) {
-      getWhoToFollow(page, size);
-    }
+    setPage((prev) => prev + 1);
   };
 
   useEffect(() => {
-    if (!count) handleSeeMoreSuggestions();
+    if (!count) {
+      handleSeeMoreSuggestions();
+    }
 
     document.body.addEventListener('click', (e) => {
       if (e.target.id !== 'who-to-follow-modal' && whoToFollowDataModal) {
@@ -92,6 +96,16 @@ export default function WhoToFollow({
     }
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
+  useEffect(() => {
+    if (
+      !_.isEmpty(people) &&
+      whoToFollow &&
+      _.size(people) < size * page &&
+      _.size(people) < count
+    ) {
+      getWhoToFollow(page, size);
+    }
+  }, [page]);
   if (people?.length > 0)
     return (
       <div>
@@ -111,7 +125,7 @@ export default function WhoToFollow({
               />
             ))}
           </ul>
-          {whoToFollow && people?.length < count && (
+          {whoToFollow && count > 5 && (
             <Button
               onClick={() => setwhoToFollowDataModal(true)}
               className="inline-flex items-center gap-2 mt-4 text-sm tracking-sm text-purple-700"
@@ -172,18 +186,14 @@ export default function WhoToFollow({
                       </Dialog.Title>
                       <div>
                         <ul className="mb-6">
-                          {people?.map((person, index) => (
+                          {people?.map((person) => (
                             <UserCard
-                              index={index}
                               key={person._id}
                               user={person}
                               isFollowing={_.some(
-                                _.get(myFollowings),
+                                myFollowings,
                                 (user) => user.followingUser === person._id
                               )}
-                              onClick={() => setwhoToFollowDataModal(false)}
-                              role="button"
-                              tabIndex={0}
                             />
                           ))}
                         </ul>

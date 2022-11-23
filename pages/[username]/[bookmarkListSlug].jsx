@@ -204,10 +204,6 @@ export default function ListDetail() {
   }, [followingPage, _.get(user, '_id')]);
 
   useEffect(() => {
-    console.log(bookmarkListSlug);
-    console.log(bookmarkListState);
-    console.log(updatedBookmark);
-    console.log(bookmarkList);
     if (
       bookmarkListSlug &&
       bookmarkListState &&
@@ -217,8 +213,6 @@ export default function ListDetail() {
     ) {
       router.push(`/${username}/${updatedBookmark.slug}`);
     } else {
-      console.log('here');
-
       setBookmarkListState(bookmarkList);
     }
   }, [updatedBookmark]);

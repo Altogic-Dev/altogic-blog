@@ -148,6 +148,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     }
   };
   const handleComment = (e, reply, index) => {
+    if (_.isEmpty(reply?.comments)) {
+      handleShowComments(reply,index)
+    }
     setCommentBoxes(
       commentBoxes.map((item, i) => {
         if (index === i) return false;
@@ -210,7 +213,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const italicButton = () => {
     quillInstance.format('italic', true);
   };
-console.log(replies)
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>

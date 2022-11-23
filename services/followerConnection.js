@@ -28,7 +28,7 @@ const FollowerConnectionService = {
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
-      .get();
+      .get(true);
   },
 
   getFollowingUsers(sessionUserId, userId, page = 1, limit = 5) {

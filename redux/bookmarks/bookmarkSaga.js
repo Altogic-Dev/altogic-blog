@@ -44,7 +44,6 @@ function* getUserBookmarkListsSaga({ payload }) {
         username: payload.username,
         data: data.result,
         info: data.countInfo,
-        page: payload.page,
       })
     );
   } catch (error) {
