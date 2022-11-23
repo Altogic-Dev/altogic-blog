@@ -83,9 +83,15 @@ function* getFollowerUsersSaga({ payload: { username, userId, page, limit } }) {
       limit
     );
     if (errors) throw errors;
-    if (_.isArray(data)) {
+    if (_.isArray(data.data)) {
       yield put(
-        followerConnectionActions.getFollowerUsersSuccess({ data, page })
+        followerConnectionActions.getFollowerUsersSuccess({
+          sessionUser: userId === sessionUserId,
+          data: data.data,
+          info: data.info,
+          username,
+          page,
+        })
       );
     }
   } catch (e) {

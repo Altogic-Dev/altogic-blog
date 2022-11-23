@@ -7,13 +7,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function UserCard({ subscription, user, isFollowing }) {
+export default function UserCard({
+  subscription,
+  user,
+  isFollowing,
+}) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
+ 
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
-  console.log(user);
   const buttonTexts = subscription
     ? ['Unsubscribe', 'Subscribe']
     : ['Unfollow', 'Follow'];
@@ -22,26 +26,29 @@ export default function UserCard({ subscription, user, isFollowing }) {
   const toggleFollow = () => {
     setFollowingLoad(true);
     if (isFollowing) {
-      return dispatch(
+      dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(me, '_id'),
           followingUserId: _.get(user, '_id'),
           followingUsername: _.get(user, 'username'),
         })
       );
+  
+    } else {
+      dispatch(
+        followerConnectionActions.followRequest({
+          followerUser: me,
+          followingUser: {
+            followingUser: _.get(user, '_id'),
+            followingName: _.get(user, 'name'),
+            followingUserProfilePicture: _.get(user, 'profilePicture'),
+            followingUsername: _.get(user, 'username'),
+          },
+        })
+      );
     }
-    return dispatch(
-      followerConnectionActions.followRequest({
-        followerUser: me,
-        followingUser: {
-          followingUser: _.get(user, '_id'),
-          followingName: _.get(user, 'name'),
-          followingUserProfilePicture: _.get(user, 'profilePicture'),
-          followingUsername: _.get(user, 'username'),
-        },
-      })
-    );
   };
+
 
   useEffect(() => {
     setFollowingLoad(false);

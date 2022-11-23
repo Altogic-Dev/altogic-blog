@@ -64,10 +64,11 @@ export default function ProfilePage() {
     (state) =>
       _.get(state.bookmark.bookmarkLists, profileUser?.username)?.bookmarkLists
   );
-  const bookmarkListTotalPages = useSelector(
-    (state) =>
-      _.get(state.bookmark.bookmarkLists, profileUser?.username)?.totalPages
-  );
+  const bookmarkListCount =
+    useSelector(
+      (state) =>
+        _.get(state.bookmark.bookmarkLists, profileUser?.username)?.count
+    ) || 1;
 
   const [bookmarkListPage, setBookmarkListPage] = useState(
     useSelector(
@@ -99,6 +100,10 @@ export default function ProfilePage() {
   const { ref: inViewRef, inView } = useInView();
   const ref = useRef();
 
+  const isUnfollowed = useSelector(
+    (state) => state.followerConnection.isUnfollowed
+  );
+
   const copyToClipboard = () => {
     ToastMessage.success('Copied to clipboard');
     const basePath = window.location.origin;
@@ -111,23 +116,13 @@ export default function ProfilePage() {
       followerConnectionActions.getFollowingUsersRequest({
         userId: _.get(profileUser, '_id'),
         username: _.get(profileUser, 'username'),
-        page: followingPage,
-        limit: FOLLOWING_PAGE_LIMIT,
+        page: isUnfollowed ? followingPage - 1 : followingPage,
+        limit: isUnfollowed ? FOLLOWING_PAGE_LIMIT * 2 : FOLLOWING_PAGE_LIMIT,
       })
     );
   }, [followingPage, _.get(profileUser, '_id')]);
 
   const toggleFollowingsModal = () => {
-    if (!followingModal && _.isEmpty(userFollowings)) {
-      dispatch(
-        followerConnectionActions.getFollowingUsersRequest({
-          userId: _.get(profileUser, '_id'),
-          username: _.get(profileUser, 'username'),
-          page: followingPage,
-          limit: FOLLOWING_PAGE_LIMIT,
-        })
-      );
-    }
     setFollowingModal((prev) => !prev);
   };
 
@@ -147,7 +142,13 @@ export default function ProfilePage() {
   }, [tab]);
 
   useEffect(() => {
-    if (sessionUser && profileUser && !userFollowings) {
+    if (
+      sessionUser &&
+      profileUser &&
+      (!userFollowingsCount ||
+        (_.size(userFollowings) < FOLLOWING_PAGE_LIMIT * followingPage &&
+          _.size(userFollowings) < userFollowingsCount))
+    ) {
       getFollowingUsers();
     }
   }, [followingPage, _.get(profileUser, '_id')]);
@@ -181,9 +182,7 @@ export default function ProfilePage() {
   };
 
   const handleBookmarkListEnd = () => {
-    if (bookmarkListPage < bookmarkListTotalPages) {
-      setBookmarkListPage((prev) => prev + 1);
-    }
+    setBookmarkListPage((prev) => prev + 1);
   };
 
   useEffect(() => {
@@ -205,7 +204,12 @@ export default function ProfilePage() {
   }, [sessionUser, profileUser]);
 
   useEffect(() => {
-    if (username && username !== sessionUser?.username) {
+    if (
+      username &&
+      username !== sessionUser?.username &&
+      _.size(bookmarkLists) < BOOKMARK_LIST_LIMIT * bookmarkListPage &&
+      _.size(bookmarkLists) < bookmarkListCount
+    ) {
       getUserBookmarkLists();
     }
   }, [bookmarkListPage, username]);
@@ -219,7 +223,7 @@ export default function ProfilePage() {
   );
 
   useEffect(() => {
-    if (inView) handleBookmarkListEnd();
+    if (inView && !_.isEmpty(bookmarkLists)) handleBookmarkListEnd();
   }, [inView]);
 
   return (
@@ -382,6 +386,7 @@ export default function ProfilePage() {
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <AboutComponent
+                      username={username}
                       isMyProfile={isMyProfile}
                       userFollowings={userFollowings}
                       userId={_.get(profileUser, '_id')}
@@ -577,14 +582,14 @@ export default function ProfilePage() {
                           }}
                           isFollowing={_.some(
                             myFollowings,
-                            (user) => user.followingUser === person.followingUser
+                            (user) =>
+                              user.followingUser === person.followingUser
                           )}
                         />
                       ))}
                     </ul>
                     <div className="text-center">
-                      {_.size(userFollowings) % userFollowingsCount >=
-                        FOLLOWING_PAGE_LIMIT && (
+                      {userFollowingsCount > _.size(userFollowings) && (
                         <Button
                           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                           onClick={() => setFollowingPage((prev) => prev + 1)}

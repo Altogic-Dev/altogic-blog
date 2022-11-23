@@ -143,15 +143,12 @@ export const authSlice = createSlice({
       state.isLoading = false;
       state.updateProfileError = action.payload;
     },
-    checkUsernameRequest(state) {
-      state.isLoading = true;
+    checkUsernameRequest() {
     },
     checkUsernameSuccess(state, action) {
-      state.isLoading = false;
       state.isUsernameAvailable = action.payload;
     },
     checkUsernameFailure(state, action) {
-      state.isLoading = false;
       state.isUsernameAvailable = false;
       state.updateProfileError = action.payload;
     },

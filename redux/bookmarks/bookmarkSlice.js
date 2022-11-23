@@ -61,7 +61,8 @@ export const bookmarkSlice = createSlice({
       state.bookmarkLists[action.payload.username] = {
         bookmarkLists: [...(_.get(state.bookmarkLists, `${action.payload.username}.bookmarkLists`) ?? []), ...action.payload.data],
         totalPages: action.payload.info.totalPages,
-        page: action.payload.page
+        page: action.payload.info.currentPage,
+        count: action.payload.info.count
       }
 
     },

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState, useCallback } from 'react';
 import { DateTime } from 'luxon';
 import _, { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,41 +20,49 @@ function About(props) {
     followingCount,
     toggleFollowingsModal,
     isMyProfile,
+    username,
   } = props;
   const PAGE_LIMIT = 5;
   const dispatch = useDispatch();
 
-  const userFollowers = useSelector(
-    (state) => state.followerConnection.userFollowers
+  const userFollowers = useSelector((state) =>
+    _.get(state.followerConnection.followersData[username], 'userFollowers')
   );
+
+  const userFollowersCount = useSelector((state) =>
+    _.get(state.followerConnection.followersData[username], 'count')
+  );
+
   const myFollowings = useSelector(
     (state) => state.followerConnection.myFollowings
   );
 
   const [followersModal, setFollowersModal] = useState(false);
-  const [followerPage, setFollowerPage] = useState(1);
+  const [followerPage, setFollowerPage] = useState(0);
 
   const toggleFollowersModal = () => {
-    if (!followersModal && _.isEmpty(userFollowers)) {
-      dispatch(
-        followerConnectionActions.getFollowerUsersRequest({
-          userId,
-          page: followerPage,
-          limit: PAGE_LIMIT,
-        })
-      );
-    }
+    setFollowerPage(1);
     setFollowersModal((prev) => !prev);
   };
+  const getFollowingUsers = useCallback(() => {
+    dispatch(
+      followerConnectionActions.getFollowerUsersRequest({
+        username,
+        userId,
+        page: followerPage,
+        limit: PAGE_LIMIT,
+      })
+    );
+  }, [followerPage, userId]);
 
   useEffect(() => {
-    if (followerPage > 1) {
-      dispatch(
-        followerConnectionActions.getFollowerUsersRequest({
-          userId,
-          page: followerPage,
-        })
-      );
+    if (
+      followerPage &&
+      (!userFollowersCount ||
+        (_.size(userFollowers) < PAGE_LIMIT * followerPage &&
+          _.size(userFollowers) < userFollowersCount))
+    ) {
+      getFollowingUsers();
     }
   }, [followerPage]);
 
@@ -169,20 +177,22 @@ function About(props) {
                             isFollowing={_.some(
                               myFollowings,
                               (user) =>
-                                user.followingUser === person.followingUser
+                                user.followingUser === person.followerUser
                             )}
                           />
                         ))}
                       </ul>
-                      {_.size(userFollowers) % followerCount >= PAGE_LIMIT}
-                      <div className="text-center">
-                        <Button
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                          onClick={() => setFollowerPage((prev) => prev + 1)}
-                        >
-                          Show more
-                        </Button>
-                      </div>
+
+                      {followerCount > _.size(userFollowers) && (
+                        <div className="text-center">
+                          <Button
+                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                            onClick={() => setFollowerPage((prev) => prev + 1)}
+                          >
+                            Show more
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </Dialog.Panel>
                 </Transition.Child>
