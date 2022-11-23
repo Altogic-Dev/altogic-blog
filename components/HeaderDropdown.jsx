@@ -61,12 +61,14 @@ export default function HeaderDropdown({
         className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50 `}
       >
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
-          <Avatar
-            className="h-10 w-10 rounded-full"
-            placeholderName={user?.name}
-            src={user?.profilePicture}
-            alt={user?.username}
-          />
+          <div className="inline-flex flex-shrink-0">
+            <Avatar
+              className="h-10 w-10 rounded-full"
+              placeholderName={user?.name}
+              src={user?.profilePicture}
+              alt={user?.username}
+            />
+          </div>
           <div>
             <p className="text-slate-700 text-sm font-medium tracking-sm">
               {user?.name}
