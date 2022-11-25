@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import { Transition, Disclosure } from '@headlessui/react';
+import { Popover, Transition } from '@headlessui/react';
 import { UserMinus } from 'react-feather';
 import {
   CogIcon,
@@ -14,13 +14,7 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useRouter } from 'next/router';
 import Avatar from './profile/Avatar';
 
-export default function HeaderDropdown({
-  user,
-  logout,
-  className,
-  isOpen,
-  setIsOpen,
-}) {
+export default function HeaderDropdown({ user, logout, className }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -34,19 +28,6 @@ export default function HeaderDropdown({
   useEffect(() => {
     setPublicationState(publications);
   }, [publications]);
-
-  useEffect(() => {
-    document.body.addEventListener('click', (e) => {
-      if (!e.target.id.includes('dropdown-menu') && isOpen) {
-        setIsOpen(false);
-      }
-    });
-    return () => {
-      document.body.removeEventListener('click', () => {});
-    };
-  }, []);
-
-  if(isOpen)
   return (
     <Transition
       as={Fragment}
@@ -57,7 +38,8 @@ export default function HeaderDropdown({
       leaveFrom="transform opacity-100 scale-100"
       leaveTo="transform opacity-0 scale-95"
     >
-      <Disclosure.Panel
+      <Popover.Panel
+        focus
         className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50 `}
       >
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
@@ -78,51 +60,51 @@ export default function HeaderDropdown({
         </div>
         <div className="divide-y divide-gray-200 w-full">
           <div>
-            <Disclosure.Button
+            <Popover.Button
               onClick={() => router.push(`/${user?.username}?tab=about`)}
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
             >
               <UserIcon className="w-4 h-4 group-hover:text-purple-700" />
               View Profile
-            </Disclosure.Button>
+            </Popover.Button>
 
-            <Disclosure.Button
+            <Popover.Button
               className='w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "'
               onClick={() => router.push(`/settings`)}
             >
               <CogIcon className="w-4 h-4 group-hover:text-purple-700" />
               Settings
-            </Disclosure.Button>
+            </Popover.Button>
 
-            <Disclosure.Button
+            <Popover.Button
               onClick={() => router.push(`/muted-users`)}
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
             >
               <UserMinus className="w-4 h-4 group-hover:text-purple-700" />
               Muted Users
-            </Disclosure.Button>
+            </Popover.Button>
 
-            <Disclosure.Button
+            <Popover.Button
               onClick={() => router.push(`/stats`)}
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
             >
               <ChartBarIcon className="w-4 h-4 group-hover:text-purple-700" />
               Stats
-            </Disclosure.Button>
-            <Disclosure.Button
+            </Popover.Button>
+            <Popover.Button
               onClick={() => router.push(`/subscriptions`)}
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
             >
               <UsersIcon className="w-4 h-4 group-hover:text-purple-700" />
               Subscribtions
-            </Disclosure.Button>
+            </Popover.Button>
           </div>
           <div>
             <span className="flex flex-col px-6 pt-2.5 text-slate-400 text-xs tracking-sm">
               Publications
             </span>
             {publiationsState?.slice(0, 3).map((publication) => (
-              <Disclosure.Button
+              <Popover.Button
                 key={publication._id}
                 onClick={() => selectPublication(publication)}
                 className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
@@ -133,16 +115,16 @@ export default function HeaderDropdown({
                   className="w-5 h-5 rounded-full"
                 />
                 {publication?.name}
-              </Disclosure.Button>
+              </Popover.Button>
             ))}
 
-            <Disclosure.Button
+            <Popover.Button
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
               onClick={() => router.push(`/publications`)}
             >
               <ClipboardListIcon className="w-4 h-4 group-hover:text-purple-700" />
               Manage Publications
-            </Disclosure.Button>
+            </Popover.Button>
           </div>
           <div>
             {/* <Link href="/help">
@@ -151,16 +133,16 @@ export default function HeaderDropdown({
                 Help
               </a>
             </Link> */}
-            <Disclosure.Button
+            <Popover.Button
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
               onClick={logout}
             >
               <LogoutIcon className="w-4 h-4 group-over:text-purple-700" />
               Logout
-            </Disclosure.Button>
+            </Popover.Button>
           </div>
         </div>
-      </Disclosure.Panel>
+      </Popover.Panel>
     </Transition>
   );
 }

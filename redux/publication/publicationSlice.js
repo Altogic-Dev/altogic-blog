@@ -26,6 +26,8 @@ const initialState = {
   homeLayout: null,
   selectedPublication: null,
   isFollowingPublication: false,
+  isFeatureCreating: false,
+
 };
 
 export const publicationSlice = createSlice({
@@ -33,7 +35,7 @@ export const publicationSlice = createSlice({
   initialState,
   reducers: {
     getPublicationFollowersRequest(state) {
-      state.followingStoriesLoading = true;
+      state.isLoading = true;
     },
     getPublicationFollowersRequestSuccess(state, action) {
       state.publicationFollowers = action.payload;
@@ -97,12 +99,12 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
 
-    getPublicationByIdRequest() {},
+    getPublicationByIdRequest() { },
     getPublicationByIdSuccess(state, action) {
       state.publication = action.payload;
     },
 
-    isPublicationnameExistRequest() {},
+    isPublicationnameExistRequest() { },
     isPublicationnameExistSuccess(state, action) {
       state.isPublicationnameValid = !action.payload.isExist;
       if (!action.payload.isExist) {
@@ -110,7 +112,7 @@ export const publicationSlice = createSlice({
       }
     },
 
-    updatePublicationRequest() {},
+    updatePublicationRequest() { },
     updatePublicationSuccess(state, action) {
       ToastMessage.success('Publication updated successfully');
       state.publication = action.payload;
@@ -155,6 +157,8 @@ export const publicationSlice = createSlice({
     updatePublicationNavigationSuccess(state, action) {
       state.publicationNavigation = action.payload;
       state.isLoading = false;
+      ToastMessage.success('Navigation updated succesfully');
+
     },
     updatePublicationNavigationFailure(state, action) {
       state.error = action.payload;
@@ -164,7 +168,7 @@ export const publicationSlice = createSlice({
       state.userPublications = action.payload;
     },
 
-    getFeaturePageRequest() {},
+    getFeaturePageRequest() { },
     getFeaturePageSuccess(state, action) {
       state.featurePage = action.payload;
     },
@@ -268,10 +272,10 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     createFeaturePageRequest(state) {
-      state.isLoading = true;
+      state.isFeatureCreating = true;
     },
     createFeaturePageSuccess(state, action) {
-      state.isLoading = false;
+      state.isFeatureCreating = false;
       state.publicationFeatures = [
         ...state.publicationFeatures,
         action.payload,
@@ -279,7 +283,7 @@ export const publicationSlice = createSlice({
     },
     createFeaturePageFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.isFeatureCreating = false;
     },
     updateFeaturePageRequest(state) {
       state.isLoading = true;

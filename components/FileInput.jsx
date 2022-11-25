@@ -1,4 +1,6 @@
+/* eslint-disable no-nested-ternary */
 import _ from 'lodash';
+import { ClipLoader } from 'react-spinners';
 
 export default function FileInput({
   link,
@@ -6,6 +8,7 @@ export default function FileInput({
   onDelete,
   label,
   subLabel,
+  loading,
   error,
 }) {
   return (
@@ -23,7 +26,11 @@ export default function FileInput({
         />
       </div>
       <div className="flex flex-col items-center gap-4">
-        {_.isNil(link) ? (
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <ClipLoader color="#9333ea" size={30} />
+          </div>
+        ) : _.isNil(link) ? (
           <div className="w-16 h-16 rounded-full object-contain border border-purple-700 " />
         ) : (
           <img
@@ -32,7 +39,6 @@ export default function FileInput({
             alt=""
           />
         )}
-
         <div className="space-x-4">
           <button
             type="button"

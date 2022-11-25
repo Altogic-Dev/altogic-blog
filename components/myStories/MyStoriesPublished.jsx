@@ -11,7 +11,6 @@ import { useInView } from 'react-intersection-observer';
 import { useDispatch } from 'react-redux';
 import Button from '../basic/button';
 
-
 function MyStoriesPublished({
   setDeletedStory,
   userStoriesInfo,
@@ -47,6 +46,7 @@ function MyStoriesPublished({
         <div className="divide-y divide-gray-200">
           {_.map(userStories, (story) => (
             <PostCard
+              publication={story.publication}
               key={story._id}
               normalMenu
               authorUrl={`/${story.username}`}
@@ -79,7 +79,7 @@ function MyStoriesPublished({
                 },
               }}
               actionMenu
-              pinnedStory={_.get(story,'pinnedStory')}
+              pinnedStory={_.get(story, 'pinnedStory')}
               story={story}
             />
           ))}
@@ -96,7 +96,10 @@ function MyStoriesPublished({
 
           <Button
             extraClasses="mt-10"
-            onClick={() => router.push('/write-a-story')}
+            onClick={() => {
+              dispatch(storyActions.clearStory());
+              router.push('/write-a-story');
+            }}
           >
             Write a Story
           </Button>

@@ -29,6 +29,7 @@ export default function PublicationsNavigation() {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
+  const isLoading = useSelector((state) => state.publication.isLoading);
   const publicationNavigation = useSelector(
     (state) => state.publication.publicationNavigation
   );
@@ -110,15 +111,33 @@ export default function PublicationsNavigation() {
       (person) => person.user === user._id
     );
     if (
-      _.isNil(sessionUser) ||
-      !['admin', 'editor'].includes(sessionUser.role) ||
-      _.lowerCase(publicationName) !==
-        _.lowerCase(publication.publicationName) ||
-      _.isNil(publication) ||
-      !_.includes(user.publications, publication._id)
+      publicationName &&
+      (_.isNil(sessionUser) ||
+        !['admin', 'editor'].includes(sessionUser.role) ||
+        _.lowerCase(publicationName) !==
+          _.lowerCase(publication.publicationName) ||
+        _.isNil(publication) ||
+        !_.includes(user.publications, publication._id))
     ) {
       router.push('/');
     }
+  };
+  const getPublicationDetails = () => {
+    if (publication) {
+      checkAuthorization(publication);
+      dispatch(topicsActions.getPublicationsTopicsRequest(publication?._id));
+      dispatch(storyActions.getPublicationsStoriesRequest(publication?._id));
+      dispatch(
+        publicationActions.getFeaturePagesByPublicationRequest(publication?._id)
+      );
+      dispatch(
+        publicationActions.getPublicationNavigationRequest(publication?._id)
+      );
+    }
+  };
+
+  const handleCancel = () => {
+    getPublicationDetails()
   };
 
   useEffect(() => {
@@ -140,17 +159,7 @@ export default function PublicationsNavigation() {
   }, [navigationReq]);
 
   useEffect(() => {
-    if (publication) {
-      checkAuthorization(publication);
-      dispatch(topicsActions.getPublicationsTopicsRequest(publication?._id));
-      dispatch(storyActions.getPublicationsStoriesRequest(publication?._id));
-      dispatch(
-        publicationActions.getFeaturePagesByPublicationRequest(publication?._id)
-      );
-      dispatch(
-        publicationActions.getPublicationNavigationRequest(publication?._id)
-      );
-    }
+    getPublicationDetails();
   }, [publication]);
   useEffect(() => {
     if (publicationNavigation.length > 0) {
@@ -193,13 +202,14 @@ export default function PublicationsNavigation() {
               <div className="flex items-center w-full sm:w-auto gap-4">
                 <Button
                   type="submit"
+                  loading={isLoading}
                   className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                   onClick={handleSubmit}
                 >
                   Save
                 </Button>
                 <Button
-                  type="button"
+                  onClick={handleCancel}
                   className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-md font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Cancel

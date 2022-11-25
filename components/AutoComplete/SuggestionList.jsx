@@ -36,7 +36,7 @@ export default function SuggestionList({
             />
             <Suggestion
               suggestions={filteredSuggestions?.topics}
-              name="Topics"
+              name="Categories"
               onClick={onClick}
             />
             <Suggestion

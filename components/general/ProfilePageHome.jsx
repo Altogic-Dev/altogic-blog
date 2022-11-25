@@ -68,6 +68,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
           <ListObserver onEnd={handleEndOfList}>
             {_.map(userStories, (story) => (
               <PostCard
+                publication={story.publication}
                 key={story._id}
                 normalMenu
                 authorUrl={`/${story.username}`}
@@ -119,7 +120,10 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
             {isMyProfile && (
               <Button
                 extraClasses="mt-10"
-                onClick={() => router.push('/write-a-story')}
+                onClick={() => {
+                  dispatch(storyActions.clearStory());
+                  router.push('/write-a-story');
+                }}
               >
                 Write a Story
               </Button>

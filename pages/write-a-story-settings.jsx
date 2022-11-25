@@ -343,7 +343,7 @@ export default function WriteAStorySettings() {
                   <div className="relative mb-4 md:mb-6">
                     <div className="flex flex-col mb-4">
                       <span className="inline-flex text-slate-600 mb-2 text-sm font-semibold tracking-sm">
-                        Topics:
+                        Categories:
                       </span>
                       <span className="text-slate-600 text-sm tracking-sm">
                         Add topics (up to 5) so readers know what your story is
@@ -366,7 +366,7 @@ export default function WriteAStorySettings() {
                               !topicLoading &&
                               isSearchOpen && (
                                 <PublicationSettingsSuggestions
-                                  name="Topics"
+                                  name="Categories"
                                   selectedIndex={selectedIndex}
                                   suggestions={foundTopics}
                                   onClick={(e, topicId, topic) =>

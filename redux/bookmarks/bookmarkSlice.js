@@ -9,7 +9,6 @@ const initialState = {
   myBookmarksLoading: true,
   updatedBookmark: null,
   bookmarkLists: {},
-  bookmarkListCounts: {},
 
   bookmarks: {},
 
@@ -97,6 +96,8 @@ export const bookmarkSlice = createSlice({
 
       state.isLoading = false;
       state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
+      const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === action.payload.bookmarkList._id)
+      state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount += 1
       state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
       state.createdBookmarkList = null;
     },
@@ -110,14 +111,15 @@ export const bookmarkSlice = createSlice({
     },
     deleteBookmarkSuccess(state, action) {
       state.isLoading = false;
-      state.bookmarks[action.payload.bookmarkList] = state.bookmarks[action.payload.bookmarkList].filter(
-        (bookmark) => bookmark._id !== action.payload._id
+      state.bookmarks[action.payload.data.bookmarkList] = state.bookmarks[action.payload.data.bookmarkList].filter(
+        (bookmark) => bookmark._id !== action.payload.data._id
       );
 
-
+      const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === action.payload.data.bookmarkList)
+      state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount -= 1
 
       state.myBookmarks = state.myBookmarks.filter(
-        (bookmark) => bookmark._id !== action.payload._id
+        (bookmark) => bookmark._id !== action.payload.data._id
       );
     },
     deleteBookmarkFailure(state, action) {
@@ -179,6 +181,26 @@ export const bookmarkSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+
+    deleteStorySuccess(state, action) {
+      state.isLoading = false;
+
+      state.bookmarks = Object.values(state.bookmarks).map(bookmarkList => {
+        if (bookmarkList.some(item => item.story._id === action.payload.storyId)) {
+          const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === _.first(bookmarkList).bookmarkList)
+          state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount -= 1
+        }
+
+        return bookmarkList.filter(
+          (bookmark) => bookmark.story._id !== action.payload.storyId
+        )
+      }
+      )
+      state.myBookmarks = state.myBookmarks.filter(
+        (bookmark) => bookmark.story._id !== action.payload.storyId
+      );
+
+    },
     extraReducers: {
       [HYDRATE]: (state, action) => ({
         ...state,
@@ -219,6 +241,7 @@ export const {
   clearBookmarkListRequest,
   clearBookmarkListSuccess,
   clearBookmarkListFailure,
+  deleteStorySuccess
 } = bookmarkSlice.actions;
 
 export default bookmarkSlice.reducer;
