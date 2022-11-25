@@ -99,12 +99,14 @@ function* createBookmarkListSaga({ payload: { bookmarkList, bookmark } }) {
 
 function* deleteBookmarkSaga({ payload }) {
   try {
+    const user = yield select((state) => state.auth.user);
+
     const { data, errors } = yield call(
       BookmarkService.deleteBookmark,
       payload
     );
     if (data) {
-      yield put(deleteBookmarkSuccess(data));
+      yield put(deleteBookmarkSuccess({ data, username: user.username }));
     }
     if (errors) throw errors.items;
   } catch (error) {

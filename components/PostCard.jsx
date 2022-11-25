@@ -29,12 +29,12 @@ export default function PostCard({
   showImages = true,
   story,
   pinnedStory,
+  publication,
 }) {
   const [createNewList, setCreateNewList] = useState(false);
   const [deleteListModal, setDeleteListModal] = useState(false);
   const myBookmarks = useSelector((state) => state.bookmark.myBookmarks);
   const sessionUser = useSelector((state) => state.auth.user);
-
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2">
@@ -64,8 +64,19 @@ export default function PostCard({
                 </span>
                 {pinnedStory && <Pin className="text-purple-500" />}
               </div>
+              {publication && (
+                <span className="text-slate-400 text-base tracking-sm cursor-default">
+                  Published in
+                  <Link href={`/publication/${publication.name}`}>
+                    <a className="text-purple-400 text-base tracking-sm cursor-pointer">
+                      {` ${publication.name}`}
+                    </a>
+                  </Link>
+                </span>
+              )}
             </a>
           </Link>
+
           <div>
             <Link href={storyUrl}>
               <a className="group inline-flex flex-col mb-4 md:mb-11 space-y-2">
@@ -119,7 +130,8 @@ export default function PostCard({
                   <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50">
                     {myBookmarks?.some(
                       (bk) =>
-                        bk.story._id === story?._id || bk.story === story?._id
+                        bk?.story?._id === story?._id ||
+                        bk?.story === story?._id
                     ) ? (
                       <svg
                         className="w-6 h-6 text-purple-700"

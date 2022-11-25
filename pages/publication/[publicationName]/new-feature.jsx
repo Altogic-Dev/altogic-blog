@@ -34,11 +34,12 @@ export default function PublicationsNewFeature() {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
+
   const featStories = useSelector((state) => state.story.featureStories);
   const featSections = useSelector((state) => state.publication.sections);
   const logo = useSelector((state) => state.file.fileLink);
   const user = useSelector((state) => state.auth.user);
-
+  const [isLoading, setIsLoading] = useState(false);
   const {
     handleSubmit,
     register,
@@ -53,12 +54,13 @@ export default function PublicationsNewFeature() {
       (person) => person.user === user._id
     );
     if (
-      _.isNil(sessionUser) ||
-      !['admin', 'editor'].includes(sessionUser.role) ||
-      _.lowerCase(publicationName) !==
-        _.lowerCase(publication.publicationName) ||
-      _.isNil(publication) ||
-      !_.includes(user.publications, publication._id)
+      publicationName &&
+      (_.isNil(sessionUser) ||
+        !['admin', 'editor'].includes(sessionUser.role) ||
+        _.lowerCase(publicationName) !==
+          _.lowerCase(publication.publicationName) ||
+        _.isNil(publication) ||
+        !_.includes(user.publications, publication._id))
     ) {
       router.push('/');
     }
@@ -83,6 +85,7 @@ export default function PublicationsNewFeature() {
   };
 
   const submitFunction = async (data) => {
+    setIsLoading(true);
     dispatch(
       uploadFile(file, `${publication.name}-${publication.featurePageCount}`)
     );
@@ -141,6 +144,7 @@ export default function PublicationsNewFeature() {
           logo,
         })
       );
+      setIsLoading(false)
       router.push(`/publication/${publication.publicationName}/feature`);
     }
   }, [logo]);
@@ -165,12 +169,13 @@ export default function PublicationsNewFeature() {
                 New feature page
               </h1>
               <div className="flex items-center gap-4">
-                <button
+                <Button
+                  loading={isLoading}
                   type="submit"
                   className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Save
-                </button>
+                </Button>
                 <button
                   type="button"
                   className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"

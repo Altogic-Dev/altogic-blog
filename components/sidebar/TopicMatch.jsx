@@ -4,7 +4,7 @@ import SidebarTitle from '../SidebarTitle';
 export default function TopicMatch({ topics, query }) {
   return (
     <div>
-      <SidebarTitle title={`Topics matching ${query}`} spacing="mb-4" />
+      <SidebarTitle title={`Categories matching ${query}`} spacing="mb-4" />
       <div className="flex flex-wrap gap-x-2 gap-y-4">
         {topics?.map((topic) => (
           <Topic

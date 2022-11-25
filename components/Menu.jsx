@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Disclosure, Popover } from '@headlessui/react';
+import { Menu, Popover } from '@headlessui/react';
 import {
   HomeIcon,
   BookmarkIcon,
@@ -30,7 +30,7 @@ export default function HeaderMenu() {
   const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const [isOpen, setIsOpen] = useState(true);
+
   const [user, setUser] = useState();
   const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -45,6 +45,8 @@ export default function HeaderMenu() {
       setSelectedPublication(selectedPublicationState);
     }
   }, [selectedPublicationState]);
+
+  
   const logout = () => {
     dispatch(authActions.logoutRequest());
   };
@@ -165,9 +167,7 @@ export default function HeaderMenu() {
                 <Button
                   onClick={() => {
                     dispatch(storyActions.clearStory());
-                    router.push('/write-a-story', undefined, {
-                      shallow: false,
-                    });
+                    router.push('/write-a-story');
                   }}
                   className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
@@ -177,33 +177,27 @@ export default function HeaderMenu() {
                   mobileNotifications={mobileNotifications}
                   setMobileNotifications={setMobileNotifications}
                 />
-                <Disclosure
-                  id="dropdown-menu"
+                <Menu
                   as="div"
                   className="relative hidden lg:inline-flex items-center"
                 >
-                  <Disclosure.Button
-                    id="dropdown-menu button"
-                    onClick={() => setIsOpen(true)}
+                  <Menu.Button
                     className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
                   >
                     <Avatar
-                      id="dropdown-menu avatar"
                       className="inline-block w-10 h-10 rounded-full"
                       placeholderName={user?.name}
                       src={user?.profilePicture}
                       alt={user?.username}
                     />
-                  </Disclosure.Button>
+                  </Menu.Button>
 
                   <HeaderDropdown
                     user={user}
                     logout={logout}
-                    setIsOpen={setIsOpen}
-                    isOpen={isOpen}
                     className="origin-top-right absolute top-10 w-56"
                   />
-                </Disclosure>
+                </Menu>
               </>
             ) : (
               <div className="flex items-center gap-4">
@@ -220,24 +214,26 @@ export default function HeaderMenu() {
               </div>
             )}
             {selectedPublication && (
-              <Disclosure
+              <Menu
                 as="div"
                 className="relative hidden lg:inline-flex items-center"
               >
-                <Disclosure.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+                <Menu.Button
+                  className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
+                >
                   <Avatar
                     className="inline-block w-10 h-10 rounded-full"
                     placeholderName={selectedPublication?.name}
                     src={selectedPublication?.logo}
                     alt={selectedPublication?.name}
                   />
-                </Disclosure.Button>
+                </Menu.Button>
 
                 <PublicationDropdown
                   publication={selectedPublication}
                   className="origin-top-right absolute top-10 w-56"
                 />
-              </Disclosure>
+              </Menu>
             )}
           </div>
         </div>
@@ -272,12 +268,11 @@ export default function HeaderMenu() {
           </Link>
         )}
         {user && (
-          <Disclosure
+          <Menu
             as="div"
             className="relative inline-flex lg:hidden items-center"
           >
-            <Disclosure.Button
-              onClick={() => setIsOpen(true)}
+            <Menu.Button
               className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
             >
               <Avatar
@@ -286,36 +281,33 @@ export default function HeaderMenu() {
                 src={user?.profilePicture}
                 alt={user?.username}
               />
-            </Disclosure.Button>
-
+            </Menu.Button>
             <HeaderDropdown
               user={user}
               logout={logout}
-              setIsOpen={setIsOpen}
-              isOpen={isOpen}
               className="fixed bottom-20 w-full"
             />
-          </Disclosure>
+          </Menu>
         )}
         {selectedPublication && (
-          <Disclosure
+          <Menu
             as="div"
             className="relative inline-flex lg:hidden items-center"
           >
-            <Disclosure.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
               <Avatar
                 className="inline-block w-10 h-10 rounded-full"
                 placeholderName={selectedPublication?.name}
                 src={selectedPublication?.logo}
                 alt={selectedPublication?.username}
               />
-            </Disclosure.Button>
+            </Menu.Button>
 
             <PublicationDropdown
               publication={selectedPublication}
               className="origin-top-right absolute top-10 w-56"
             />
-          </Disclosure>
+          </Menu>
         )}
       </div>
     </div>

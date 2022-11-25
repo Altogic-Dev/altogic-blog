@@ -36,14 +36,14 @@ export default function PopularTopics({
   useEffect(() => {
     if (isPopularTopics) {
       getPopularTopics();
-      setTitle('Popular Topics');
+      setTitle('Popular Categories');
     } else if (tag && isRelatedTopics && previousTag !== tag) {
       getRelatedTopics();
-      setTitle('Related Topics');
+      setTitle('Related Categories');
     } else if (isFollowingTopics) {
-      setTitle('Following Topics');
+      setTitle('Following Categories');
     } else if (userTopics) {
-      setTitle('Your Topics');
+      setTitle('Your Categories');
     }
   }, [tag]);
 

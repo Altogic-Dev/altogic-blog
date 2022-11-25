@@ -49,6 +49,7 @@ function MyStoriesDraft({
         <>
           {_.map(userDraftStories, (story) => (
             <PostCard
+              publication={story.publication}
               key={story._id}
               noActiveBookmark
               normalMenu
@@ -95,7 +96,10 @@ function MyStoriesDraft({
           </p>
           <Button
             extraClasses="mt-10"
-            onClick={() => router.push('/write-a-story')}
+            onClick={() => {
+              dispatch(storyActions.clearStory());
+              router.push('/write-a-story');
+            }}
           >
             Write a Story
           </Button>

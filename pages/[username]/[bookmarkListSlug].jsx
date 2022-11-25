@@ -372,6 +372,7 @@ export default function ListDetail() {
                   >
                     {stories.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post.id}
                         listDetailMenu
                         authorUrl={`/${post?.username}`}

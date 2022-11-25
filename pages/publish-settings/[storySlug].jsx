@@ -143,6 +143,8 @@ export default function PublishSettings() {
         isEdited: isEdited === 'true',
         categoryPairs: categoryPairsEdited,
         onSuccess: () => router.push(`/story/${story.storySlug}`),
+        selectedPublication:
+          inpSelectedAuthor.type === 'publication' ? story.publication : null,
       })
     );
   };
@@ -150,7 +152,7 @@ export default function PublishSettings() {
   useEffect(() => {
     setSelectedIndex(0);
     if (_.size(foundTopics) === 0) setIsSearchOpen(false);
-    else setIsSearchOpen(true)
+    else setIsSearchOpen(true);
   }, [foundTopics]);
   useEffect(() => {
     if (storySlug) {
@@ -393,7 +395,7 @@ export default function PublishSettings() {
                       _.size(inpCategory) !== 0 &&
                       _.size(foundTopics) > 0 && (
                         <PublicationSettingsSuggestions
-                          name="Topics"
+                          name="Categories"
                           selectedIndex={selectedIndex}
                           suggestions={foundTopics}
                           onClick={(e, topicId, topic) => handleAddTopic(topic)}

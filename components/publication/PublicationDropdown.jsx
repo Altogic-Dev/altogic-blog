@@ -1,5 +1,5 @@
-import React, { Fragment } from 'react';
-import { Transition, Disclosure } from '@headlessui/react';
+import React, { Fragment, } from 'react';
+import { Transition, Menu } from '@headlessui/react';
 import _ from 'lodash';
 import {
   CogIcon,
@@ -11,11 +11,12 @@ import {
   DocumentDuplicateIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { storyActions } from '@/redux/story/storySlice';
 
 export default function PublicationDropdown({ publication, className }) {
   const router = useRouter();
-
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
   const pubUser = _.find(
@@ -33,7 +34,7 @@ export default function PublicationDropdown({ publication, className }) {
       leaveFrom="transform opacity-100 scale-100"
       leaveTo="transform opacity-0 scale-95"
     >
-      <Disclosure.Panel
+      <Menu.Items
         className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50 `}
       >
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200 w-full h-full">
@@ -41,23 +42,26 @@ export default function PublicationDropdown({ publication, className }) {
         </div>
         <div className="divide-y divide-gray-200">
           <div>
-            <Disclosure.Button
+            <Menu.Button
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer "
-              onClick={() => router.push('/write-a-story')}
+              onClick={() => {
+                dispatch(storyActions.clearStory());
+                router.push('/write-a-story');
+              }}
             >
               <PencilAltIcon className="w-4 h-4 text-slate-500" />
               Write a Story
-            </Disclosure.Button>
+            </Menu.Button>
 
-            <Disclosure.Button
+            <Menu.Button
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer "
               onClick={() => router.push(`/publication/${publication.name}`)}
             >
               <BookOpenIcon className="w-4 h-4 text-slate-500" />
               Stories
-            </Disclosure.Button>
+            </Menu.Button>
 
-            <Disclosure.Button
+            <Menu.Button
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
               onClick={() =>
                 router.push(
@@ -67,9 +71,9 @@ export default function PublicationDropdown({ publication, className }) {
             >
               <ChartBarIcon className="w-4 h-4 text-slate-500" />
               Stats
-            </Disclosure.Button>
+            </Menu.Button>
 
-            <Disclosure.Button
+            <Menu.Button
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
               onClick={() =>
                 router.push(
@@ -79,10 +83,10 @@ export default function PublicationDropdown({ publication, className }) {
             >
               <UserAddIcon className="w-4 h-4 text-slate-500" />
               Followers
-            </Disclosure.Button>
+            </Menu.Button>
           </div>
           <div>
-            <Disclosure.Button
+            <Menu.Button
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
               onClick={() =>
                 router.push(
@@ -92,9 +96,9 @@ export default function PublicationDropdown({ publication, className }) {
             >
               <LocationMarkerIcon className="w-4 h-4 text-slate-500" />
               Newsletter
-            </Disclosure.Button>
+            </Menu.Button>
             {['admin', 'editor'].includes(pubUser?.role) && (
-              <Disclosure.Button
+              <Menu.Button
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                 onClick={() =>
                   router.push(
@@ -117,10 +121,10 @@ export default function PublicationDropdown({ publication, className }) {
                   />
                 </svg>
                 Navigation
-              </Disclosure.Button>
+              </Menu.Button>
             )}
             {['admin', 'editor'].includes(pubUser?.role) && (
-              <Disclosure.Button
+              <Menu.Button
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                 onClick={() =>
                   router.push(
@@ -130,10 +134,10 @@ export default function PublicationDropdown({ publication, className }) {
               >
                 <DocumentDuplicateIcon className="w-4 h-4 text-slate-500" />
                 Features Pages
-              </Disclosure.Button>
+              </Menu.Button>
             )}
             {['admin'].includes(pubUser?.role) && (
-              <Disclosure.Button
+              <Menu.Button
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                 onClick={() =>
                   router.push(
@@ -143,11 +147,11 @@ export default function PublicationDropdown({ publication, className }) {
               >
                 <CogIcon className="w-4 h-4 text-slate-500" />
                 Home and Settings
-              </Disclosure.Button>
+              </Menu.Button>
             )}
           </div>
         </div>
-      </Disclosure.Panel>
+      </Menu.Items>
     </Transition>
   );
 }

@@ -131,7 +131,7 @@ export default function SearchResult() {
                       )
                     }
                   >
-                    Topics
+                    Categories
                   </Tab>
                 </Tab.List>
                 <Tab.Panels>
@@ -141,6 +141,7 @@ export default function SearchResult() {
                     >
                       {searchResults?.stories.map((story) => (
                         <PostCard
+                          publication={story.publication}
                           key={story._id}
                           noActiveBookmark
                           normalMenu

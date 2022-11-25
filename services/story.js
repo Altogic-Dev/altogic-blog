@@ -15,6 +15,7 @@ const StoryService = {
       .sort('createdAt', 'desc')
       .limit(limit)
       .page(page)
+      .lookup({field: 'publication'})
       .get(true);
   },
 
@@ -75,6 +76,8 @@ const StoryService = {
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
+      .lookup({field: 'publication'})
+
       .get(true);
   },
   getStoryReplies(storyId, page, limit, userId) {

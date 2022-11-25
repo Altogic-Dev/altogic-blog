@@ -1,4 +1,5 @@
 import { authActions } from '@/redux/auth/authSlice';
+import { storyActions } from '@/redux/story/storySlice';
 import { GlobeAltIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
@@ -57,13 +58,13 @@ export default function YourTopics({ Tag }) {
 
   return (
     <>
-      <div className="hidden lg:block mb-[0px]">
+      <div className="hidden lg:block mb-[0px] ">
         {!_.isEmpty(followingTopicsState) && (
-          <div className="flex items-center gap-4 mb-10">
-            <span className="text-slate-500 text-sm tracking-sm whitespace-nowrap uppercase">
-              Your Topics
+          <div className="flex items-center gap-4 mb-10 ">
+            <span className="text-slate-500 text-sm tracking-sm whitespace-nowrap uppercase  ">
+              Your Categories
             </span>
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap w-full">
               {followingTopicsState?.map((topic) => (
                 <Topic key={topic} title={topic} />
               ))}
@@ -82,9 +83,12 @@ export default function YourTopics({ Tag }) {
                   {followed ? 'Unfollow' : 'Follow'}
                 </Button>
                 <Button
-                  onClick={() =>
-                    router.push(`/write-a-story?topic=${Tag.replace('-', ' ')}`)
-                  }
+                  onClick={() => {
+                    dispatch(storyActions.clearStory());
+                    router.push(
+                      `/write-a-story?topic=${Tag.replace('-', ' ')}`
+                    );
+                  }}
                 >
                   Start Writing
                 </Button>
@@ -97,7 +101,7 @@ export default function YourTopics({ Tag }) {
         <div className="lg:hidden mb-4">
           <div className="flex items-center gap-4 mb-10">
             <span className="text-slate-500 text-sm tracking-sm whitespace-nowrap uppercase">
-              Your Topics
+              Your Categories
             </span>
             <div className="flex items-center gap-4 overflow-x-auto">
               {followingTopicsState?.map((topic) => (
@@ -122,7 +126,13 @@ export default function YourTopics({ Tag }) {
               >
                 {followed ? 'Unfollow' : 'Follow'}
               </Button>
-              <Button className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+              <Button
+                onClick={() => {
+                  dispatch(storyActions.clearStory());
+                  router.push(`/write-a-story?topic=${Tag.replace('-', ' ')}`);
+                }}
+                className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+              >
                 Start writing
               </Button>
             </div>
