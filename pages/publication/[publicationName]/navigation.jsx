@@ -16,6 +16,8 @@ import { useForm } from 'react-hook-form';
 import Input from '@/components/Input';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
+import { Drag } from '@icon-park/react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 
 export default function PublicationsNavigation() {
   const router = useRouter();
@@ -30,6 +32,7 @@ export default function PublicationsNavigation() {
     (state) => state.publication.selectedPublication
   );
   const isLoading = useSelector((state) => state.publication.isLoading);
+  const [onDrag, setOnDrag] = useState(false);
   const publicationNavigation = useSelector(
     (state) => state.publication.publicationNavigation
   );
@@ -137,21 +140,26 @@ export default function PublicationsNavigation() {
   };
 
   const handleCancel = () => {
-    getPublicationDetails()
+    getPublicationDetails();
   };
 
   useEffect(() => {
     if (navigationReq.length > 0) {
+      const result = navigationReq.map((item, index) => {
+        const temp = { ...item };
+        temp.order = index;
+        return temp;
+      });
       if (publicationNavigation.length > 0) {
         dispatch(
           publicationActions.updatePublicationNavigationRequest({
-            navigation: navigationReq,
+            navigation: result,
             publicationId: publication._id,
           })
         );
       } else {
         dispatch(
-          publicationActions.createPublicationNavigationRequest(navigationReq)
+          publicationActions.createPublicationNavigationRequest(result)
         );
       }
       setNavigationReq([]);
@@ -166,7 +174,15 @@ export default function PublicationsNavigation() {
       setNavigationList(
         publicationNavigation
           .filter((pn) => pn.tabType !== 'link')
-          .map((nav) => <NavigationForm key={nav._id} navigation={nav} />)
+          .map((nav, index) => (
+            <NavigationForm
+              navigationList={navigationList}
+              setNavigationList={setNavigationList}
+              index={index}
+              key={nav._id}
+              navigation={nav}
+            />
+          ))
       );
       const link = publicationNavigation.find((nav) => nav.tabType === 'link');
       if (link) {
@@ -182,6 +198,19 @@ export default function PublicationsNavigation() {
       <NavigationForm onSubmit={handleSubmit} key={navigationList.length} />,
     ]);
   };
+
+  const onDragEnd = (result, navigationList, setNavigationList) => {
+    if (result.destination) {
+      const newItems = [...navigationList];
+      const [removed] = newItems.splice(result.source.index, 1);
+      newItems?.splice(result.destination.index, 0, removed);
+
+      setNavigationList(newItems);
+    }
+    setOnDrag(false);
+  };
+
+  console.log(navigationList)
   return (
     <div>
       <Head>
@@ -223,57 +252,80 @@ export default function PublicationsNavigation() {
             </h2>
           </div>
           <div className="flex flex-col gap-4">
-            {navigationList.map((navigationForm, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <div className="flex items-center gap-4" key={index}>
-                {/* <div className="flex flex-col">
-                  <span className="block text-slate-700 mb-4 text-lg font-semibold opacity-0">
-                    Move
-                  </span>
-                  <button
-                    type="button"
-                    className="inline-flex items-center justify-center w-11 h-11 rounded-full transition ease-in-out duration-150 hover:bg-gray-100"
-                  >
-                    <svg
-                      className="w-6 h-6 text-slate-400"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8954 10 12H12ZM12 12H14C14 10.8954 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8954 17 12H19ZM19 12H21C21 10.8954 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8954 3 12H5ZM5 12H7C7 10.8954 6.10457 10 5 10V12Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </button>
-                </div> */}
-                {navigationForm}
-                <div className="flex flex-col">
-                  <span className="block text-slate-700 mb-4 text-lg font-semibold opacity-0">
-                    Move
-                  </span>
-                  <Button
-                    onClick={() => {
-                      const newNavigationList = navigationList.filter(
-                        (item, itemIndex) => itemIndex !== index
-                      );
-                      setNavigationList(newNavigationList);
-                    }}
-                    type="button"
-                    className="inline-flex items-center justify-center w-11 h-11 border border-gray-300 rounded-full hover:bg-gray-100"
-                  >
-                    <TrashIcon className="w-5 h-5 text-slate-700" />
-                  </Button>
-                </div>
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-full grid grid-cols-3 gap-4 items-center">
+                <label
+                  htmlFor="title"
+                  className="block text-slate-700 mb-4 text-lg font-semibold"
+                >
+                  Tab Name
+                </label>
+                <span className="block text-slate-700 mb-4 text-lg font-semibold">
+                  Tab Type
+                </span>
+                <label
+                  htmlFor="url"
+                  className="block text-slate-700 mb-4 text-lg font-semibold"
+                >
+                  Contents
+                </label>
               </div>
-            ))}
-            <Button
-              onClick={addNewNavigationForm}
-              className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700 w-[10%] over hover:text-purple-800"
+            </div>
+            <DragDropContext
+              onDragStart={() => setOnDrag(true)}
+              onDragEnd={(result) =>
+                onDragEnd(result, navigationList, setNavigationList)
+              }
             >
-              <PlusIcon className="w-5 h-5" />
-              Add another
-            </Button>
+              <Droppable droppableId="droppable">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {navigationList.map((navigationForm, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
+                      <Draggable
+                        key={navigationForm.key}
+                        index={index}
+                        draggableId={navigationForm.key}
+                      >
+                        {(provided) => (
+                          <div
+                            className="flex gap-3 items-center"
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Drag size={25} />
+                            {navigationForm}
+                            <Button
+                              onClick={() => {
+                                const newNavigationList = navigationList.filter(
+                                  (item, itemIndex) => itemIndex !== index
+                                );
+                                setNavigationList(newNavigationList);
+                              }}
+                              type="button"
+                              className="inline-flex items-center justify-center w-11 h-11 border border-gray-300 rounded-full hover:bg-gray-100"
+                            >
+                              <TrashIcon className="w-5 h-5 text-slate-700" />
+                            </Button>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            {onDrag && <div className="h-20" />}
+            {!onDrag && (
+              <Button
+                onClick={addNewNavigationForm}
+                className="inline-flex items-center gap-2 mt-3 text-sm tracking-sm text-purple-700 w-[10%] over hover:text-purple-800"
+              >
+                <PlusIcon className="w-5 h-5" />
+                Add another
+              </Button>
+            )}
             <div className="mt-12">
               <div>
                 <div className="flex-1 mb-4 h-7">
