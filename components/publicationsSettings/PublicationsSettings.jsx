@@ -95,7 +95,7 @@ export default function PublicationsSettings({ isCreate }) {
           </div>
         </div>
         <Tab.Group defaultIndex={isInfo ? 0 : 1}>
-          <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
+          <div className="max-w-screen-xl mx-auto px-4 lg:px-8" >
             <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
               <Tab
                 onClick={() => setIsInfo(true)}

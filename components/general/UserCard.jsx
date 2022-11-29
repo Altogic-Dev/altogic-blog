@@ -7,13 +7,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function UserCard({ subscription, user, isFollowing }) {
+export default function UserCard({
+  subscription,
+  user,
+  isFollowing,
+}) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
+ 
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
-  console.log(user);
   const buttonTexts = subscription
     ? ['Unsubscribe', 'Subscribe']
     : ['Unfollow', 'Follow'];
@@ -22,26 +26,29 @@ export default function UserCard({ subscription, user, isFollowing }) {
   const toggleFollow = () => {
     setFollowingLoad(true);
     if (isFollowing) {
-      return dispatch(
+      dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(me, '_id'),
           followingUserId: _.get(user, '_id'),
           followingUsername: _.get(user, 'username'),
         })
       );
+  
+    } else {
+      dispatch(
+        followerConnectionActions.followRequest({
+          followerUser: me,
+          followingUser: {
+            followingUser: _.get(user, '_id'),
+            followingName: _.get(user, 'name'),
+            followingUserProfilePicture: _.get(user, 'profilePicture'),
+            followingUsername: _.get(user, 'username'),
+          },
+        })
+      );
     }
-    return dispatch(
-      followerConnectionActions.followRequest({
-        followerUser: me,
-        followingUser: {
-          followingUser: _.get(user, '_id'),
-          followingName: _.get(user, 'name'),
-          followingUserProfilePicture: _.get(user, 'profilePicture'),
-          followingUsername: _.get(user, 'username'),
-        },
-      })
-    );
   };
+
 
   useEffect(() => {
     setFollowingLoad(false);
@@ -52,12 +59,14 @@ export default function UserCard({ subscription, user, isFollowing }) {
       <Link href={`/${user.username}`}>
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
-            <Avatar
-              className="w-10 h-10 rounded-full"
-              placeholderName={user?.name}
-              src={user.profilePicture}
-              alt={user.name}
-            />
+            <div className="inline-flex flex-shrink-0">
+              <Avatar
+                className="w-10 h-10 rounded-full"
+                placeholderName={user?.name}
+                src={user.profilePicture}
+                alt={user.name}
+              />
+            </div>
             <div className="flex flex-col">
               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
                 {user.name}

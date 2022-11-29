@@ -15,7 +15,7 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
       case 'Publications':
         router.push(`/publication/${suggestion.id}`);
         break;
-      case 'Topics':
+      case 'Categories':
         router.push(`/tag/${suggestion.name}`);
         break;
       case 'Stories':
@@ -49,7 +49,7 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
               }`}
             >
               <div className="flex items-center p-2 w-full">
-                {name === 'Topics' ? (
+                {name === 'Categories' ? (
                   <TagIcon className="w-6 h-6 rounded-full mr-2 text-gray-600" />
                 ) : (
                   <div>

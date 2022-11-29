@@ -128,8 +128,10 @@ export default function WriteAStory() {
         };
         webworker.postMessage(dataObject);
         webworker.onmessage = (e) => {
+          const temp = e.data;
+          if (selectedPublication) temp.data.publication = selectedPublication;
           setLoading(false);
-          dispatch(storyActions.updateStoryWorkerRequest(e.data, story));
+          dispatch(storyActions.updateStoryWorkerRequest(temp));
         };
       }
     }

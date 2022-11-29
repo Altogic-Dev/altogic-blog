@@ -666,6 +666,7 @@ export default function PublicationsNewsletterDetail() {
                   <div className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post.id}
                         noActiveBookmark
                         normalMenu

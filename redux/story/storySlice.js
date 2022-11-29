@@ -30,6 +30,7 @@ const initialState = {
   featureStories: {},
   userStoriesOwner: null,
   userFollows: false,
+  error: null,
 };
 
 // Actual Slice
@@ -206,7 +207,6 @@ export const storySlice = createSlice({
     },
     updateStorySuccess(state, action) {
       state.isLoading = false;
-
       if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
         /// userStoriesCount--
         if (_.isArray(state.userStories)) {
@@ -252,6 +252,10 @@ export const storySlice = createSlice({
       state.userFollows = !!action.payload.userFollows.length
       state.isLoading = false;
       state.story = action.payload.story;
+    },
+    getStoryBySlugFailure(state, action) {
+      state.isLoading = false;
+      state.error = action.payload
     },
 
     getMoreUserStoriesRequest(state) {
@@ -316,20 +320,22 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     deleteStorySuccess(state, action) {
-      state.isLoading = false;
-      if (action.payload.isPublished) {
+
+      if (action.payload.isPublished && _.size(state.userStories)) {
         state.userStories = _.reject(
           state.userStories,
           (story) => story._id === action.payload.storyId
         );
-        state.userStoriesInfo.count -= 1;
-      } else {
+        if (_.get(state.userStoriesInfo, 'count'))
+          state.userStoriesInfo.count -= 1;
+      } else if (_.size(state.userDraftStories)) {
         state.userDraftStories = _.reject(
           state.userDraftStories,
           (story) => story._id === action.payload.storyId
         );
         state.userDraftStoriesInfo.count -= 1;
       }
+      state.isLoading = false;
     },
 
     updateCategoryNamesRequest(state) {

@@ -25,7 +25,6 @@ export default function TagPage() {
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
-  const topicAnalytics = useSelector((state) => state.topics.topicAnalytics);
 
   const [posts, setPosts] = useState([]);
 
@@ -59,9 +58,7 @@ export default function TagPage() {
         getTrendingTopics();
         setSelectedIndex(0);
       }
-      if (_.isNil(topicAnalytics)) {
-        dispatch(topicsActions.getTopicAnalyticsRequest(tag));
-      }
+      dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
   }, [tag, tab]);
 
@@ -139,6 +136,7 @@ export default function TagPage() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post._id}
                         normalMenu
                         authorUrl={`/${post.username}`}
@@ -171,6 +169,7 @@ export default function TagPage() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post._id}
                         normalMenu
                         actionMenu
@@ -203,6 +202,7 @@ export default function TagPage() {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post._id}
                         noActiveBookmark
                         normalMenu

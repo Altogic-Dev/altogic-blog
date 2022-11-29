@@ -19,6 +19,7 @@ const initialState = {
   followingUserLoading: false,
   subscriptions: [],
   subscriptionsLoading: false,
+  isUnfollowed : false,
 };
 
 // Actual Slice
@@ -28,9 +29,12 @@ export const followerConnectionSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     unfollowRequest(state) {
+      state.isUnfollowed = false
       state.followingUserLoading = true;
     },
     unfollowSuccess(state, action) {
+      state.isUnfollowed = true
+
       if (!_.isEmpty(state.myFollowings)) {
         state.myFollowings = _.filter(state.myFollowings, following => !(following.followingUser === action.payload.personId || following.followingUser === action.payload.personId))
 
@@ -110,12 +114,14 @@ export const followerConnectionSlice = createSlice({
       state.isLoading = true;
     },
     getFollowingUsersSuccess(state, action) {
+
       state.followingsData[action.payload.username] = {
         userFollowings: [...(_.get(state.followingsData, `${action.payload.username}.userFollowings`) ?? []), ...action.payload.data],
         count: action.payload.info.count,
         totalPages: action.payload.info.totalPages,
         page: action.payload.page
       }
+      state.followingsData[action.payload.username].userFollowings = _.uniqBy(state.followingsData[action.payload.username].userFollowings, item => item.followingUser);
       if (action.payload.sessionUser) {
 
         state.myFollowings = [...state.myFollowings, ...action.payload.data]
@@ -131,6 +137,7 @@ export const followerConnectionSlice = createSlice({
           }
         })
       }
+      state.isUnfollowed = false
 
       state.isLoading = false
     },

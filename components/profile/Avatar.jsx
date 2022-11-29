@@ -4,7 +4,7 @@ export default function Avatar({
   alt = '',
   fontClassName,
   placeholderName,
-  id
+  id,
 }) {
   return (
     <div id={id}>
@@ -17,6 +17,7 @@ export default function Avatar({
         />
       ) : (
         <div
+          id={id}
           className={`rounded-full bg-gray-400 flex items-center justify-center ${className}`}
         >
           <span id={id} className={`text-white ${fontClassName}`}>

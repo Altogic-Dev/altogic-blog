@@ -35,7 +35,7 @@ export default function PopularStories({ title, stories }) {
                     alt={story.title}
                   />
                 ) : (
-                  <div className="rounded-full w-[30px] h-[30px] bg-slate-200" />
+                  <div className="rounded-full w-[30px] h-[30px] bg-blue-200" />
                 )}
                 <div className="flex justify-center">
                   <div className="flex flex-col text-sm font-light tracking-sm">

@@ -3,6 +3,7 @@ import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import TopicsService from '@/services/topics';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
+import { deleteStorySuccess } from '../bookmarks/bookmarkSlice';
 import { deleteTopicWritersSaga, insertTopicsSaga } from '../topics/topicsSaga';
 
 function* getFollowingStoriesSaga({ payload: { userId, page } }) {
@@ -219,6 +220,7 @@ function* getStoryBySlugSaga({ payload: { storySlug, userId } }) {
       }
     }
   } catch (e) {
+    yield put(storyActions.getStoryBySlugFailure(e));
     console.error(e);
   }
 }
@@ -325,6 +327,7 @@ function* deleteStorySaga({
   payload: { storyId, isPublished, categoryNames, onSuccess },
 }) {
   try {
+    const user = yield select(state => state.auth.user)
     const { errors } = yield call(StoryService.deleteStory, storyId);
     if (errors) throw errors;
 
@@ -332,7 +335,8 @@ function* deleteStorySaga({
       yield fork(deleteTopicWritersSaga, storyId);
     }
 
-    yield put(storyActions.deleteStorySuccess({ storyId, isPublished }));
+    yield put(storyActions.deleteStorySuccess({ storyId, isPublished, username: user?.username }));
+    yield put(deleteStorySuccess({ storyId, isPublished, username: user?.username }));
     if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     console.error({ e });
@@ -431,7 +435,7 @@ function* getCacheStorySaga({ payload: storySlug }) {
 }
 
 function* publishStorySaga({
-  payload: { story, isEdited, onSuccess, categoryPairs },
+  payload: { story, isEdited, onSuccess, categoryPairs, selectedPublication },
 }) {
   try {
     const operation = isEdited
@@ -447,6 +451,8 @@ function* publishStorySaga({
       ...data,
       user,
     };
+    if (selectedPublication)
+      publishedStory.publication = selectedPublication
     yield put(storyActions.publishStorySuccess(publishedStory));
     if (!_.isEmpty(story.categoryNames)) {
 
@@ -589,7 +595,6 @@ export function* removeRecommendedStories(authorId) {
   yield put(storyActions.removeRecommendedStories(newRecommendedStories));
 }
 function* updateStoryWorkerSaga({ payload: { data, errors } }) {
-
   try {
     if (!_.isNil(data)) {
       yield put(storyActions.updateStorySuccess(data));

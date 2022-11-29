@@ -166,6 +166,7 @@ export default function Home() {
                         <ListObserver onEnd={handleFollowingEndOfList}>
                           {_.map(followingStories, (story) => (
                             <PostCard
+                              publication={story.publication}
                               key={story._id}
                               noActiveBookmark
                               normalMenu
@@ -218,6 +219,7 @@ export default function Home() {
                       <ListObserver onEnd={handleRecommendedEndOfList}>
                         {_.map(recommendedStories, (story, index) => (
                           <PostCard
+                            publication={story.publication}
                             key={story._id + index}
                             noActiveBookmark
                             normalMenu

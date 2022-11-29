@@ -59,9 +59,8 @@ export default function TagPage({ Home, Latest, Best }) {
         getBests(1);
         setSelectedIndex(2);
       }
-      if (_.isNil(topicAnalytics)) {
-        dispatch(topicsActions.getTopicAnalyticsRequest(tag));
-      }
+
+      dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
   }, [tag]);
 
@@ -139,6 +138,7 @@ export default function TagPage({ Home, Latest, Best }) {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post._id}
                         normalMenu
                         authorUrl={`/${post.username}`}
@@ -171,6 +171,7 @@ export default function TagPage({ Home, Latest, Best }) {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post._id}
                         normalMenu
                         actionMenu
@@ -203,6 +204,7 @@ export default function TagPage({ Home, Latest, Best }) {
                   <Tab.Panel className="divide-y divide-gray-200">
                     {posts.map((post) => (
                       <PostCard
+                        publication={post.publication}
                         key={post._id}
                         noActiveBookmark
                         normalMenu
@@ -239,7 +241,7 @@ export default function TagPage({ Home, Latest, Best }) {
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
               <Sidebar
-                personalFullStatistic
+                personalFullStatistic={topicAnalytics}
                 topicWriters
                 relatedTopics
                 Tag={tag}

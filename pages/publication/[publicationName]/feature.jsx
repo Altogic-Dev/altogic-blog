@@ -43,12 +43,13 @@ export default function PublicationsFeature() {
       (person) => person.user === user._id
     );
     if (
-      _.isNil(sessionUser) ||
-      !['admin', 'editor'].includes(sessionUser.role) ||
-      _.lowerCase(publicationName) !==
-        _.lowerCase(publication.publicationName) ||
-      _.isNil(publication) ||
-      !_.includes(user.publications, publication._id)
+      publicationName &&
+      (_.isNil(sessionUser) ||
+        !['admin', 'editor'].includes(sessionUser.role) ||
+        _.lowerCase(publicationName) !==
+          _.lowerCase(publication.publicationName) ||
+        _.isNil(publication) ||
+        !_.includes(user.publications, publication._id))
     ) {
       router.push('/');
     }

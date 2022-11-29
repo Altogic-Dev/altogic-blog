@@ -12,10 +12,10 @@ import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import FileInput from '../FileInput';
 import Input from '../Input';
-import TagInput from '../TagInput';
 import UserInput from '../UserInput';
 import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSuggestions';
 import Button from '../basic/button';
+import RecommendationInput from '../general/RecommendationInput';
 
 export default function PublicationSettingsInfo({
   doSave,
@@ -44,6 +44,7 @@ export default function PublicationSettingsInfo({
   const [avatarError, setAvatarError] = useState(null);
   const [logoError, setLogoError] = useState(null);
 
+  const [fileUploading, setFileUploading] = useState([false, false, false]);
   const schema = yup.object().shape({
     name: yup.string().required('Name is required'),
     description: yup
@@ -62,7 +63,6 @@ export default function PublicationSettingsInfo({
     linkedin: yup.string().url('Please enter a valid url'),
     facebook: yup.string().url('Please enter a valid url'),
   });
-
   const {
     register,
     handleSubmit,
@@ -71,9 +71,12 @@ export default function PublicationSettingsInfo({
     setValue,
     setError,
     clearErrors,
+    getValues,
   } = useForm({
     resolver: yupResolver(schema),
   });
+  const watchFields = watch(['twitter', 'linkedin', 'facebook']);
+
   const [tags, setTags] = useState([]);
   const [inpEditor, setInpEditor] = useState('');
   const [editors, setEditors] = useState([]);
@@ -87,7 +90,10 @@ export default function PublicationSettingsInfo({
     }
   };
 
-  const handleUploadPhoto = (name, existingFile) => {
+  useEffect(() => {
+    setFileUploading([false, false, false]);
+  }, [uploadedFileLinks]);
+  const handleUploadPhoto = (name, existingFile, index) => {
     const fileInput = document.createElement('input');
 
     fileInput.setAttribute('type', 'file');
@@ -95,6 +101,11 @@ export default function PublicationSettingsInfo({
     fileInput.click();
 
     fileInput.onchange = async () => {
+      setFileUploading(() => {
+        const temp = [false, false, false];
+        temp[index] = true;
+        return temp;
+      });
       const file = fileInput.files[0];
       dispatch(
         fileActions.uploadFileRequest({
@@ -250,6 +261,16 @@ export default function PublicationSettingsInfo({
   }, [publication]);
 
   useEffect(() => {
+    if (getValues('twitter').length === 1) {
+      setValue('twitter', `https://twitter.com/${getValues('twitter')}`);
+    } else if (getValues('facebook').length === 1) {
+      setValue('facebook', `https://facebook.com/${getValues('facebook')}`);
+    } else if (getValues('linkedin').length === 1) {
+      setValue('linkedin', `https://linkedin.com/${getValues('linkedin')}`);
+    }
+  }, [watchFields]);
+
+  useEffect(() => {
     if (userFromLocale) {
       setUser(userFromLocale);
     }
@@ -293,7 +314,7 @@ export default function PublicationSettingsInfo({
   }, [doClear]);
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20">
+    <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20 ">
       {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
       <form
         onSubmit={handleSubmit(handleSave)}
@@ -377,12 +398,17 @@ export default function PublicationSettingsInfo({
           </div>
           <div id="avatar">
             <FileInput
+              loading={_.get(fileUploading, 0)}
               label="Publication avatar*"
               subLabel="The avatar appears with your stories across Medium. Recommended
                 size: Square, at least 1000 pixels per side File type: JPG, PNG
                 or GIF"
               onChange={() =>
-                handleUploadPhoto('profilePicture', publication?.profilePicture)
+                handleUploadPhoto(
+                  'profilePicture',
+                  publication?.profilePicture,
+                  0
+                )
               }
               onDelete={() =>
                 dispatch(
@@ -401,13 +427,14 @@ export default function PublicationSettingsInfo({
         <div className="grid lg:grid-cols-2 gap-8 mb-14">
           <div id="logo">
             <FileInput
+              loading={_.get(fileUploading, 1)}
               label="Publication logo*"
               subLabel="The logo is displayed at the top of your publication. We
             recommend the logo have your publication’s name and a
             transparent background. <br /> Recommended size: Each side of
             the logo should be at least 400 pixels wide File type: JPG, PNG
             or GIF"
-              onChange={() => handleUploadPhoto('logo', publication?.logo)}
+              onChange={() => handleUploadPhoto('logo', publication?.logo, 1)}
               onDelete={() =>
                 dispatch(
                   fileActions.deleteFileRequest({
@@ -421,10 +448,11 @@ export default function PublicationSettingsInfo({
             />
           </div>
           <FileInput
+            loading={_.get(fileUploading, 2)}
             label="Publication cover image"
             subLabel="The cover image is used to promote your publication on Blog."
             onChange={() =>
-              handleUploadPhoto('coverImage', publication?.coverImage)
+              handleUploadPhoto('coverImage', publication?.coverImage, 2)
             }
             onDelete={() =>
               dispatch(
@@ -439,7 +467,7 @@ export default function PublicationSettingsInfo({
         </div>
         <div className="pb-2 mb-8 border-b border-gray-200">
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
-            Social and tags
+            Social and categories
           </h2>
         </div>
         <div className="grid lg:grid-cols-2 gap-8 mb-14">
@@ -581,25 +609,17 @@ export default function PublicationSettingsInfo({
           </div>
           <div className="grid md:grid-cols-[180px,1fr] gap-8">
             <div>
-              <h6 className="text-slate-700 mb-3 text-lg tracking-sm">Tags</h6>
+              <h6 className="text-slate-700 mb-3 text-lg tracking-sm">Categories</h6>
               <p className="text-slate-500 text-sm tracking-sm">
-                Adding tags (up to 5) allows people to search for and discover
+                Adding categories (up to 5) allows people to search for and discover
                 your publication.
               </p>
             </div>
             <div>
-              <div className="relative mb-4 md:mb-6">
-                <TagInput
-                  placeholder="Tags"
-                  disabled={_.size(tags) >= 5}
-                  maxTags={5}
-                  tags={tags}
-                  setTags={setTags}
-                />
-              </div>
+              <RecommendationInput />
               <div>
                 <p className="text-slate-600 mb-4 text-sm tracking-sm">
-                  Recommended Tags
+                  Recommended Categories
                 </p>
                 <div className="flex flex-wrap items-center gap-4">
                   {_.map(user?.recommendedTopics, (topic) => (
@@ -669,9 +689,7 @@ export default function PublicationSettingsInfo({
                       placeholder="Writer's Name or Username"
                       users={writers}
                       setUsers={setWriters}
-                      onChange={(e) =>
-                        handleSearch(e, false)
-                      }
+                      onChange={(e) => handleSearch(e, false)}
                       value={inpWriter}
                     />
                   </div>

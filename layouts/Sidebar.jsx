@@ -43,7 +43,9 @@ export default function Sidebar({
 }) {
   return (
     <>
-      {personalFullStatistic && <PersonalFullStatistic />}
+      {personalFullStatistic && (
+        <PersonalFullStatistic topicAnalytics={personalFullStatistic} />
+      )}
       {publicationProfile && <PublicationProfile />}
       {topicMatch && <TopicMatch topics={topics} query={query} />}
       {profile && (

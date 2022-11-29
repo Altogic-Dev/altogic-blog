@@ -349,10 +349,10 @@ export default function Sections({
                   <Listbox.Button
                     className={`relative ${
                       tag ? 'max-w-[220px]' : 'max-w-[240px] min-w-[240px]'
-                    } w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
+                    } h-11 w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
                   >
                     <span className="block truncate">
-                      {selectedTopic?.topic}
+                     {selectedTopic?.topic}
                     </span>
                     <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
                       <ChevronDownIcon
@@ -747,12 +747,12 @@ export default function Sections({
       <div
         className={classNames(
           fullScreen
-            ? 'max-w-full px-0'
+            ? 'max-w-full px-10'
             : 'max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8'
         )}
       >
         <Tab.Panels>
-          <Tab.Panel className="space-y-10">
+          <Tab.Panel className="space-y-10 ">
             {normalCard && <>{wrappers.map((wrapper) => wrapper)}</>}
             {imageCard && <>{wrappers.map((wrapper) => wrapper)}</>}
           </Tab.Panel>

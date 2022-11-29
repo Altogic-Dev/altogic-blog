@@ -244,9 +244,11 @@ function StoryContent(props) {
               <Menu as="div" className="relative inline-block text-left ml-4">
                 <div>
                   <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50 focus:outline-none">
-                    {bookmarks?.some(
+                    {_.some(
+                      bookmarks,
                       (bk) =>
-                        bk.story._id === story?._id || bk.story === story?._id
+                        bk?.story?._id === story?._id ||
+                        bk?.story === story?._id
                     ) ? (
                       <svg
                         className="w-6 h-6 text-purple-700"
@@ -383,9 +385,11 @@ function StoryContent(props) {
                 <Menu as="div" className="relative inline-block text-left ml-4">
                   <div>
                     <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none">
-                      {bookmarks?.some(
+                      {_.some(
+                        bookmarks,
                         (bk) =>
-                          bk.story._id === story?._id || bk.story === story?._id
+                          bk?.story?._id === story?._id ||
+                          bk?.story === story?._id
                       ) ? (
                         <svg
                           className="w-6 h-6 text-purple-700"
@@ -508,10 +512,11 @@ function StoryContent(props) {
                   >
                     <div>
                       <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-slate-100 focus:outline-none">
-                        {bookmarks?.some(
+                        {_.some(
+                          bookmarks,
                           (bk) =>
-                            bk.story._id === story?._id ||
-                            bk.story === story?._id
+                            bk?.story?._id === story?._id ||
+                            bk?.story === story?._id
                         ) ? (
                           <svg
                             className="w-6 h-6 text-purple-700"
