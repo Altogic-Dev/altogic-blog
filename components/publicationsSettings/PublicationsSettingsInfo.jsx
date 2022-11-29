@@ -401,7 +401,7 @@ export default function PublicationSettingsInfo({
               loading={_.get(fileUploading, 0)}
               label="Publication avatar*"
               subLabel="The avatar appears with your stories across Medium. Recommended
-                size: Square, at least 1000 pixels per side File type: JPG, PNG
+                size: Square, at least 1000 pixels per side. File type: JPG, PNG
                 or GIF"
               onChange={() =>
                 handleUploadPhoto(

@@ -62,7 +62,7 @@ export default function MutedUsers() {
                     {_.map(blockedUsers, (person, index) => (
                       <UserMutedCard
                         index={index}
-                        key={person._id}
+                        key={person?._id}
                         user={person}
                         unmuteAuthor={() => {
                           setUnmutedAuthor(person._id);
