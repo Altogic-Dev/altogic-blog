@@ -17,8 +17,7 @@ const initialState = {
   followingActionResult: null,
   isLoading: false,
   followingUserLoading: false,
-  subscriptions: [],
-  subscriptionsLoading: false,
+
   isUnfollowed : false,
 };
 
@@ -142,23 +141,6 @@ export const followerConnectionSlice = createSlice({
       state.isLoading = false
     },
 
-    getSubscriptionsRequest(state) {
-      state.subscriptionsLoading = true
-    },
-    getSubscriptionsSuccess(state, action) {
-      try {
-        state.subscriptionsLoading = false
-        state.subscriptions = action.payload.data
-      } catch (error) {
-        console.log(error)
-      }
-
-    },
-    getSubscriptionsFailure(state, action) {
-      state.subscriptionsLoading = false
-      state.error = action.payload
-
-    },
 
     setIsFollowing(state, action) {
       state.isFollowing = action.payload;

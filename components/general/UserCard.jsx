@@ -3,18 +3,15 @@ import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
+import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function UserCard({
-  subscription,
-  user,
-  isFollowing,
-}) {
+export default function UserCard({ subscription, user, isFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
- 
+
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -23,32 +20,47 @@ export default function UserCard({
     : ['Unfollow', 'Follow'];
   const router = useRouter();
   const [followingLoad, setFollowingLoad] = useState(false);
-  const toggleFollow = () => {
-    setFollowingLoad(true);
-    if (isFollowing) {
-      dispatch(
-        followerConnectionActions.unfollowRequest({
-          userId: _.get(me, '_id'),
-          followingUserId: _.get(user, '_id'),
-          followingUsername: _.get(user, 'username'),
-        })
-      );
-  
-    } else {
-      dispatch(
-        followerConnectionActions.followRequest({
-          followerUser: me,
-          followingUser: {
-            followingUser: _.get(user, '_id'),
-            followingName: _.get(user, 'name'),
-            followingUserProfilePicture: _.get(user, 'profilePicture'),
-            followingUsername: _.get(user, 'username'),
-          },
-        })
+
+  const toggleSubscribe = () => {
+    if (subscription) {
+      return dispatch(
+        subscribeConnectionActions.unSubscribeRequest(_.get(user, '_id'))
       );
     }
+    return dispatch(
+      subscribeConnectionActions.subscribeRequest(_.get(user, '_id'))
+    );
   };
+  const toggleFollow = () => {
+    if (subscription) {
+      toggleSubscribe();
+    } else {
+      setFollowingLoad(true);
+      if (isFollowing) {
+        dispatch(
+          followerConnectionActions.unfollowRequest({
+            userId: _.get(me, '_id'),
+            followingUserId: _.get(user, '_id'),
+            followingUsername: _.get(user, 'username'),
+          })
+        );
+      } else {
+        dispatch(
+          followerConnectionActions.followRequest({
+            followerUser: me,
+            followingUser: {
+              followingUser: _.get(user, '_id'),
+              followingName: _.get(user, 'name'),
+              followingUserProfilePicture: _.get(user, 'profilePicture'),
+              followingUsername: _.get(user, 'username'),
+            },
+          })
+        );
+      }
+    }
 
+  };
+ 
 
   useEffect(() => {
     setFollowingLoad(false);

@@ -7,33 +7,27 @@ import { blockConnectionActions } from './blockConnectionSlice';
 function* getBlockedUsersSaga({ payload: { page, limit } }) {
   try {
     const user = yield select((state) => state.auth.user);
-    const info = yield select(
-      (state) => state.blockConnection.blockedUsersInfo
+    const { data, errors } = yield call(
+      BlockConnectionService.getBlockedUsers,
+      user._id,
+      page,
+      limit
     );
-
-    if (_.isNil(info) || page <= info.totalPages) {
-      const { data, errors } = yield call(
-        BlockConnectionService.getBlockedUsers,
-        user._id,
-        page,
-        limit
+    if (errors) throw errors.items;
+    if (!_.isNil(data)) {
+      yield put(
+        blockConnectionActions.getBlockedUsersSuccess({
+          data: _.map(data.data, 'blockedUser'),
+          info: data.info,
+        })
       );
-      if (errors) throw errors.items;
-      if (!_.isNil(data)) {
-        yield put(
-          blockConnectionActions.getBlockedUsersSuccess({
-            data: _.map(data.data, 'blockedUser'),
-            info: data.info,
-          })
-        );
-      }
     }
   } catch (e) {
     yield put(blockConnectionActions.getBlockedUsersFailure(e));
   }
 }
 
-function* blockUserSaga({ payload: blockedUserId }) {
+function* blockUserSaga({ payload: { blockedUserId, blockedUserProfilePicture, blockedUsername } }) {
   try {
     const user = yield select((state) => state.auth.user);
     const { data, errors } = yield call(
@@ -43,7 +37,7 @@ function* blockUserSaga({ payload: blockedUserId }) {
     );
     if (errors) throw errors.items;
     if (data) {
-      yield put(blockConnectionActions.blockUserSuccess());
+      yield put(blockConnectionActions.blockUserSuccess({ blockedUserId, blockedUserProfilePicture, blockedUsername }));
       yield fork(removeRecommendedStories, blockedUserId);
     }
   } catch (e) {

@@ -11,7 +11,7 @@ function* unsubscribeSaga({ payload: subscribingUserId }) {
       subscribingUserId
     );
     if (errors) throw errors;
-    yield put(subscribeConnectionActions.unSubscribeSuccess());
+    yield put(subscribeConnectionActions.unSubscribeSuccess(subscribingUserId));
   } catch (e) {
     yield put(subscribeConnectionActions.unSubscribeFailure());
   }
@@ -32,6 +32,29 @@ function* subscribeSaga({ payload: subscribingUserId }) {
     yield put(subscribeConnectionActions.subscribeFailure());
   }
 }
+function* getSubscriptionsSaga({ payload: { userId, page, limit } }) {
+  try {
+    const { data, errors } = yield call(
+      SubscribeConnectionService.getSubscriptions,
+      userId,
+      page,
+      limit
+    );
+
+    if (errors) throw errors;
+    if (data) {
+      yield put(
+        subscribeConnectionActions.getSubscriptionsSuccess({
+          data: data.data,
+          info: data.info,
+          owner: userId,
+        })
+      );
+    }
+  } catch (e) {
+    yield put(subscribeConnectionActions.getSubscriptionsFailure(e))
+  }
+}
 
 export default function* rootSaga() {
   yield all([
@@ -40,5 +63,9 @@ export default function* rootSaga() {
       unsubscribeSaga
     ),
     takeEvery(subscribeConnectionActions.subscribeRequest.type, subscribeSaga),
+    takeEvery(
+      subscribeConnectionActions.getSubscriptionsRequest.type,
+      getSubscriptionsSaga
+    )
   ]);
 }

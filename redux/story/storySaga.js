@@ -378,7 +378,6 @@ function* updateStoryFieldSaga({ payload: { story, newStoryField } }) {
   } catch (e) {
     yield put(storyActions.updateStoryFieldFailure(e));
 
-    console.error({ e });
   }
 }
 
@@ -406,33 +405,10 @@ function* updateStorySaga({ payload: { story, onSuccess } }) {
       throw errors.items;
     }
   } catch (e) {
-    console.log(e)
-
     yield put(storyActions.updateStoryFailure(e));
   }
 }
-function* cacheStorySaga({ payload: { story } }) {
-  try {
-    yield call(StoryService.cacheStory, story);
-  } catch (e) {
-    console.error({ e });
-  }
-}
 
-function* getCacheStorySaga({ payload: storySlug }) {
-  try {
-    const { data, errors } = yield call(StoryService.getCacheStory, storySlug);
-    if (!_.isNil(errors)) throw errors.items;
-
-    if (!_.isNil(data)) {
-      yield put(storyActions.getCacheStorySuccess(data));
-    } else {
-      yield fork(getStoryBySlugSaga, { payload: storySlug });
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
 
 function* publishStorySaga({
   payload: { story, isEdited, onSuccess, categoryPairs, selectedPublication },
@@ -444,8 +420,6 @@ function* publishStorySaga({
 
     const { data, errors } = yield call(operation, story);
     if (!_.isNil(errors)) throw errors.items;
-
-    if (_.isFunction(onSuccess)) onSuccess();
     const user = yield select((state) => state.auth.user);
     const publishedStory = {
       ...data,
@@ -453,7 +427,7 @@ function* publishStorySaga({
     };
     if (selectedPublication)
       publishedStory.publication = selectedPublication
-    yield put(storyActions.publishStorySuccess(publishedStory));
+    yield put(storyActions.publishStorySuccess(data));
     if (!_.isEmpty(story.categoryNames)) {
 
 
@@ -463,7 +437,8 @@ function* publishStorySaga({
         return topic
       }));
     }
-    yield call(StoryService.deleteCacheStory, story.storySlug);
+    if (_.isFunction(onSuccess)) onSuccess();
+
   } catch (e) {
     yield put(storyActions.publishStoryFailure(e));
   }
@@ -753,8 +728,6 @@ export default function* rootSaga() {
     takeEvery(storyActions.createStoryRequest.type, createStorySaga),
     takeEvery(storyActions.updateStoryRequest.type, updateStorySaga),
     takeEvery(storyActions.updateStoryFieldRequest.type, updateStoryFieldSaga),
-    takeEvery(storyActions.cacheStoryRequest.type, cacheStorySaga),
-    takeEvery(storyActions.getCacheStoryRequest.type, getCacheStorySaga),
     takeEvery(storyActions.publishStoryRequest.type, publishStorySaga),
     takeEvery(storyActions.popularStoriesRequest.type, popularStoriesSaga),
     takeEvery(

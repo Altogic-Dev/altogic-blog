@@ -6,11 +6,11 @@ import { publicationActions } from '@/redux/publication/publicationSlice';
 import _, { isNil } from 'lodash';
 import Head from 'next/head';
 import Layout from '@/layouts/Layout';
-import Sidebar from '@/layouts/Sidebar';
 import PublicationPostCard from '@/components/PublicationsPostCard';
 import { DateTime } from 'luxon';
 import PublicationTab from '@/components/PublicationTabs/PublicationTab';
 import AligmentPublicationLayout from '@/components/AligmentPublicationLayout';
+import { parseHtml } from '@/utils/utils';
 
 export default function Publications() {
   const pageSize = 3;
@@ -114,12 +114,6 @@ export default function Publications() {
                   publication={publication}
                 />
               </div>
-              {_.get(navigations[selectedTabIndex], 'tabType') !==
-                'feature' && (
-                <div className="lg:flex lg:flex-col lg:gap-10 px-8">
-                  <Sidebar publicationProfile />
-                </div>
-              )}
             </div>
             <div>
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
@@ -131,7 +125,7 @@ export default function Publications() {
                     key={post._id}
                     image={_.first(post.storyImages)}
                     title={post.title ?? 'Untitled'}
-                    description={post.content ?? 'Test'}
+                    description={parseHtml(post.content) ?? ''}
                     readMoreUrl={`/story/${post.storySlug}`}
                     personName={post.username}
                     profilePicture={post.user?.profilePicture}

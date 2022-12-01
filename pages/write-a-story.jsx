@@ -88,11 +88,9 @@ export default function WriteAStory() {
   }, [newStory]);
 
   useEffect(() => {
-    if (id) {
+    if (id && !newStory) {
       dispatch(storyActions.getStoryRequest(id));
       setIsCreated(true);
-    } else {
-      dispatch(storyActions.clearStory());
     }
   }, [id]);
   useEffect(() => {
@@ -109,7 +107,7 @@ export default function WriteAStory() {
         content,
         storyImages: storyImages.filter((item) => item && item !== 'undefined'),
         title: inpTitle,
-        estimatedReadingTime: minRead ?? 1,
+        estimatedReadingTime: minRead || 1,
         isPublished: false,
         publication: !_.isNil(selectedPublication)
           ? selectedPublication._id
@@ -128,10 +126,13 @@ export default function WriteAStory() {
         };
         webworker.postMessage(dataObject);
         webworker.onmessage = (e) => {
-          const temp = e.data;
-          if (selectedPublication) temp.data.publication = selectedPublication;
-          setLoading(false);
-          dispatch(storyActions.updateStoryWorkerRequest(temp));
+          if (e.data.data) {
+            const temp = e.data;
+            if (selectedPublication)
+              temp.data.publication = selectedPublication;
+            setLoading(false);
+            dispatch(storyActions.updateStoryWorkerRequest(temp));
+          }
         };
       }
     }
@@ -150,6 +151,9 @@ export default function WriteAStory() {
   const debounceFn = useCallback(_.debounce(handleDebounceFn, 200), []);
 
   const handleChangeTitle = (e) => {
+    if (!isChanged) {
+      setIsChanged(true);
+    }
     debounceFn(e.target.value);
   };
   const handlePublish = () => {
@@ -162,11 +166,11 @@ export default function WriteAStory() {
           },
         })
       );
-      dispatch(storyActions.cacheStoryRequest({ story: newStory }));
       router.push(
-        `/publish-settings/${_.get(newStory, 'storySlug')}?isEdited=${!_.isNil(
-          id
-        )}${topic ? `&topic=${topic}` : ''}`
+        `/publish-settings/${_.get(
+          newStory,
+          'storySlug'
+        )}?isEdited=${!!isCreated}${topic ? `&topic=${topic}` : ''}`
       );
     } else {
       setError('title', {
@@ -183,7 +187,6 @@ export default function WriteAStory() {
       setInpTitle();
       setIsChanged(false);
       setIsCreated(false);
-      dispatch(storyActions.clearStory());
     },
     []
   );

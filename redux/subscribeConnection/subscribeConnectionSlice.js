@@ -6,6 +6,8 @@ const initialState = {
   subscribingUser: null,
   isSubscribed: false,
   isLoading: false,
+  subscriptions: [],
+  subscriptionsLoading: false,
 };
 
 // Actual Slice
@@ -14,11 +16,28 @@ export const subscribeConnectionSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
+    getSubscriptionsRequest(state) {
+      state.subscriptionsLoading = true
+    },
+    getSubscriptionsSuccess(state, action) {
+      try {
+        state.subscriptionsLoading = false
+        state.subscriptions = action.payload.data
+      } catch (error) {
+        console.log(error)
+      }
 
+    },
+    getSubscriptionsFailure(state, action) {
+      state.subscriptionsLoading = false
+      state.error = action.payload
+
+    },
     unSubscribeRequest(state) {
       state.isLoading = true;
     },
-    unSubscribeSuccess(state) {
+    unSubscribeSuccess(state, action) {
+      state.subscriptions = state.subscriptions.filter(item => item.subscribingUser._id !== action.payload)
       state.isLoading = false;
       state.isSubscribed = false;
     },

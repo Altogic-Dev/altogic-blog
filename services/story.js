@@ -1,4 +1,4 @@
-import { db, endpoint, cache } from '@/utils/altogic';
+import { db, endpoint } from '@/utils/altogic';
 
 const StoryService = {
   getFollowingStories(userId, page = 1, limit = 10) {
@@ -15,7 +15,7 @@ const StoryService = {
       .sort('createdAt', 'desc')
       .limit(limit)
       .page(page)
-      .lookup({field: 'publication'})
+      .lookup({ field: 'publication' })
       .get(true);
   },
 
@@ -76,7 +76,7 @@ const StoryService = {
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
-      .lookup({field: 'publication'})
+      .lookup({ field: 'publication' })
 
       .get(true);
   },
@@ -127,16 +127,6 @@ const StoryService = {
       value: newCategoryNames,
     });
   },
-  cacheStory(story) {
-    return cache.set(`${story.storySlug}`, story, 60 * 15);
-  },
-  getCacheStory(storySlug) {
-    return cache.get(storySlug);
-  },
-  deleteCacheStory(storySlug) {
-    return cache.delete(storySlug);
-  },
-
   publishStory(story) {
     return endpoint.post('/story', story);
   },

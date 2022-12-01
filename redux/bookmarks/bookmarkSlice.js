@@ -73,13 +73,10 @@ export const bookmarkSlice = createSlice({
       state.isLoading = true;
     },
     createBookmarkListSuccess(state, action) {
-      try {
-        state.isLoading = false;
-        state.bookmarkLists[action.payload.username].bookmarkLists = [...state.bookmarkLists[action.payload.username].bookmarkLists, action.payload]
-        state.createdBookmarkList = action.payload;
-      } catch (error) {
-        console.log(error)
-      }
+      state.isLoading = false;
+      state.bookmarkLists[action.payload.username].bookmarkLists = [...state.bookmarkLists[action.payload.username].bookmarkLists, action.payload]
+      state.createdBookmarkList = action.payload;
+
     },
     createBookmarkListFailure(state, action) {
       state.isLoading = false;

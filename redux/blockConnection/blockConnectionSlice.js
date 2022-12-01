@@ -38,9 +38,15 @@ export const blockConnectionSlice = createSlice({
       state.isLoading = true;
       state.blockedUsers = null;
     },
-    blockUserSuccess(state) {
+    blockUserSuccess(state, action) {
       state.isLoading = false;
       state.isBlocked = true;
+      if (_.isArray(state.blockedUsers)) {
+        state.blockedUsers = [...state.blockedUsers, {
+          blockedUserId: action.payload.blockedUserId, username: action.payload.blockedUsername
+          , blockedUserProfilePicture: action.payload.blockedUserProfilePicture
+        }]
+      }
       ToastMessage.success('Author is muted');
     },
     blockUserFailure(state) {

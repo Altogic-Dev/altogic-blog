@@ -91,8 +91,9 @@ export default function Home() {
   }, [followingListPage]);
 
   useEffect(() => {
-    if (selectedIndex !== 0 || !userFromStorage)
+    if (selectedIndex !== 0 || !userFromStorage || _.isNil(followingStories)) {
       getRecommendedStories(recommendedListPage);
+    }
   }, [recommendedListPage, userFromStorage]);
 
   useEffect(() => {
@@ -126,12 +127,9 @@ export default function Home() {
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               <YourTopics />
 
-              <Tab.Group
-                selectedIndex={selectedIndex}
-                onChange={setSelectedIndex}
-              >
+              <Tab.Group selectedIndex={2} onChange={setSelectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
-                  {user && (
+                  {user && !_.isEmpty(followingStories) && (
                     <Tab
                       className={({ selected }) =>
                         classNames(
@@ -160,7 +158,7 @@ export default function Home() {
                 </Tab.List>
 
                 <Tab.Panels>
-                  {user && (
+                  {(user && !_.isEmpty(followingStories)) && (
                     <Tab.Panel className="divide-y divide-gray-200">
                       {!_.isNil(followingStories) && (
                         <ListObserver onEnd={handleFollowingEndOfList}>
@@ -242,9 +240,12 @@ export default function Home() {
                             optionButtons={{
                               mute: () =>
                                 dispatch(
-                                  blockConnectionActions.blockUserRequest(
-                                    story.user
-                                  )
+                                  blockConnectionActions.blockUserRequest({
+                                    blockedUserId: story.user,
+                                    blockedUsername: story.username,
+                                    blockedUserProfilePicture:
+                                      story.userProfilePicture,
+                                  })
                                 ),
                               report: () =>
                                 dispatch(

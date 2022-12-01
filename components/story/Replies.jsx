@@ -29,7 +29,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const replies = useSelector((state) => state.story.replies);
   const replyCount = useSelector((state) => state.story.replyCount);
   const storyIsLoading = useSelector((state) => state.story.isLoading);
-  const replyLoading = useSelector((state) => state.story.replyLoading);
   const deletingIsLoading = useSelector(
     (state) => state.story.deletingIsLoading
   );
@@ -97,7 +96,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleEditReply = (reply) => {
-    if (user._id !== reply.user._id) {
+    if (user._id === reply.user._id) {
       const temp = { ...reply };
       temp.content = replyEditQuill.root.innerHTML;
       dispatch(storyActions.editReplyRequest(temp));
@@ -106,7 +105,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleRemoveReply = (reply) => {
-    if (user._id !== reply.user._id) {
+    if (user._id === reply.user._id) {
       dispatch(storyActions.removeReplyRequest(reply));
     }
   };
@@ -148,8 +147,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     }
   };
   const handleComment = (e, reply, index) => {
-    if (_.isEmpty(reply?.comments)) {
-      handleShowComments(reply,index)
+    if (!showReplies[index]) {
+      handleShowComments(reply, index);
     }
     setCommentBoxes(
       commentBoxes.map((item, i) => {
@@ -488,10 +487,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
 
                                 {user && (
                                   <Button
-                                    loading={
-                                      replyLoading &&
-                                      clickedCommentButton === index
-                                    }
                                     onClick={() => {
                                       setClickedCommentButton(index);
                                       if (editRespondBoxes[index]) {

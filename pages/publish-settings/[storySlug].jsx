@@ -35,7 +35,7 @@ export default function PublishSettings() {
   );
   const foundTopics = useSelector((state) => state.topics.searchTopics);
 
-  const { storySlug, isEdited, topic } = router.query;
+  const { storySlug, topic } = router.query;
 
   const [user, setUser] = useState();
   const [authors, setAuthors] = useState([]);
@@ -140,11 +140,10 @@ export default function PublishSettings() {
           isRestrictedComments: inpRestrictComments,
           excerpt: parseHtml(story?.content)?.slice(0, 300),
         },
-        isEdited: isEdited === 'true',
         categoryPairs: categoryPairsEdited,
         onSuccess: () => router.push(`/story/${story.storySlug}`),
         selectedPublication:
-          inpSelectedAuthor.type === 'publication' ? story.publication : null,
+          inpSelectedAuthor.type === 'publication' ? story?.publication : null,
       })
     );
   };
@@ -154,11 +153,6 @@ export default function PublishSettings() {
     if (_.size(foundTopics) === 0) setIsSearchOpen(false);
     else setIsSearchOpen(true);
   }, [foundTopics]);
-  useEffect(() => {
-    if (storySlug) {
-      dispatch(storyActions.getCacheStoryRequest(storySlug));
-    }
-  }, [storySlug]);
 
   useEffect(() => {
     if (inpCategory && !isSearchOpen) categoryInputRef.current.focus();
@@ -183,6 +177,16 @@ export default function PublishSettings() {
       setInpCategoryNames((prev) => [...prev, topic]);
     }
   }, [topic]);
+  useEffect(() => {
+    if (!story && storySlug) {
+      dispatch(
+        storyActions.getStoryBySlugRequest({
+          storySlug,
+          userId: user?._id,
+        })
+      );
+    }
+  }, [storySlug]);
 
   useEffect(() => {
     const userAuthor = {

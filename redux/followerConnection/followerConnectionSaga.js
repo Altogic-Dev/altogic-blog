@@ -128,29 +128,7 @@ function* getFollowingUsersSaga({ payload: { username, userId, page, limit } }) 
     console.error({ e });
   }
 }
-function* getSubscriptionsSaga({ payload: { userId, page, limit } }) {
-  try {
-    const { data, errors } = yield call(
-      FollowerConnectionService.getSubscriptions,
-      userId,
-      page,
-      limit
-    );
 
-    if (errors) throw errors;
-    if (data) {
-      yield put(
-        followerConnectionActions.getSubscriptionsSuccess({
-          data: data.data,
-          info: data.info,
-          owner: userId,
-        })
-      );
-    }
-  } catch (e) {
-    yield put(followerConnectionActions.getSubscriptionsFailure(e))
-  }
-}
 
 export default function* rootSaga() {
   yield all([
@@ -164,9 +142,6 @@ export default function* rootSaga() {
       followerConnectionActions.getFollowingUsersRequest.type,
       getFollowingUsersSaga
     ),
-    takeEvery(
-      followerConnectionActions.getSubscriptionsRequest.type,
-      getSubscriptionsSaga
-    ),
+
   ]);
 }

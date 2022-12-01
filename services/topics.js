@@ -45,7 +45,11 @@ const TopicsService = {
     return db
       .model('topic_writers')
       .filter(`publication == '${publicationId}'`)
-      .get();
+      .group(
+        'topic'
+      )
+      .compute([{ name: 'count', type: 'count' }]);
+
   },
   getPublicationsStoriesByTopic(publicationId, topicName) {
     return db
@@ -57,7 +61,7 @@ const TopicsService = {
   searchTopics(topic) {
     return endpoint.get('/topic/search', { topic });
   },
-  
+
 };
 
 export default TopicsService;

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useSelector, useDispatch } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import PublicationCard from '@/components/Publications/PublicationCard';
+import _ from 'lodash';
+import { EmotionUnhappy } from '@icon-park/react';
 
 export default function Publications() {
   const publications = useSelector(
@@ -42,8 +44,9 @@ export default function Publications() {
       );
     }
   }, [followedPublications, userFollowingPublication]);
+
   return (
-    <Layout>
+    <Layout loading={!publications}>
       <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
         <div className="flex flex-col gap-4 mt-8 mb-[80px] md:mt-[60px]">
           <div className="flex flex-col md:flex-row md:items-center justify-between w-full mb-[60px]">
@@ -62,28 +65,50 @@ export default function Publications() {
             Staff
           </h2>
           <hr className="my-4" />
-          {publications?.map((publication) => (
-            <PublicationCard
-              key={publication._id}
-              publication={publication}
-              user={user}
-              isStaff
-            />
-          ))}
+          {_.size(publications) > 0 ? (
+            publications?.map((publication) => (
+              <PublicationCard
+                key={publication._id}
+                publication={publication}
+                user={user}
+                isStaff
+              />
+            ))
+          ) : (
+            <div className="flex justify-center items-center flex-col">
+              <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                <EmotionUnhappy size={28} className="w-7 h-7 text-purple-600" />
+              </span>
+              <p className="text-slate-500 text-md  ">
+                You are not member of any publication
+              </p>
+            </div>
+          )}
         </div>
         <div className="mt-8">
           <h2 className="text-slate-700 mb-12 md:mb-0 text-lg md:text-xl xl:text-2xl tracking-md">
             Following
           </h2>
           <hr className="my-4" />
-          {publicationsFollow?.map((publication) => (
-            <PublicationCard
-              key={publication._id}
-              publication={publication}
-              user={user}
-              isFollow
-            />
-          ))}
+          {_.size(publicationsFollow) > 0 ? (
+            publicationsFollow?.map((publication) => (
+              <PublicationCard
+                key={publication._id}
+                publication={publication}
+                user={user}
+                isFollow
+              />
+            ))
+          ) : (
+            <div className="flex justify-center items-center flex-col">
+              <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                <EmotionUnhappy size={28} className="w-7 h-7 text-purple-600" />
+              </span>
+              <p className="text-slate-500 text-md  ">
+                You are not following any publication
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </Layout>

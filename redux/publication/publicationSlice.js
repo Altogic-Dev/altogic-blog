@@ -18,7 +18,7 @@ const initialState = {
   publicationNavigation: [],
   error: null,
   isLoading: false,
-  userPublications: [],
+  userPublications: null,
   followed_publications: [],
   userFollowingPublication: [],
   publicationFeatures: [],

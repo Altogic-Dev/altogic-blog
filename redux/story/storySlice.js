@@ -82,6 +82,7 @@ export const storySlice = createSlice({
 
     },
     createStorySuccess(state, action) {
+     try {
       state.story = action.payload;
       state.error = null;
       state.isLoading = false;
@@ -95,6 +96,9 @@ export const storySlice = createSlice({
           ['pinnedStory', 'createdAt'],
           ['desc', 'desc'])
       }
+     } catch (error) {
+      console.log(error)
+     }
 
     },
     createStoryFailure(state, action) {
@@ -210,7 +214,7 @@ export const storySlice = createSlice({
       if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
         /// userStoriesCount--
         if (_.isArray(state.userStories)) {
-          state.userStories = state.userStories.filter(
+          state.userStories = _.filter(state.userStories,
             (story) => story._id !== action.payload._id
           );
 
@@ -388,15 +392,6 @@ export const storySlice = createSlice({
     updateStoryFieldFailure(state, action) {
       state.isLoading = false;
       state.error = _.first(action.payload.items)
-    },
-    cacheStoryRequest() { },
-
-    getCacheStoryRequest(state) {
-      state.isLoading = true;
-    },
-    getCacheStorySuccess(state, action) {
-      state.publishLoading = false;
-      state.story = action.payload;
     },
 
     publishStoryRequest(state) {

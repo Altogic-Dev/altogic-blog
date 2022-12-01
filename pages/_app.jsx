@@ -49,7 +49,6 @@ function MyApp({ Component, pageProps }) {
       })
     );
   };
-  
 
   const visitPublicationRequest = (publicationName) => {
     dispatch(
@@ -107,10 +106,10 @@ function MyApp({ Component, pageProps }) {
   };
 
   useEffect(() => {
-    if (sessionUser && !isMounted) {
-      setIsMounted(true);
-      checkFollowing();
+    if (sessionUser?.username && !isMounted) {
       getBookmarksAndLists(sessionUser);
+      checkFollowing();
+      setIsMounted(true);
     }
   }, [sessionUser]);
 
@@ -142,8 +141,6 @@ function MyApp({ Component, pageProps }) {
     else if (!sessionUser && router.asPath === '/my-stories')
       router.push('/login');
   }, [router.asPath]);
-
-
 
   return (
     <>
