@@ -5,16 +5,16 @@ import Layout from '@/layouts/Layout';
 import { useRouter } from 'next/router';
 import UserCard from '@/components/general/UserCard';
 import _ from 'lodash';
-import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { ClipLoader } from 'react-spinners';
+import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 
-export default function Settings() {
+export default function Subscriptions() {
   const _user = useSelector((state) => state.auth.user);
   const subscriptions = useSelector(
-    (state) => state.followerConnection.subscriptions
+    (state) => state.subscribeConnection.subscriptions
   );
   const isLoading = useSelector(
-    (state) => state.followerConnection.subscriptionsLoading
+    (state) => state.subscribeConnection.subscriptionsLoading
   );
   const [user, setUser] = useState();
   const router = useRouter();
@@ -29,7 +29,7 @@ export default function Settings() {
 
   const getSubscriptions = () => {
     dispatch(
-      followerConnectionActions.getSubscriptionsRequest({
+      subscribeConnectionActions.getSubscriptionsRequest({
         userId: _.get(_user, '_id'),
         page,
       })

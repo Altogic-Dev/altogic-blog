@@ -79,7 +79,7 @@ export const topicsSlice = createSlice({
       state.errors = action.payload;
     },
 
-    getTopicAnalyticsRequest() {},
+    getTopicAnalyticsRequest() { },
     getTopicAnalyticsSuccess(state, action) {
       state.topicAnalytics = action.payload;
     },
@@ -88,14 +88,18 @@ export const topicsSlice = createSlice({
     },
     getPublicationsTopicsSuccess(state, action) {
       state.isLoading = false;
-      state.publicationsTopics = action.payload;
+      state.publicationsTopics = action.payload.map(group => {
+        const temp = group
+        temp.topic = group.groupby.group
+        return temp
+      });
     },
     getPublicationsTopicsFailure(state, action) {
       state.isLoading = false;
       state.error = action.payload;
     },
 
-    getPublicationsStoriesByTopicRequest() {},
+    getPublicationsStoriesByTopicRequest() { },
     getPublicationsStoriesByTopicSuccess(state, action) {
       state.publicationStoriesByTopic = action.payload;
     },

@@ -101,15 +101,15 @@ export default function BlogDetail({ ip }) {
   const visitStory = () => {
     dispatch(
       storyActions.visitStoryRequest({
-        story: story._id,
+        story: story?._id,
         user: user._id,
         readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
         isRead,
         ip,
         publication: _.get(story, 'publication._id'),
         isExternal: !!(facebook || twitter || linkedin),
-        author: story.user._id,
-        categoryNames: story.categoryNames,
+        author: story?.user._id,
+        categoryNames: story?.categoryNames,
       })
     );
   };
@@ -232,7 +232,6 @@ export default function BlogDetail({ ip }) {
   useEffect(() => {
     if (errors?.status === 404) setIsLoading(false);
   }, [errors]);
-
   return (
     <div>
       <Head>

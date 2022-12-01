@@ -5,7 +5,6 @@ import storySaga from './story/storySaga';
 import reportSaga from './report/reportSaga';
 import recommendationsSaga from './recommendations/recommendationsSaga';
 import subscribeConnectionSaga from './subscribeConnection/subscribeConnectionSaga';
-import subscribeSaga from './subscribe/subscribeSaga';
 import publicationSaga from './publication/publicationSaga';
 import topicsSaga from './topics/topicsSaga';
 import generalSaga from './general/generalSaga';
@@ -24,7 +23,6 @@ function* rootSaga() {
     fork(reportSaga),
     fork(recommendationsSaga),
     fork(subscribeConnectionSaga),
-    fork(subscribeSaga),
     fork(publicationSaga),
     fork(fileSaga),
     fork(topicsSaga),

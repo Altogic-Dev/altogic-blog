@@ -167,8 +167,6 @@ function* getMyBookmarksSaga({ payload: { userId, username } }) {
     }
     if (errors) throw errors.items;
   } catch (error) {
-    console.log(error);
-
     yield put(getMyBookmarksFailure(error));
   }
 }

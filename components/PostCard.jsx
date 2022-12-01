@@ -1,9 +1,10 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import _ from 'lodash';
 import Link from 'next/link';
 import { Pin } from '@icon-park/react';
-import { useSelector } from 'react-redux';
+import { storyActions } from '@/redux/story/storySlice';
+import { useSelector, useDispatch } from 'react-redux';
 import DeleteList from './bookmarks/DeleteList';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import CreateBookmarkList from './bookmarks/CreateBookmarkList';
@@ -35,6 +36,15 @@ export default function PostCard({
   const [deleteListModal, setDeleteListModal] = useState(false);
   const myBookmarks = useSelector((state) => state.bookmark.myBookmarks);
   const sessionUser = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+
+  useEffect(
+    () => () => {
+      if (storyUrl.includes('write-a-story'))
+        dispatch(storyActions.clearStory());
+    },
+    []
+  );
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2">

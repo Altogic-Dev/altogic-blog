@@ -1,4 +1,5 @@
 import { topicsActions } from '@/redux/topics/topicsSlice';
+import { parseHtml } from '@/utils/utils';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
 import { useState, useEffect } from 'react';
@@ -28,14 +29,16 @@ function PublicationTabTopic({ tab, publication }) {
     }
   }, [publication]);
 
+  console.log(topicStories)
   return (
-    <div>
+    <div className="grid grid-cols-3 gap-10 w-[70vw] ">
       {_.map(stories, (post) => (
         <PublicationPostCard
           key={post._id}
+          profilePicture={post.userProfilePicture}
           image={_.first(post.storyImages)}
           title={post.title}
-          description={post.excerpt}
+          description={parseHtml(post.content) ?? ''}
           readMoreUrl={`/publications/${publication?.name}/${post.storySlug}`}
           personName={post.username}
           date={DateTime.fromISO(_.get(post, 'createdAt')).toLocaleString({

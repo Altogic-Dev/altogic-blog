@@ -53,9 +53,7 @@ export default function PublicationsNavigation() {
     mode: 'onBlur',
   });
 
-  const [navigationList, setNavigationList] = useState([
-    <NavigationForm key={0} />,
-  ]);
+  const [navigationList, setNavigationList] = useState();
 
   const handleSubmit = () => {
     const formList = document.querySelectorAll('form');
@@ -158,9 +156,7 @@ export default function PublicationsNavigation() {
           })
         );
       } else {
-        dispatch(
-          publicationActions.createPublicationNavigationRequest(result)
-        );
+        dispatch(publicationActions.createPublicationNavigationRequest(result));
       }
       setNavigationReq([]);
     }
@@ -210,7 +206,6 @@ export default function PublicationsNavigation() {
     setOnDrag(false);
   };
 
-  console.log(navigationList)
   return (
     <div>
       <Head>
@@ -273,15 +268,11 @@ export default function PublicationsNavigation() {
             </div>
             <DragDropContext
               onDragStart={() => setOnDrag(true)}
-              onDragEnd={(result) =>
-                onDragEnd(result, navigationList, setNavigationList)
-              }
-            >
+              onDragEnd={(result) => onDragEnd(result, navigationList, setNavigationList)}>
               <Droppable droppableId="droppable">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {navigationList.map((navigationForm, index) => (
-                      // eslint-disable-next-line react/no-array-index-key
+                    {_.map(navigationList,(navigationForm, index) => (
                       <Draggable
                         key={navigationForm.key}
                         index={index}
@@ -303,7 +294,6 @@ export default function PublicationsNavigation() {
                                 );
                                 setNavigationList(newNavigationList);
                               }}
-                              type="button"
                               className="inline-flex items-center justify-center w-11 h-11 border border-gray-300 rounded-full hover:bg-gray-100"
                             >
                               <TrashIcon className="w-5 h-5 text-slate-700" />

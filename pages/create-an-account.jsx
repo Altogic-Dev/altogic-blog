@@ -20,7 +20,7 @@ export default function CreateAnAccount() {
     username: yup
       .string()
       .required('Username is required ')
-      .matches(/^[a-zA-Z0-9_]+$/, 'Only alphabets are allowed for this field ')
+      .matches(/^[a-zA-Z0-9_]+$/, 'Only alphanumeric characters are allowed for this field ')
       .max(15, 'Username must be at most 15 characters'),
     name: yup.string().required('Name is required'),
   });

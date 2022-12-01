@@ -7,24 +7,24 @@ export default function UserMutedCard({ user, unmuteAuthor }) {
   const isLoadingMute = useSelector((state) => state.blockConnection.isLoading);
 
   return (
-    <li key={user._id} className="flex items-start justify-between gap-3 py-4">
-      <Link href={`/${user.username}`}>
+    <li key={user?._id} className="flex items-start justify-between gap-3 py-4">
+      <Link href={`/${user?.username}`}>
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
             <Avatar
               className="w-10 h-10 rounded-full"
               placeholderName={user?.name}
-              src={user.profilePicture}
-              alt={user.name}
+              src={user?.profilePicture}
+              alt={user?.name}
             />
             <div className="flex flex-col">
               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                {user.name}
+                {user?.name}
               </span>
               {user?.about && (
                 <span
                   className="text-slate-500 text-xs tracking-sm"
-                  dangerouslySetInnerHTML={{ __html: user.about }}
+                  dangerouslySetInnerHTML={{ __html: user?.about }}
                 />
               )}
             </div>

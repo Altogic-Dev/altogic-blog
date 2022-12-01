@@ -46,6 +46,7 @@ export default function NavigationForm({ navigation }) {
       });
     }
   }, [topics, stories]);
+  console.log(tabData)
   const {
     register,
     formState: { errors },
@@ -153,7 +154,7 @@ export default function NavigationForm({ navigation }) {
           register={register('url')}
         >
           <div className="relative">
-            <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3.5 pr-10 text-left border border-gray-300 focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+            <Listbox.Button className=" h-10 relative w-full cursor-default rounded-lg bg-white py-2 pl-3.5 pr-10 text-left border border-gray-300 focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
               <span className="block text-slate-700 text-base truncate">
                 {selectedContent?.title ||
                   selectedContent?.name ||
