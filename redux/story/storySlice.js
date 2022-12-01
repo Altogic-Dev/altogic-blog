@@ -82,23 +82,23 @@ export const storySlice = createSlice({
 
     },
     createStorySuccess(state, action) {
-     try {
-      state.story = action.payload;
-      state.error = null;
-      state.isLoading = false;
-      if (!_.isNil(state.userDraftStoriesInfo)) {
-        state.userDraftStoriesInfo = {
-          ...state.userDraftStoriesInfo,
-          count: state.userDraftStoriesInfo.count + 1,
-        };
-        state.userDraftStories = _.orderBy(
-          [...state.userDraftStories, action.payload],
-          ['pinnedStory', 'createdAt'],
-          ['desc', 'desc'])
+      try {
+        state.story = action.payload;
+        state.error = null;
+        state.isLoading = false;
+        if (!_.isNil(state.userDraftStoriesInfo)) {
+          state.userDraftStoriesInfo = {
+            ...state.userDraftStoriesInfo,
+            count: state.userDraftStoriesInfo.count + 1,
+          };
+          state.userDraftStories = _.orderBy(
+            [...state.userDraftStories, action.payload],
+            ['pinnedStory', 'createdAt'],
+            ['desc', 'desc'])
+        }
+      } catch (error) {
+        console.log(error)
       }
-     } catch (error) {
-      console.log(error)
-     }
 
     },
     createStoryFailure(state, action) {
@@ -210,37 +210,43 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {
-      state.isLoading = false;
-      if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
-        /// userStoriesCount--
-        if (_.isArray(state.userStories)) {
-          state.userStories = _.filter(state.userStories,
-            (story) => story._id !== action.payload._id
+      try {
+        state.isLoading = false;
+        if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
+          /// userStoriesCount--
+          if (_.isArray(state.userStories)) {
+            state.userStories = _.filter(state.userStories,
+              (story) => story._id !== action.payload._id
+            );
+
+            state.userStoriesInfo = {
+              ...state.userStoriesInfo,
+              count: state.userStoriesInfo.count - 1,
+            };
+          }
+
+          /// userDraftStoriesState Update
+          if (_.isArray(state.userDraftStories)) {
+            state.userDraftStoriesInfo = {
+              ...state.userDraftStoriesInfo,
+              count: state.userDraftStoriesInfo.count + 1,
+            };
+
+
+          }
+        }
+        if (!_.isEmpty(state.userDraftStories)) {
+          state.userDraftStories = _.orderBy(
+            [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+            ['pinnedStory', 'createdAt'],
+            ['desc', 'desc']
           );
-
-          state.userStoriesInfo = {
-            ...state.userStoriesInfo,
-            count: state.userStoriesInfo.count - 1,
-          };
         }
-
-        /// userDraftStoriesState Update
-        if (_.isArray(state.userDraftStories)) {
-          state.userDraftStoriesInfo = {
-            ...state.userDraftStoriesInfo,
-            count: state.userDraftStoriesInfo.count + 1,
-          };
-
-
-        }
+        state.story = action.payload;
+        state.error = null;
+      } catch (error) {
+        console.log(error)
       }
-      state.userDraftStories = _.orderBy(
-        [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
-        ['pinnedStory', 'createdAt'],
-        ['desc', 'desc']
-      );
-      state.story = action.payload;
-      state.error = null;
     },
     updateStoryFailure(state, action) {
       state.isLoading = false;

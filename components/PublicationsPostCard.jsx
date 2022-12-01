@@ -24,7 +24,7 @@ export default function PublicationPostCard({
   return (
     <>
       <div
-        className='py-8 w-4/12'
+        className='py-8 '
       >
         <Link href={`/${personName}`}>
           <a className="inline-flex items-center gap-3 mb-4">

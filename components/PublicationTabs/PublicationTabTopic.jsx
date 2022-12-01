@@ -29,8 +29,9 @@ function PublicationTabTopic({ tab, publication }) {
     }
   }, [publication]);
 
+  console.log(topicStories)
   return (
-    <div>
+    <div className="grid grid-cols-3 gap-10 w-[70vw] ">
       {_.map(stories, (post) => (
         <PublicationPostCard
           key={post._id}
