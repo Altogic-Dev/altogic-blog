@@ -1,5 +1,4 @@
 import ListObserver from '@/components/ListObserver';
-import UnmuteAuthorModal from '@/components/UnmuteAuthorModal';
 import UserMutedCard from '@/components/UserMutedCard';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
@@ -13,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function MutedUsers() {
   const dispatch = useDispatch();
 
-  const [unmutedAuthor, setUnmutedAuthor] = useState(null);
 
   const blockedUsers = useSelector(
     (state) => state.blockConnection.blockedUsers
@@ -65,7 +63,11 @@ export default function MutedUsers() {
                         key={person?._id}
                         user={person}
                         unmuteAuthor={() => {
-                          setUnmutedAuthor(person._id);
+                          dispatch(
+                            blockConnectionActions.unblockAuthorRequest(
+                              person?._id
+                            )
+                          );
                         }}
                       />
                     ))}
@@ -88,16 +90,6 @@ export default function MutedUsers() {
           </div>
         </div>
       </Layout>
-      {unmutedAuthor && (
-        <UnmuteAuthorModal
-          setUnmuteAuthorModal={() => setUnmutedAuthor(null)}
-          clickUnmute={() => {
-            dispatch(
-              blockConnectionActions.unblockAuthorRequest(unmutedAuthor)
-            );
-          }}
-        />
-      )}
     </div>
   );
 }

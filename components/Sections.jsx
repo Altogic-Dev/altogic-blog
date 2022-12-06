@@ -11,6 +11,8 @@ import PublicationsNormalCard from './PublicationsNormalCard';
 import PublicationsFullImageVerticalCard from './PublicationsFullImageVerticalCard';
 import PublicationsStreamCard from './PublicationsStreamCard';
 import PublicationsListImageCard from './PublicationsListImageCard';
+import Button from './basic/button';
+import Input from './Input';
 
 const sections = [
   { id: 1, tag: 'Stories in a tag', isTag: true },
@@ -34,6 +36,8 @@ export default function Sections({
   const [containerScreen, setContainerScreen] = useState(false);
   const [wrappers, setWrappers] = useState([]);
   const [children, setChildren] = useState([]);
+  const [sectionTitle, setSectionTitle] = useState('');
+  const [sectionTitleChecked, setSectionTitleChecked] = useState('');
   const [streamCardList, setStreamCardList] = useState([]);
   const [listImageCardList, setListImageCardList] = useState([]);
   const tag = useState(true);
@@ -249,11 +253,11 @@ export default function Sections({
       setCounter(section?.storySize);
     }
   }, [section]);
-
+console.log(sectionTitle)
   useEffect(() => {
     const section = {
       isShowTitle: enabled,
-      sectionTitle: 'text',
+      sectionTitle,
       isFullContainerGrid: containerScreen,
       isFullStoryGrid: imageCard,
       designType: designTypes[selectedIndex],
@@ -352,7 +356,7 @@ export default function Sections({
                     } h-11 w-full bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default`}
                   >
                     <span className="block truncate">
-                     {selectedTopic?.topic}
+                      {selectedTopic?.topic}
                     </span>
                     <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
                       <ChevronDownIcon
@@ -726,19 +730,24 @@ export default function Sections({
           <div className="mb-12 max-w-xs">
             <form action="">
               <div className="flex items-center gap-[22px]">
-                <input
+                <Input
+                  value={sectionTitle}
+                  onChange={(e) => {
+                    setSectionTitleChecked(false);
+                    setSectionTitle(e.target.value);
+                  }}
                   type="text"
                   name="sectionTitle"
                   id="sectionTitle"
                   placeholder="Type section title"
-                  className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                  className="block w-full min-h-[44px]  placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                 />
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center flex-shrink-0 w-11 h-11 bg-purple-700 text-white rounded-full hover:bg-purple-800 focus:outline-none"
+                <Button
+                  onClick={() => setSectionTitleChecked(true)}
+                  className={`inline-flex items-center justify-center flex-shrink-0 w-11 h-11 text-white rounded-full hover:bg-purple-800 focus:outline-none + ${sectionTitleChecked ?' bg-green-700' :  'bg-purple-700'}`}
                 >
                   <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                </button>
+                </Button>
               </div>
             </form>
           </div>

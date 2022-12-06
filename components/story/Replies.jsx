@@ -271,6 +271,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                             <div className="flex items-center gap-2 mb-4">
                               <Avatar
                                 className="w-8 h-8 object-cover rounded-full"
+                                width={32}
+                                height={32}
                                 src={_.get(user, 'profilePicture')}
                                 alt={_.get(user, 'name')}
                                 placeholderName={_.get(user, 'name')}
@@ -355,6 +357,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               <div className="flex items-center justify-between ">
                                 <div className="flex items-center gap-3">
                                   <Avatar
+                                    width={40}
+                                    height={40}
                                     className="w-10 h-10 rounded-full object-cover"
                                     src={reply.userProfilePicture}
                                     alt={reply.name}

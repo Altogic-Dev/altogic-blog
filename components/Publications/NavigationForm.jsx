@@ -45,8 +45,7 @@ export default function NavigationForm({ navigation }) {
         feature: featurePages,
       });
     }
-  }, [topics, stories]);
-  console.log(tabData)
+  }, [topics, stories,featurePages]);
   const {
     register,
     formState: { errors },
@@ -79,7 +78,7 @@ export default function NavigationForm({ navigation }) {
         )
       );
     }
-  }, [tabData[selected.value]]);
+  }, [tabData]);
 
   return (
     <form className="w-full grid grid-cols-3 gap-4 items-center">

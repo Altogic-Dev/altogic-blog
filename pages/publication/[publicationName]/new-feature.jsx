@@ -19,7 +19,8 @@ const fileTypes = ['JPG', 'PNG', 'WEBP', 'JPEG', 'SVG', 'GIF'];
 
 export default function PublicationsNewFeature() {
   const router = useRouter();
-  const { publicationName } = router.query;
+  const { publicationName, id } = router.query;
+  const featurePage = useSelector((state) => state.publication.featurePage);
   const dispatch = useDispatch();
   const [file, setFile] = useState();
   const [featurePageRequest, setFeaturePageRequest] = useState();
@@ -44,6 +45,7 @@ export default function PublicationsNewFeature() {
     handleSubmit,
     register,
     formState: { errors },
+    setValue,
   } = useForm({
     resolver: yupResolver(formSchema),
   });
@@ -66,6 +68,17 @@ export default function PublicationsNewFeature() {
     }
   };
 
+  const getFeature = (featureId) => {
+    dispatch(
+      publicationActions.getFeaturePageRequest({
+        featureId,
+      })
+    );
+  };
+  const clearFeature = () => {
+    dispatch(publicationActions.clearFeaturePageRequest());
+  };
+
   useEffect(() => {
     if (publication) {
       checkAuthorization(publication);
@@ -75,7 +88,6 @@ export default function PublicationsNewFeature() {
 
   const uploadPhotoHandler = () => {
     const fileInput = document.createElement('input');
-    fileInput.setAttribute('type', 'file');
     fileInput.setAttribute('accept', 'image/*');
     fileInput.click();
 
@@ -83,6 +95,21 @@ export default function PublicationsNewFeature() {
       setFile(fileInput.files[0]);
     };
   };
+
+  useEffect(() => {
+    if (id) {
+      getFeature(id);
+    }
+  }, [id]);
+
+  useEffect(() => () => clearFeature(), []);
+  useEffect(() => {
+    if (featurePage) {
+      setValue('title', featurePage.title);
+      setValue('link', featurePage.link);
+      setValue('description', featurePage.description);
+    }
+  }, [featurePage]);
 
   const submitFunction = async (data) => {
     setIsLoading(true);
@@ -138,13 +165,23 @@ export default function PublicationsNewFeature() {
   };
   useEffect(() => {
     if (logo) {
-      dispatch(
-        publicationActions.createFeaturePageRequest({
-          ...featurePageRequest,
-          logo,
-        })
-      );
-      setIsLoading(false)
+      if (!id) {
+        dispatch(
+          publicationActions.createFeaturePageRequest({
+            ...featurePageRequest,
+            logo,
+          })
+        );
+      } else {
+        dispatch(
+          publicationActions.updateFeaturePageRequest({
+            ...featurePageRequest,
+            logo,
+          })
+        );
+      }
+
+      setIsLoading(false);
       router.push(`/publication/${publication.publicationName}/feature`);
     }
   }, [logo]);
@@ -176,12 +213,14 @@ export default function PublicationsNewFeature() {
                 >
                   Save
                 </Button>
-                <button
-                  type="button"
+                <Button
+                  onClick={() =>
+                    router.push(`/publication/${publicationName}/feature`)
+                  }
                   className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                 >
                   Cancel
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -203,7 +242,7 @@ export default function PublicationsNewFeature() {
                       id="title"
                       register={register('title')}
                       placeholder="Type a title for your feature page"
-                      className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                      className="block w-full min-h-[44px] placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
                   </div>
                 </div>
@@ -222,7 +261,7 @@ export default function PublicationsNewFeature() {
                       id="link"
                       register={register('link')}
                       placeholder="Type a custom link for your feature page"
-                      className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                      className="block w-full min-h-[44px] placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
                     <p className="mt-1.5 text-sm text-slate-500">
                       Link: algotic.com/publication/...
@@ -244,7 +283,7 @@ export default function PublicationsNewFeature() {
                       id="description"
                       register={register('description')}
                       placeholder="Type a short description"
-                      className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+                      className="block w-full min-h-[44px] placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
                     <p className="mt-1.5 text-sm text-slate-500">
                       The description is used on search engine results pages.
@@ -261,7 +300,7 @@ export default function PublicationsNewFeature() {
                     >
                       Header logo*
                     </label>
-                    <p className="text-slate-500 text-sm">
+                    <p className="text-sm">
                       This image replaces the title at the top of your feature
                       page. It should be at least 1200px wide and 350px tall.
                       <br />
@@ -278,50 +317,54 @@ export default function PublicationsNewFeature() {
                       types={fileTypes}
                     >
                       <div className="text-center">
-                        {file ? (
+                        {file || featurePage?.logo ? (
                           <img
                             className=" object-cover"
-                            src={URL.createObjectURL(file)}
+                            src={
+                              file
+                                ? URL.createObjectURL(file)
+                                : featurePage?.logo
+                            }
                             alt={router.query.publicationName}
                           />
                         ) : (
-                          <span className="inline-flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-gray-100 ring-8 ring-gray-50">
-                            <svg
-                              className="w-5 h-5 text-slate-700"
-                              viewBox="0 0 22 22"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </span>
-                        )}
+                          <>
+                            <span className="inline-flex items-center justify-center w-10 h-10 mb-3 rounded-full bg-gray-100 ring-8 ring-gray-50">
+                              <svg
+                                className="w-5 h-5 text-slate-700"
+                                viewBox="0 0 22 22"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M3.5 21V16M3.5 6V1M1 3.5H6M1 18.5H6M12 2L10.2658 6.50886C9.98381 7.24209 9.84281 7.60871 9.62353 7.91709C9.42919 8.1904 9.1904 8.42919 8.91709 8.62353C8.60871 8.8428 8.24209 8.98381 7.50886 9.26582L3 11L7.50886 12.7342C8.24209 13.0162 8.60871 13.1572 8.91709 13.3765C9.1904 13.5708 9.42919 13.8096 9.62353 14.0829C9.84281 14.3913 9.98381 14.7579 10.2658 15.4911L12 20L13.7342 15.4911C14.0162 14.7579 14.1572 14.3913 14.3765 14.0829C14.5708 13.8096 14.8096 13.5708 15.0829 13.3765C15.3913 13.1572 15.7579 13.0162 16.4911 12.7342L21 11L16.4911 9.26582C15.7579 8.98381 15.3913 8.8428 15.0829 8.62353C14.8096 8.42919 14.5708 8.1904 14.3765 7.91709C14.1572 7.60871 14.0162 7.24209 13.7342 6.50886L12 2Z"
+                                  stroke="currentColor"
+                                  strokeWidth={2}
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </span>
 
-                        {!file && (
-                          <div className="flex text-sm text-gray-600">
-                            <Button
-                              onClick={uploadPhotoHandler}
-                              htmlFor="file-upload"
-                              className="relative cursor-pointer bg-white rounded-md font-medium text-purple-700 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
-                            >
-                              <span>Click to upload</span>
-                              <Input
-                                id="file-upload"
-                                name="file-upload"
-                                type="file"
-                                className="sr-only"
-                              />
-                            </Button>
-                            <p className="text-slate-600 pl-1">
-                              or drag and drop
-                            </p>
-                          </div>
+                            <div className="flex text-sm text-gray-600">
+                              <Button
+                                onClick={uploadPhotoHandler}
+                                htmlFor="file-upload"
+                                className="relative cursor-pointer bg-white rounded-md font-medium text-purple-700 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
+                              >
+                                <span>Click to upload</span>
+                                <Input
+                                  id="file-upload"
+                                  name="file-upload"
+                                  type="file"
+                                  className="sr-only"
+                                />
+                              </Button>
+                              <p className="text-slate-600 pl-1">
+                                or drag and drop
+                              </p>
+                            </div>
+                          </>
                         )}
                         {(errors?.file?.message || fileUploadError) && (
                           <span className="inline-block text-sm text-red-600">
@@ -336,7 +379,7 @@ export default function PublicationsNewFeature() {
             </div>
           </div>
         </form>
-        <AddFeatureSection />
+        <AddFeatureSection sections={featurePage && featurePage.sections} />
       </Layout>
     </div>
   );

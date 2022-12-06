@@ -261,11 +261,11 @@ export default function PublicationSettingsInfo({
   }, [publication]);
 
   useEffect(() => {
-    if (getValues('twitter').length === 1) {
+    if (getValues('twitter')?.length === 1) {
       setValue('twitter', `https://twitter.com/${getValues('twitter')}`);
-    } else if (getValues('facebook').length === 1) {
+    } else if (getValues('facebook')?.length === 1) {
       setValue('facebook', `https://facebook.com/${getValues('facebook')}`);
-    } else if (getValues('linkedin').length === 1) {
+    } else if (getValues('linkedin')?.length === 1) {
       setValue('linkedin', `https://linkedin.com/${getValues('linkedin')}`);
     }
   }, [watchFields]);

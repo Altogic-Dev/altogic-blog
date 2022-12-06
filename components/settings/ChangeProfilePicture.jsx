@@ -94,6 +94,8 @@ export default function ChangeProfilePicture({ user }) {
                     src={userAvatarLink}
                     alt={user?.name}
                     placeholderName={user?.name}
+                    width={64}
+                    height={64}
                     className="w-16 h-16 object-cover mr-4"
                   />
                 )}

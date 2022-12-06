@@ -12,6 +12,8 @@ export default function UserMutedCard({ user, unmuteAuthor }) {
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
             <Avatar
+              width={40}
+              height={40}
               className="w-10 h-10 rounded-full"
               placeholderName={user?.name}
               src={user?.profilePicture}

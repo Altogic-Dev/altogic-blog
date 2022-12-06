@@ -58,27 +58,26 @@ export default function UserCard({ subscription, user, isFollowing }) {
         );
       }
     }
-
   };
- 
 
   useEffect(() => {
+    if(!followingUserLoading)
     setFollowingLoad(false);
-  }, [isFollowing]);
+  }, [followingUserLoading]);
 
   return (
     <li key={user._id} className="flex items-start justify-between gap-3 py-4">
       <Link href={`/${user.username}`}>
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
-            <div className="inline-flex flex-shrink-0">
-              <Avatar
-                className="w-10 h-10 rounded-full"
-                placeholderName={user?.name}
-                src={user.profilePicture}
-                alt={user.name}
-              />
-            </div>
+           <Avatar
+              width={40}
+              height={40}
+              className="w-10 h-10 rounded-full"
+              placeholderName={user?.name}
+              src={user.profilePicture}
+              alt={user.name}
+            />
             <div className="flex flex-col">
               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
                 {user.name}

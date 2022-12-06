@@ -297,14 +297,15 @@ function* getPublicationFeaturesSaga({ payload: { publication } }) {
     yield put(publicationActions.getPublicationFeaturesFailure(e));
   }
 }
-function* deleteFeatureSaga({ payload: { publication } }) {
+function* deleteFeatureSaga({ payload: { id } }) {
   try {
+
     const { data, errors } = yield call(
       PublicationService.deleteFeature,
-      publication
+      id
     );
     if (data) {
-      data.publication = publication;
+      data.id = id;
       yield put(publicationActions.deleteFeatureSuccess(data));
     }
     if (errors) {
@@ -363,6 +364,23 @@ function* createFeaturePage({ payload }) {
     yield put(publicationActions.createFeaturePageFailure(e));
   }
 }
+function* updateFeaturePage({ payload }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.updateFeaturePage,
+      payload
+    );
+    if (data) {
+      yield put(publicationActions.updateFeaturePageSuccess(data));
+      yield fork(clearFileLink);
+    }
+    if (errors) {
+      throw errors.items;
+    }
+  } catch (e) {
+    yield put(publicationActions.updateFeaturePageFailure(e));
+  }
+}
 function* setPublications({ payload }) {
   const { data } = yield call(
     PublicationService.getAllUserPublications,
@@ -389,7 +407,7 @@ function* getUserPublicationsSaga() {
   }
 }
 
-function* getFeaturePageSaga({ payload: featureId }) {
+function* getFeaturePageSaga({ payload: {featureId} }) {
   try {
     const { data, errors } = yield call(
       PublicationService.getFeaturePage,
@@ -573,6 +591,10 @@ export default function* rootSaga() {
     takeEvery(
       publicationActions.createFeaturePageRequest.type,
       createFeaturePage
+    ),
+    takeEvery(
+      publicationActions.updateFeaturePageRequest.type,
+      updateFeaturePage
     ),
     takeEvery(publicationActions.setPublicationsRequest.type, setPublications),
     takeEvery(

@@ -27,7 +27,9 @@ export default function StoriesYouFollow({ storiesYouFollow }) {
                 className="group relative flex-shrink-0 mb-1"
               >
                 <Avatar
-                  className="rounded-full w-14 h-14  "
+                  width={56}
+                  height={56}
+                  className="rounded-full w-14 h-14"
                   src={storiesFollow.followingUserProfilePicture}
                   alt={storiesFollow.followingUsername}
                   placeholderName={storiesFollow.followingUsername}

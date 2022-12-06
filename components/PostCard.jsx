@@ -3,6 +3,7 @@ import { Menu, Transition } from '@headlessui/react';
 import _ from 'lodash';
 import Link from 'next/link';
 import { Pin } from '@icon-park/react';
+import Image from 'next/image';
 import { storyActions } from '@/redux/story/storySlice';
 import { useSelector, useDispatch } from 'react-redux';
 import DeleteList from './bookmarks/DeleteList';
@@ -53,8 +54,10 @@ export default function PostCard({
             <a className="flex items-center gap-3 mb-4 md:mb-8">
               <div className="flex-shrink-0">
                 <span className="sr-only">{authorName}</span>
-                <img
-                  className="h-6 w-6 rounded-full"
+                <Image
+                  width={24}
+                  height={24}
+                  className="rounded-full"
                   src={authorImage}
                   alt={authorName}
                 />

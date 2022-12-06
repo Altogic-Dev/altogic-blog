@@ -14,6 +14,8 @@ export default function Following({ followings, count, seeAllButton }) {
               <a className="inline-flex items-center gap-2 text-slate-700 text-sm font-medium tracking-sm hover:text-purple-700">
                 <Avatar
                   className="w-6 h-6 rounded-full"
+                  width={24}
+                  height={24}
                   placeholderName={person.followingName}
                   src={person.followingUserProfilePicture}
                   alt={person.followingName}

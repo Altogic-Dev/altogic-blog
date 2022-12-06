@@ -40,6 +40,8 @@ export default function NotificationItem({ notification }) {
                 src={notification?.sentUserProfilePicture}
                 alt={notification?.sentUsername}
                 className="w-6 h-6"
+                width={24}
+                height={24}
               />
             </a>
           </Link>
