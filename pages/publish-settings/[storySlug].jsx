@@ -255,10 +255,7 @@ export default function PublishSettings() {
                   dangerouslySetInnerHTML={{ __html: _.get(story, 'content') }}
                 />
                 <Link href={`/write-a-story?id=${_.get(story, '_id')}`}>
-                  <button
-                    type="button"
-                    className="flex md:inline-flex items-center justify-center gap-2 w-full md:w-auto px-3.5 py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                  >
+                  <Button className="flex md:inline-flex items-center justify-center gap-2 w-full md:w-auto px-3.5 py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                     <svg
                       className="w-5 h-5"
                       viewBox="0 0 20 20"
@@ -274,7 +271,7 @@ export default function PublishSettings() {
                       />
                     </svg>
                     Edit Story
-                  </button>
+                  </Button>
                 </Link>
                 <hr className="block md:hidden my-16" />
                 <Button

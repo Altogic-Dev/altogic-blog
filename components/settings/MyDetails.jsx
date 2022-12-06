@@ -140,6 +140,8 @@ export default function MyDetails({ user }) {
     <div id="my-details" className="mb-16">
       <div className="flex items-center gap-6 pb-6 mb-6 md:mb-12 border-b border-gray-200">
         <Avatar
+          width={160}
+          height={160}
           className="hidden md:block w-40 h-40 rounded-full object-cover shadow-lg ring-4 ring-white"
           src={user?.profilePicture}
           alt={user?.name}

@@ -45,6 +45,7 @@ export default function WriteAStory() {
   const storySchema = new yup.ObjectSchema({
     title: yup.string(),
   });
+
   const {
     register,
     formState: { errors },
@@ -61,6 +62,7 @@ export default function WriteAStory() {
       setInpTitle();
       setIsChanged(false);
       setIsCreated(false);
+      setContent('');
     }
   }, [id]);
 
@@ -80,19 +82,19 @@ export default function WriteAStory() {
       setValue('title', newStory.title);
       setMinRead(newStory.estimatedReadingTime);
     }
-    if (_.get(newStory, '_id') && !isCreated) {
-      setIsCreated(true);
+    if (!id && _.get(newStory, '_id') && isCreated) {
       setLoading(false);
       router.push(`/write-a-story?id=${newStory._id}`);
     }
   }, [newStory]);
 
   useEffect(() => {
-    if (id && !newStory) {
+    if (router.isReady && id && !newStory) {
       dispatch(storyActions.getStoryRequest(id));
-      setIsCreated(true);
+    } else if (newStory) {
+      setLoading(false);
     }
-  }, [id]);
+  }, [router, id, newStory]);
   useEffect(() => {
     if (router.isReady) setIsMounted(true);
   }, [router.isReady]);
@@ -114,8 +116,9 @@ export default function WriteAStory() {
           : undefined,
       };
       setIsShowSaving(true);
-      if (!isCreated) {
+      if (!isCreated && !id) {
         dispatch(storyActions.createStoryRequest(story));
+        setIsCreated(true);
       } else if (!_.isNil(newStory)) {
         const dataObject = {
           story: {
@@ -137,7 +140,7 @@ export default function WriteAStory() {
       }
     }
     if (content) setMinRead(Math.ceil(content.split(' ').length / 200));
-  }, [content, inpTitle, getValues('title')]);
+  }, [content, inpTitle, getValues('title'), router.isReady]);
 
   const handleChange = (e) => {
     if (!isChanged) {
@@ -187,6 +190,7 @@ export default function WriteAStory() {
       setInpTitle();
       setIsChanged(false);
       setIsCreated(false);
+      setContent('');
     },
     []
   );
@@ -202,7 +206,7 @@ export default function WriteAStory() {
                 {selectedPublication ? selectedPublication.name : username}
               </span>
             </div>
-            {isCreated && isShowSaving && (
+            {isShowSaving && (
               <div className="text-green-700 font-semibold">
                 {loading ? (
                   <span>
@@ -220,7 +224,7 @@ export default function WriteAStory() {
           </div>
           <p className="text-slate-500 w-1/3 text-center">{minRead} min read</p>
 
-          {isCreated && (
+          {setIsShowSaving && !loading && router.isReady && (
             <div className="w-1/3 flex justify-end">
               <Button
                 onClick={handlePublish}

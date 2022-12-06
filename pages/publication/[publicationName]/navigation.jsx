@@ -57,6 +57,7 @@ export default function PublicationsNavigation() {
 
   const handleSubmit = () => {
     const formList = document.querySelectorAll('form');
+
     formList.forEach((form) => {
       let req = {};
       // eslint-disable-next-line no-restricted-syntax
@@ -268,11 +269,14 @@ export default function PublicationsNavigation() {
             </div>
             <DragDropContext
               onDragStart={() => setOnDrag(true)}
-              onDragEnd={(result) => onDragEnd(result, navigationList, setNavigationList)}>
+              onDragEnd={(result) =>
+                onDragEnd(result, navigationList, setNavigationList)
+              }
+            >
               <Droppable droppableId="droppable">
                 {(provided) => (
                   <div {...provided.droppableProps} ref={provided.innerRef}>
-                    {_.map(navigationList,(navigationForm, index) => (
+                    {_.map(navigationList, (navigationForm, index) => (
                       <Draggable
                         key={navigationForm.key}
                         index={index}

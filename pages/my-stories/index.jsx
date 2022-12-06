@@ -27,6 +27,7 @@ export default function MyStories() {
   );
   const userDraftStories = useSelector((state) => state.story.userDraftStories);
   const userStories = useSelector((state) => state.story.userStories);
+  const userStoriesOwner = useSelector((state) => state.story.userStoriesOwner);
   const userStoriesLoading = useSelector(
     (state) => state.story.userStoriesLoading
   );
@@ -99,11 +100,11 @@ export default function MyStories() {
   useEffect(() => {
     if (
       _.size(userStories) < publishedPage * PAGE_LIMIT &&
-      userStoriesInfo?.count !== _.size(userStories)
+      userStoriesInfo?.count !== _.size(userStories) || userStoriesOwner !== sessionUser?._id
     ) {
       getUserStories();
     }
-  }, [publishedPage]);
+  }, [publishedPage, userStoriesOwner]);
 
   return (
     <div>

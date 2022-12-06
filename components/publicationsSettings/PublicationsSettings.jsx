@@ -33,11 +33,7 @@ export default function PublicationsSettings({ isCreate }) {
     setDoHomeClear(true);
   };
 
-  const checkAuthorization = (publication) => {
-    const sessionUser = _.find(
-      publication.users,
-      (person) => person.user === user._id
-    );
+  const checkAuthorization = (publication, sessionUser) => {
     if (
       _.isNil(sessionUser) ||
       !['admin'].includes(sessionUser.role) ||
@@ -51,10 +47,14 @@ export default function PublicationsSettings({ isCreate }) {
   };
 
   useEffect(() => {
-    if (!isCreate && publication) {
-      checkAuthorization(publication);
+    if (!isCreate && publication && publicationName) {
+      const sessionUser = _.find(
+        publication.users,
+        (person) => person.user === user._id
+      );
+      checkAuthorization(publication, sessionUser);
     }
-  }, [publication]);
+  }, [publication,publicationName]);
 
   return (
     <div>
@@ -95,7 +95,7 @@ export default function PublicationsSettings({ isCreate }) {
           </div>
         </div>
         <Tab.Group defaultIndex={isInfo ? 0 : 1}>
-          <div className="max-w-screen-xl mx-auto px-4 lg:px-8" >
+          <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
             <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
               <Tab
                 onClick={() => setIsInfo(true)}

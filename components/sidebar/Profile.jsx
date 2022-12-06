@@ -79,6 +79,8 @@ export default function Profile({
       <Link href={`/${profile.username}`}>
         <a>
           <Avatar
+            width={80}
+            height={80}
             className="w-20 h-20 mb-3 rounded-full"
             src={_.get(profile, 'profilePicture')}
             alt={_.get(profile, 'name')}

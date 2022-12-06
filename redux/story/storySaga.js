@@ -283,7 +283,6 @@ function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
           data: data.result,
           info: data.countInfo,
           owner: userID,
-          userID,
         })
       );
     }

@@ -79,7 +79,7 @@ export default function PublicationsSettingsHome({
   useEffect(() => {
     const tab = navigations[selectedTabIndex];
     if (_.get(tab, 'tabType') === 'feature') {
-      dispatch(publicationActions.getFeaturePageRequest(tab.contents));
+      dispatch(publicationActions.getFeaturePageRequest(tab._id));
     }
   }, [selectedTabIndex]);
 
@@ -120,6 +120,7 @@ export default function PublicationsSettingsHome({
     };
   };
 
+  console.log(featurePage)
   return (
     <>
       <div className="mt-12">

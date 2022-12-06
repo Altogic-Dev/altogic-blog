@@ -46,7 +46,6 @@ export default function HeaderMenu() {
     }
   }, [selectedPublicationState]);
 
-  
   const logout = () => {
     dispatch(authActions.logoutRequest());
   };
@@ -165,11 +164,12 @@ export default function HeaderMenu() {
             {user ? (
               <>
                 <Button
+                  disabled={router.pathname === '/write-a-story'}
                   onClick={() => {
                     dispatch(storyActions.clearStory());
                     router.push('/write-a-story');
                   }}
-                  className="inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+                  className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${router.pathname !== '/write-a-story' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-600 hover:bg-gray-700'}`}
                 >
                   <PencilIcon className="w-5 h-5" />
                 </Button>
@@ -181,10 +181,10 @@ export default function HeaderMenu() {
                   as="div"
                   className="relative hidden lg:inline-flex items-center"
                 >
-                  <Menu.Button
-                    className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
-                  >
+                  <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-gray-100 focus:ring-purple-500">
                     <Avatar
+                      width={40}
+                      height={40}
                       className="inline-block w-10 h-10 rounded-full"
                       placeholderName={user?.name}
                       src={user?.profilePicture}
@@ -218,10 +218,10 @@ export default function HeaderMenu() {
                 as="div"
                 className="relative hidden lg:inline-flex items-center"
               >
-                <Menu.Button
-                  className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
-                >
+                <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
                   <Avatar
+                    width={40}
+                    height={40}
                     className="inline-block w-10 h-10 rounded-full"
                     placeholderName={selectedPublication?.name}
                     src={selectedPublication?.logo}
@@ -272,10 +272,10 @@ export default function HeaderMenu() {
             as="div"
             className="relative inline-flex lg:hidden items-center"
           >
-            <Menu.Button
-              className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500"
-            >
+            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
               <Avatar
+                width={40}
+                height={40}
                 className="inline-block w-10 h-10 rounded-full"
                 placeholderName={user?.name}
                 src={user?.profilePicture}
@@ -296,6 +296,8 @@ export default function HeaderMenu() {
           >
             <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
               <Avatar
+                width={40}
+                height={40}
                 className="inline-block w-10 h-10 rounded-full"
                 placeholderName={selectedPublication?.name}
                 src={selectedPublication?.logo}

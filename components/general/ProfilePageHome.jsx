@@ -56,7 +56,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   };
 
   useEffect(() => {
-    if (userId && selectedIndex === 0 && userStoriesOwner !== userId) {
+    if (userId && selectedIndex === 0) {
       getUserStoriesRequest();
     }
   }, [userId, page, selectedIndex]);

@@ -168,6 +168,9 @@ export const publicationSlice = createSlice({
       state.userPublications = action.payload;
     },
 
+    clearFeaturePageRequest(state) {
+      state.featurePage = null;
+    },
     getFeaturePageRequest() { },
     getFeaturePageSuccess(state, action) {
       state.featurePage = action.payload;
@@ -229,9 +232,7 @@ export const publicationSlice = createSlice({
     },
     deleteFeatureSuccess(state, action) {
       state.isLoading = false;
-      state.userFollowingPublication = state.userFollowingPublication.filter(
-        (item) => item._id !== action.payload._id
-      );
+      state.publicationFeatures = state.publicationFeatures.filter(feature => feature._id !== action.payload.id)
     },
     deleteFeatureFailure(state) {
       state.isLoading = false;

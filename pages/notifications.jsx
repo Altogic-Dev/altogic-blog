@@ -88,6 +88,8 @@ export default function Notifications() {
                           >
                             <Avatar
                               className="w-[30px] h-[30px]"
+                              width={30}
+                              height={30}
                               src={allNotification.sentUserProfilePicture}
                               alt={allNotification.sentUsername}
                               placeholderName={allNotification.sentUsername}
@@ -120,7 +122,8 @@ export default function Notifications() {
                             className="flex items-center gap-3"
                           >
                             <Avatar
-                              className="w-[30px] h-[30px]"
+                              width={30}
+                              height={30}
                               src={response.sentUserProfilePicture}
                               alt={response.sentUsername}
                               placeholderName={response.sentUsername}

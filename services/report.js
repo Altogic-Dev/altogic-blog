@@ -8,6 +8,7 @@ const ReportService = {
       user: userId,
     });
   },
+
   getReportedStoryByUser(userId, storyId) {
     return db
       .model('report')

@@ -58,13 +58,12 @@ export default function UserCard({ subscription, user, isFollowing }) {
         );
       }
     }
-
   };
- 
 
   useEffect(() => {
+    if(!followingUserLoading)
     setFollowingLoad(false);
-  }, [isFollowing]);
+  }, [followingUserLoading]);
 
   return (
     <li key={user._id} className="flex items-start justify-between gap-3 py-4">
@@ -72,6 +71,8 @@ export default function UserCard({ subscription, user, isFollowing }) {
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
             <Avatar
+              width={40}
+              height={40}
               className="w-10 h-10 rounded-full"
               placeholderName={user?.name}
               src={user.profilePicture}

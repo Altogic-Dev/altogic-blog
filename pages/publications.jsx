@@ -80,7 +80,7 @@ export default function Publications() {
                 <EmotionUnhappy size={28} className="w-7 h-7 text-purple-600" />
               </span>
               <p className="text-slate-500 text-md  ">
-                You are not member of any publication
+                You are not a member of any publication
               </p>
             </div>
           )}
@@ -105,7 +105,7 @@ export default function Publications() {
                 <EmotionUnhappy size={28} className="w-7 h-7 text-purple-600" />
               </span>
               <p className="text-slate-500 text-md  ">
-                You are not following any publication
+                You are not following any publications
               </p>
             </div>
           )}

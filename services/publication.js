@@ -33,8 +33,8 @@ const PublicationService = {
       .filter(`publication == '${publication}'`)
       .get();
   },
-  deleteFeature(publication) {
-    return db.model('feature_page').delete(publication).get();
+  deleteFeature(id) {
+    return db.model('feature_page').filter(`_id == '${id}'`).delete();
   },
 
   getLatestPublicationStories(publicationName, page, pageSize) {
@@ -111,6 +111,9 @@ const PublicationService = {
   },
   createFeaturePage(feature) {
     return endpoint.post('/feature', feature);
+  },
+  updateFeaturePage(feature) {
+    return db.model('feature_page').object(feature._id).update(feature);
   },
   getUsersPublications() {
     return endpoint.get('/user/publications');

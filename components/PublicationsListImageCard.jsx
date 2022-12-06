@@ -50,7 +50,7 @@ export default function PublicationsListImageCard({
     }
   }, [publicationsStories]);
   return (
-    <div className="flex items-center gap-12 space-y-4">
+    <div className="flex items-center justify-between space-y-4">
       <div>
         <h2 className="text-slate-500 text-2xl font-semibold tracking-md">
           {selectedSection?.title}

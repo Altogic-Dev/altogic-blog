@@ -29,10 +29,10 @@ export default function PublicationsFeature() {
       })
     );
   };
-  const handleDeleteFeature = () => {
+  const handleDeleteFeature = (feature) => {
     dispatch(
-      publicationActions.deleteFeature({
-        publication: publication._id,
+      publicationActions.deleteFeatureRequest({
+        id: feature._id,
       })
     );
   };
@@ -61,6 +61,8 @@ export default function PublicationsFeature() {
       getPublicationFeatures();
     }
   }, [publication]);
+
+
 
   return (
     <div>
@@ -99,13 +101,22 @@ export default function PublicationsFeature() {
                   key={feature._id}
                   className="py-4 border-b border-gray-200 mb-8"
                 >
-                  <Link href="test">
+                  <Link
+                    href={`/publication/${publicationName}/new-feature?id=${feature?._id}`}
+                  >
                     <h2 className="text-slate-700 mb-2 text-2xl font-bold tracking-md cursor-pointer">
                       {feature.title}
                     </h2>
                   </Link>
                   <div className="flex items-center gap-3">
-                    <Button className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500">
+                    <Button
+                      onClick={() =>
+                        router.push(
+                          `/publication/${publicationName}/new-feature?id=${feature?._id}`
+                        )
+                      }
+                      className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
+                    >
                       Edit page
                     </Button>
                     {/* <svg
@@ -129,7 +140,7 @@ export default function PublicationsFeature() {
                     </svg>
                     <Button
                       onClick={() => {
-                        handleDeleteFeature(feature._id);
+                        handleDeleteFeature(feature);
                       }}
                       className="inline-flex text-slate-500 text-sm font-medium tracking-sm hover:text-purple-500"
                     >

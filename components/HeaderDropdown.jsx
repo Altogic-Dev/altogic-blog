@@ -45,7 +45,8 @@ export default function HeaderDropdown({ user, logout, className }) {
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200">
           <div className="inline-flex flex-shrink-0">
             <Avatar
-              className="h-10 w-10 rounded-full"
+              width={40}
+              height={40}
               placeholderName={user?.name}
               src={user?.profilePicture}
               alt={user?.username}
@@ -79,19 +80,19 @@ export default function HeaderDropdown({ user, logout, className }) {
             </Popover.Button>
 
             <Popover.Button
-              onClick={() => router.push(`/muted-users`)}
-              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
-            >
-              <UserMinus className="w-4 h-4 group-hover:text-purple-700" />
-              Muted Users
-            </Popover.Button>
-
-            <Popover.Button
               onClick={() => router.push(`/stats`)}
               className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
             >
               <ChartBarIcon className="w-4 h-4 group-hover:text-purple-700" />
               Stats
+            </Popover.Button>
+
+            <Popover.Button
+              onClick={() => router.push(`/muted-users`)}
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
+            >
+              <UserMinus className="w-4 h-4 group-hover:text-purple-700" />
+              Muted Users
             </Popover.Button>
             <Popover.Button
               onClick={() => router.push(`/subscriptions`)}

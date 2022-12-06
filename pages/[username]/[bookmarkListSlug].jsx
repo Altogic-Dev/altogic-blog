@@ -232,6 +232,8 @@ export default function ListDetail() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 sm:mb-[60px]">
                 <div className="flex items-center gap-3 mb-4 sm:mb-0">
                   <Avatar
+                    width={50}
+                    height={50}
                     className="w-[50px] h-[50px] rounded-full object-cover"
                     src={user?.profilePicture}
                     alt={user?.username}

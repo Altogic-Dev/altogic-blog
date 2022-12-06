@@ -245,17 +245,21 @@ export default function Editor({
 
   const removeFormat = () => {
     const range = quillInstance.getSelection(true);
-    if(quillInstance.getLeaf(range.index)[0])
-    if (range.length === 0) {
-      let leaf;
-      const offset = quillInstance.getLeaf(range.index);
-      quillInstance.removeFormat(
-        range.index - offset,
-        range.index + leaf.domNode.length
-      );
-    } else {
-      quillInstance.removeFormat(range.index, range.length, Quill.sources.USER);
-    }
+    if (quillInstance.getLeaf(range.index)[0])
+      if (range.length === 0) {
+        let leaf;
+        const offset = quillInstance.getLeaf(range.index);
+        quillInstance.removeFormat(
+          range.index - offset,
+          range.index + leaf.domNode.length
+        );
+      } else {
+        quillInstance.removeFormat(
+          range.index,
+          range.length,
+          Quill.sources.USER
+        );
+      }
   };
   const handleAddVideo = (e) => {
     const { value } = e.target;
@@ -362,6 +366,7 @@ export default function Editor({
   const addCodeBlock = () => {
     quillInstance.format('code-block', true);
   };
+
   return (
     <div className="text-editor">
       <div ref={tooltip} id="tooltip-controls">

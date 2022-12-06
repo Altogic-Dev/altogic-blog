@@ -29,6 +29,13 @@ function MyApp({ Component, pageProps }) {
   const IconConfig = { ...DEFAULT_ICON_CONFIGS, prefix: 'icon' };
   const sessionUser = useSelector((state) => state.auth.user);
   const publications = useSelector((state) => state.publication.publications);
+  const bookmarkLists = _.get(
+    _.get(
+      useSelector((state) => state.bookmark.bookmarkLists),
+      sessionUser?.username
+    ),
+    'bookmarkLists'
+  );
   const [isMounted, setIsMounted] = useState(false);
   const toastTransition = cssTransition({
     enter: 'animate__animated animate__slideInDown',
@@ -107,11 +114,15 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (sessionUser?.username && !isMounted) {
-      getBookmarksAndLists(sessionUser);
       checkFollowing();
       setIsMounted(true);
     }
   }, [sessionUser]);
+  useEffect(() => {
+    if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
+      getBookmarksAndLists(sessionUser);
+    } 
+  }, [router.isReady]);
 
   useEffect(() => {
     if (publicationName) {
