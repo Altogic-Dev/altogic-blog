@@ -70,7 +70,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
       <Link href={`/${user.username}`}>
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
-            <Avatar
+           <Avatar
               width={40}
               height={40}
               className="w-10 h-10 rounded-full"
