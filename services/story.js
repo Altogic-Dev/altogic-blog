@@ -194,6 +194,10 @@ const StoryService = {
       .filter(`user == '${userId}' && story == '${storyId}'`)
       .get();
   },
+
+  getMutedUsers(userId) {
+    return db.model('block_connection').filter(`user == '${userId}'`).get();
+  },
 };
 
 export default StoryService;

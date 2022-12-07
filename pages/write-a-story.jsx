@@ -117,7 +117,12 @@ export default function WriteAStory() {
       };
       setIsShowSaving(true);
       if (!isCreated && !id) {
-        dispatch(storyActions.createStoryRequest(story));
+        dispatch(
+          storyActions.createStoryRequest({
+            ...story,
+            categoryNames: topic ? [topic] : [],
+          })
+        );
         setIsCreated(true);
       } else if (!_.isNil(newStory)) {
         const dataObject = {

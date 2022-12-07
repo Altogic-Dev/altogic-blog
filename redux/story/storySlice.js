@@ -31,6 +31,7 @@ const initialState = {
   userStoriesOwner: null,
   userFollows: false,
   error: null,
+  mutedUsers: [],
 };
 
 // Actual Slice
@@ -43,14 +44,18 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getFollowingStoriesSuccess(state, action) {
+
+      const filteredList = action.payload.data.filter(story => !state.mutedUsers.some(user => user.blockedUser === story.user))
+
+
       state.isLoading = false;
       if (_.isArray(state.followingStories)) {
         state.followingStories = [
           ...state.followingStories,
-          ...action.payload.data,
+          ...filteredList,
         ];
       } else {
-        state.followingStories = action.payload.data;
+        state.followingStories = filteredList;
       }
       state.followingStoriesInfo = action.payload.info;
     },
@@ -58,14 +63,16 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     getRecommendedStoriesSuccess(state, action) {
+
+      const filteredList = action.payload.data.filter(story => !state.mutedUsers.some(user => user.blockedUser === story.user))
       state.isLoading = false;
       if (_.isArray(state.recommendedStories)) {
         state.recommendedStories = [
           ...state.recommendedStories,
-          ...action.payload.data,
+          ...filteredList,
         ];
       } else {
-        state.recommendedStories = action.payload.data;
+        state.recommendedStories = filteredList;
       }
       state.recommendedStoriesInfo = action.payload.info;
     },
@@ -121,7 +128,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     createReplySuccess(state, action) {
-      state.replies = [action.payload, ...state.replies];
+      state.replies = [...state.replies, action.payload,];
       state.replyCount += 1;
       state.isLoading = false;
     },
@@ -581,6 +588,17 @@ export const storySlice = createSlice({
     },
     unlikeReplyFailure(state) {
       state.replyIsLiked = true
+    },
+
+    getMutedUsersRequest() {
+
+    },
+    getMutedUsersSuccess(state, action) {
+      state.mutedUsers = action.payload
+
+    },
+    getMutedUsersFailure() {
+
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

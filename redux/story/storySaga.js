@@ -688,6 +688,22 @@ function* unlikeReplySaga({ payload: { userId, replyId } }) {
 
   }
 }
+
+export function* getMutedUsersSaga({ payload: { user } }) {
+  try {
+    const { data, errors } = yield call(
+      StoryService.getMutedUsers,
+      user._id
+    );
+    if (errors) throw errors;
+    if (data) {
+      yield put(storyActions.getMutedUsersSuccess(data));
+    }
+  } catch (e) {
+    yield put(storyActions.getMutedUsersFailure(e));
+
+  }
+}
 export default function* rootSaga() {
   yield all([
     takeEvery(
@@ -700,6 +716,8 @@ export default function* rootSaga() {
     ),
     takeEvery(storyActions.getStoryRequest.type, getStorySaga),
     takeEvery(storyActions.getStoryBySlugRequest.type, getStoryBySlugSaga),
+    takeEvery(storyActions.getMutedUsersRequest.type, getMutedUsersSaga),
+
     takeEvery(
       storyActions.getMoreUserStoriesRequest.type,
       getMoreUserStoriesSaga

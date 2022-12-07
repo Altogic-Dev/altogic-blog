@@ -5,6 +5,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import { cssTransition, ToastContainer } from 'react-toastify';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import _, { isNil } from 'lodash';
+import { storyActions } from '@/redux/story/storySlice';
 import 'highlight.js/styles/tokyo-night-dark.css';
 import { DateTime } from 'luxon';
 import 'react-toastify/dist/ReactToastify.css';
@@ -112,16 +113,21 @@ function MyApp({ Component, pageProps }) {
     }
   };
 
+  const getMutedUsers = (user) => {
+    dispatch(storyActions.getMutedUsersRequest({ user }));
+  };
+
   useEffect(() => {
     if (sessionUser?.username && !isMounted) {
       checkFollowing();
       setIsMounted(true);
+      getMutedUsers(sessionUser);
     }
   }, [sessionUser]);
   useEffect(() => {
     if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
-    } 
+    }
   }, [router.asPath]);
 
   useEffect(() => {

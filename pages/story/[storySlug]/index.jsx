@@ -19,17 +19,23 @@ import Button from '@/components/basic/button';
 import useUnload from '@/hooks/useUnload';
 import Link from 'next/link';
 import { BookOpenIcon } from '@heroicons/react/outline';
+import StoryService from '@/services/story';
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, params }) {
+  const storyName = params.storySlug;
+
+  const storyServerSide = StoryService.getStoryBySlug(storyName);
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
+      storyServerSide,
       ip,
     },
   };
 }
 
-export default function BlogDetail({ ip }) {
+export default function BlogDetail({ ip, storyServerSide }) {
+  console.log(storyServerSide)
   const router = useRouter();
   const { storySlug, facebook, twitter, linkedin } = router.query;
 
@@ -232,11 +238,15 @@ export default function BlogDetail({ ip }) {
   useEffect(() => {
     if (errors?.status === 404) setIsLoading(false);
   }, [errors]);
+
   return (
     <div>
       <Head>
-        <title>{story?.title || 'Untitled Story'}</title>
-        <meta name="description" content={story?.content || 'Story Content'} />
+        <title>{storyServerSide?.title || 'Untitled'}</title>
+        <meta
+          name="description"
+          content={storyServerSide?.content || 'Story Content  '}
+        />
         <link rel="icon" href="/favicon.svg" />
       </Head>
 

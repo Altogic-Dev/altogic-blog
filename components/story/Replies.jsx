@@ -96,7 +96,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleEditReply = (reply) => {
-    if (user._id === reply.user._id) {
+    if (user._id === reply.user._id || user._id === reply.user) {
       const temp = { ...reply };
       temp.content = replyEditQuill.root.innerHTML;
       dispatch(storyActions.editReplyRequest(temp));
@@ -212,6 +212,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const italicButton = () => {
     quillInstance.format('italic', true);
   };
+
+
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
@@ -375,14 +377,14 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     </span>
                                   </div>
                                 </div>
-                                {reply?.user?._id === user?._id && (
+                                {(reply?.user?._id === user?._id || reply?.user=== user?._id) && (
                                   <div className="flex gap-2">
                                     <PencilIcon
                                       onClick={() => {
                                         setClickedCommentButton(index);
                                         setEditText(reply.content);
                                         setEditRespondBoxes((prev) => {
-                                          const temp = [...prev];
+                                          const temp = [...prev].fill(false);
                                           temp[index] = !temp[index];
                                           return temp;
                                         });
