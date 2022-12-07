@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { classNames } from '@/utils/utils';
 import CreateBookmarkList from './bookmarks/CreateBookmarkList';
 import Button from './basic/button';
+import Avatar from './profile/Avatar';
 
 export default function PublicationPostCard({
   personName,
@@ -23,12 +24,12 @@ export default function PublicationPostCard({
 
   return (
     <>
-      <div
-        className='py-8 '
-      >
+      <div className="py-8 ">
         <Link href={`/${personName}`}>
           <a className="inline-flex items-center gap-3 mb-4">
-            <img
+            <Avatar
+              width={50}
+              height={50}
               className="w-[50px] h-[50px] rounded-full object-cover"
               src={profilePicture}
               alt=""
@@ -64,7 +65,7 @@ export default function PublicationPostCard({
                 alt={title}
               />
             ) : (
-              <div className="h-[280px] w-[250px]"/>
+              <div className="h-[280px] w-[250px]" />
             )}
             <div className="flex items-center gap-2">
               <h2 className="text-slate-900 text-3xl mb-2 font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
@@ -72,7 +73,7 @@ export default function PublicationPostCard({
               </h2>
             </div>
             <p className="text-slate-500 text-sm tracking-sm">
-              {htmlToText(description?.substring(0, 200)) || "No content"}
+              {htmlToText(description?.substring(0, 200)) || 'No content'}
             </p>
           </a>
         </Link>

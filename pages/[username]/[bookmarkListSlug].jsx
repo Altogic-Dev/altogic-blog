@@ -51,10 +51,9 @@ export default function ListDetail() {
   const sessionUser = useSelector((state) => state.auth.user);
 
   const bookmarkList = useSelector((state) =>
-    _.get(
-      state.bookmark.bookmarkLists,
-      sessionUser?.username
-    )?.bookmarkLists.find((list) => list.slug === bookmarkListSlug)
+    _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists.find(
+      (list) => list.slug === bookmarkListSlug
+    )
   );
 
   const bookmarks = useSelector((state) =>
@@ -149,7 +148,7 @@ export default function ListDetail() {
 
   useEffect(() => {
     setUser(isMyProfileState ? sessionUser : profileUser);
-    if (!isMyProfileState && profileUser) {
+    if (!isMyProfileState && profileUser && sessionUser) {
       dispatch(
         generalActions.getFollowAndSubscribedInfoRequest(
           _.get(profileUser, '_id')
@@ -158,17 +157,17 @@ export default function ListDetail() {
     }
   }, [isMyProfileState, profileUser, sessionUser]);
 
-  useEffect(() => {
-    if (bookmarkListSlug && bookmarkListSlug !== bookmarkList?.slug) {
-      dispatch(
-        getBookmarkListDetailRequest({
-          slug: bookmarkListSlug,
-          page: bookmarkListPage,
-          limit: BOOKMARK_LIST_LIMIT,
-        })
-      );
-    }
-  }, [bookmarkListSlug]);
+  // useEffect(() => {
+  //   if (bookmarkListSlug && bookmarkListSlug !== bookmarkList?.slug) {
+  //     dispatch(
+  //       getBookmarkListDetailRequest({
+  //         slug: bookmarkListSlug,
+  //         page: bookmarkListPage,
+  //         limit: BOOKMARK_LIST_LIMIT,
+  //       })
+  //     );
+  //   }
+  // }, [bookmarkListSlug]);
 
   useEffect(() => {
     if (!sessionUser && bookmarkList?.isPrivate) {
@@ -181,8 +180,9 @@ export default function ListDetail() {
 
   useEffect(() => {
     if (
+      sessionUser?.username !== username &&
       bookmarkListSlug &&
-      _.size(_.get(bookmarkList, 'bookmarks')) < bookmarkList?.storyCount
+      _.size(_.get(bookmarkList, 'bookmarks')) < (bookmarkList?.storyCount || 1)
     ) {
       dispatch(
         getBookmarkListDetailRequest({
@@ -192,12 +192,12 @@ export default function ListDetail() {
         })
       );
     }
-  }, [bookmarkListPage]);
+  }, [bookmarkListPage, bookmarkListSlug]);
 
   useEffect(() => {
     if (
-      followingPage > 1 ||
-      (_.isEmpty(userFollowings) && _.get(user, '_id'))
+      sessionUser &&
+      (followingPage > 1 || (_.isEmpty(userFollowings) && _.get(user, '_id')))
     ) {
       getFollowingUsers();
     }
@@ -216,6 +216,9 @@ export default function ListDetail() {
       setBookmarkListState(bookmarkList);
     }
   }, [updatedBookmark]);
+
+  console.log(bookmarkList);
+
   return (
     <div>
       <Head>

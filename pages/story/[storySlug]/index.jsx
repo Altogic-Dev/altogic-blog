@@ -235,13 +235,13 @@ export default function BlogDetail({ ip }) {
   return (
     <div>
       <Head>
-        <title>Altogic Medium Blog App Detail</title>
-        <meta name="description" content="Altogic Medium Blog App Detail" />
+        <title>{story?.title || 'Untitled Story'}</title>
+        <meta name="description" content={story?.content || 'Story Content'} />
         <link rel="icon" href="/favicon.svg" />
       </Head>
 
       <Layout loading={isLoading}>
-        {(errors?.status === 404 || !story?.isPublished) ? (
+        {errors?.status === 404 || !story?.isPublished ? (
           <div className="w-full h-full flex items-center justify-center flex-col">
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
               <BookOpenIcon className="w-7 h-7 text-purple-600" />

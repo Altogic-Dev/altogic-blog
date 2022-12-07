@@ -421,7 +421,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                         onClick={() =>
                                           replyEditQuill.format('bold', true)
                                         }
-                                        type="button"
                                         className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
                                       >
                                         <svg
@@ -440,7 +439,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                         onClick={() =>
                                           replyEditQuill.format('italic', true)
                                         }
-                                        type="button"
                                         className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
                                       >
                                         <svg
@@ -521,7 +519,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     className="flex flex-col ml-4 border-l-4 pl-3"
                                   >
                                     <div className="flex items-center ">
-                                      <img
+                                      <Avatar
+                                        width={40}
+                                        height={40}
                                         src={comment.userProfilePicture}
                                         alt="profile"
                                         className="w-10 h-10 rounded-full"

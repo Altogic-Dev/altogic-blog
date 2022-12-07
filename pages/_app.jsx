@@ -122,7 +122,7 @@ function MyApp({ Component, pageProps }) {
     if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
     } 
-  }, [router.isReady]);
+  }, [router.asPath]);
 
   useEffect(() => {
     if (publicationName) {

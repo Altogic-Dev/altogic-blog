@@ -20,7 +20,7 @@ const initialState = {
 
   isLoading: false,
   bookmarkListLoading: true,
-  bookmarkListsUserLoading: true,
+  bookmarkListsUserLoading: false,
   error: null,
   isStoryBookmarked: null,
 };
@@ -128,7 +128,12 @@ export const bookmarkSlice = createSlice({
     },
     getBookmarkListDetailSuccess(state, action) {
       state.bookmarkListLoading = false;
-      state.bookmarkLists[action.payload.username].bookmarkLists.bookmarks = [...(state.bookmarkLists[action.payload.username].bookmarkLists.bookmarks ?? []), ...action.payload.bookmarks]
+
+      if (!state.bookmarkLists[action.payload.list.username]) {
+        state.bookmarkLists[action.payload.list.username] = { bookmarkLists: [] }
+      }
+      state.bookmarkLists[action.payload.list.username].bookmarkLists = [...state.bookmarkLists[action.payload.list.username].bookmarkLists, action.payload.list]
+      state.bookmarks[action.payload.list._id] = [...(state.bookmarks[action.payload.list._id] ?? []), ...action.payload.bookmarks]
 
     },
     getBookmarkListDetailFailure(state, action) {

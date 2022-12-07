@@ -15,6 +15,7 @@ import Button from './basic/button';
 import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import DeleteStoryModal from './DeleteStoryModal';
+import Avatar from './profile/Avatar';
 
 const Replies = dynamic(() => import('@/components/story/Replies'), {
   ssr: false,
@@ -203,7 +204,9 @@ function StoryContent(props) {
         <div className="flex items-center gap-3">
           <Link href={`/${story?.user.username}?tab=about`}>
             <a className="flex items-center gap-2">
-              <img
+              <Avatar
+                width={50}
+                height={50}
                 className="w-[50px] h-[50px] rounded-full object-cover"
                 src={_.get(story, 'user.profilePicture')}
                 alt=""

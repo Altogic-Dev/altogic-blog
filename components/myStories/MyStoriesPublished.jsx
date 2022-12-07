@@ -20,7 +20,7 @@ function MyStoriesPublished({
   const dispatch = useDispatch();
   const router = useRouter();
   const ref = useRef();
-  const { ref: inViewRef, inView } = useInView();
+  const { ref: inViewRef, inView } = useInView(); 
 
   const handleEndOfList = () => {
     if (!_.isNil(userStories) && _.size(userStories) < userStoriesInfo?.count) {
