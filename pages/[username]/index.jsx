@@ -62,18 +62,18 @@ export default function ProfilePage() {
 
   const bookmarkLists = useSelector(
     (state) =>
-      _.get(state.bookmark.bookmarkLists, profileUser?.username)?.bookmarkLists
+      _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists
   );
   const bookmarkListCount =
     useSelector(
       (state) =>
-        _.get(state.bookmark.bookmarkLists, profileUser?.username)?.count
+        _.get(state.bookmark.bookmarkLists, username)?.count
     ) || 1;
 
   const [bookmarkListPage, setBookmarkListPage] = useState(
     useSelector(
       (state) =>
-        _.get(state.bookmark.bookmarkLists, profileUser?.username)?.page
+        _.get(state.bookmark.bookmarkLists, username)?.page
     ) || 1
   );
 
