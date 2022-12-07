@@ -109,6 +109,7 @@ const AuthService = {
   searchUserByUsername(username) {
     return endpoint.get('/user/searchByUsername', { username });
   },
+ 
   setDefaultAvatar(name) {
     const req = {
       name,

@@ -88,7 +88,6 @@ function StoryContent(props) {
       sendNotification('story_like');
     }
   };
-
   const getMenuItems = (isBottom) => {
     if (isMyProfile) {
       return (
@@ -198,6 +197,7 @@ function StoryContent(props) {
     }
   }, [sessionUser]);
 
+
   return (
     <div ref={forwardedRef}>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
@@ -224,7 +224,7 @@ function StoryContent(props) {
                 {DateTime.fromISO(_.get(story, 'createdAt')).toLocaleString({
                   month: 'long',
                   day: 'numeric',
-                })}{' '}
+                })}
               </span>
               <svg
                 className="h-1 w-1 text-slate-500"

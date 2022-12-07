@@ -312,6 +312,7 @@ export function* setDefaultAvatarSaga() {
   }
 }
 
+
 export default function* rootSaga() {
   yield all([
     takeEvery(authActions.registerRequest.type, registerSaga),
