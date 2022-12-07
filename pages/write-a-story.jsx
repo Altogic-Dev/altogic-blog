@@ -26,6 +26,8 @@ export default function WriteAStory() {
   const [username, setUsername] = useState('');
   const [minRead, setMinRead] = useState(0);
   const [isShowSaving, setIsShowSaving] = useState(false);
+  const [isFetched, setIsFetched] = useState(false);
+
   const [inpTitle, setInpTitle] = useState('');
   const [loading, setLoading] = useState(false);
   const user = useSelector((state) => state.auth.user);
@@ -63,6 +65,7 @@ export default function WriteAStory() {
       setIsChanged(false);
       setIsCreated(false);
       setContent('');
+      setIsFetched(false);
     }
   }, [id]);
 
@@ -77,7 +80,13 @@ export default function WriteAStory() {
   }, [user]);
 
   useEffect(() => {
-    if (newStory?.title && inpTitle !== newStory?.title && !_.isNil(id)) {
+    if (
+      newStory?.title &&
+      inpTitle !== newStory?.title &&
+      content !== newStory?.content &&
+      !_.isNil(id)
+    ) {
+      setIsFetched(true);
       setInpTitle(newStory.title);
       setValue('title', newStory.title);
       setMinRead(newStory.estimatedReadingTime);
@@ -108,7 +117,7 @@ export default function WriteAStory() {
         userProfilePicture: user.profilePicture,
         content,
         storyImages: storyImages.filter((item) => item && item !== 'undefined'),
-        title: inpTitle,
+        title: inpTitle || 'Untitled',
         estimatedReadingTime: minRead || 1,
         isPublished: false,
         publication: !_.isNil(selectedPublication)
@@ -196,6 +205,7 @@ export default function WriteAStory() {
       setIsChanged(false);
       setIsCreated(false);
       setContent('');
+      setIsFetched(false);
     },
     []
   );

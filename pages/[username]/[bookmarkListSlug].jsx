@@ -217,7 +217,6 @@ export default function ListDetail() {
     }
   }, [updatedBookmark]);
 
-  console.log(bookmarkList);
 
   return (
     <div>

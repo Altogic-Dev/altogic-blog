@@ -120,7 +120,6 @@ export default function PublicationsSettingsHome({
     };
   };
 
-  console.log(featurePage)
   return (
     <>
       <div className="mt-12">

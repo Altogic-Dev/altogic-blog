@@ -90,7 +90,6 @@ export const bookmarkSlice = createSlice({
       state.isLoading = true;
     },
     addBookmarkSuccess(state, action) {
-
       state.isLoading = false;
       state.myBookmarks = [...state.myBookmarks, action.payload.bookmark];
       const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === action.payload.bookmarkList._id)
