@@ -35,6 +35,7 @@ export async function getServerSideProps({ req, params }) {
 }
 
 export default function BlogDetail({ ip, storyServerSide }) {
+  console.log(storyServerSide)
   const router = useRouter();
   const { storySlug, facebook, twitter, linkedin } = router.query;
 
