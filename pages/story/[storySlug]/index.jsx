@@ -24,7 +24,8 @@ import StoryService from '@/services/story';
 export async function getServerSideProps({ req, params }) {
   const storyName = params.storySlug;
 
-  const storyServerSide = StoryService.getStoryBySlug(storyName);
+  const storyServerSide = await (await StoryService.getStoryBySlug(storyName)).data.story;
+  console.log(storyServerSide)
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
