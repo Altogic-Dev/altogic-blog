@@ -56,6 +56,7 @@ export default function CreateBookmarkList({
       };
       dispatch(
         createBookmarkListRequest({
+          username: user.username,
           bookmarkList,
           bookmark: {
             userId: user._id,

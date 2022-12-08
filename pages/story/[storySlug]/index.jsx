@@ -25,7 +25,6 @@ export async function getServerSideProps({ req, params }) {
   const storyName = params.storySlug;
 
   const storyServerSide = await (await StoryService.getStoryBySlug(storyName)).data.story;
-  console.log(storyServerSide)
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
@@ -36,7 +35,6 @@ export async function getServerSideProps({ req, params }) {
 }
 
 export default function BlogDetail({ ip, storyServerSide }) {
-  console.log(storyServerSide)
   const router = useRouter();
   const { storySlug, facebook, twitter, linkedin } = router.query;
 

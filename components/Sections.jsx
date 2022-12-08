@@ -253,7 +253,6 @@ export default function Sections({
       setCounter(section?.storySize);
     }
   }, [section]);
-console.log(sectionTitle)
   useEffect(() => {
     const section = {
       isShowTitle: enabled,

@@ -63,7 +63,6 @@ export default function TagPage({ Home, Latest, Best }) {
       dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
   }, [tag]);
-
   useEffect(() => {
     if (Home) {
       setPosts(trendingTopics);
@@ -73,6 +72,8 @@ export default function TagPage({ Home, Latest, Best }) {
       setPosts(bestTopics);
     }
   }, [latestTopics, bestTopics, trendingTopics]);
+
+
 
   return (
     <div>

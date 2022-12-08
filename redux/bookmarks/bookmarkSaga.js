@@ -62,7 +62,7 @@ function* addBookmarkSaga({ payload }) {
     yield put(addBookmarkFailure(error));
   }
 }
-function* createBookmarkListSaga({ payload: { bookmarkList, bookmark } }) {
+function* createBookmarkListSaga({ payload: { bookmarkList, bookmark,username } }) {
   try {
     const { data, errors } = yield call(
       BookmarkService.createBookmarkList,
@@ -80,6 +80,7 @@ function* createBookmarkListSaga({ payload: { bookmarkList, bookmark } }) {
           coverImages = [...coverImages, storyImages[0]];
         }
         const req = {
+          username,
           list: data._id,
           story: bookmark.story._id,
           userId: bookmark.userId,
@@ -93,6 +94,7 @@ function* createBookmarkListSaga({ payload: { bookmarkList, bookmark } }) {
     }
     if (errors) throw errors.items;
   } catch (error) {
+
     yield put(createBookmarkListFailure(error));
   }
 }

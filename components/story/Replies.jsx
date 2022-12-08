@@ -213,7 +213,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     quillInstance.format('italic', true);
   };
 
-
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>
@@ -377,7 +376,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     </span>
                                   </div>
                                 </div>
-                                {(reply?.user?._id === user?._id || reply?.user=== user?._id) && (
+                                {(reply?.user?._id === user?._id ||
+                                  reply?.user === user?._id) && (
                                   <div className="flex gap-2">
                                     <PencilIcon
                                       onClick={() => {
@@ -468,15 +468,19 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               )}
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
-                                  <Button className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm">
-                                    <HeartIcon
-                                      onClick={() => handleReplyLike(reply)}
-                                      className={`w-6 ${
-                                        reply.reply_likes ? 'text-red-500' : ''
-                                      }`}
-                                    />
-                                    {reply.likeCount}
-                                  </Button>
+                                  {user && (
+                                    <Button className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm">
+                                      <HeartIcon
+                                        onClick={() => handleReplyLike(reply)}
+                                        className={`w-6 ${
+                                          reply.reply_likes
+                                            ? 'text-red-500'
+                                            : ''
+                                        }`}
+                                      />
+                                      {reply.likeCount}
+                                    </Button>
+                                  )}
                                   <Button
                                     onClick={() => {
                                       setClickedCommentButton(index);
