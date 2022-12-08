@@ -70,7 +70,10 @@ export default function TagPage() {
     } else {
       setPosts(trendingTopics);
     }
+    
   }, [latestTopics, bestTopics, trendingTopics]);
+
+  console.log('sa');
 
   return (
     <div>
@@ -212,7 +215,7 @@ export default function TagPage() {
                         storyUrl={`/story/${post.storySlug}`}
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
-                        infoText={post.infoText}
+                        infoText={post.excerpt}
                         badgeName={_.first(post.categoryNames)}
                         min={post.estimatedReadingTime}
                         images={_.first(post.storyImages)}

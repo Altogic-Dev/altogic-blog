@@ -11,13 +11,17 @@ export default function PersonalFullStatistic() {
           <span className="text-3xl font-bold tracking-md">
             {topicAnalytics?.storyCount}
           </span>
-          <span className="text-xl tracking-md">{topicAnalytics?.storyCount > 1 ? "Stories" : "Story"}</span>
+          <span className="text-xl tracking-md">
+            {topicAnalytics?.storyCount > 1 ? 'Stories' : 'Story'}
+          </span>
         </span>
         <span className="flex flex-col text-slate-700">
           <span className="text-3xl font-bold tracking-md">
-            {topicAnalytics?.authorCount}
+            {_.size(topicAnalytics?.profilePictures)}
           </span>
-          <span className="text-xl tracking-md">{topicAnalytics?.authorCount > 1 ? "Writers" : "Writer"}</span>
+          <span className="text-xl tracking-md">
+            {_.size(topicAnalytics?.profilePictures) > 1 ? 'Writers' : 'Writer'}
+          </span>
         </span>
       </div>
       <div className="flex items-center -space-x-2">

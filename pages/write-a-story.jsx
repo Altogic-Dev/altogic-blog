@@ -18,7 +18,14 @@ const Editor = dynamic(() => import('@/components/Editor'), {
   ssr: false,
 });
 
-export default function WriteAStory() {
+export async function getServerSideProps({ query }) {
+  const { id } = query;
+  return {
+    props: { id: id || null },
+  };
+}
+
+export default function WriteAStory({ id }) {
   const [content, setContent] = useState('');
   const [isChanged, setIsChanged] = useState(false);
   const [storyImages, setStoryImages] = useState([]);
@@ -26,7 +33,6 @@ export default function WriteAStory() {
   const [username, setUsername] = useState('');
   const [minRead, setMinRead] = useState(0);
   const [isShowSaving, setIsShowSaving] = useState(false);
-  const [isFetched, setIsFetched] = useState(false);
 
   const [inpTitle, setInpTitle] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,9 +43,9 @@ export default function WriteAStory() {
   const session = useStorage();
   const dispatch = useDispatch();
   const router = useRouter();
-  const { id } = router.query;
   const { topic } = router.query;
 
+  const [isFetched, setIsFetched] = useState(false);
   const selectedPublication = useSelector(
     (state) => state.publication.selectedPublication
   );
@@ -80,12 +86,7 @@ export default function WriteAStory() {
   }, [user]);
 
   useEffect(() => {
-    if (
-      newStory?.title &&
-      inpTitle !== newStory?.title &&
-      content !== newStory?.content &&
-      !_.isNil(id)
-    ) {
+    if (newStory?.title && newStory?._id === id && !isFetched && !_.isNil(id)) {
       setIsFetched(true);
       setInpTitle(newStory.title);
       setValue('title', newStory.title);
@@ -132,6 +133,7 @@ export default function WriteAStory() {
             categoryNames: topic ? [topic] : [],
           })
         );
+        setIsFetched(true)
         setIsCreated(true);
       } else if (!_.isNil(newStory)) {
         const dataObject = {
