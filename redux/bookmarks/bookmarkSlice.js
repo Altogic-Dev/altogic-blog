@@ -176,6 +176,8 @@ export const bookmarkSlice = createSlice({
     clearBookmarkListSuccess(state, action) {
       state.isLoading = false;
       state.myBookmarks = state.myBookmarks.filter(item => item.bookmarkList !== action.payload._id)
+      const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === action.payload._id)
+      state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount = 0
       state.bookmarks[action.payload._id] = []
     },
     clearBookmarkListFailure(state, action) {

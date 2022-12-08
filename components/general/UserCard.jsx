@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
+import { storyActions } from '@/redux/story/storySlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import Avatar from '../profile/Avatar';
@@ -54,6 +55,13 @@ export default function UserCard({ subscription, user, isFollowing }) {
               followingUserProfilePicture: _.get(user, 'profilePicture'),
               followingUsername: _.get(user, 'username'),
             },
+            onSuccess: () =>
+              dispatch(
+                storyActions.getFollowingStoriesRequest({
+                  userId: user?._id,
+                  page: 1,
+                })
+              ),
           })
         );
       }
@@ -61,8 +69,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
   };
 
   useEffect(() => {
-    if(!followingUserLoading)
-    setFollowingLoad(false);
+    if (!followingUserLoading) setFollowingLoad(false);
   }, [followingUserLoading]);
 
   return (
@@ -70,7 +77,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
       <Link href={`/${user.username}`}>
         <a className="flex items-center gap-3">
           <div className="flex gap-3">
-           <Avatar
+            <Avatar
               width={40}
               height={40}
               className="w-10 h-10 rounded-full"

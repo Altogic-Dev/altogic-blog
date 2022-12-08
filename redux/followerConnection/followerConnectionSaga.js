@@ -41,7 +41,7 @@ function* unfollowSaga({
 }
 
 function* followSaga({
-  payload: { followerUser, followingUser, fromProfile },
+  payload: { followerUser, followingUser, fromProfile, onSuccess },
 }) {
   try {
     const { errors } = yield call(
@@ -52,6 +52,10 @@ function* followSaga({
     if (errors) throw errors;
     yield put(followerConnectionActions.followSuccess({ followingUser, followerUser }));
 
+    if(_.isFunction(onSuccess)){
+      onSuccess()
+    }
+    
     if (fromProfile) {
       const userProfile = yield select((state) => state.auth.profileUser);
       yield fork(updateProfileUserSaga, {
