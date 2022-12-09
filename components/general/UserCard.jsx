@@ -76,16 +76,17 @@ export default function UserCard({ subscription, user, isFollowing }) {
     <li key={user._id} className="flex items-start justify-between gap-3 py-4">
       <Link href={`/${user.username}`}>
         <a className="flex items-center gap-3">
-          <div className="flex gap-3">
-            <Avatar
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full"
-              placeholderName={user?.name}
-              src={user.profilePicture}
-              alt={user.name}
-            />
-            <div className="flex flex-col">
+          <div className="flex gap-3 flex-shrink-0">
+            <div className="w-10 h-10 rounded-full">
+              <Avatar
+                width={40}
+                height={40}
+                placeholderName={user?.name}
+                src={user.profilePicture}
+                alt={user.name}
+              />
+            </div>
+            <div className="flex flex-col overflow-hidden w-40">
               <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
                 {user.name}
               </span>

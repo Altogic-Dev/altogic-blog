@@ -22,19 +22,18 @@ import { BookOpenIcon } from '@heroicons/react/outline';
 import StoryService from '@/services/story';
 
 export async function getServerSideProps({ req, params }) {
-  const storyName = params.storySlug;
+  // const storyName = params.storySlug;
 
-  const storyServerSide = await (await StoryService.getStoryBySlug(storyName)).data.story;
+  // const storyServerSide = await (await StoryService.getStoryBySlug(storyName)).data.story;
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
-      storyServerSide,
       ip,
     },
   };
 }
 
-export default function BlogDetail({ ip, storyServerSide }) {
+export default function BlogDetail({ ip }) {
   const router = useRouter();
   const { storySlug, facebook, twitter, linkedin } = router.query;
 
@@ -46,7 +45,9 @@ export default function BlogDetail({ ip, storyServerSide }) {
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
   const user = useSelector((state) => state.auth.user);
   const isMuted = useSelector((state) => state.blockConnection.isBlocked);
-
+  const myFollowings = useSelector(
+    (state) => state.followerConnection.myFollowings
+  );
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -73,8 +74,10 @@ export default function BlogDetail({ ip, storyServerSide }) {
   const [enterTime, setEnterTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
-
-  const isFollowing = useSelector((state) => state.story.userFollows);
+  const isFollowing = _.some(
+    myFollowings,
+    (user) => user.followingUser === story?.user?._id
+  );
 
   const moreFromFollowing = isPublication
     ? isFollowingPublication
@@ -241,10 +244,10 @@ export default function BlogDetail({ ip, storyServerSide }) {
   return (
     <div>
       <Head>
-        <title>{storyServerSide?.title || 'Untitled'}</title>
+        <title>{story?.title || 'Untitled'}</title>
         <meta
           name="description"
-          content={storyServerSide?.content || 'Story Content  '}
+          content={story?.content || 'Story Content  '}
         />
         <link rel="icon" href="/favicon.svg" />
       </Head>
@@ -319,7 +322,7 @@ export default function BlogDetail({ ip, storyServerSide }) {
                           isPublication ? togglePublicationFollow : toggleFollow
                         }
                       >
-                        {moreFromFollowing ? 'Unfollow' : 'Follow'}
+                        {isFollowing ? 'Unfollow' : 'Follow'}
                       </Button>
                     </div>
                     <div className="divide-y divide-gray-200">
@@ -393,7 +396,10 @@ export default function BlogDetail({ ip, storyServerSide }) {
               <div className="hidden lg:block p-8 space-y-10">
                 <Sidebar
                   profile={_.get(story, 'user')}
-                  isFollowing={isFollowing}
+                  isFollowing={_.some(
+                    myFollowings,
+                    (user) => user.followingUser === story?.user?._id
+                  )}
                   isSubscribed={isSubscribed}
                   followLoading={followLoading}
                   stories={moreUserStories}

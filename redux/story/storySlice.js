@@ -5,7 +5,7 @@ import { HYDRATE } from 'next-redux-wrapper';
 
 // Initial state
 const initialState = {
-  isLiked: false,
+  likedStories: [],
   replyIsLiked: false,
   followingStories: null,
   followingStoriesInfo: null,
@@ -128,7 +128,7 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     createReplySuccess(state, action) {
-      state.replies = [...state.replies, action.payload,];
+      state.replies = [...state.replies, action.payload];
       state.replyCount += 1;
       state.isLoading = false;
     },
@@ -528,21 +528,23 @@ export const storySlice = createSlice({
     },
 
     likeStoryRequest() { },
-    likeStorySuccess(state) {
-      state.isLiked = true;
+    likeStorySuccess(state, action) {
+      state.likedStories = [...state.likedStories, action.payload];
     },
     likeStoryFailure() {
       ToastMessage.error("This story doesn't exist any longer");
 
     },
     unlikeStoryRequest() { },
-    unlikeStorySuccess(state) {
-      state.isLiked = false;
+    unlikeStorySuccess(state, action) {
+
+      state.likedStories = state.likedStories.filter(like => like !== action.payload)
+
     },
 
     isLikedStoryRequest() { },
     isLikedStorySuccess(state, action) {
-      state.isLiked = action.payload;
+      state.likedStories = [...state.likedStories, action.payload];
     },
 
     likeReplyRequest() {

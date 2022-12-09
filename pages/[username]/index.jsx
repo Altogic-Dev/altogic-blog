@@ -61,19 +61,16 @@ export default function ProfilePage() {
   );
 
   const bookmarkLists = useSelector(
-    (state) =>
-      _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists
+    (state) => _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists
   );
   const bookmarkListCount =
     useSelector(
-      (state) =>
-        _.get(state.bookmark.bookmarkLists, username)?.count
+      (state) => _.get(state.bookmark.bookmarkLists, username)?.count
     ) || 1;
 
   const [bookmarkListPage, setBookmarkListPage] = useState(
     useSelector(
-      (state) =>
-        _.get(state.bookmark.bookmarkLists, username)?.page
+      (state) => _.get(state.bookmark.bookmarkLists, username)?.page
     ) || 1
   );
 
@@ -210,10 +207,12 @@ export default function ProfilePage() {
       _.size(bookmarkLists) < BOOKMARK_LIST_LIMIT * bookmarkListPage &&
       _.size(bookmarkLists) < bookmarkListCount
     ) {
+      console.log('here')
       getUserBookmarkLists();
     }
   }, [bookmarkListPage, username]);
 
+ 
   const setRefs = useCallback(
     (node) => {
       ref.current = node;

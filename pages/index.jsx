@@ -14,6 +14,7 @@ import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -42,7 +43,7 @@ export default function Home() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-
+  const router = useRouter();
   const getFollowingStories = (page) => {
     if (userFromStorage) {
       dispatch(
@@ -108,7 +109,7 @@ export default function Home() {
     ) {
       getRecommendedStories(followingListPage);
     }
-  }, [selectedIndex]);
+  }, [selectedIndex,router.asPath]);
 
   useEffect(() => {
     if (
@@ -158,7 +159,7 @@ export default function Home() {
                 </Tab.List>
 
                 <Tab.Panels>
-                  {(user && !_.isEmpty(followingStories)) && (
+                  {user && !_.isEmpty(followingStories) && (
                     <Tab.Panel className="divide-y divide-gray-200">
                       {!_.isNil(followingStories) && (
                         <ListObserver onEnd={handleFollowingEndOfList}>

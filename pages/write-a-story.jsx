@@ -111,6 +111,7 @@ export default function WriteAStory({ id }) {
 
   useEffect(() => {
     if ((content !== '<p><br></p>' || inpTitle) && isChanged) {
+      setMinRead(Math.ceil(content.split(' ').length / 200));
       setLoading(true);
       const story = {
         user: user._id,
@@ -133,7 +134,7 @@ export default function WriteAStory({ id }) {
             categoryNames: topic ? [topic] : [],
           })
         );
-        setIsFetched(true)
+        setIsFetched(true);
         setIsCreated(true);
       } else if (!_.isNil(newStory)) {
         const dataObject = {
@@ -155,8 +156,7 @@ export default function WriteAStory({ id }) {
         };
       }
     }
-    if (content) setMinRead(Math.ceil(content.split(' ').length / 200));
-  }, [content, inpTitle, getValues('title'), router.isReady]);
+  }, [content, inpTitle, getValues('title'), router.isReady, minRead]);
 
   const handleChange = (e) => {
     if (!isChanged) {
