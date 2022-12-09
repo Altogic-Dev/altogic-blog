@@ -113,8 +113,8 @@ const StoryService = {
     return db.model('story').object(story._id).create(story);
   },
   async updateStory(story) {
+    return endpoint.post(`/story/update`, story);
 
-    return db.model('story').object(story._id).update(story);
   },
   deleteStory(storyId) {
     return endpoint.delete(`/story/${storyId}`);

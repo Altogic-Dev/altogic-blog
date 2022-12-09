@@ -1,5 +1,5 @@
 import ToastMessage from '@/utils/toast';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { HYDRATE } from 'next-redux-wrapper';
 
@@ -131,7 +131,8 @@ export const bookmarkSlice = createSlice({
       if (!state.bookmarkLists[action.payload.list.username]) {
         state.bookmarkLists[action.payload.list.username] = { bookmarkLists: [] }
       }
-      state.bookmarkLists[action.payload.list.username].bookmarkLists = [...state.bookmarkLists[action.payload.list.username].bookmarkLists, action.payload.list]
+      if (!_.some(state.bookmarkLists[action.payload.list.username].bookmarkLists, list => list._id === action.payload.list._id))
+        state.bookmarkLists[action.payload.list.username].bookmarkLists = [...state.bookmarkLists[action.payload.list.username].bookmarkLists, action.payload.list]
       state.bookmarks[action.payload.list._id] = [...(state.bookmarks[action.payload.list._id] ?? []), ...action.payload.bookmarks]
 
     },

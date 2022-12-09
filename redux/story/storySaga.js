@@ -220,8 +220,9 @@ function* getStoryBySlugSaga({ payload: { storySlug, userId } }) {
       }
     }
   } catch (e) {
-    yield put(storyActions.getStoryBySlugFailure(e));
     console.error(e);
+
+    yield put(storyActions.getStoryBySlugFailure(e));
   }
 }
 
@@ -614,7 +615,7 @@ function* likeStorySaga({
     if (!_.isEmpty(categoryNames)) {
       yield fork(likeNormalizeStorySaga, likeNormalizedBody);
     }
-    yield put(storyActions.likeStorySuccess());
+    yield put(storyActions.likeStorySuccess(storyId));
     yield fork(updateStoryLikeCountSaga, true);
   } catch (e) {
     console.log(e)
@@ -638,7 +639,7 @@ function* unlikeStorySaga({ payload: { userId, storyId } }) {
     const { errors } = yield call(StoryService.unlike, userId, storyId);
     if (errors) throw errors;
     yield fork(unlikeNormalizeStorySaga, storyId);
-    yield put(storyActions.unlikeStorySuccess());
+    yield put(storyActions.unlikeStorySuccess(storyId));
     yield fork(updateStoryLikeCountSaga, false);
   } catch (e) {
     console.error({ e });
@@ -655,9 +656,7 @@ function* isLikedSaga({ payload: { userId, storyId } }) {
     );
     if (errors) throw errors;
     if (!_.isNil(data) && !_.isEmpty(data)) {
-      yield put(storyActions.isLikedStorySuccess(true));
-    } else {
-      yield put(storyActions.isLikedStorySuccess(false));
+      yield put(storyActions.isLikedStorySuccess(storyId));
     }
   } catch (e) {
     console.error({ e });

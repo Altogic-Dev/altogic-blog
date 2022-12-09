@@ -1,10 +1,10 @@
 
-import { auth, db } from './altogic';
+import { auth, endpoint } from './altogic';
 
 
 async function updateStory(story, session) {
   auth.setSession(session);
-  const data = db.model('story').object(story._id).update(story);
+  const data = endpoint.post(`/story/update`, story);
   return data
 }
 

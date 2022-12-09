@@ -419,7 +419,7 @@ export default function ListDetail() {
                     <FlagIcon className="w-7 h-7 text-purple-600" />
                   </span>
                   <p className="text-slate-500 text-md">
-                    You have not bookmarked any stories to this list yet!
+                    No stories has been bookmarked to this list yet!
                   </p>
                 </div>
               )}

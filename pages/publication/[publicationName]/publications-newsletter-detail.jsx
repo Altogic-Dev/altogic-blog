@@ -6,6 +6,7 @@ import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import ShareButtons from '@/components/ShareButtons';
 import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
+import Button from '@/components/basic/button';
 
 const posts = [
   {
@@ -656,12 +657,11 @@ export default function PublicationsNewsletterDetail() {
                         nunc pellentesque suspendisse sagittis.{' '}
                       </p>
                     </div>
-                    <button
-                      type="button"
+                    <Button
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-100 transition ease-in-out duration-200 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
                     >
                       Follow
-                    </button>
+                    </Button>
                   </div>
                   <div className="divide-y divide-gray-200">
                     {posts.map((post) => (

@@ -17,7 +17,8 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     if (errors) throw errors;
     if (data) {
       yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
-      yield put(storyActions.isLikedStorySuccess(data.isStoryLiked));
+      if (data.isStoryLiked)
+        yield put(storyActions.isLikedStorySuccess(storyId));
       yield put(
         reportActions.getReportedStoryByUserSuccess(data.isStoryReported)
       );
