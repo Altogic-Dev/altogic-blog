@@ -207,7 +207,6 @@ export default function ProfilePage() {
       _.size(bookmarkLists) < BOOKMARK_LIST_LIMIT * bookmarkListPage &&
       _.size(bookmarkLists) < bookmarkListCount
     ) {
-      console.log('here')
       getUserBookmarkLists();
     }
   }, [bookmarkListPage, username]);

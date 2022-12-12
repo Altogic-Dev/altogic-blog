@@ -1,5 +1,8 @@
+import { publicationActions } from '@/redux/publication/publicationSlice';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
+import { useSelector,useDispatch } from 'react-redux';
+import FollowButton from './basic/followbutton';
 import SocialIcons from './publication/SocialIcons';
 
 export default function AligmentPublicationLayout({
@@ -17,6 +20,44 @@ export default function AligmentPublicationLayout({
   navigations,
   setSelectedTabIndex,
 }) {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.publication.isLoading);
+  const publication = useSelector((state) => state.publication.publication);
+  const sessionUser = useSelector((state) => state.auth.user);
+  const handleFollowButton = () => {
+    const user = {
+      _id: sessionUser._id,
+      userName: sessionUser.username,
+      userAbout: sessionUser.about,
+      userProfilePicture: sessionUser.profilePicture,
+    };
+    const publicationReq = {
+      publication: _.get(publication, '_id'),
+      publicationName: _.get(publication, 'name'),
+      publicationLogo: _.get(publication, 'logo'),
+      publicationDescription: _.get(publication, 'description'),
+      publicationProfilePicture: _.get(publication, 'profilePicture'),
+    };
+
+    if (publication.isFollowing && publication) {
+      dispatch(
+        publicationActions.unfollowPublicationRequest({
+          publication: _.get(publication, '_id'),
+          user,
+        })
+      );
+    } else if (publication) {
+      dispatch(
+        publicationActions.followPublicationRequest({
+          publication: {
+            ...publicationReq,
+          },
+          user,
+        })
+      );
+    }
+  };
+
   return (
     <>
       <div
@@ -106,12 +147,17 @@ export default function AligmentPublicationLayout({
                   </li>
                 ))}
               </ul>
-
               <SocialIcons
                 twitter={twitter}
                 facebook={facebook}
                 linkedin={linkedin}
                 color={color}
+              />
+
+              <FollowButton
+                isFollowing={publication?.isFollowing}
+                isLoading={isLoading}
+                onClick={handleFollowButton}
               />
             </div>
           </div>

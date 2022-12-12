@@ -65,9 +65,9 @@ export default function NavigationForm({ navigation }) {
 
   useEffect(() => {
     if (selected && tabData) {
-      // if (_.isNil(navigation?.contents)) {
-      //   setSelectedContent(_.first(tabData[selected.value]));
-      // }
+      if (_.isNil(navigation?.contents)) {
+        setSelectedContent(_.first(tabData[selected.value]));
+      }
       setSelectedContent(
         _.find(
           tabData[selected.value],
@@ -78,7 +78,7 @@ export default function NavigationForm({ navigation }) {
         )
       );
     }
-  }, [tabData]);
+  }, [tabData,selected]);
 
   return (
     <form className="w-full grid grid-cols-3 gap-4 items-center">

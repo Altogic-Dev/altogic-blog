@@ -75,7 +75,10 @@ function MyApp({ Component, pageProps }) {
   };
   const getPublication = (publicationName) => {
     dispatch(
-      publicationActions.getPublicationRequest(publicationName.toLowerCase())
+      publicationActions.getPublicationRequest({
+        publicationName: publicationName.toLowerCase(),
+        user: sessionUser?._id,
+      })
     );
   };
 

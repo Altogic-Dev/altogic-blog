@@ -32,11 +32,12 @@ function* getPublicationFollowersSaga({ payload: publicationId }) {
   }
 }
 
-function* getPublicationSaga({ payload: publicationName }) {
+function* getPublicationSaga({ payload: { publicationName, user } }) {
   try {
     const { data, errors } = yield call(
       PublicationService.getPublication,
-      publicationName
+      publicationName,
+      user
     );
     if (data) {
       yield put(publicationActions.getPublicationSuccess(data));
@@ -407,7 +408,7 @@ function* getUserPublicationsSaga() {
   }
 }
 
-function* getFeaturePageSaga({ payload: {featureId} }) {
+function* getFeaturePageSaga({ payload: { featureId } }) {
   try {
     const { data, errors } = yield call(
       PublicationService.getFeaturePage,
