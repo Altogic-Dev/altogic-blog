@@ -1,7 +1,7 @@
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import FollowButton from './basic/followbutton';
 import SocialIcons from './publication/SocialIcons';
 
@@ -154,11 +154,13 @@ export default function AligmentPublicationLayout({
                 color={color}
               />
 
-              <FollowButton
-                isFollowing={publication?.isFollowing}
-                isLoading={isLoading}
-                onClick={handleFollowButton}
-              />
+              {sessionUser && (
+                <FollowButton
+                  isFollowing={publication?.isFollowing}
+                  isLoading={isLoading}
+                  onClick={handleFollowButton}
+                />
+              )}
             </div>
           </div>
         </div>

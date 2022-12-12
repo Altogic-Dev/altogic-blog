@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import PublicationCard from '@/components/Publications/PublicationCard';
 import _ from 'lodash';
-import { EmotionUnhappy } from '@icon-park/react';
+import { UserGroupIcon } from '@heroicons/react/outline';
 
 export default function Publications() {
   const publications = useSelector(
@@ -77,7 +77,7 @@ export default function Publications() {
           ) : (
             <div className="flex justify-center items-center flex-col">
               <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
-                <EmotionUnhappy size={28} className="w-7 h-7 text-purple-600" />
+                <UserGroupIcon size={28} className="w-7 h-7 text-purple-600" />
               </span>
               <p className="text-slate-500 text-md  ">
                 You are not a member of any publication
@@ -102,7 +102,7 @@ export default function Publications() {
           ) : (
             <div className="flex justify-center items-center flex-col">
               <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
-                <EmotionUnhappy size={28} className="w-7 h-7 text-purple-600" />
+                <UserGroupIcon size={28} className="w-7 h-7 text-purple-600" />
               </span>
               <p className="text-slate-500 text-md  ">
                 You are not following any publications
