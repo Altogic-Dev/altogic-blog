@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
@@ -227,7 +227,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Notifications</title>
         <meta
           name="description"

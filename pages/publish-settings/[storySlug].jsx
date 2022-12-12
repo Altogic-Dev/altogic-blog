@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -228,7 +228,7 @@ export default function PublishSettings() {
   }, []);
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publish Settings</title>
         <meta
           name="description"

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useSelector } from 'react-redux';
 import ChangePassword from '@/components/settings/ChangePassword';
 import MySessions from '@/components/settings/MySessions';
@@ -30,7 +30,7 @@ export default function Settings() {
     <div>
       {user ? (
         <div>
-          <Head>
+          <HeadContent>
             <title>Altogic Medium Blog App Settings</title>
             <meta
               name="description"

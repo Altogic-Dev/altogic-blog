@@ -1,5 +1,5 @@
 import Layout from '@/layouts/Layout';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import StatsCard from '@/components/StatsCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { statsActions } from '@/redux/stats/statsSlice';
@@ -150,7 +150,7 @@ export default function Stats() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Stats</title>
         <meta name="description" content="Altogic Medium Blog App Stats" />
         

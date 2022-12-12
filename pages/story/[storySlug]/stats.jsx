@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import dynamic from 'next/dynamic';
 import Layout from '@/layouts/Layout';
 import StatsCard from '@/components/StatsCard';
@@ -188,7 +188,7 @@ export default function StatsBlogPost() {
   
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Stats Blog Post</title>
         <meta
           name="description"

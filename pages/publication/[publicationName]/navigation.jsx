@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 import { Switch } from '@headlessui/react';
 import { classNames } from '@/utils/utils';
@@ -209,7 +209,7 @@ export default function PublicationsNavigation() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications Navigation</title>
         <meta
           name="description"
