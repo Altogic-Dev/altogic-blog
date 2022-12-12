@@ -182,7 +182,7 @@ export default function ListDetail() {
     if (
       sessionUser?.username !== username &&
       bookmarkListSlug &&
-      _.size(_.get(bookmarkList, 'bookmarks')) < (bookmarkList?.storyCount || 1)
+      _.size(bookmarks) < (bookmarkList?.storyCount || 1)
     ) {
       dispatch(
         getBookmarkListDetailRequest({
@@ -194,6 +194,9 @@ export default function ListDetail() {
     }
   }, [bookmarkListPage, bookmarkListSlug]);
 
+  console.log(bookmarkList?.storyCount);
+  console.log(bookmarkList);
+  console.log(_.size(_.get(bookmarkList, 'bookmarks')));
   useEffect(() => {
     if (
       sessionUser &&
@@ -216,7 +219,6 @@ export default function ListDetail() {
       setBookmarkListState(bookmarkList);
     }
   }, [updatedBookmark]);
-
 
   return (
     <div>
