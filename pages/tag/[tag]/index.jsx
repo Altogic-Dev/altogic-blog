@@ -12,6 +12,7 @@ import { classNames } from '@/utils/utils';
 import _ from 'lodash';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
+import { FlagIcon } from '@heroicons/react/outline';
 
 export default function TagPage() {
   const user = useSelector((state) => state.auth.user);
@@ -25,6 +26,9 @@ export default function TagPage() {
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
+  const bestLoading = useSelector((state) => state.topics.bestLoading);
+  const trendingLoading = useSelector((state) => state.topics.trendingLoading);
+  const latestLoading = useSelector((state) => state.topics.latestLoading);
 
   const [posts, setPosts] = useState([]);
 
@@ -70,187 +74,200 @@ export default function TagPage() {
     } else {
       setPosts(trendingTopics);
     }
-    
   }, [latestTopics, bestTopics, trendingTopics]);
-
-  console.log('sa');
 
   return (
     <div>
       <HeadContent>
         <title>Altogic Medium Blog App</title>
         <meta name="description" content="Altogic Medium Blog App" />
-        
       </HeadContent>
-      <Layout>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 py-4 lg:py-0">
-          <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
-            <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
-              {/* Desktop */}
-              <YourTopics Tag={tag} />
-
-              {/* Mobile Sidebar */}
-              <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-                <Sidebar personalFullStatistic />
-              </div>
-              <Tab.Group selectedIndex={selectedIndex}>
-                <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
-                  <Tab
-                    onClick={() => router.push(`/tag/${tag}`)}
-                    className={({ selected }) =>
-                      classNames(
-                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
-                        selected
-                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
-                          : 'text-slate-500'
-                      )
-                    }
-                  >
-                    Trending
-                  </Tab>
-                  <Tab
-                    onClick={() => router.push(`/tag/${tag}?tab=latest`)}
-                    className={({ selected }) =>
-                      classNames(
-                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
-                        selected
-                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
-                          : 'text-slate-500'
-                      )
-                    }
-                  >
-                    Latest
-                  </Tab>
-                  <Tab
-                    onClick={() => router.push(`/tag/${tag}?tab=best`)}
-                    className={({ selected }) =>
-                      classNames(
-                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
-                        selected
-                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
-                          : 'text-slate-500'
-                      )
-                    }
-                  >
-                    Best
-                  </Tab>
-                </Tab.List>
-                <Tab.Panels>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        publication={post.publication}
-                        key={post._id}
-                        normalMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.excerpt}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        actionMenu
-                        bookmarkList={bookmarkLists}
-                        story={post}
-                        bookmarks={bookmarks}
-                        optionButtons={{
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: user?._id,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
-                  </Tab.Panel>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        publication={post.publication}
-                        key={post._id}
-                        normalMenu
-                        actionMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.excerpt}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        bookmarkList={bookmarkLists}
-                        story={post}
-                        bookmarks={bookmarks}
-                        optionButtons={{
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: user?._id,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
-                  </Tab.Panel>
-                  <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        publication={post.publication}
-                        key={post._id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.excerpt}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        actionMenu
-                        bookmarkList={bookmarkLists}
-                        story={post}
-                        bookmarks={bookmarks}
-                        optionButtons={{
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: user?._id,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
-                  </Tab.Panel>
-                </Tab.Panels>
-              </Tab.Group>
-            </div>
-            {/* Desktop Sidebar */}
-            <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              <Sidebar
-                personalFullStatistic
-                topicWriters
-                relatedTopics
-                Tag={tag}
-              />
-            </div>
-            {/* Mobile */}
+      <Layout loading={bestLoading || trendingLoading || latestLoading}>
+        {_.isEmpty(bestTopics) ? (
+          <div className="items-center justify-center flex flex-col  h-[80vh]">
+            <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+              <FlagIcon className="w-7 h-7 text-purple-600" />
+            </span>
+            <p className="text-slate-500 text-md">
+              Topic not found.
+            </p>
           </div>
-        </div>
+        ) : (
+          <div className="max-w-screen-xl mx-auto px-4 lg:px-8 py-4 lg:py-0">
+            <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
+              <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
+                {/* Desktop */}
+                <YourTopics Tag={tag} />
+
+                {/* Mobile Sidebar */}
+                <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
+                  <Sidebar personalFullStatistic />
+                </div>
+                <Tab.Group selectedIndex={selectedIndex}>
+                  <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
+                    <Tab
+                      onClick={() => router.push(`/tag/${tag}`)}
+                      className={({ selected }) =>
+                        classNames(
+                          'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
+                          selected
+                            ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                            : 'text-slate-500'
+                        )
+                      }
+                    >
+                      Trending
+                    </Tab>
+                    <Tab
+                      onClick={() => router.push(`/tag/${tag}?tab=latest`)}
+                      className={({ selected }) =>
+                        classNames(
+                          'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
+                          selected
+                            ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                            : 'text-slate-500'
+                        )
+                      }
+                    >
+                      Latest
+                    </Tab>
+                    <Tab
+                      onClick={() => router.push(`/tag/${tag}?tab=best`)}
+                      className={({ selected }) =>
+                        classNames(
+                          'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
+                          selected
+                            ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                            : 'text-slate-500'
+                        )
+                      }
+                    >
+                      Best
+                    </Tab>
+                  </Tab.List>
+                  <Tab.Panels>
+                    <Tab.Panel className="divide-y divide-gray-200">
+                      {posts.map((post) => (
+                        <PostCard
+                          publication={post.publication}
+                          key={post._id}
+                          normalMenu
+                          authorUrl={`/${post.username}`}
+                          authorName={post.username}
+                          authorImage={post.userProfilePicture}
+                          storyUrl={`/story/${post.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            post.createdAt
+                          ).toRelative()}
+                          title={post.title}
+                          infoText={post.excerpt}
+                          badgeName={_.first(post.categoryNames)}
+                          min={post.estimatedReadingTime}
+                          images={_.first(post.storyImages)}
+                          actionMenu
+                          bookmarkList={bookmarkLists}
+                          story={post}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user?._id,
+                                  storyId: post._id,
+                                  reportedUserId: post.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))}
+                    </Tab.Panel>
+                    <Tab.Panel className="divide-y divide-gray-200">
+                      {posts.map((post) => (
+                        <PostCard
+                          publication={post.publication}
+                          key={post._id}
+                          normalMenu
+                          actionMenu
+                          authorUrl={`/${post.username}`}
+                          authorName={post.username}
+                          authorImage={post.userProfilePicture}
+                          storyUrl={`/story/${post.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            post.createdAt
+                          ).toRelative()}
+                          title={post.title}
+                          infoText={post.excerpt}
+                          badgeName={_.first(post.categoryNames)}
+                          min={post.estimatedReadingTime}
+                          images={_.first(post.storyImages)}
+                          bookmarkList={bookmarkLists}
+                          story={post}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user?._id,
+                                  storyId: post._id,
+                                  reportedUserId: post.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))}
+                    </Tab.Panel>
+                    <Tab.Panel className="divide-y divide-gray-200">
+                      {posts.map((post) => (
+                        <PostCard
+                          publication={post.publication}
+                          key={post._id}
+                          noActiveBookmark
+                          normalMenu
+                          authorUrl={`/${post.username}`}
+                          authorName={post.username}
+                          authorImage={post.userProfilePicture}
+                          storyUrl={`/story/${post.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            post.createdAt
+                          ).toRelative()}
+                          title={post.title}
+                          infoText={post.excerpt}
+                          badgeName={_.first(post.categoryNames)}
+                          min={post.estimatedReadingTime}
+                          images={_.first(post.storyImages)}
+                          actionMenu
+                          bookmarkList={bookmarkLists}
+                          story={post}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user?._id,
+                                  storyId: post._id,
+                                  reportedUserId: post.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))}
+                    </Tab.Panel>
+                  </Tab.Panels>
+                </Tab.Group>
+              </div>
+              {/* Desktop Sidebar */}
+              <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
+                <Sidebar
+                  personalFullStatistic
+                  topicWriters
+                  relatedTopics
+                  Tag={tag}
+                />
+              </div>
+              {/* Mobile */}
+            </div>
+          </div>
+        )}
       </Layout>
     </div>
   );

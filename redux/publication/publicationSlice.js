@@ -187,7 +187,7 @@ export const publicationSlice = createSlice({
     },
     followPublicationSuccess(state, action) {
       state.isLoading = false;
-      state.isFollowingPublication = true;
+      state.publication.isFollowing = true;
       state.publication.followerCount += 1;
       state.publicationFollowers = [
         ...state.publicationFollowers,
@@ -206,8 +206,8 @@ export const publicationSlice = createSlice({
     },
     unfollowPublicationSuccess(state, action) {
       state.isLoading = false;
-      state.isFollowingPublication = false;
       state.publication.followerCount -= 1;
+      state.publication.isFollowing = false;
       state.userFollowingPublication = state.userFollowingPublication.filter(
         (item) => item !== action.payload
       );

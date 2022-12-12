@@ -8,9 +8,10 @@ const PublicationService = {
       .get();
   },
 
-  getPublication(publicationName) {
+  getPublication(publicationName, user) {
     return endpoint.get('/publication/get-publication-by-name', {
       publicationName,
+      user
     });
   },
 

@@ -12,7 +12,9 @@ const initialState = {
   publicationStoriesByTopic: [],
   searchTopics: [],
   topicAnalytics: null,
-  isLoading: false,
+  bestLoading: false,
+  trendingLoading: false,
+  latestLoading: false,
   error: null,
 };
 
@@ -23,36 +25,36 @@ export const topicsSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     getTrendingTopicsRequest(state) {
-      state.isLoading = true;
+      state.trendingLoading = true;
     },
     getTrendingTopicsSuccess(state, action) {
       state.trendingTopics = action.payload;
-      state.isLoading = false;
+      state.trendingLoading = false;
     },
     getTrendingTopicsFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.trendingLoading = false;
     },
     getLatestsOfTopicRequest(state) {
-      state.isLoading = true;
+      state.latestLoading = true;
     },
     getLatestsOfTopicSuccess(state, action) {
       state.latestTopics = action.payload;
-      state.isLoading = false;
+      state.latestLoading = false;
     },
     getLatestsOfTopicFailure(state, action) {
-      state.isLoading = false;
+      state.latestLoading = false;
       state.error = action.payload;
     },
     getBestsOfTopicRequest(state) {
-      state.isLoading = true;
+      state.bestLoading = true;
     },
     getBestsOfTopicSuccess(state, action) {
       state.bestTopics = action.payload;
-      state.isLoading = false;
+      state.bestLoading = false;
     },
     getBestsOfTopicFailure(state, action) {
-      state.isLoading = false;
+      state.bestLoading = false;
       state.error = action.payload;
     },
 
