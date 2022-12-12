@@ -9,6 +9,7 @@ import Input from '@/components/Input';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import HeadContent from '@/components/general/HeadContent';
 import useStorage from '@/hooks/useStorage';
 import dynamic from 'next/dynamic';
 import { ClipLoader } from 'react-spinners';
@@ -213,72 +214,80 @@ export default function WriteAStory({ id }) {
   );
 
   return (
-    <Layout loading={!isMounted || (id && !newStory)}>
-      <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
-        <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
-          <div className="text-slate-800 text-lg tracking-sm w-1/3 flex h-10 items-center">
-            <div className="mr-4">
-              Draft in{' '}
-              <span className="font-semibold">
-                {selectedPublication ? selectedPublication.name : username}
-              </span>
+    <div>
+      <HeadContent>
+        <title>Altogic Medium Blog App</title>
+        <meta name="description" content="Altogic Medium Blog App" />
+      </HeadContent>
+      <Layout loading={!isMounted || (id && !newStory)}>
+        <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
+          <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
+            <div className="text-slate-800 text-lg tracking-sm w-1/3 flex h-10 items-center">
+              <div className="mr-4">
+                Draft in{' '}
+                <span className="font-semibold">
+                  {selectedPublication ? selectedPublication.name : username}
+                </span>
+              </div>
+              {isShowSaving && (
+                <div className="text-green-700 font-semibold">
+                  {loading ? (
+                    <span>
+                      <span className="animate-pulse">Saving</span>...
+                      <ClipLoader size={10} color="#15803c" loading={loading} />
+                    </span>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      <span>Saved</span>
+                      <CheckCircleIcon className="w-5 h-5 ml-2" />
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            {isShowSaving && (
-              <div className="text-green-700 font-semibold">
-                {loading ? (
-                  <span>
-                    <span className="animate-pulse">Saving</span>...
-                    <ClipLoader size={10} color="#15803c" loading={loading} />
-                  </span>
-                ) : (
-                  <div className="flex items-center justify-center">
-                    <span>Saved</span>
-                    <CheckCircleIcon className="w-5 h-5 ml-2" />
-                  </div>
-                )}
+            <p className="text-slate-500 w-1/3 text-center">
+              {minRead} min read
+            </p>
+
+            {setIsShowSaving && !loading && router.isReady && (
+              <div className="w-1/3 flex justify-end">
+                <Button
+                  onClick={handlePublish}
+                  className=" inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
+                >
+                  <CheckCircleIcon className="w-5 h-5" />
+                  Publish
+                </Button>
               </div>
             )}
           </div>
-          <p className="text-slate-500 w-1/3 text-center">{minRead} min read</p>
-
-          {setIsShowSaving && !loading && router.isReady && (
-            <div className="w-1/3 flex justify-end">
-              <Button
-                onClick={handlePublish}
-                className=" inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
-              >
-                <CheckCircleIcon className="w-5 h-5" />
-                Publish
-              </Button>
-            </div>
-          )}
-        </div>
-        <form className="w-full">
-          <Input
-            type="text"
-            name="story-title"
-            className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
-            placeholder="Story Title"
-            required
-            register={register('title')}
-            error={errors.title}
-            onChange={handleChangeTitle}
-          />
-
-          <div className="mt-4 w-full">
-            <Editor
-              setIsShowSaving={setIsShowSaving}
-              onChange={handleChange}
-              setImages={setStoryImages}
-              value={
-                !_.isNil(id) && _.get(newStory, 'content') !== '<p><br></p>'
-                  ? _.get(newStory, 'content')
-                  : null
-              }
+          <form className="w-full">
+            <Input
+              type="text"
+              name="story-title"
+              className="block text-black w-full px-0 py-8 text-4xl font-medium border-0 placeholder-slate-500 focus:outline-none focus:ring-0"
+              placeholder="Story Title"
+              required
+              register={register('title')}
+              error={errors.title}
+              onChange={handleChangeTitle}
             />
-          </div>
-        </form>
-      </div>
-    </Layout>
+
+            <div className="mt-4 w-full">
+              <Editor
+                setIsShowSaving={setIsShowSaving}
+                onChange={handleChange}
+                setImages={setStoryImages}
+                value={
+                  !_.isNil(id) && _.get(newStory, 'content') !== '<p><br></p>'
+                    ? _.get(newStory, 'content')
+                    : null
+                }
+              />
+            </div>
+          </form>
+        </div>
+      </Layout>
+    </div>
   );
 }
