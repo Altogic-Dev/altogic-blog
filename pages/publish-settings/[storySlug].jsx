@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useRef,
 } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -235,7 +235,7 @@ export default function PublishSettings() {
           content="Altogic Medium Blog App Publish Settings"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-12 pt-8 pb-[72px] lg:pb-36">
           <div className="w-full">

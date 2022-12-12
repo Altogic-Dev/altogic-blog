@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
@@ -111,7 +111,7 @@ export default function MyStories() {
       <HeadContent>
         <title>Altogic Medium Blog App My Stories</title>
         <meta name="description" content="Altogic Medium Blog App My Stories" />
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">

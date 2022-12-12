@@ -1,5 +1,5 @@
 import { useState, Fragment } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
@@ -50,7 +50,7 @@ export default function PublicationsNewsletter() {
           content="Altogic Medium Blog App Publications Newsletter"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto md:h-screen px-4 lg:px-8 pb-16">
           <div className="text-center">

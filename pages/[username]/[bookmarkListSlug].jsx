@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useRouter } from 'next/router';
 import { Menu, Transition, Dialog } from '@headlessui/react';
 import PostCard from '@/components/PostCard';
@@ -226,7 +226,7 @@ export default function ListDetail() {
           name="description"
           content="Altogic Medium Blog App List Detail"
         />
-      </Head>
+      </HeadContent>
       <Layout loading={bookmarkListsUserLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">

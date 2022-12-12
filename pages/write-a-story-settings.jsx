@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import Category from '@/components/Category';
@@ -177,7 +177,7 @@ export default function WriteAStorySettings() {
           name="description"
           content="Altogic Medium Blog App Write A Story Settings"
         />
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-10 mb-20">
           <div className="xl:grid xl:grid-cols-[175px,1fr] gap-24">

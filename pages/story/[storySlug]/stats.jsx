@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import dynamic from 'next/dynamic';
 import Layout from '@/layouts/Layout';
 import StatsCard from '@/components/StatsCard';
@@ -195,7 +195,7 @@ export default function StatsBlogPost() {
           content="Altogic Medium Blog App Stats Blog Post"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex items-center justify-between py-6 mb-6 border-b border-gray-200">

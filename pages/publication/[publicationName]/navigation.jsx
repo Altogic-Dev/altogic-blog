@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import { Switch } from '@headlessui/react';
 import { classNames } from '@/utils/utils';
@@ -216,7 +216,7 @@ export default function PublicationsNavigation() {
           content="Altogic Medium Blog App Publications Navigation"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex flex-col gap-4 my-8 md:mt-[60px]">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
@@ -74,7 +74,7 @@ export default function SearchResult() {
           content="Altogic Medium Blog App Notifications"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">

@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { Menu, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -80,7 +80,7 @@ export default function PublicationsNewsletterDetail() {
         <title>Altogic Medium Blog App Detail</title>
         <meta name="description" content="Altogic Medium Blog App Detail" />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">

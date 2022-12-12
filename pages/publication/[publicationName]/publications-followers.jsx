@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
@@ -37,7 +37,7 @@ export default function PublicationsFollowers() {
           content="Altogic Medium Blog App Publications Followers"
         />
         
-      </Head>
+      </HeadContent>
       <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           {_.get(publication, 'name') && (

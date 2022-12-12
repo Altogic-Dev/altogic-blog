@@ -5,7 +5,7 @@ import Sidebar from '@/layouts/Sidebar';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
 import { FlagIcon } from '@heroicons/react/outline';
 import _ from 'lodash';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -46,7 +46,7 @@ export default function MutedUsers() {
           content="Altogic Medium Blog App Notifications"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">

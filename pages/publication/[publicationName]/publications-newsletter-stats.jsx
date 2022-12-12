@@ -1,4 +1,4 @@
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
@@ -86,7 +86,7 @@ export default function PublicationsNewsletterStats() {
           content="Altogic Medium Blog App Publications Newsletter Stats"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto h-screen px-4 lg:px-8 pb-16">
           <h1 className="text-slate-700 mt-[60px] mb-16 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">

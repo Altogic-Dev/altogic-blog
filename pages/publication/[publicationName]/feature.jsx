@@ -1,4 +1,4 @@
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -73,7 +73,7 @@ export default function PublicationsFeature() {
           content="Altogic Medium Blog App Publications Feature"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex flex-col gap-4 mt-8 mb-[80px] md:mt-[60px]">
