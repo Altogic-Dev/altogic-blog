@@ -25,7 +25,6 @@ export default function TagPage() {
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
-  const isLoading = useSelector((state) => state.topics.trendingTopics);
 
   const [posts, setPosts] = useState([]);
 
