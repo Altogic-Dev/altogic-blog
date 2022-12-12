@@ -15,6 +15,7 @@ import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
 import { useRouter } from 'next/router';
+import HeadContent from '@/components/general/HeadContent';
 
 export default function Home() {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -109,7 +110,7 @@ export default function Home() {
     ) {
       getRecommendedStories(followingListPage);
     }
-  }, [selectedIndex,router.asPath]);
+  }, [selectedIndex, router.asPath]);
 
   useEffect(() => {
     if (
@@ -122,6 +123,10 @@ export default function Home() {
 
   return (
     <div>
+      <HeadContent>
+        <title>Altogic Medium Blog App</title>
+        <meta name="description" content="Altogic Medium Blog App" />
+      </HeadContent>
       <Layout loading={loading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">

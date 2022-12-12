@@ -64,7 +64,6 @@ export default function PublicationsSettings({ isCreate }) {
           name="description"
           content="Altogic Medium Blog App Publications Settings"
         />
-        <link rel="icon" href="/favicon.ico" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 my-8 lg:my-[60px]">
