@@ -1,4 +1,4 @@
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import Button from '@/components/basic/button';
 import * as yup from 'yup';
@@ -75,7 +75,7 @@ export default function PublicationsNewsletterSettings() {
           name="description"
           content="Altogic Medium Blog App Publications Newsletter Settings"
         />
-      </Head>
+      </HeadContent>
       <Layout>
         <form
           onSubmit={handleSubmit(submitFunction)}

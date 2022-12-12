@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useSelector } from 'react-redux';
 import ChangePassword from '@/components/settings/ChangePassword';
 import MySessions from '@/components/settings/MySessions';
@@ -37,7 +37,7 @@ export default function Settings() {
               content="Altogic Medium Blog App Settings"
             />
             
-          </Head>
+          </HeadContent>
           <Layout>
             <div className="max-w-screen-xl mx-auto px-4 lg:px-4 pt-8 pb-[72px] lg:pb-0">
               <div className="hidden md:flex items-center justify-between py-6 mb-6 border-b border-gray-200">

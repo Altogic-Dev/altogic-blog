@@ -1,4 +1,4 @@
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -194,7 +194,7 @@ export default function PublicationsNewFeature() {
           name="description"
           content="Altogic Medium Blog App Publications New Feature"
         />
-      </Head>
+      </HeadContent>
       <Layout>
         <form
           onSubmit={handleSubmit(submitFunction)}

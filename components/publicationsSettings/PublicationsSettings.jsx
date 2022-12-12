@@ -1,4 +1,4 @@
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
@@ -65,7 +65,7 @@ export default function PublicationsSettings({ isCreate }) {
           content="Altogic Medium Blog App Publications Settings"
         />
         <link rel="icon" href="/favicon.ico" />
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 my-8 lg:my-[60px]">
           <div className="flex flex-col gap-4">

@@ -1,5 +1,5 @@
 import React from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 
 const editors = [
@@ -178,7 +178,7 @@ export default function PublicationsMoreInformation() {
           content="Altogic Medium Blog App Publications More Information"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex items-center gap-8 py-3 border-b border-gray-200">

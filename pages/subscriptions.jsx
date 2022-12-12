@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '@/layouts/Layout';
 import { useRouter } from 'next/router';
@@ -51,7 +51,7 @@ export default function Subscriptions() {
               content="Altogic Medium Blog App Settings"
             />
             
-          </Head>
+          </HeadContent>
           <Layout>
             <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0">
               <div className="hidden md:flex items-center justify-between py-6 mb-6 border-b border-gray-200">

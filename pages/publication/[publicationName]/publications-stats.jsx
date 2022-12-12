@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
@@ -155,7 +155,7 @@ export default function PublicationsStats() {
           content="Altogic Medium Blog App Publications Story Page Published"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <h1 className="text-slate-700 my-8 md:my-[60px] text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">

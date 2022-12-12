@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import { useRouter } from 'next/router';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -250,7 +250,7 @@ export default function BlogDetail({ ip }) {
           content={story?.content || 'Story Content  '}
         />
         
-      </Head>
+      </HeadContent>
 
       <Layout loading={isLoading}>
         {errors?.status === 404 || !story?.isPublished ? (

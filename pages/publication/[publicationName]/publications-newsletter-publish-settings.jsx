@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import { Listbox, Transition } from '@headlessui/react';
 import {
@@ -95,7 +95,7 @@ export default function PublicationsNewsletterPublishSettings() {
           content="Altogic Medium Blog App Publish Settings"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pt-8 pb-[72px] lg:pb-36">
           <div className="max-w-[800px] mx-auto">

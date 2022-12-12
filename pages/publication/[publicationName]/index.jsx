@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import _, { isNil } from 'lodash';
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 import PublicationPostCard from '@/components/PublicationsPostCard';
 import { DateTime } from 'luxon';
@@ -78,7 +78,7 @@ export default function Publications() {
           content="Altogic Medium Blog App Publications"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <AligmentPublicationLayout
           layout={homeLayout?.layout}

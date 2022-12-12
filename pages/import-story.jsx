@@ -1,4 +1,4 @@
-import HeadContent from '@/HeadContent';;
+import HeadContent from '@/components/general/HeadContent';
 import Layout from '@/layouts/Layout';
 
 export default function ImportStory() {
@@ -11,7 +11,7 @@ export default function ImportStory() {
           content="Altogic Medium Blog App Import a Story"
         />
         
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="flex flex-col justify-center items-center h-[500px] gap-8">
           <h1 className="text-3xl font-bold text-center">Import a story</h1>
