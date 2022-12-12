@@ -77,7 +77,7 @@ export default function Publications() {
           name="description"
           content="Altogic Medium Blog App Publications"
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
       <Layout>
         <AligmentPublicationLayout
