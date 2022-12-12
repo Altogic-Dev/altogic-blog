@@ -14,7 +14,6 @@ import Sidebar from '@/layouts/Sidebar';
 import PostCard from '@/components/PostCard';
 import Layout from '@/layouts/Layout';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
-import { useRouter } from 'next/router';
 import HeadContent from '@/components/general/HeadContent';
 
 export default function Home() {
@@ -44,7 +43,6 @@ export default function Home() {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  const router = useRouter();
   const getFollowingStories = (page) => {
     if (userFromStorage) {
       dispatch(
