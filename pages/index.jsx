@@ -110,7 +110,7 @@ export default function Home() {
     ) {
       getRecommendedStories(followingListPage);
     }
-  }, [selectedIndex, router.asPath]);
+  }, [selectedIndex]);
 
   useEffect(() => {
     if (
