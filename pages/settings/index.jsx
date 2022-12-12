@@ -36,7 +36,7 @@ export default function Settings() {
               name="description"
               content="Altogic Medium Blog App Settings"
             />
-            <link rel="icon" href="/favicon.svg" />
+            
           </Head>
           <Layout>
             <div className="max-w-screen-xl mx-auto px-4 lg:px-4 pt-8 pb-[72px] lg:pb-0">

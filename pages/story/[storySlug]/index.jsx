@@ -249,7 +249,7 @@ export default function BlogDetail({ ip }) {
           name="description"
           content={story?.content || 'Story Content  '}
         />
-        <link rel="icon" href="/favicon.svg" />
+        
       </Head>
 
       <Layout loading={isLoading}>
