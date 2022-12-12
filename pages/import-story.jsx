@@ -1,10 +1,10 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 
 export default function ImportStory() {
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Import a Story</title>
         <meta
           name="description"

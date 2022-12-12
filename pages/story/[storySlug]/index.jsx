@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useRouter } from 'next/router';
 import { storyActions } from '@/redux/story/storySlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -243,7 +243,7 @@ export default function BlogDetail({ ip }) {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>{story?.title || 'Untitled'}</title>
         <meta
           name="description"

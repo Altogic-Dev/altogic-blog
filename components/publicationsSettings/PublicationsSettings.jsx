@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
@@ -58,7 +58,7 @@ export default function PublicationsSettings({ isCreate }) {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications Settings</title>
         <meta
           name="description"

@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 
 const editors = [
@@ -171,7 +171,7 @@ const writers = [
 export default function PublicationsMoreInformation() {
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications More Information</title>
         <meta
           name="description"

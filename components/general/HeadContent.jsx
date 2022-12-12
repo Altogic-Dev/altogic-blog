@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 
 export default function HeadContent({ children }) {
   return (

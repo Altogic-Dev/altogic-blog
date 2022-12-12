@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import {
   ArrowNarrowLeftIcon,
   ArrowNarrowRightIcon,
@@ -79,7 +79,7 @@ export default function PublicationsNewsletterStats() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications Newsletter Stats</title>
         <meta
           name="description"

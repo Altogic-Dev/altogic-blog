@@ -5,7 +5,7 @@ import Sidebar from '@/layouts/Sidebar';
 import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionSlice';
 import { FlagIcon } from '@heroicons/react/outline';
 import _ from 'lodash';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -39,7 +39,7 @@ export default function MutedUsers() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Notifications</title>
         <meta
           name="description"

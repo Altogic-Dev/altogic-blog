@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
@@ -188,7 +188,7 @@ export default function PublicationsNewFeature() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications New Feature</title>
         <meta
           name="description"

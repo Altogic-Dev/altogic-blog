@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
@@ -148,7 +148,7 @@ export default function PublicationsStats() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications Story Page Published</title>
         <meta
           name="description"

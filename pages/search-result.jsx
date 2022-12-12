@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
@@ -67,7 +67,7 @@ export default function SearchResult() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Notifications</title>
         <meta
           name="description"

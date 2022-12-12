@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useRouter } from 'next/router';
 import { Menu, Transition, Dialog } from '@headlessui/react';
 import PostCard from '@/components/PostCard';
@@ -220,7 +220,7 @@ export default function ListDetail() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Bookmark List Detail</title>
         <meta
           name="description"

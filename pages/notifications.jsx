@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { Tab } from '@headlessui/react';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ export default function Notifications() {
   };
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Notifications</title>
         <meta
           name="description"

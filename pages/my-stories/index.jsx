@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect, useCallback } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
@@ -108,7 +108,7 @@ export default function MyStories() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App My Stories</title>
         <meta name="description" content="Altogic Medium Blog App My Stories" />
       </Head>

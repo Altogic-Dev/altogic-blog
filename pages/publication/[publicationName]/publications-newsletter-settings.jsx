@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 import Button from '@/components/basic/button';
 import * as yup from 'yup';
@@ -69,7 +69,7 @@ export default function PublicationsNewsletterSettings() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications Newsletter Settings</title>
         <metae
           name="description"

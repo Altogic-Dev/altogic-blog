@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { DateTime } from 'luxon';
 import _ from 'lodash';
 import Category from '@/components/Category';
@@ -171,7 +171,7 @@ export default function WriteAStorySettings() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Write A Story Settings</title>
         <meta
           name="description"

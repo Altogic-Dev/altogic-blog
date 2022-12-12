@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 import { Listbox, Transition } from '@headlessui/react';
 import {
@@ -88,7 +88,7 @@ export default function PublicationsNewsletterPublishSettings() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publish Settings</title>
         <meta
           name="description"

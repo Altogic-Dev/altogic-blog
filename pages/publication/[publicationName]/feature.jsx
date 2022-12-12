@@ -1,4 +1,4 @@
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import Layout from '@/layouts/Layout';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -66,7 +66,7 @@ export default function PublicationsFeature() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Publications Feature</title>
         <meta
           name="description"

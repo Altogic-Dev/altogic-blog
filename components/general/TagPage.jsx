@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import PostCard from '@/components/PostCard';
 import YourTopics from '@/components/general/YourTopics';
@@ -73,15 +73,12 @@ export default function TagPage({ Home, Latest, Best }) {
     }
   }, [latestTopics, bestTopics, trendingTopics]);
 
-
-
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App</title>
         <meta name="description" content="Altogic Medium Blog App" />
-        
-      </Head>
+      </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 py-4 lg:py-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">

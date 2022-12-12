@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { Tab } from '@headlessui/react';
 import PostCard from '@/components/PostCard';
 import YourTopics from '@/components/general/YourTopics';
@@ -77,7 +77,7 @@ export default function TagPage() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App</title>
         <meta name="description" content="Altogic Medium Blog App" />
         

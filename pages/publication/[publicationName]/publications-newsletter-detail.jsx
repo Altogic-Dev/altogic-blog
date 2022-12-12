@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { Menu, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
@@ -76,7 +76,7 @@ export default function PublicationsNewsletterDetail() {
 
   return (
     <div>
-      <Head>
+      <HeadContent>
         <title>Altogic Medium Blog App Detail</title>
         <meta name="description" content="Altogic Medium Blog App Detail" />
         

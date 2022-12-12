@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Head from 'next/head';
+import HeadContent from '@/HeadContent';;
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '@/layouts/Layout';
 import { useRouter } from 'next/router';
@@ -44,7 +44,7 @@ export default function Subscriptions() {
     <div>
       {user ? (
         <div>
-          <Head>
+          <HeadContent>
             <title>Altogic Medium Blog App Settings</title>
             <meta
               name="description"
