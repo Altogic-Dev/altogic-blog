@@ -215,7 +215,6 @@ export default function PublicationsNavigation() {
           name="description"
           content="Altogic Medium Blog App Publications Navigation"
         />
-        <link rel="icon" href="/favicon.ico" />
       </HeadContent>
       <Layout>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
