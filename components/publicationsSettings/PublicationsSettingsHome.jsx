@@ -350,6 +350,7 @@ export default function PublicationsSettingsHome({
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
           setSelectedTabIndex={setSelectedTabIndex}
+          preview
         />
       </div>
       {featurePage && <AddFeatureSection sections={sections} />}

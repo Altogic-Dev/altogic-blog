@@ -15,6 +15,8 @@ import PublicationCard from '@/components/Publications/PublicationCard';
 import ListObserver from '@/components/ListObserver';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import _ from 'lodash';
+import { Book, BookOpen, People } from '@icon-park/react';
+import { UserGroupIcon } from '@heroicons/react/outline';
 
 export default function SearchResult() {
   const dispatch = useDispatch();
@@ -73,7 +75,6 @@ export default function SearchResult() {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -135,32 +136,45 @@ export default function SearchResult() {
                   </Tab>
                 </Tab.List>
                 <Tab.Panels>
-                  <Tab.Panel className="divide-y divide-gray-200">
+                  <Tab.Panel className="mt-10">
                     <ListObserver
                       onEnd={() => setPostLimit((prev) => prev + 10)}
                     >
-                      {searchResults?.stories.map((story) => (
-                        <PostCard
-                          publication={story.publication}
-                          key={story._id}
-                          noActiveBookmark
-                          normalMenu
-                          authorUrl={`/${story.username}`}
-                          authorName={story.username}
-                          authorImage={story.userProfilePicture}
-                          storyUrl={`/story/${story.storySlug}`}
-                          timeAgo={DateTime.fromISO(
-                            story.createdAt
-                          ).toRelative()}
-                          title={story.title}
-                          infoText={story.excerpt}
-                          badgeUrl="badgeUrl"
-                          badgeName={story.categoryNames[0]}
-                          min={story.estimatedReadingTime}
-                          images={story.storyImages[0]}
-                          actionMenu
-                        />
-                      ))}
+                      <ul className="divide-y divide-gray-200">
+                        {_.size(searchResults.stories) > 0 ? (
+                          searchResults?.stories.map((story) => (
+                            <PostCard
+                              publication={story.publication}
+                              key={story._id}
+                              noActiveBookmark
+                              normalMenu
+                              authorUrl={`/${story.username}`}
+                              authorName={story.username}
+                              authorImage={story.userProfilePicture}
+                              storyUrl={`/story/${story.storySlug}`}
+                              timeAgo={DateTime.fromISO(
+                                story.createdAt
+                              ).toRelative()}
+                              title={story.title}
+                              infoText={story.excerpt}
+                              badgeUrl="badgeUrl"
+                              badgeName={story.categoryNames[0]}
+                              min={story.estimatedReadingTime}
+                              images={story.storyImages[0]}
+                              actionMenu
+                            />
+                          ))
+                        ) : (
+                          <div className="items-center flex flex-col">
+                            <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                              <BookOpen size={30} className="text-purple-600" />
+                            </span>
+                            <p className="text-slate-500 text-md">
+                              No story found
+                            </p>
+                          </div>
+                        )}
+                      </ul>
                     </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel className="flex flex-col gap-6 mt-10">
@@ -168,45 +182,78 @@ export default function SearchResult() {
                       onEnd={() => setUserLimit((prev) => prev + 10)}
                     >
                       <ul className="divide-y divide-gray-200">
-                        {searchResults?.users.map((people) => (
-                          <UserCard
-                            key={people._id}
-                            user={people}
-                            isFollowing={userFollowings.some(
-                              (u) => u.followingUser === people._id
-                            )}
-                          />
-                        ))}
+                        {_.size(searchResults.users) > 0 ? (
+                          searchResults?.users.map((people) => (
+                            <UserCard
+                              key={people._id}
+                              user={people}
+                              isFollowing={userFollowings.some(
+                                (u) => u.followingUser === people._id
+                              )}
+                            />
+                          ))
+                        ) : (
+                          <div className="items-center flex flex-col">
+                            <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                              <People size={30} className="text-purple-600" />
+                            </span>
+                            <p className="text-slate-500 text-md">
+                              No people found
+                            </p>
+                          </div>
+                        )}
                       </ul>
                     </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
-                    <ul className="divide-y divide-gray-200">
-                      <ListObserver
-                        onEnd={() => setPublicationLimit((prev) => prev + 10)}
-                      >
-                        {searchResults?.publications.map((publication) => (
-                          <PublicationCard
-                            key={publication._id}
-                            publication={publication}
-                            isFollow
-                          />
-                        ))}
-                      </ListObserver>
-                    </ul>
+                    <ListObserver
+                      onEnd={() => setPublicationLimit((prev) => prev + 10)}
+                    >
+                      <ul className="divide-y divide-gray-200">
+                        {_.size(searchResults?.publications) > 0 ? (
+                          searchResults?.publications.map((publication) => (
+                            <PublicationCard
+                              key={publication._id}
+                              publication={publication}
+                              isFollow
+                            />
+                          ))
+                        ) : (
+                          <div className="items-center flex flex-col">
+                            <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                              <UserGroupIcon className="w-10 text-purple-600" />
+                            </span>
+                            <p className="text-slate-500 text-md">
+                              No publications found
+                            </p>
+                          </div>
+                        )}
+                      </ul>
+                    </ListObserver>
                   </Tab.Panel>
                   <Tab.Panel className="mt-10">
                     <div className="flex flex-wrap gap-x-4 gap-y-6">
                       <ListObserver
                         onEnd={() => setTopicLimit((prev) => prev + 10)}
                       >
-                        {searchResults?.topics.map((topic) => (
-                          <Topic
-                            key={topic._id}
-                            title={topic.name}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
-                          />
-                        ))}
+                        {_.size(searchResults?.topics) > 0 ? (
+                          searchResults?.topics.map((topic) => (
+                            <Topic
+                              key={topic._id}
+                              title={topic.name}
+                              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-slate-700 bg-slate-200 transition ease-in-out duration-200 hover:bg-purple-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500"
+                            />
+                          ))
+                        ) : (
+                          <div className="items-center flex flex-col w-full">
+                            <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                              <Book size={30} className=" text-purple-600" />
+                            </span>
+                            <p className="text-slate-500 text-md">
+                              No categories found
+                            </p>
+                          </div>
+                        )}
                       </ListObserver>
                     </div>
                   </Tab.Panel>

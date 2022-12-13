@@ -22,7 +22,7 @@ const BookmarkService = {
   updateBookmarkList: (list) =>
     db.model('bookmark_list').object(list._id).update(list),
   getMyBookmarks: (userId) =>
-    db.model('bookmark').filter(`user == '${userId}' && story.isPublished == true`).lookup({ field: 'story' }).get(),
+    db.model('bookmark').filter(`user == '${userId}'`).lookup({ field: 'story' }).get(),
   clearBookmarkList: (listId) =>
     endpoint.delete(`/bookmark-list/${listId}/clear`),
 };

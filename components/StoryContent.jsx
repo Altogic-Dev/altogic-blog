@@ -45,7 +45,6 @@ function StoryContent(props) {
   const sessionUser = useSelector((state) => state.auth.user);
   const replyCount = useSelector((state) => state.story.replyCount);
 
-  console.log(story)
   const isLoadingFollow = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -97,7 +96,11 @@ function StoryContent(props) {
   const getMenuItems = (isBottom) => {
     if (isMyProfile) {
       return (
-        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+        <Menu.Items
+          className={`${
+            isBottom ? '-top-60 ' : ''
+          }absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none`}
+        >
           <Menu.Item>
             <Button
               className="w-full px-6 py-4 text-slate-600 text-base tracking-sm text-start hover:bg-slate-50 hover:text-purple-700"
@@ -145,11 +148,7 @@ function StoryContent(props) {
       );
     }
     return (
-      <Menu.Items
-        className={`absolute right-0 ${
-          isBottom ? 'bottom-14' : ''
-        } mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none`}
-      >
+      <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
         <Menu.Item>
           <Button
             className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
@@ -427,10 +426,11 @@ function StoryContent(props) {
                         )}
                       </Menu.Button>
                     </div>
+
                     <BookmarkLists
                       bookmarkLists={bookmarkLists}
                       setCreateNewList={setCreateNewList}
-                      className="-top-32"
+                      className="fixed bottom-14"
                       story={story}
                       bookmarks={bookmarks}
                     />
