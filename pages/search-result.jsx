@@ -182,7 +182,7 @@ export default function SearchResult() {
                       onEnd={() => setUserLimit((prev) => prev + 10)}
                     >
                       <ul className="divide-y divide-gray-200">
-                        {_.size(searchResults.users) > 0 ? (
+                        {_.size(searchResults?.users) > 0 ? (
                           searchResults?.users.map((people) => (
                             <UserCard
                               key={people._id}
