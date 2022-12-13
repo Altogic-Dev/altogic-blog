@@ -102,8 +102,6 @@ export default function Home() {
     }
   }, [recommendedListPage]);
 
-  console.log(recommendedStories)
-
   useEffect(() => {
     if (
       !isLoading &&

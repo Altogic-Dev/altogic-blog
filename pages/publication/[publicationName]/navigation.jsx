@@ -190,12 +190,18 @@ export default function PublicationsNavigation() {
     }
   }, [publicationNavigation]);
   const addNewNavigationForm = () => {
-    setNavigationList([
-      ...navigationList,
-      <NavigationForm onSubmit={handleSubmit} key={navigationList.length} />,
-    ]);
+    if (_.isEmpty(navigationList)) {
+      setNavigationList([<NavigationForm onSubmit={handleSubmit} key={0} />]);
+    } else
+      setNavigationList([
+        ...navigationList,
+        <NavigationForm
+          onSubmit={handleSubmit}
+          key={_.size(navigationList)}
+        />,
+      ]);
   };
-
+  console.log(navigationList);
   const onDragEnd = (result, navigationList, setNavigationList) => {
     if (result.destination) {
       const newItems = [...navigationList];
