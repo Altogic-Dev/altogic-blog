@@ -110,8 +110,8 @@ export function* getTopicAnalyticsSaga({ payload: topicName }) {
     else if (data) {
       yield put(
         topicsActions.getTopicAnalyticsSuccess({
-          storyCount: data.counts.storyCount,
-          authorCount: data.counts.writerCount,
+          storyCount: _.size(data.storyCount),
+          authorCount: _.size(data.storyCount),
           profilePictures: _.map(
             data.profilePictures,
             'groupby.profilePicture'

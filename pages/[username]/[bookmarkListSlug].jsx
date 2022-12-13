@@ -157,18 +157,6 @@ export default function ListDetail() {
     }
   }, [isMyProfileState, profileUser, sessionUser]);
 
-  // useEffect(() => {
-  //   if (bookmarkListSlug && bookmarkListSlug !== bookmarkList?.slug) {
-  //     dispatch(
-  //       getBookmarkListDetailRequest({
-  //         slug: bookmarkListSlug,
-  //         page: bookmarkListPage,
-  //         limit: BOOKMARK_LIST_LIMIT,
-  //       })
-  //     );
-  //   }
-  // }, [bookmarkListSlug]);
-
   useEffect(() => {
     if (!sessionUser && bookmarkList?.isPrivate) {
       router.push('/');
@@ -194,9 +182,8 @@ export default function ListDetail() {
     }
   }, [bookmarkListPage, bookmarkListSlug]);
 
-  console.log(bookmarkList?.storyCount);
   console.log(bookmarkList);
-  console.log(_.size(_.get(bookmarkList, 'bookmarks')));
+  console.log(sessionUser);
   useEffect(() => {
     if (
       sessionUser &&
@@ -292,83 +279,85 @@ export default function ListDetail() {
                   {bookmarkList?.isPrivate ? 'Private' : 'Public'}
                 </span>
 
-                <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
-                  <Menu as="div" className="relative inline-block text-left">
-                    <div>
-                      <Menu.Button className="inline-flex items-center justify-center px-4 py-3 rounded-md">
-                        <svg
-                          className="w-6 h-6 text-slate-400"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
-                    >
-                      <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                        <Menu.Item>
-                          <Button
-                            className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            onClick={() => setEditBookmarkList(true)}
+                {bookmarkList?.user === sessionUser?._id && (
+                  <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
+                    <Menu as="div" className="relative inline-block text-left">
+                      <div>
+                        <Menu.Button className="inline-flex items-center justify-center px-4 py-3 rounded-md">
+                          <svg
+                            className="w-6 h-6 text-slate-400"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            Rename list
-                          </Button>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Button
-                            className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            onClick={() =>
-                              dispatch(
-                                clearBookmarkListRequest(bookmarkList._id)
-                              )
-                            }
-                          >
-                            Remove items
-                          </Button>
-                        </Menu.Item>
-                        <Menu.Item>
-                          <Button
-                            className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                            onClick={() =>
-                              dispatch(
-                                updateBookmarkListRequest({
-                                  _id: bookmarkList._id,
-                                  isPrivate: !bookmarkList.isPrivate,
-                                })
-                              )
-                            }
-                          >
-                            Make list{' '}
-                            {bookmarkList?.isPrivate ? 'public' : 'private'}
-                          </Button>
-                        </Menu.Item>
-                        {!bookmarkList?.isDefault && (
+                            <path
+                              d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
                           <Menu.Item>
                             <Button
-                              onClick={() => setDeleteListModal(true)}
-                              className="w-full px-6 py-3 text-red-600 text-base tracking-sm transform transition text-start ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={() => setEditBookmarkList(true)}
                             >
-                              Delete list
+                              Rename list
                             </Button>
                           </Menu.Item>
-                        )}
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
+                          <Menu.Item>
+                            <Button
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={() =>
+                                dispatch(
+                                  clearBookmarkListRequest(bookmarkList._id)
+                                )
+                              }
+                            >
+                              Remove items
+                            </Button>
+                          </Menu.Item>
+                          <Menu.Item>
+                            <Button
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={() =>
+                                dispatch(
+                                  updateBookmarkListRequest({
+                                    _id: bookmarkList._id,
+                                    isPrivate: !bookmarkList.isPrivate,
+                                  })
+                                )
+                              }
+                            >
+                              Make list{' '}
+                              {bookmarkList?.isPrivate ? 'public' : 'private'}
+                            </Button>
+                          </Menu.Item>
+                          {!bookmarkList?.isDefault && (
+                            <Menu.Item>
+                              <Button
+                                onClick={() => setDeleteListModal(true)}
+                                className="w-full px-6 py-3 text-red-600 text-base tracking-sm transform transition text-start ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              >
+                                Delete list
+                              </Button>
+                            </Menu.Item>
+                          )}
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
+                )}
               </div>
 
               {stories.length > 0 ? (
@@ -386,6 +375,9 @@ export default function ListDetail() {
                         storyUrl={`/story/${post.storySlug}`}
                         timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
                         title={post.title}
+                        isDeleted={
+                          post.isDeleted || post.isPrivate || !post.isPublished
+                        }
                         infoText={parseHtml(post?.content).slice(0, 300)}
                         badgeUrl={post.badgeUrl}
                         badgeName={_.first(post.categoryNames)}

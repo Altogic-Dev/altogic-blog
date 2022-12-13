@@ -19,6 +19,7 @@ export default function AligmentPublicationLayout({
   linkedin,
   navigations,
   setSelectedTabIndex,
+  preview,
 }) {
   const dispatch = useDispatch();
   const isLoading = useSelector((state) => state.publication.isLoading);
@@ -157,8 +158,8 @@ export default function AligmentPublicationLayout({
               {sessionUser && (
                 <FollowButton
                   isFollowing={publication?.isFollowing}
-                  isLoading={isLoading}
-                  onClick={handleFollowButton}
+                  isLoading={!preview && isLoading}
+                  onClick={!preview ? handleFollowButton : null}
                 />
               )}
             </div>

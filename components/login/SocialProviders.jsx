@@ -9,7 +9,7 @@ export default function SocialProviders() {
   };
 
   return (
-    <div className="mt-1 grid grid-cols-4 gap-3">
+    <div className="mt-1 grid grid-cols-3 gap-3">
       <div>
         <button
           onClick={() => {
@@ -57,7 +57,7 @@ export default function SocialProviders() {
           </svg>
         </button>
       </div>
-
+      {/* 
       <div>
         <button
           onClick={() => {
@@ -80,7 +80,7 @@ export default function SocialProviders() {
             />
           </svg>
         </button>
-      </div>
+      </div> */}
 
       <div>
         <button

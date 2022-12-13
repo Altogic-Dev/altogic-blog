@@ -121,11 +121,8 @@ const StoryService = {
   },
 
   updateCategory(storyId, newCategoryNames) {
-    return db.model('story').object(storyId).updateFields({
-      field: 'categoryNames',
-      updateType: 'set',
-      value: newCategoryNames,
-    });
+    return endpoint.post(`/story/${storyId}/update-categories`, newCategoryNames);
+
   },
   publishStory(story) {
     return endpoint.post('/story', story);

@@ -91,24 +91,18 @@ export default function Home() {
   }, [followingListPage]);
 
   useEffect(() => {
-    if (selectedIndex !== 0 || !userFromStorage || _.isNil(followingStories)) {
-      getRecommendedStories(recommendedListPage);
-    }
-  }, [recommendedListPage, userFromStorage]);
-
-  useEffect(() => {
     setUser(userFromStorage);
   }, [userFromStorage]);
 
   useEffect(() => {
     if (
-      selectedIndex === 1 &&
+      (selectedIndex === 1 || !_.size(followingStories)) &&
       _.isNil(recommendedStories) &&
       recommendedListPage === 1
     ) {
       getRecommendedStories(followingListPage);
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, userFromStorage, selectedIndex]);
 
   useEffect(() => {
     if (
@@ -118,6 +112,7 @@ export default function Home() {
       setLoading(false);
     }
   }, [isLoading, followingStories, recommendedStories]);
+
 
   return (
     <div>

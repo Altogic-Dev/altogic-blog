@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import _ from 'lodash';
 import Link from 'next/link';
-import { Pin } from '@icon-park/react';
+import { Info, Pin } from '@icon-park/react';
 import Image from 'next/image';
 import { storyActions } from '@/redux/story/storySlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -19,6 +19,7 @@ export default function PostCard({
   authorName,
   storyUrl,
   draft,
+  isDeleted,
   title,
   infoText,
   badgeName,
@@ -94,12 +95,25 @@ export default function PostCard({
             <Link href={storyUrl}>
               <a className="group inline-flex flex-col mb-4 md:mb-11 space-y-2">
                 <div className="flex items-center gap-2">
+                  {isDeleted && (
+                    <div className="group">
+                      <Info className="text-slate-400" />
+                      <div className="hidden rounded-lg p-2 text-xs bg-gray-100 absolute z-50 group-hover:block -mt-16 -ml-48 shadow-md w-48">
+                        This story has been deleted or in draft
+                      </div>
+                    </div>
+                  )}
+
                   {draft && (
                     <span className="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-purple-50 text-purple-800">
                       Draft
                     </span>
                   )}
-                  <h2 className="text-slate-900 text-3xl font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
+                  <h2
+                    className={`text-slate-900 text-3xl font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700 ${
+                      isDeleted ? 'line-through' : ''
+                    }`}
+                  >
                     {title}
                   </h2>
                 </div>

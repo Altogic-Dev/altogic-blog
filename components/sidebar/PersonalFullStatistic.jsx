@@ -10,6 +10,7 @@ export default function PersonalFullStatistic() {
         <span className="flex flex-col text-slate-700">
           <span className="text-3xl font-bold tracking-md">
             {topicAnalytics?.storyCount}
+
           </span>
           <span className="text-xl tracking-md">
             {topicAnalytics?.storyCount > 1 ? 'Stories' : 'Story'}
