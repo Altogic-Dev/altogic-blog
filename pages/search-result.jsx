@@ -141,7 +141,7 @@ export default function SearchResult() {
                       onEnd={() => setPostLimit((prev) => prev + 10)}
                     >
                       <ul className="divide-y divide-gray-200">
-                        {_.size(searchResults.stories) > 0 ? (
+                        {_.size(searchResults?.stories) > 0 ? (
                           searchResults?.stories.map((story) => (
                             <PostCard
                               publication={story.publication}

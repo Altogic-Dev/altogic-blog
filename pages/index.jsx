@@ -21,6 +21,7 @@ export default function Home() {
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
 
+  console.log(selectedIndex)
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo
@@ -95,14 +96,11 @@ export default function Home() {
   }, [userFromStorage]);
 
   useEffect(() => {
-    if (
-      (selectedIndex === 1 || !_.size(followingStories)) &&
-      _.isNil(recommendedStories) &&
-      recommendedListPage === 1
-    ) {
-      getRecommendedStories(followingListPage);
+
+    if (_.size(recommendedStories) <= (recommendedStoriesInfo?.count || 1)) {
+      getRecommendedStories(recommendedListPage);
     }
-  }, [selectedIndex, userFromStorage, selectedIndex]);
+  }, [recommendedListPage]);
 
   useEffect(() => {
     if (
@@ -112,7 +110,6 @@ export default function Home() {
       setLoading(false);
     }
   }, [isLoading, followingStories, recommendedStories]);
-
 
   return (
     <div>
