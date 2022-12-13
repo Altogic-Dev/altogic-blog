@@ -97,10 +97,12 @@ export default function Home() {
 
   useEffect(() => {
 
-    if (_.size(recommendedStories) <= (recommendedStoriesInfo?.count || 1)) {
+    if (_.size(recommendedStories) < (recommendedStoriesInfo?.count || 1)) {
       getRecommendedStories(recommendedListPage);
     }
   }, [recommendedListPage]);
+
+  console.log(recommendedStories)
 
   useEffect(() => {
     if (
