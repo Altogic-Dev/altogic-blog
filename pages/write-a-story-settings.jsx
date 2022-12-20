@@ -317,7 +317,6 @@ export default function WriteAStorySettings() {
                     </label>
                   </div>
                   <Button
-                    type="button"
                     className="inline-flex items-center justify-center flex-shrink-0 w-full md:w-auto h-[42px] md:h-[48px] px-10 py-1.5 sm:py-2 border border-transparent text-sm md:text-base leading-5 rounded-full tracking-sm text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                     loading={sortingLoading}
                     onClick={() => {
@@ -364,7 +363,8 @@ export default function WriteAStorySettings() {
                             />
                             {!_.isEmpty(foundTopics) &&
                               !topicLoading &&
-                              isSearchOpen && (
+                              isSearchOpen &&
+                              inpCategory && (
                                 <PublicationSettingsSuggestions
                                   name="Categories"
                                   selectedIndex={selectedIndex}
