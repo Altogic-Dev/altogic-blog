@@ -41,6 +41,7 @@ export default function PublicationsNewFeature() {
   const logo = useSelector((state) => state.file.fileLink);
   const user = useSelector((state) => state.auth.user);
   const [isLoading, setIsLoading] = useState(false);
+  const [logoState, setLogoState] = useState();
   const {
     handleSubmit,
     register,
@@ -112,10 +113,16 @@ export default function PublicationsNewFeature() {
   }, [featurePage]);
 
   const submitFunction = async (data) => {
-    setIsLoading(true);
-    dispatch(
-      uploadFile(file, `${publication.name}-${publication.featurePageCount}`)
-    );
+    if (file) {
+      setIsLoading(true);
+      dispatch(
+        uploadFile(file, `${publication.name}-${publication.featurePageCount}`)
+      );
+    } else if (featurePage?.logo) {
+      setLogoState(featurePage.logo);
+    } else {
+      setFileUploadError('Logo is required');
+    }
     const stories = [];
     Object.keys(featStories).forEach((key) => {
       const story = featStories[key].map((story) => {
@@ -141,6 +148,7 @@ export default function PublicationsNewFeature() {
       stories: stories[index],
     }));
     setFeaturePageRequest({
+      ...(id && { _id: id }),
       ...data,
       publication: publication._id,
       sections,
@@ -164,19 +172,23 @@ export default function PublicationsNewFeature() {
     img.src = URL.createObjectURL(file);
   };
   useEffect(() => {
-    if (logo) {
+    console.log(logoState);
+    if (logoState) {
       if (!id) {
         dispatch(
           publicationActions.createFeaturePageRequest({
             ...featurePageRequest,
-            logo,
+            logo: logoState,
           })
         );
       } else {
         dispatch(
           publicationActions.updateFeaturePageRequest({
-            ...featurePageRequest,
-            logo,
+            feature: {
+              ..._.omit(featurePageRequest, ['sections']),
+              logo: logoState,
+            },
+            sections: featurePageRequest.sections,
           })
         );
       }
@@ -184,8 +196,20 @@ export default function PublicationsNewFeature() {
       setIsLoading(false);
       router.push(`/publication/${publication.publicationName}/feature`);
     }
+  }, [logoState]);
+
+  useEffect(() => {
+    if (logo) {
+      setLogoState(logo);
+    }
   }, [logo]);
 
+  useEffect(
+    () => () => {
+      dispatch(publicationActions.cleanFeaturePageRequest());
+    },
+    []
+  );
   return (
     <div>
       <HeadContent>

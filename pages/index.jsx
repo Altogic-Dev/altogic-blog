@@ -21,7 +21,6 @@ export default function Home() {
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
 
-  console.log(selectedIndex)
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo

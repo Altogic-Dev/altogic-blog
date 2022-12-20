@@ -266,3 +266,11 @@ textarea {
   background: rgb(126 34 206 /0.8);
   border-radius: 8px;
 }
+
+@media (width > 640) {
+}
+@media only screen and (max-width: 1023px) {
+  .altogic-logo {
+    bottom: 4rem;
+  }
+}

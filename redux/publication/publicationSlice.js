@@ -15,7 +15,7 @@ const initialState = {
   latestPublicationStoriesPage: 0,
   featurePages: [],
   featurePage: null,
-  publicationNavigation: [],
+  publicationNavigation: null,
   error: null,
   isLoading: false,
   userPublications: null,
@@ -373,6 +373,9 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
 
+    cleanFeaturePageRequest(state) {
+      state.featurePage = null;
+    },
     extraReducers: {
       [HYDRATE]: (state, action) => ({
         ...state,

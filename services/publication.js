@@ -113,9 +113,14 @@ const PublicationService = {
   createFeaturePage(feature) {
     return endpoint.post('/feature', feature);
   },
-  updateFeaturePage(feature) {
-    return db.model('feature_page').object(feature._id).update(feature);
+  updateFeaturePage(feature, sections) {
+
+    return endpoint.post('/feature_page/update', {
+      feature,
+      sections
+    })
   },
+
   getUsersPublications() {
     return endpoint.get('/user/publications');
   },

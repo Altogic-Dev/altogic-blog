@@ -112,8 +112,8 @@ export default function WriteAStory({ id }) {
 
   useEffect(() => {
     if ((content !== '<p><br></p>' || inpTitle) && isChanged) {
-      setMinRead(Math.ceil(content.split(' ').length / 200));
       setLoading(true);
+      setMinRead(Math.ceil(content.split(' ').length / 200) || 1)
       const story = {
         user: user._id,
         username: user.username,
@@ -121,7 +121,7 @@ export default function WriteAStory({ id }) {
         content,
         storyImages: storyImages.filter((item) => item && item !== 'undefined'),
         title: inpTitle || 'Untitled',
-        estimatedReadingTime: minRead || 1,
+        estimatedReadingTime: Math.ceil(content.split(' ').length / 200) || 1,
         isPublished: false,
         publication: !_.isNil(selectedPublication)
           ? selectedPublication._id
@@ -157,7 +157,7 @@ export default function WriteAStory({ id }) {
         };
       }
     }
-  }, [content, inpTitle, getValues('title'), router.isReady, minRead]);
+  }, [content, inpTitle, getValues('title'), router.isReady]);
 
   const handleChange = (e) => {
     if (!isChanged) {

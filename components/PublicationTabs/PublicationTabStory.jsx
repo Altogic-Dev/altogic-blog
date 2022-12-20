@@ -49,7 +49,7 @@ function PublicationTabStory({ tab, publication }) {
 
   useEffect(() => {
     if (publication) {
-      dispatch(storyActions.getStoryRequest(tab.contents));
+      dispatch(storyActions.getStoryRequest(tab.story));
     }
   }, [publication]);
 

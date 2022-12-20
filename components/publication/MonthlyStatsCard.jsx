@@ -2,6 +2,7 @@ import { parseHtml } from '@/utils/utils';
 import Link from 'next/link';
 
 export default function MonthlyStatsCard({ name, statistics }) {
+  console.log(statistics)
   return (
     <>
       <div className="hidden lg:block mt-12 mb-14 border border-gray-200 rounded-lg overflow-hidden">

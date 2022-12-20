@@ -121,7 +121,7 @@ const StoryService = {
   },
 
   updateCategory(storyId, newCategoryNames) {
-    return endpoint.post(`/story/${storyId}/update-categories`, { newCategoryNames });
+    return endpoint.post(`/story/${storyId}/update-categories`, {newCategoryNames});
 
   },
   publishStory(story) {

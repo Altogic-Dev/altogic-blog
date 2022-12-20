@@ -103,7 +103,7 @@ export default function YourTopics({ Tag }) {
             <span className="text-slate-500 text-sm tracking-sm whitespace-nowrap uppercase">
               Your Categories
             </span>
-            <div className="flex items-center gap-4 overflow-x-auto">
+            <div className="flex gap-2 flex-wrap w-full">
               {followingTopicsState?.map((topic) => (
                 <Topic key={topic} title={topic} />
               ))}

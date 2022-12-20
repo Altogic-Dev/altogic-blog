@@ -182,8 +182,6 @@ export default function ListDetail() {
     }
   }, [bookmarkListPage, bookmarkListSlug]);
 
-  console.log(bookmarkList);
-  console.log(sessionUser);
   useEffect(() => {
     if (
       sessionUser &&

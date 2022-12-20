@@ -41,11 +41,11 @@ export default function NavigationForm({ navigation }) {
     if (topics || stories || featurePages) {
       setTabData({
         topic: topics,
-        story: stories,
+        story: stories.map((story) => ({  story: story._id ,title: story.title  })),
         feature: featurePages,
       });
     }
-  }, [topics, stories,featurePages]);
+  }, [topics, stories, featurePages]);
   const {
     register,
     formState: { errors },
@@ -67,18 +67,18 @@ export default function NavigationForm({ navigation }) {
     if (selected && tabData) {
       if (_.isNil(navigation?.contents)) {
         setSelectedContent(_.first(tabData[selected.value]));
-      }
-      setSelectedContent(
-        _.find(
-          tabData[selected.value],
-          (item) =>
-            item._id === navigation?.contents ||
-            item.title === navigation?.contents ||
-            item.topic === navigation?.contents
-        )
-      );
+      } else
+        setSelectedContent(
+          _.find(
+            tabData[selected.value],
+            (item) =>
+              item._id === navigation?.contents ||
+              item.title === navigation?.contents ||
+              item.topic === navigation?.contents
+          )
+        );
     }
-  }, [tabData,selected]);
+  }, [tabData, selected, navigation]);
 
   return (
     <form className="w-full grid grid-cols-3 gap-4 items-center">

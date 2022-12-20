@@ -1,7 +1,10 @@
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import Button from './basic/button';
 import FollowButton from './basic/followbutton';
 import SocialIcons from './publication/SocialIcons';
 
@@ -18,15 +21,17 @@ export default function AligmentPublicationLayout({
   facebook,
   linkedin,
   navigations,
-  setSelectedTabIndex,
   preview,
 }) {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const { publicationName, tabName } = router.query;
   const isLoading = useSelector((state) => state.publication.isLoading);
   const publication = useSelector((state) => state.publication.publication);
   const sessionUser = useSelector((state) => state.auth.user);
+  const [user, setUser] = useState();
   const handleFollowButton = () => {
-    const user = {
+    const followerUser = {
       _id: sessionUser._id,
       userName: sessionUser.username,
       userAbout: sessionUser.about,
@@ -44,7 +49,7 @@ export default function AligmentPublicationLayout({
       dispatch(
         publicationActions.unfollowPublicationRequest({
           publication: _.get(publication, '_id'),
-          user,
+          followerUser,
         })
       );
     } else if (publication) {
@@ -53,11 +58,15 @@ export default function AligmentPublicationLayout({
           publication: {
             ...publicationReq,
           },
-          user,
+          followerUser,
         })
       );
     }
   };
+
+  useEffect(() => {
+    if (!user) setUser(sessionUser);
+  }, [user]);
 
   return (
     <>
@@ -122,18 +131,19 @@ export default function AligmentPublicationLayout({
                     className="flex items-center justify-center"
                   >
                     {nav?.tabType !== 'link' ? (
-                      <button
-                        type="button"
+                      <Button
                         onClick={() =>
-                          _.isFunction(setSelectedTabIndex)
-                            ? setSelectedTabIndex(index)
-                            : null
+                          router.push(
+                            `/publication/${publicationName}/${nav.tabName}`
+                          )
                         }
-                        className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
+                        className={`inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700 ${
+                          tabName === nav?.tabName ? 'bg-gray-700' : ''
+                        }`}
                         style={{ color }}
                       >
                         {_.get(nav, 'tabName')}
-                      </button>
+                      </Button>
                     ) : (
                       <a
                         rel="noreferrer"
@@ -155,7 +165,7 @@ export default function AligmentPublicationLayout({
                 color={color}
               />
 
-              {sessionUser && (
+              {user && (
                 <FollowButton
                   isFollowing={publication?.isFollowing}
                   isLoading={!preview && isLoading}

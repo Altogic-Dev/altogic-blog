@@ -115,6 +115,7 @@ export default function PublishSettings() {
         });
       }
     }
+
     dispatch(
       storyActions.publishStoryRequest({
         story: {
@@ -122,12 +123,12 @@ export default function PublishSettings() {
           publication:
             inpSelectedAuthor.type === 'publication'
               ? inpSelectedAuthor.id
-              : undefined,
+              : null,
           user: user?._id,
           publicationName:
             inpSelectedAuthor.type === 'publication'
               ? inpSelectedAuthor.name
-              : undefined,
+              : null,
           isPublished: true,
           categoryNames: inpCategoryNames,
           isRestrictedComments: inpRestrictComments,

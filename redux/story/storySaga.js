@@ -345,7 +345,7 @@ function* deleteStorySaga({
 
 function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
   try {
-    const { errors } = yield call(
+    const { data, errors } = yield call(
       StoryService.updateCategory,
       storyId,
       newCategoryNames
@@ -356,10 +356,11 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
         const topic = { name: item }
         return topic
       }));
-
+    console.log(data)
 
     if (errors) throw errors;
-    yield put(storyActions.updateCategoryNamesSuccess({ newCategoryNames, storyId }));
+    if (data)
+      yield put(storyActions.updateCategoryNamesSuccess({ newCategoryNames, storyId }));
   } catch (e) {
     console.error({ e });
   }

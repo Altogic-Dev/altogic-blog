@@ -152,7 +152,7 @@ export default function PublicationsNormalCard({
                             {story.title}
                           </span>
                           <span className="text-slate-700 text-xs tracking-sm">
-                            {story?.user.name} on{' '}
+                            {story?.user?.name} on{' '}
                             {DateTime.fromISO(story?.createdAt).toFormat(
                               'LLL dd'
                             )}

@@ -105,7 +105,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleRemoveReply = (reply) => {
-    if (user._id === reply.user._id) {
+    if (user._id === reply.user._id || user._id === reply.user) {
       dispatch(storyActions.removeReplyRequest(reply));
     }
   };

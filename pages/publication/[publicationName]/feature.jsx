@@ -58,11 +58,9 @@ export default function PublicationsFeature() {
   useEffect(() => {
     if (publication) {
       checkAuthorization(publication);
-      getPublicationFeatures();
+      if (_.isEmpty(publicationFeatures)) getPublicationFeatures();
     }
   }, [publication]);
-
-
 
   return (
     <div>
@@ -72,7 +70,6 @@ export default function PublicationsFeature() {
           name="description"
           content="Altogic Medium Blog App Publications Feature"
         />
-        
       </HeadContent>
       <Layout>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
