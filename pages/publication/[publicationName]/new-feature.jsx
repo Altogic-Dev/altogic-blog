@@ -28,7 +28,6 @@ export default function PublicationsNewFeature() {
   const formSchema = new yup.ObjectSchema({
     title: yup.string().required('Title is required'),
     description: yup.string().required('Description is required'),
-    link: yup.string().url('Url is not valid').required('Url is required'),
     logo: yup.string().url(),
   });
 
@@ -107,7 +106,6 @@ export default function PublicationsNewFeature() {
   useEffect(() => {
     if (featurePage) {
       setValue('title', featurePage.title);
-      setValue('link', featurePage.link);
       setValue('description', featurePage.description);
     }
   }, [featurePage]);
@@ -268,28 +266,6 @@ export default function PublicationsNewFeature() {
                       placeholder="Type a title for your feature page"
                       className="block w-full min-h-[44px] placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                     />
-                  </div>
-                </div>
-                <div>
-                  <label
-                    htmlFor="link"
-                    className="block text-slate-700 mb-3 text-lg"
-                  >
-                    Link*
-                  </label>
-                  <div className="mt-1 sm:mt-0 sm:col-span-2">
-                    <Input
-                      error={errors.link}
-                      type="text"
-                      name="link"
-                      id="link"
-                      register={register('link')}
-                      placeholder="Type a custom link for your feature page"
-                      className="block w-full min-h-[44px] placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                    />
-                    <p className="mt-1.5 text-sm text-slate-500">
-                      Link: algotic.com/publication/...
-                    </p>
                   </div>
                 </div>
                 <div>

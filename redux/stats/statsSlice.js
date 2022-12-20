@@ -246,6 +246,12 @@ export const statsSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    clearStoryDataRequest(state) {
+      state.internalViewsPeriodically = []
+      state.externalViewsPeriodically = []
+      state.storyTotalReadTimePeriodically = []
+      state.isLoading = false;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
