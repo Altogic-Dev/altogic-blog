@@ -2,7 +2,7 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 import { parseHtml } from '@/utils/utils';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PublicationPostCard from '../PublicationsPostCard';
 
@@ -13,21 +13,18 @@ function PublicationTabTopic({ tab, publication }) {
     (state) => state.topics.publicationStoriesByTopic
   );
 
-  const [didMount, setDidMount] = useState(false);
-
   const stories = _.map(topicStories, 'story');
 
   useEffect(() => {
-    if (publication && tab && !didMount) {
+    if (publication && tab) {
       dispatch(
         topicsActions.getPublicationsStoriesByTopicRequest({
           publicationId: publication._id,
           topicName: tab.contents,
         })
       );
-      setDidMount(true);
     }
-  }, [publication]);
+  }, [publication, tab]);
 
   return (
     <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:min-w-[100vw] lg:min-w-[80vw] ">

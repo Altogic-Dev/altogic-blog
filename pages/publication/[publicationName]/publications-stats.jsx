@@ -52,7 +52,7 @@ export default function PublicationsStats({ publicationName }) {
   const [viewsDateTypeState, setViewsDateTypeState] = useState();
   const [readsDateTypeState, setReadsDateTypeState] = useState();
   const [likesDateTypeState, setLikesDateTypeState] = useState();
-
+  const [page, setPage] = useState(0);
   const getPublicationViewsPeriodically = (date, type) => {
     if (viewsPeriodically[type] === undefined) {
       dispatch(
@@ -118,22 +118,28 @@ export default function PublicationsStats({ publicationName }) {
         '30 Days'
       );
     }
-    getPublicationsStoriesStats(0);
-
   }, [publication]);
+
+  useEffect(() => {
+    if (
+      (publication && _.isEmpty(publicationStories)) ||
+      _.get(_.last(publicationStories)) < page
+    )
+      getPublicationsStoriesStats(page);
+  }, [page, publication]);
 
   useEffect(() => {
     let temp = 0;
     if (readsDateType) {
-      console.log()
       setReadsDateTypeState(readsDateType);
       _.forEach(readsPeriodically[readsDateType], (item) => {
-        console.log(item.count)
         temp += item.count;
       });
       setTotalReadsCount(temp);
     }
-  }, [readsDateType]);
+
+  }, [readsDateType,readsPeriodically]);
+
   useEffect(() => {
     let temp = 0;
     if (viewsDateType) {
@@ -143,7 +149,7 @@ export default function PublicationsStats({ publicationName }) {
       });
       setTotalViewsCount(temp);
     }
-  }, [viewsDateType]);
+  }, [viewsDateType,viewsPeriodically]);
   useEffect(() => {
     let temp = 0;
     if (likesDateType) {
@@ -153,9 +159,7 @@ export default function PublicationsStats({ publicationName }) {
       });
       setTotalLikesCount(temp);
     }
-  }, [likesDateType]);
-
-  console.log(publicationStories)
+  }, [likesDateType,likesPeriodically]);
 
   return (
     <div>
@@ -207,7 +211,9 @@ export default function PublicationsStats({ publicationName }) {
                     </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
                       Minutes read{' '}
-                      <span className="font-semibold">{readsDateTypeState}</span>
+                      <span className="font-semibold">
+                        {readsDateTypeState}
+                      </span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">
                       The total amount of time spent reading your publication.
@@ -285,13 +291,7 @@ export default function PublicationsStats({ publicationName }) {
                 </div>
               </Tab.Panel>
               <Tab.Panel>
-                <ListObserver
-                  // onEnd={() =>
-                  //   getPublicationsStoriesStats(
-                  //     _.get(_.last(publicationStories), 'page') + 1
-                  //   )
-                  // }
-                >
+                <ListObserver onEnd={() => setPage((state) => state + 1)}>
                   {publicationStories.map((item) => (
                     <MonthlyStatsCard
                       key={item}

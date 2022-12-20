@@ -62,11 +62,11 @@ export default function Publications({ tabName }) {
       publicationActions.getPublicationNavigationRequest(publication._id)
     );
   };
-
   const selectedTab = _.find(
     navigations,
     (navigation) => navigation.tabName === tabName
   );
+
   useEffect(() => {
     if (!isNil(publicationName)) {
       getLatestPublicationStories();

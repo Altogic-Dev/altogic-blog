@@ -122,7 +122,8 @@ export default function StatsBlogPost() {
   const getDataByTime = (date, dateType, dataType) => {
     if (dataType !== 'Read') {
       getStoryStatisticsPeriodically(date, dateType);
-    } if (dataType !== 'View') {
+    }
+    if (dataType !== 'View') {
       getStoryReadingTimePeriodically(date, dateType);
     }
   };
@@ -185,7 +186,13 @@ export default function StatsBlogPost() {
     }
   }, [viewDateType]);
 
-  
+  useEffect(
+    () => () => {
+      dispatch(statsActions.clearStoryDataRequest());
+    },
+    []
+  );
+
   return (
     <div>
       <HeadContent>
@@ -194,7 +201,6 @@ export default function StatsBlogPost() {
           name="description"
           content="Altogic Medium Blog App Stats Blog Post"
         />
-        
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
