@@ -7,7 +7,6 @@ import {
   PencilAltIcon,
   BookOpenIcon,
   UserAddIcon,
-  LocationMarkerIcon,
   DocumentDuplicateIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
@@ -86,7 +85,7 @@ export default function PublicationDropdown({ publication, className }) {
             </Menu.Button>
           </div>
           <div>
-            <Menu.Button
+            {/* <Menu.Button
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
               onClick={() =>
                 router.push(
@@ -96,7 +95,7 @@ export default function PublicationDropdown({ publication, className }) {
             >
               <LocationMarkerIcon className="w-4 h-4 text-slate-500" />
               Newsletter
-            </Menu.Button>
+            </Menu.Button> */}
             {['admin', 'editor'].includes(pubUser?.role) && (
               <Menu.Button
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"

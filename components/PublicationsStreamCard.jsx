@@ -50,6 +50,7 @@ export default function PublicationsStreamCard({
     }
   }, [publicationsStories]);
 
+
   return (
     <div className="space-y-4">
       <h2 className="text-slate-500 text-2xl font-semibold tracking-md">
@@ -128,7 +129,7 @@ export default function PublicationsStreamCard({
                         {story.title}
                       </span>
                       <span className="text-slate-700 text-xs tracking-sm">
-                        {story?.user.name} on{' '}
+                        {story?.user?.name} on{' '}
                         {DateTime.fromISO(story?.createdAt).toFormat('LLL dd')}
                       </span>
                     </button>

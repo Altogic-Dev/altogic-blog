@@ -73,7 +73,6 @@ export default function TagPage() {
     
   }, [latestTopics, bestTopics, trendingTopics]);
 
-  console.log('sa');
 
   return (
     <div>

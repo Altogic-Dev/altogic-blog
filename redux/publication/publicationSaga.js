@@ -156,22 +156,29 @@ function* updatePublicationNavigation({
   }
 }
 function* deletePublicationSectionRequest({ payload: { sectionIndex } }) {
-  const selectedFeatureStories = yield select(
-    (state) => state.story.featureStories
-  );
-  const sections = yield select((state) => state.publications.sections);
-  const newSections = [...sections];
-  const newFeatureStories = { ...selectedFeatureStories };
-  delete newFeatureStories[`section-${sectionIndex}`];
-  newSections.splice(sectionIndex, 1);
-  yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
-  yield put(publicationActions.setPublicationSectionSuccess(newSections));
+  try {
+    const selectedFeatureStories = yield select(
+      (state) => state.story.featureStories
+    );
+    const sections = yield select((state) => state.publication.sections);
+    const newSections = [...sections];
+    const newFeatureStories = { ...selectedFeatureStories };
+    delete newFeatureStories[`section-${sectionIndex}`];
+    newSections.splice(sectionIndex, 1);
+    yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+  } catch (error) {
+    console.log(error)
+  }
 }
 function* setPublicationSectionSaga({ payload: { sectionIndex, section } }) {
-  const sections = yield select((state) => state.publication.sections);
-  const newSections = [...sections];
-  newSections[sectionIndex] = section;
-  yield put(publicationActions.setFeaturePageSectionsSuccess(newSections));
+  try {
+    const sections = yield select((state) => state.publication.sections);
+    const newSections = [...sections];
+    newSections[sectionIndex] = section;
+    yield put(publicationActions.setFeaturePageSectionsSuccess(newSections));
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 function* getPublicationByIdSaga({ payload: publicationId }) {
@@ -365,19 +372,26 @@ function* createFeaturePage({ payload }) {
     yield put(publicationActions.createFeaturePageFailure(e));
   }
 }
-function* updateFeaturePage({ payload }) {
+function* updateFeaturePage({ payload: { feature, sections } }) {
   try {
     const { data, errors } = yield call(
       PublicationService.updateFeaturePage,
-      payload
+      {
+        ...feature,
+        customLink: feature.title,
+      },
+      sections
+
+
     );
+    if (errors) {
+      throw errors.items;
+    }
     if (data) {
       yield put(publicationActions.updateFeaturePageSuccess(data));
       yield fork(clearFileLink);
     }
-    if (errors) {
-      throw errors.items;
-    }
+
   } catch (e) {
     yield put(publicationActions.updateFeaturePageFailure(e));
   }

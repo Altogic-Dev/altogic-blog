@@ -47,6 +47,7 @@ export default function PostCard({
     },
     []
   );
+
   return (
     <>
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2">
@@ -196,107 +197,110 @@ export default function PostCard({
                 />
               </Menu>
             )}
-            {normalMenu && (
-              <Menu as="div" className="relative inline-block text-left">
-                <div>
-                  <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50">
-                    <svg
-                      className="w-6 h-6 text-slate-400 group-hover:text-slate-600"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                  </Menu.Button>
-                </div>
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-100"
-                  enterFrom="transform opacity-0 scale-95"
-                  enterTo="transform opacity-100 scale-100"
-                  leave="transition ease-in duration-75"
-                  leaveFrom="transform opacity-100 scale-100"
-                  leaveTo="transform opacity-0 scale-95"
-                >
-                  <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                    {!_.isNil(optionButtons?.unfollow) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.unfollow}
-                        >
-                          Unfollow this author
-                        </Button>
-                      </Menu.Item>
-                    )}
-                    {!_.isNil(optionButtons?.mute) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.mute}
-                        >
-                          Mute this author
-                        </Button>
-                      </Menu.Item>
-                    )}
-                    {!_.isNil(optionButtons?.report) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.report}
-                        >
-                          Report
-                        </Button>
-                      </Menu.Item>
-                    )}
-                    {!_.isNil(optionButtons?.editStory) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.editStory}
-                        >
-                          Edit Story
-                        </Button>
-                      </Menu.Item>
-                    )}
-                    {!_.isNil(optionButtons?.storySettings) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.storySettings}
-                        >
-                          Story Settings
-                        </Button>
-                      </Menu.Item>
-                    )}
-                    {!_.isNil(optionButtons?.storyStats) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.storyStats}
-                        >
-                          Story Stats
-                        </Button>
-                      </Menu.Item>
-                    )}
-                    {!_.isNil(optionButtons?.deleteStory) && (
-                      <Menu.Item>
-                        <Button
-                          className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
-                          onClick={optionButtons?.deleteStory}
-                        >
-                          Delete Story
-                        </Button>
-                      </Menu.Item>
-                    )}
-                  </Menu.Items>
-                </Transition>
-              </Menu>
-            )}
+            {normalMenu &&
+              ((!_.isNil(optionButtons?.editStory) &&
+                story?.user === sessionUser._id) ||
+                _.isNil(optionButtons?.editStory)) && (
+                <Menu as="div" className="relative inline-block text-left">
+                  <div>
+                    <Menu.Button className="group inline-flex items-center justify-center w-12 h-12 p-3 rounded-md hover:bg-purple-50">
+                      <svg
+                        className="w-6 h-6 text-slate-400 group-hover:text-slate-600"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 12V14C13.1046 14 14 13.1046 14 12H12ZM12 12H10C10 13.1046 10.8954 14 12 14V12ZM12 12V10C10.8954 10 10 10.8955 10 12H12ZM12 12H14C14 10.8955 13.1046 10 12 10V12ZM19 12V14C20.1046 14 21 13.1046 21 12H19ZM19 12H17C17 13.1046 17.8954 14 19 14V12ZM19 12V10C17.8954 10 17 10.8955 17 12H19ZM19 12H21C21 10.8955 20.1046 10 19 10V12ZM5 12V14C6.10457 14 7 13.1046 7 12H5ZM5 12H3C3 13.1046 3.89543 14 5 14V12ZM5 12V10C3.89543 10 3 10.8955 3 12H5ZM5 12H7C7 10.8955 6.10457 10 5 10V12Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </Menu.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
+                      {!_.isNil(optionButtons?.unfollow) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.unfollow}
+                          >
+                            Unfollow this author
+                          </Button>
+                        </Menu.Item>
+                      )}
+                      {!_.isNil(optionButtons?.mute) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.mute}
+                          >
+                            Mute this author
+                          </Button>
+                        </Menu.Item>
+                      )}
+                      {!_.isNil(optionButtons?.report) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.report}
+                          >
+                            Report
+                          </Button>
+                        </Menu.Item>
+                      )}
+                      {!_.isNil(optionButtons?.editStory) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.editStory}
+                          >
+                            Edit Story
+                          </Button>
+                        </Menu.Item>
+                      )}
+                      {!_.isNil(optionButtons?.storySettings) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.storySettings}
+                          >
+                            Story Settings
+                          </Button>
+                        </Menu.Item>
+                      )}
+                      {!_.isNil(optionButtons?.storyStats) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.storyStats}
+                          >
+                            Story Stats
+                          </Button>
+                        </Menu.Item>
+                      )}
+                      {!_.isNil(optionButtons?.deleteStory) && (
+                        <Menu.Item>
+                          <Button
+                            className="flex items-center justify-center w-full px-6 py-4 text-slate-600 text-base tracking-sm text-center hover:bg-slate-50 hover:text-purple-700"
+                            onClick={optionButtons?.deleteStory}
+                          >
+                            Delete Story
+                          </Button>
+                        </Menu.Item>
+                      )}
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              )}
             {listDetailMenu && (
               <Menu as="div" className="relative inline-block text-left">
                 <div>

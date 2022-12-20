@@ -204,7 +204,7 @@ function StoryContent(props) {
 
   return (
     <div ref={forwardedRef}>
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-4 mb-8 ">
         <div className="flex items-center gap-3">
           <Link href={`/${story?.user.username}?tab=about`}>
             <a className="flex items-center gap-2">
@@ -325,12 +325,12 @@ function StoryContent(props) {
           )}
         </div>
       </div>
-      <div className="relative flex flex-col justify-center items-center">
+      <div className="relative flex flex-col justify-center items-center flex-wrap">
         <div className="prose prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md self-start mt-4">
           <h1>{story?.title}</h1>
         </div>
         <article
-          className="prose self-baseline prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm my-10 sm:mb-24"
+          className="w-[90vw] prose self-baseline prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm my-10 sm:mb-24"
           dangerouslySetInnerHTML={{ __html: story?.content }}
         />
         <span className="text-slate-700 text-sm font-semibold mb-2">

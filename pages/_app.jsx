@@ -37,6 +37,7 @@ function MyApp({ Component, pageProps }) {
     ),
     'bookmarkLists'
   );
+
   const [isMounted, setIsMounted] = useState(false);
   const toastTransition = cssTransition({
     enter: 'animate__animated animate__slideInDown',
@@ -120,6 +121,7 @@ function MyApp({ Component, pageProps }) {
     dispatch(storyActions.getMutedUsersRequest({ user }));
   };
 
+
   useEffect(() => {
     if (sessionUser?.username && !isMounted) {
       checkFollowing();
@@ -149,6 +151,7 @@ function MyApp({ Component, pageProps }) {
     }
   }, [sessionUser, publications]);
 
+
   useEffect(() => {
     if (
       sessionUser &&
@@ -161,6 +164,8 @@ function MyApp({ Component, pageProps }) {
     else if (!sessionUser && router.asPath === '/my-stories')
       router.push('/login');
   }, [router.asPath]);
+
+ 
 
   return (
     <>

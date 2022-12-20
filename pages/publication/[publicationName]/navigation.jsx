@@ -89,6 +89,12 @@ export default function PublicationsNavigation() {
             tabType: 'link',
           };
         }
+        if (pair[0] === 'url[story]') {
+          req = {
+            ...req,
+            story: pair[1],
+          };
+        }
         req.publication = publication._id;
       }
       setNavigationReq((prev) => [...prev, req]);
@@ -149,7 +155,7 @@ export default function PublicationsNavigation() {
         temp.order = index;
         return temp;
       });
-      if (publicationNavigation.length > 0) {
+      if (_.size(publicationNavigation) > 0) {
         dispatch(
           publicationActions.updatePublicationNavigationRequest({
             navigation: result,
@@ -167,7 +173,7 @@ export default function PublicationsNavigation() {
     getPublicationDetails();
   }, [publication]);
   useEffect(() => {
-    if (publicationNavigation.length > 0) {
+    if (_.size(publicationNavigation) > 0) {
       setNavigationList(
         publicationNavigation
           .filter((pn) => pn.tabType !== 'link')
@@ -189,19 +195,16 @@ export default function PublicationsNavigation() {
       }
     }
   }, [publicationNavigation]);
+
   const addNewNavigationForm = () => {
     if (_.isEmpty(navigationList)) {
       setNavigationList([<NavigationForm onSubmit={handleSubmit} key={0} />]);
     } else
       setNavigationList([
         ...navigationList,
-        <NavigationForm
-          onSubmit={handleSubmit}
-          key={_.size(navigationList)}
-        />,
+        <NavigationForm onSubmit={handleSubmit} key={_.size(navigationList)} />,
       ]);
   };
-  console.log(navigationList);
   const onDragEnd = (result, navigationList, setNavigationList) => {
     if (result.destination) {
       const newItems = [...navigationList];

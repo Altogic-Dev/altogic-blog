@@ -15,8 +15,14 @@ import ListObserver from '@/components/ListObserver';
 const ReadingBarChart = dynamic(import('@/components/ReadingBarChart'), {
   ssr: false,
 });
+export async function getServerSideProps({ query }) {
+  const { publicationName } = query;
+  return {
+    props: { publicationName: publicationName || null },
+  };
+}
 
-export default function PublicationsStats() {
+export default function PublicationsStats({ publicationName }) {
   const dispatch = useDispatch();
 
   const likesPeriodically = useSelector(
@@ -111,15 +117,18 @@ export default function PublicationsStats() {
         DateTime.local().plus({ month: -1 }).toISODate(),
         '30 Days'
       );
-      getPublicationsStoriesStats(0);
     }
+    getPublicationsStoriesStats(0);
+
   }, [publication]);
 
   useEffect(() => {
     let temp = 0;
     if (readsDateType) {
+      console.log()
       setReadsDateTypeState(readsDateType);
-      readsPeriodically[readsDateType].forEach((item) => {
+      _.forEach(readsPeriodically[readsDateType], (item) => {
+        console.log(item.count)
         temp += item.count;
       });
       setTotalReadsCount(temp);
@@ -129,7 +138,7 @@ export default function PublicationsStats() {
     let temp = 0;
     if (viewsDateType) {
       setViewsDateTypeState(viewsDateType);
-      viewsPeriodically[viewsDateType].forEach((item) => {
+      _.forEach(viewsPeriodically[viewsDateType], (item) => {
         temp += item.count;
       });
       setTotalViewsCount(temp);
@@ -139,12 +148,14 @@ export default function PublicationsStats() {
     let temp = 0;
     if (likesDateType) {
       setLikesDateTypeState(likesDateType);
-      likesPeriodically[likesDateType].forEach((item) => {
+      _.forEach(likesPeriodically[likesDateType], (item) => {
         temp += item.count;
       });
       setTotalLikesCount(temp);
     }
   }, [likesDateType]);
+
+  console.log(publicationStories)
 
   return (
     <div>
@@ -154,12 +165,11 @@ export default function PublicationsStats() {
           name="description"
           content="Altogic Medium Blog App Publications Story Page Published"
         />
-        
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <h1 className="text-slate-700 my-8 md:my-[60px] text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
-            HiThemes stats
+            {publicationName} stats
           </h1>
           <Tab.Group>
             <Tab.List className="flex items-center gap-4 md:gap-10 h-11 border-b border-gray-300 mb-6">
@@ -197,7 +207,7 @@ export default function PublicationsStats() {
                     </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
                       Minutes read{' '}
-                      <span className="font-semibold">{readsDateType}</span>
+                      <span className="font-semibold">{readsDateTypeState}</span>
                     </h2>
                     <span className="text-slate-700 text-sm tracking-sm">
                       The total amount of time spent reading your publication.
@@ -276,11 +286,11 @@ export default function PublicationsStats() {
               </Tab.Panel>
               <Tab.Panel>
                 <ListObserver
-                  onEnd={() =>
-                    getPublicationsStoriesStats(
-                      _.get(_.last(publicationStories), 'page') + 1
-                    )
-                  }
+                  // onEnd={() =>
+                  //   getPublicationsStoriesStats(
+                  //     _.get(_.last(publicationStories), 'page') + 1
+                  //   )
+                  // }
                 >
                   {publicationStories.map((item) => (
                     <MonthlyStatsCard

@@ -52,8 +52,8 @@ export default function PublicationPostCard({
             </div>
           </a>
         </Link>
-        <Link href={readMoreUrl}>
-          <a className="group mb-4 md:mb-8 flex flex-col">
+        <Link href={`/story/${story.storySlug}`}>
+          <a className="group mb-4 md:mb-8 flex flex-col justify-start items-start">
             {image ? (
               <img
                 className={classNames(

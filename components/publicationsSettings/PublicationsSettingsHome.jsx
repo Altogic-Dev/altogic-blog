@@ -45,6 +45,9 @@ export default function PublicationsSettingsHome({
         backgroundImage: _.isNil(uploadedFileLink) ? null : uploadedFileLink,
       })
     );
+    dispatch(
+      fileActions.updateFileState()
+    );
   };
 
   const fillFields = () => {

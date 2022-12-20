@@ -90,7 +90,7 @@ export default function PublicationsListImageCard({
                         {story.title}
                       </span>
                       <span className="text-slate-700 text-xs tracking-sm">
-                        {story?.user.name} on{' '}
+                        {story?.user?.name} on{' '}
                         {DateTime.fromISO(story?.createdAt).toFormat('LLL dd')}
                       </span>
                     </Listbox.Option>
@@ -130,7 +130,7 @@ export default function PublicationsListImageCard({
                           {story.name}
                         </span>
                         <span className="text-slate-700 text-xs tracking-sm">
-                          {story?.user.name} on{' '}
+                          {story?.user?.name} on{' '}
                           {DateTime.fromISO(story?.createdAt).toFormat(
                             'LLL dd'
                           )}

@@ -1,7 +1,6 @@
 import React, { useState, Fragment, useEffect, createElement } from 'react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/solid';
 import { Listbox, Transition, Tab, Switch } from '@headlessui/react';
-import Sidebar from '@/layouts/Sidebar';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,8 +10,8 @@ import PublicationsNormalCard from './PublicationsNormalCard';
 import PublicationsFullImageVerticalCard from './PublicationsFullImageVerticalCard';
 import PublicationsStreamCard from './PublicationsStreamCard';
 import PublicationsListImageCard from './PublicationsListImageCard';
-import Button from './basic/button';
 import Input from './Input';
+import Button from './basic/button';
 
 const sections = [
   { id: 1, tag: 'Stories in a tag', isTag: true },
@@ -37,14 +36,15 @@ export default function Sections({
   const [wrappers, setWrappers] = useState([]);
   const [children, setChildren] = useState([]);
   const [sectionTitle, setSectionTitle] = useState('');
-  const [sectionTitleChecked, setSectionTitleChecked] = useState('');
   const [streamCardList, setStreamCardList] = useState([]);
   const [listImageCardList, setListImageCardList] = useState([]);
   const tag = useState(true);
   const dispatch = useDispatch();
   const topics = useSelector((state) => state.topics.publicationsTopics);
   const publication = useSelector((state) => state.publication.publication);
-
+  const publicationsStories = useSelector(
+    (state) => state.story.publicationsStories
+  );
   const handleTopicChange = (topic) => {
     setSelectedTopic(topic);
     dispatch(
@@ -159,7 +159,7 @@ export default function Sections({
   };
   const handleSectionBar = (section) => {
     setSelectedSectionBar(section);
-    if (section.isTag) {
+    if (section?.isTag) {
       dispatch(
         storyActions.getPublicationsStoriesByTopicRequest({
           publication: publication?._id,
@@ -185,7 +185,15 @@ export default function Sections({
     if (selectedIndex === 2) {
       handleListImageCardLayout();
     }
-  }, [counter, imageCard, normalCard, selectedIndex, selectedSectionBar]);
+  }, [
+    counter,
+    imageCard,
+    normalCard,
+    selectedIndex,
+    selectedSectionBar,
+    publicationsStories,
+  ]);
+
   useEffect(() => {
     for (let index = 0; index < children.length; index += 3) {
       const child = [children[index]];
@@ -217,6 +225,15 @@ export default function Sections({
       setSelectedTopic(topics[0]);
     }
   }, [selectedSectionBar, topics]);
+  useEffect(() => {
+    if (
+      publication &&
+      !selectedSectionBar.isTag &&
+      section?.sectionType === 'story'
+    ) {
+      handleSectionBar(sections[1]);
+    }
+  }, [selectedSectionBar, section, publication]);
 
   useEffect(() => {
     if (selectedSectionBar.isTag && publication && selectedTopic) {
@@ -250,9 +267,11 @@ export default function Sections({
       setSelectedSectionBar(
         section?.sectionType === 'topic' ? sections[0] : sections[1]
       );
+      setSectionTitle(section?.sectionTitle);
       setCounter(section?.storySize);
     }
   }, [section]);
+
   useEffect(() => {
     const section = {
       isShowTitle: enabled,
@@ -265,6 +284,7 @@ export default function Sections({
       isHomePage: false,
       sectionIndex,
     };
+
     dispatch(
       publicationActions.setFeaturePageSectionsRequest({
         sectionIndex,
@@ -279,6 +299,7 @@ export default function Sections({
     normalCard,
     selectedIndex,
     selectedSectionBar,
+    sectionTitle,
   ]);
 
   return (
@@ -704,8 +725,7 @@ export default function Sections({
             </Switch.Group>
           </div>
           <div className="px-5 flex">
-            <button
-              type="button"
+            <Button
               className="inline-flex items-center justify-center"
               onClick={deleteSection}
             >
@@ -720,7 +740,7 @@ export default function Sections({
                   fill="currentColor"
                 />
               </svg>
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -732,7 +752,6 @@ export default function Sections({
                 <Input
                   value={sectionTitle}
                   onChange={(e) => {
-                    setSectionTitleChecked(false);
                     setSectionTitle(e.target.value);
                   }}
                   type="text"
@@ -741,12 +760,6 @@ export default function Sections({
                   placeholder="Type section title"
                   className="block w-full min-h-[44px]  placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
                 />
-                <Button
-                  onClick={() => setSectionTitleChecked(true)}
-                  className={`inline-flex items-center justify-center flex-shrink-0 w-11 h-11 text-white rounded-full hover:bg-purple-800 focus:outline-none + ${sectionTitleChecked ?' bg-green-700' :  'bg-purple-700'}`}
-                >
-                  <CheckIcon className="h-5 w-5" aria-hidden="true" />
-                </Button>
               </div>
             </form>
           </div>
@@ -776,27 +789,15 @@ export default function Sections({
                   </>
                 ))}
               </div>
-              <div className="lg:flex lg:flex-col lg:gap-10">
-                <Sidebar publicationProfile />
-              </div>
             </div>
           </Tab.Panel>
           <Tab.Panel>
-            <div className="grid grid-cols-[800px,1fr] gap-8">
-              <div>
-                {listImageCardList.map((listImageCard, index) => (
-                  <>
-                    {listImageCard}
-                    {index !== listImageCard.length - 1 && (
-                      <hr className="my-10" />
-                    )}
-                  </>
-                ))}
-              </div>
-              <div className="lg:flex lg:flex-col lg:gap-10">
-                <Sidebar publicationProfile />
-              </div>
-            </div>
+            {listImageCardList.map((listImageCard, index) => (
+              <>
+                {listImageCard}
+                {index !== listImageCard.length - 1 && <hr className="my-10" />}
+              </>
+            ))}
           </Tab.Panel>
         </Tab.Panels>
       </div>

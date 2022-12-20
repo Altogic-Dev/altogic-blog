@@ -223,7 +223,7 @@ export const statsSlice = createSlice({
       const threeMonthsName = `${dateThird.monthLong} ${dateThird.year}`;
       if (action.payload.oneMonth.length > 0)
         state.publicationStories.push({
-          data: action.payload.twoMonths,
+          data: action.payload.oneMonth,
           name: oneMonthName,
           page: action.payload.page,
         });

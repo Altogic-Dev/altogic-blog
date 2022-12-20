@@ -217,43 +217,40 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateStorySuccess(state, action) {
-      try {
-        state.isLoading = false;
-        if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
-          /// userStoriesCount--
-          if (_.isArray(state.userStories)) {
-            state.userStories = _.filter(state.userStories,
-              (story) => story._id !== action.payload._id
-            );
-
-            state.userStoriesInfo = {
-              ...state.userStoriesInfo,
-              count: state.userStoriesInfo.count - 1,
-            };
-          }
-
-          /// userDraftStoriesState Update
-          if (_.isArray(state.userDraftStories)) {
-            state.userDraftStoriesInfo = {
-              ...state.userDraftStoriesInfo,
-              count: state.userDraftStoriesInfo.count + 1,
-            };
-
-
-          }
-        }
-        if (!_.isEmpty(state.userDraftStories)) {
-          state.userDraftStories = _.orderBy(
-            [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
-            ['pinnedStory', 'createdAt'],
-            ['desc', 'desc']
+      state.isLoading = false;
+      if (_.some(current(state.userStories), (item => item._id === action.payload._id))) {
+        /// userStoriesCount--
+        if (_.isArray(state.userStories)) {
+          state.userStories = _.filter(state.userStories,
+            (story) => story._id !== action.payload._id
           );
+
+          state.userStoriesInfo = {
+            ...state.userStoriesInfo,
+            count: state.userStoriesInfo.count - 1,
+          };
         }
-        state.story = action.payload;
-        state.error = null;
-      } catch (error) {
-        console.log(error)
+
+        /// userDraftStoriesState Update
+        if (_.isArray(state.userDraftStories)) {
+          state.userDraftStoriesInfo = {
+            ...state.userDraftStoriesInfo,
+            count: state.userDraftStoriesInfo.count + 1,
+          };
+
+
+        }
       }
+      if (!_.isEmpty(state.userDraftStories)) {
+        state.userDraftStories = _.orderBy(
+          [...(state.userDraftStories.filter(item => item._id !== action.payload._id)), action.payload],
+          ['pinnedStory', 'createdAt'],
+          ['desc', 'desc']
+        );
+      }
+      state.story = action.payload;
+      state.error = null;
+
     },
     updateStoryFailure(state, action) {
       state.isLoading = false;
@@ -264,6 +261,7 @@ export const storySlice = createSlice({
     getStoryBySlugRequest(state) {
       state.isLoading = true;
       state.userFollows = false
+      state.error = null;
     },
     getStoryBySlugSuccess(state, action) {
       state.userFollows = !!action.payload.userFollows.length
@@ -359,20 +357,26 @@ export const storySlice = createSlice({
       state.isLoading = true;
     },
     updateCategoryNamesSuccess(state, action) {
-      if (_.some(state.userStories, story => story._id === action.payload.storyId)) {
-        const index = _.findIndex(state.userStories, story => story._id === action.payload.storyId)
-        state.userStories[index].categoryNames = action.payload.newCategoryNames
+      try {
+        if (_.some(state.userStories, story => story._id === action.payload.storyId)) {
+          const index = _.findIndex(state.userStories, story => story._id === action.payload.storyId)
+          state.userStories[index].categoryNames = action.payload.newCategoryNames
+        }
+        else if (_.some(state.userDraftStories, story => story._id === action.payload.storyId)) {
+          const index = _.findIndex(state.userDraftStories, story => story._id === action.payload.storyId)
+          state.userDraftStories[index].categoryNames = action.payload.newCategoryNames
+        }
+        ToastMessage.success('Story updated successfully', { hideProgressBar: true });
+        state.isLoading = false;
+        if (state.story) {
+          state.story = {
+            ...state.story,
+            categoryNames: action.payload.newCategoryNames,
+          };
+        }
+      } catch (error) {
+        console.log(error)
       }
-      else {
-        const index = _.findIndex(state.userDraftStories, story => story._id === action.payload.storyId)
-        state.userDraftStories[index].categoryNames = action.payload.newCategoryNames
-      }
-      ToastMessage.success('Story updated successfully', { hideProgressBar: true });
-      state.isLoading = false;
-      state.story = {
-        ...state.story,
-        categoryNames: action.payload.newCategoryNames,
-      };
     },
 
     updateStoryFieldRequest(state) {

@@ -17,11 +17,9 @@ import { blockConnectionActions } from '@/redux/blockConnection/blockConnectionS
 import HeadContent from '@/components/general/HeadContent';
 
 export default function Home() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
 
-  console.log(selectedIndex)
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo
@@ -96,7 +94,6 @@ export default function Home() {
   }, [userFromStorage]);
 
   useEffect(() => {
-
     if (_.size(recommendedStories) < (recommendedStoriesInfo?.count || 1)) {
       getRecommendedStories(recommendedListPage);
     }
@@ -123,7 +120,7 @@ export default function Home() {
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               <YourTopics />
 
-              <Tab.Group selectedIndex={2} onChange={setSelectedIndex}>
+              <Tab.Group selectedIndex={2}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   {user && !_.isEmpty(followingStories) && (
                     <Tab

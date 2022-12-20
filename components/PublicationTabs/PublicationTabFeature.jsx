@@ -18,7 +18,9 @@ function PublicationTabFeature({ tab }) {
 
   useEffect(() => {
     if (tab) {
-      dispatch(publicationActions.getFeaturePageRequest(tab.contents));
+      dispatch(
+        publicationActions.getFeaturePageRequest({ featureId: tab.contents })
+      );
     }
   }, [tab]);
 
@@ -46,7 +48,7 @@ function PublicationTabFeature({ tab }) {
       {_.map(sections, (section) => {
         if (section?.designType === 'grid') {
           return (
-            <>
+            <div className="mb-10 h-[500px] overflow-hidden text-ellipsis">
               {_.get(section, 'sectionTitle') && (
                 <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
                   {_.get(section, 'sectionTitle')}
@@ -80,12 +82,12 @@ function PublicationTabFeature({ tab }) {
                   )}
                 </div>
               ))}
-            </>
+            </div>
           );
         }
         if (section?.designType === 'stream') {
           return (
-            <div>
+            <div className="mb-40">
               <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
                 {_.get(section, 'sectionTitle')}
               </h2>
@@ -101,7 +103,7 @@ function PublicationTabFeature({ tab }) {
         }
         // designType = list
         return (
-          <div>
+          <div className="mb-40">
             <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
               {_.get(section, 'sectionTitle')}
             </h2>

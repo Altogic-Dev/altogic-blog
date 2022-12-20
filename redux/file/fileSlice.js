@@ -20,6 +20,9 @@ export const fileSlice = createSlice({
   name: 'file',
   initialState,
   reducers: {
+    updateFileState(state) {
+      state.fileLink = null
+    },
     uploadFileRequest(state) {
       state.isLoading = true;
     },
@@ -50,7 +53,7 @@ export const fileSlice = createSlice({
         };
       }
     },
-    deleteFileRequest() {},
+    deleteFileRequest() { },
 
     setDefaultAvatarFileRequest(state) {
       state.isLoading = true;

@@ -19,7 +19,6 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       _.get(state.bookmark.bookmarkLists, user?.username)?.bookmarkLists
   );
 
-  console.log(className)
 
   const addBookmark = (list) => {
     let { coverImages } = list;
