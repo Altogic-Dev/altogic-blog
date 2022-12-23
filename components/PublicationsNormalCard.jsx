@@ -16,6 +16,7 @@ export default function PublicationsNormalCard({
   singleBigCard,
   index,
   sectionIndex,
+  story,
 }) {
   const [selectedSection, setSelectedSection] = useState();
   const publicationsStories = useSelector(
@@ -44,6 +45,15 @@ export default function PublicationsNormalCard({
       })
     );
   };
+
+
+  useEffect(() => {
+    if (story && publicationsStories) {
+      handleSelectStory(
+        publicationsStories.find((pubStory) => pubStory?._id === story.story)
+      );
+    }
+  }, [story, publicationsStories]);
   useEffect(() => {
     if (publicationsStories) {
       if (_.isArray(publicationsStories[sectionIndex])) {
@@ -70,15 +80,15 @@ export default function PublicationsNormalCard({
       />
       <div className={classNames(singleBigCard ? 'lg:mt-14' : null)}>
         <div>
-          <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
+          {/* <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
             {selectedSection?.title}
-          </h2>
+          </h2> */}
           {listBox && (
             <Listbox value={selectedSection} onChange={handleSelectStory}>
               <div className="relative">
                 <Listbox.Button className="relative min-w-[240px] max-w-[384px] w-full h-11 bg-white text-slate-500 py-2.5 pl-3.5 pr-10 text-base text-left border border-gray-300 rounded-lg focus:outline-none focus-visible:border-purple-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-purple-300 cursor-default">
                   <span className="block truncate">
-                    {selectedSection?.title}
+                    {selectedSection?.title || selectedSection?.storyTitle}
                   </span>
                   <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5">
                     <ChevronDownIcon
@@ -93,7 +103,7 @@ export default function PublicationsNormalCard({
                   leaveFrom="opacity-100"
                   leaveTo="opacity-0"
                 >
-                  <Listbox.Options className="absolute mt-1 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
+                  <Listbox.Options className="absolute -bottom-0 mb-12 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
                     {stories?.map((story) => (
                       <Listbox.Option
                         key={story._id}

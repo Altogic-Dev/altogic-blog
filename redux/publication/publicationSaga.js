@@ -166,6 +166,7 @@ function* deletePublicationSectionRequest({ payload: { sectionIndex } }) {
     delete newFeatureStories[`section-${sectionIndex}`];
     newSections.splice(sectionIndex, 1);
     yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+    yield put(publicationActions.deletePublicationSectionSuccess(newSections));
   } catch (error) {
     console.log(error)
   }

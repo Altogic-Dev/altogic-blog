@@ -114,19 +114,16 @@ export default function Publications({ tabName }) {
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
         />
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
+        <div className="w-full flex justify-center px-60 pb-16">
           <div>
             <div
               className={`flex flex-col-reverse ${
                 _.get(selectedTab, 'tabType') !== 'feature' &&
-                'grid lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8 mb-[60px]'
+                'grid lg:divide-x lg:divide-gray-200 mb-[60px]'
               } `}
             >
               <div
-                className={`divide-y divide-gray-200 ${
-                  _.get(selectedTab, 'tabType') !== 'feature' &&
-                  'lg:pl-8 lg:pr-8'
-                }`}
+                className="divide-y divide-gray-200"
               >
                 <PublicationTab tab={selectedTab} publication={publication} />
               </div>

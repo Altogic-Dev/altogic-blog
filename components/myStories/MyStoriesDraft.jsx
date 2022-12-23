@@ -50,7 +50,6 @@ function MyStoriesDraft({
           {_.map(userDraftStories, (story) => (
             <PostCard
               story={story}
-              publication={story.publication}
               key={story._id}
               noActiveBookmark
               normalMenu

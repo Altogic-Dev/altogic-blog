@@ -148,7 +148,10 @@ export default function WriteAStorySettings() {
   }, []);
 
   useEffect(() => {
-    fillInputs();
+    if (story) {
+      fillInputs();
+      if (story.slugChanged) setRadioCustomizeLink('custom');
+    }
   }, [story]);
 
   useEffect(() => {
@@ -936,7 +939,12 @@ export default function WriteAStorySettings() {
                             setLinkLoading(true);
                             dispatch(
                               storyActions.updateStoryFieldRequest({
-                                story,
+                                story: {
+                                  ...story,
+                                  publication:
+                                    story?.publication?._id ||
+                                    story?.publication,
+                                },
                                 newStoryField: {
                                   storySlug: inpStorySlug.toLowerCase(),
                                   slugChanged: true,

@@ -49,7 +49,6 @@ export default function PublicationsNewFeature() {
   } = useForm({
     resolver: yupResolver(formSchema),
   });
-
   const checkAuthorization = (publication) => {
     const sessionUser = _.find(
       publication.users,
@@ -111,16 +110,6 @@ export default function PublicationsNewFeature() {
   }, [featurePage]);
 
   const submitFunction = async (data) => {
-    if (file) {
-      setIsLoading(true);
-      dispatch(
-        uploadFile(file, `${publication.name}-${publication.featurePageCount}`)
-      );
-    } else if (featurePage?.logo) {
-      setLogoState(featurePage.logo);
-    } else {
-      setFileUploadError('Logo is required');
-    }
     const stories = [];
     Object.keys(featStories).forEach((key) => {
       const story = featStories[key].map((story) => {
@@ -151,6 +140,16 @@ export default function PublicationsNewFeature() {
       publication: publication._id,
       sections,
     });
+    if (file) {
+      setIsLoading(true);
+      dispatch(
+        uploadFile(file, `${publication.name}-${publication.featurePageCount}`)
+      );
+    } else if (featurePage?.logo) {
+      setLogoState(featurePage.logo);
+    } else {
+      setFileUploadError('Logo is required');
+    }
   };
 
   const sizeCheck = (file) => {
@@ -169,8 +168,8 @@ export default function PublicationsNewFeature() {
     };
     img.src = URL.createObjectURL(file);
   };
+
   useEffect(() => {
-    console.log(logoState);
     if (logoState) {
       if (!id) {
         dispatch(

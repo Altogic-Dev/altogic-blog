@@ -180,7 +180,7 @@ export default function PublicationsMoreInformation() {
         
       </HeadContent>
       <Layout>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
+        <div className="max-w-screen-xl mx-auto pb-16">
           <div className="flex items-center gap-8 py-3 border-b border-gray-200">
             <img
               className="w-[156px] h-[40px]"

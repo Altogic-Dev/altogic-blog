@@ -53,7 +53,7 @@ export default function AddFeatureSection({ sections }) {
           </Button>
         </div>
       </div>
-      <div>
+      <div className="pb-40" >
         {sectionList.map((section, index) => (
           <div className="mb-16" key={index}>
             {section}

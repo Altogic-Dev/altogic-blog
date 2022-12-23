@@ -25,7 +25,7 @@ export default function PublicationHomeFullImageVerticalCard({
           position: 'relative',
         }}
         className={classNames(
-          'relative flex w-full bg-black bg-opacity-20 p-6 rounded-lg',
+          'relative flex w-full bg-black bg-opacity-20 rounded-lg ',
           smallSize ? 'h-[350px]' : null,
           largeSize ? 'h-[399px]' : null,
           singleBigCard
@@ -35,8 +35,8 @@ export default function PublicationHomeFullImageVerticalCard({
       >
         <div
           className={classNames(
-            'w-full z-20',
-            singleBigCard ? 'w-full sm:w-[294px] mt-14' : null
+            'w-full z-20 bg-purple-700 bg-opacity-90 p-6 rounded-xl' ,
+            singleBigCard ? 'sm:w-[294px] mt-14 ' : null
           )}
         >
           <div>
@@ -45,7 +45,7 @@ export default function PublicationHomeFullImageVerticalCard({
             </h2>
           </div>
           <div className="mt-4 space-y-1">
-            <span className="flex w-[267px] h-6 text-slate-100">
+            <span className="h-[400px] w-[267px]   text-slate-100">
               {storyContent}
             </span>
           </div>

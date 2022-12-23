@@ -72,6 +72,9 @@ export default function Sections({
               smallSize: true,
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
+              ...(!selectedSectionBar.isTag && {
+                story: section?.stories[index * 3 + k] || [],
+              }),
             }),
           ]);
         }
@@ -87,6 +90,9 @@ export default function Sections({
               largeSize: counter % 3 === 1,
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
+              ...(!selectedSectionBar.isTag && {
+                story: section?.stories[counter - (counter % 3) + j] || [],
+              }),
             }),
           ]);
         }
@@ -108,6 +114,9 @@ export default function Sections({
               largeSize: !selectedSectionBar.isTag,
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
+              ...(!selectedSectionBar.isTag && {
+                story: section?.stories[index * 3 + j] || [],
+              }),
             }),
           ]);
         }
@@ -123,6 +132,9 @@ export default function Sections({
               singleBigCard: counter % 3 === 1,
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
+              ...(!selectedSectionBar.isTag && {
+                story: section?.stories[index * 3 + k] || [],
+              }),
             }),
           ]);
         }
@@ -184,6 +196,13 @@ export default function Sections({
     }
     if (selectedIndex === 2) {
       handleListImageCardLayout();
+    }
+
+    if (selectedIndex !== 0) {
+      setContainerScreen(false);
+      setImageCard(false);
+      setFullScreen(false);
+      setNormalCard(true);
     }
   }, [
     counter,
@@ -260,9 +279,13 @@ export default function Sections({
 
   useEffect(() => {
     if (section) {
+      setSelectedTopic(topics.find((topic) => topic.topic === section?.selectedTopic));
       setEnabled(section?.isShowTitle);
       setContainerScreen(section?.isFullContainerGrid);
+      setFullScreen(!section?.isFullContainerGrid);
+
       setImageCard(section?.isFullStoryGrid);
+      setNormalCard(!section?.isFullStoryGrid);
       setSelectedIndex(_.indexOf(designTypes, section?.designType));
       setSelectedSectionBar(
         section?.sectionType === 'topic' ? sections[0] : sections[1]
@@ -283,6 +306,7 @@ export default function Sections({
       storySize: counter,
       isHomePage: false,
       sectionIndex,
+      selectedTopic: selectedTopic?.topic,
     };
 
     dispatch(
@@ -300,6 +324,7 @@ export default function Sections({
     selectedIndex,
     selectedSectionBar,
     sectionTitle,
+    selectedTopic,
   ]);
 
   return (
