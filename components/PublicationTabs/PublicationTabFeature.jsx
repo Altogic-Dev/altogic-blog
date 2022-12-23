@@ -43,12 +43,14 @@ function PublicationTabFeature({ tab }) {
     return storiesSliced;
   };
 
+
+
   return (
     <div>
       {_.map(sections, (section) => {
         if (section?.designType === 'grid') {
           return (
-            <div className="mb-10 h-[500px] overflow-hidden text-ellipsis">
+            <div className="mb-10 flex flex-col overflow-hidden text-ellipsis">
               {_.get(section, 'sectionTitle') && (
                 <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
                   {_.get(section, 'sectionTitle')}
@@ -57,7 +59,7 @@ function PublicationTabFeature({ tab }) {
               {_.map(getSlicedStories(section?.stories), (stories) => (
                 <div
                   key={_.first(stories)?._id}
-                  className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${_.size(
+                  className={`grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-${_.size(
                     stories
                   )} gap-8`}
                 >

@@ -40,7 +40,7 @@ export default function PublicationHomeNormalCard({
               </h2>
             </div>
             <div className="mt-4 space-y-1">
-              <span className="flex h-96 overflow-hidden">{storyContent}</span>
+              <span className="h-[400px] overflow-hidden">{storyContent}</span>
             </div>
           </div>
         </div>

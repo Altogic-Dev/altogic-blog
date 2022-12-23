@@ -93,7 +93,7 @@ export default function PublicationsFullImageVerticalCard({
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                   >
-                    <Listbox.Options className="absolute mt-1 max-w-[384px] w-full bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
+                    <Listbox.Options className="absolute -bottom-0 mb-12 max-w-[384px] w-full bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
                       {stories.map((story) => (
                         <Listbox.Option
                           key={story._id}

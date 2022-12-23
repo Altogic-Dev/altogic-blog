@@ -73,7 +73,7 @@ export default function PublicationsListImageCard({
                 leaveFrom="opacity-100"
                 leaveTo="opacity-0"
               >
-                <Listbox.Options className="absolute mt-1 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
+                <Listbox.Options className="absolute -bottom-0 mb-12 min-w-[240px] w-96 bg-white border border-gray-100 rounded-lg shadow-lg overflow-hidden z-20 focus:outline-none">
                   {stories.map((story) => (
                     <Listbox.Option
                       key={story._id}
