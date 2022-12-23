@@ -17,6 +17,7 @@ import BookmarkLists from './bookmarks/BookmarkLists';
 import ShareButtons from './ShareButtons';
 import DeleteStoryModal from './DeleteStoryModal';
 import Avatar from './profile/Avatar';
+import Topic from './basic/topic';
 
 const Replies = dynamic(() => import('@/components/story/Replies'), {
   ssr: false,
@@ -325,6 +326,7 @@ function StoryContent(props) {
           )}
         </div>
       </div>
+    
       <div className="relative flex flex-col justify-center items-center flex-wrap">
         <div className="prose prose-h1:text-3xl prose-h1:md:text-4xl prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md self-start mt-4">
           <h1>{story?.title}</h1>
@@ -474,6 +476,11 @@ function StoryContent(props) {
           setSlideOvers={setSlideOvers}
           story={story}
         />
+      </div>
+      <div className="flex items-center gap-4">
+        {story?.categoryNames.map((category) => (
+          <Topic key={category} title={category} />
+        ))}
       </div>
       {deleteStoryModal && (
         <DeleteStoryModal
