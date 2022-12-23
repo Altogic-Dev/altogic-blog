@@ -261,6 +261,9 @@ export const publicationSlice = createSlice({
     deletePublicationSectionRequest(state) {
       state.isLoading = true;
     },
+    deletePublicationSectionSuccess(state,action) {
+      state.sections = action.payload;
+    },
     setFeaturePageSectionsRequest(state) {
       state.isLoading = true;
     },

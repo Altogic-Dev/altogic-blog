@@ -43,8 +43,6 @@ function PublicationTabFeature({ tab }) {
     return storiesSliced;
   };
 
-
-
   return (
     <div>
       {_.map(sections, (section) => {
@@ -59,9 +57,9 @@ function PublicationTabFeature({ tab }) {
               {_.map(getSlicedStories(section?.stories), (stories) => (
                 <div
                   key={_.first(stories)?._id}
-                  className={`grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-${_.size(
-                    stories
-                  )} gap-8`}
+                  className={`grid grid-cols-1 w-full sm:grid-cols-${
+                    _.size(stories) ===2 ? 2 : _.size(stories)
+                  } lg:grid-cols-${_.size(stories)} gap-8`}
                 >
                   {_.map(stories, (story) =>
                     section?.isFullStoryGrid ? (

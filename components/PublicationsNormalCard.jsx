@@ -50,7 +50,7 @@ export default function PublicationsNormalCard({
   useEffect(() => {
     if (story && publicationsStories) {
       handleSelectStory(
-        publicationsStories.find((pubStory) => pubStory._id === story.story)
+        publicationsStories.find((pubStory) => pubStory?._id === story.story)
       );
     }
   }, [story, publicationsStories]);

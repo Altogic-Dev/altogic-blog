@@ -282,7 +282,10 @@ export default function Sections({
       setSelectedTopic(topics.find((topic) => topic.topic === section?.selectedTopic));
       setEnabled(section?.isShowTitle);
       setContainerScreen(section?.isFullContainerGrid);
+      setFullScreen(!section?.isFullContainerGrid);
+
       setImageCard(section?.isFullStoryGrid);
+      setNormalCard(!section?.isFullStoryGrid);
       setSelectedIndex(_.indexOf(designTypes, section?.designType));
       setSelectedSectionBar(
         section?.sectionType === 'topic' ? sections[0] : sections[1]
