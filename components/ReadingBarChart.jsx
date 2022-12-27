@@ -40,7 +40,6 @@ export default function ReadingBarChart({ type, data, timeUnit, isHour }) {
     let tempData;
     const tempDataManipulated = [];
     if (type === '24 Hours') {
-      console.log(data);
       data?.forEach((obj) => {
         const hour = obj.groupby.group.split(':')[0];
         const minute = obj.groupby.group.split(':')[1];

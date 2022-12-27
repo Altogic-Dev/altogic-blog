@@ -53,9 +53,8 @@ export default function PublicationsStreamCard({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-slate-500 text-2xl font-semibold tracking-md">
-        {selectedSection?.title}
-      </h2>
+           <span className="flex w-[380px] h-6 bg-black/20" />
+
       {listBox && (
         <Listbox value={selectedSection} onChange={handleSelectStory}>
           <div className="relative">

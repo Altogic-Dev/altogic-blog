@@ -163,8 +163,6 @@ export function addZeroToHourAndMinute(hour, minute) {
   if (minute < 10) {
     tempMinute = `0${minute}`;
   }
-  console.log(`${tempHour}:${tempMinute}`)
-
   return `${tempHour}:${tempMinute}`;
 
 }
@@ -181,7 +179,6 @@ export function sortDate(data, value, isHour) {
       }
     }
     )
-
   }
 
   if (_.size(data) > 0 && data[0][value].split('.').length === 2) {
@@ -193,3 +190,10 @@ export function sortDate(data, value, isHour) {
 }
 
 
+export function parseTextWithLastDot(text){
+  const lastDotIndex = text.lastIndexOf('.');
+  if (lastDotIndex === -1) {
+    return text;
+  }
+  return text.slice(0, lastDotIndex + 1);
+}

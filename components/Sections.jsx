@@ -73,7 +73,7 @@ export default function Sections({
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[index * 3 + k] || [],
+                story: section?.stories[index * 3 + k],
               }),
             }),
           ]);
@@ -91,7 +91,7 @@ export default function Sections({
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[counter - (counter % 3) + j] || [],
+                story: section?.stories[counter - (counter % 3) + j],
               }),
             }),
           ]);
@@ -115,7 +115,7 @@ export default function Sections({
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[index * 3 + j] || [],
+                story: section?.stories[index * 3 + j],
               }),
             }),
           ]);
@@ -126,14 +126,14 @@ export default function Sections({
           setChildren((children) => [
             ...children,
             createElement(PublicationsFullImageVerticalCard, {
-              index: index * 3 + k,
-              key: index * 3 + k,
+              index: counter - (counter % 3) + k,
+              key: counter - (counter % 3) + k,
               largeSize: true,
               singleBigCard: counter % 3 === 1,
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[index * 3 + k] || [],
+                story: section?.stories[counter - (counter % 3) + k],
               }),
             }),
           ]);
@@ -267,7 +267,6 @@ export default function Sections({
     }
   }, [counter, publication, selectedTopic]);
   const deleteSection = () => {
-    console.log(sectionIndex)
     setSectionList((sectionList) => {
       const newList = [...sectionList];
       newList.splice(sectionIndex, 1);
@@ -330,7 +329,6 @@ export default function Sections({
     selectedTopic,
   ]);
 
-  console.log(section)
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <div className="flex flex-col xl:flex-row items-center justify-between gap-8 max-w-screen-xl mx-auto px-4 lg:px-8 mb-12">
