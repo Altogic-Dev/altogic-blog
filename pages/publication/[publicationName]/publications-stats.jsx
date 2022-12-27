@@ -3,7 +3,7 @@ import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import dynamic from 'next/dynamic';
-import { classNames } from '@/utils/utils';
+import { classNames, convertTime } from '@/utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import { statsActions } from '@/redux/stats/statsSlice';
 import { DateTime } from 'luxon';
@@ -137,8 +137,7 @@ export default function PublicationsStats({ publicationName }) {
       });
       setTotalReadsCount(temp);
     }
-
-  }, [readsDateType,readsPeriodically]);
+  }, [readsDateType, readsPeriodically]);
 
   useEffect(() => {
     let temp = 0;
@@ -149,7 +148,7 @@ export default function PublicationsStats({ publicationName }) {
       });
       setTotalViewsCount(temp);
     }
-  }, [viewsDateType,viewsPeriodically]);
+  }, [viewsDateType, viewsPeriodically]);
   useEffect(() => {
     let temp = 0;
     if (likesDateType) {
@@ -159,7 +158,7 @@ export default function PublicationsStats({ publicationName }) {
       });
       setTotalLikesCount(temp);
     }
-  }, [likesDateType,likesPeriodically]);
+  }, [likesDateType, likesPeriodically]);
 
   return (
     <div>
@@ -207,10 +206,10 @@ export default function PublicationsStats({ publicationName }) {
                 <div className="flex flex-col xl:flex-row xl:items-center gap-[72px] mt-12 md:mt-20">
                   <div className="max-w-[344px] w-full space-y-2">
                     <p className="text-3xl font-semibold tracking-md">
-                      {totalReadsCount}
+                      {convertTime(totalReadsCount)}
                     </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
-                      Minutes read{' '}
+                      Reads in{' '}
                       <span className="font-semibold">
                         {readsDateTypeState}
                       </span>
@@ -226,6 +225,7 @@ export default function PublicationsStats({ publicationName }) {
                       />
                     </div>
                     <ReadingBarChart
+                      timeUnit={convertTime(totalReadsCount).split(' ')[1]}
                       data={readsPeriodically[readsDateTypeState]}
                       type={readsDateTypeState}
                     />
@@ -238,7 +238,7 @@ export default function PublicationsStats({ publicationName }) {
                       {totalViewsCount}
                     </p>
                     <h2 className="text-slate-700 text-xl tracking-md">
-                      View{' '}
+                      Views in{' '}
                       <span className="font-semibold">
                         {viewsDateTypeState}
                       </span>

@@ -114,7 +114,7 @@ export default function Publications({ tabName }) {
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
         />
-        <div className="w-full flex justify-center px-60 pb-16">
+        <div className="w-full flex justify-center pb-16">
           <div>
             <div
               className={`flex flex-col-reverse ${

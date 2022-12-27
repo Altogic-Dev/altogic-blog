@@ -32,7 +32,7 @@ export default function Sections({
   const [counter, setCounter] = useState(3);
   const [enabled, setEnabled] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
-  const [containerScreen, setContainerScreen] = useState(false);
+  const [containerScreen, setContainerScreen] = useState(true);
   const [wrappers, setWrappers] = useState([]);
   const [children, setChildren] = useState([]);
   const [sectionTitle, setSectionTitle] = useState('');
@@ -267,6 +267,7 @@ export default function Sections({
     }
   }, [counter, publication, selectedTopic]);
   const deleteSection = () => {
+    console.log(sectionIndex)
     setSectionList((sectionList) => {
       const newList = [...sectionList];
       newList.splice(sectionIndex, 1);
@@ -279,7 +280,9 @@ export default function Sections({
 
   useEffect(() => {
     if (section) {
-      setSelectedTopic(topics.find((topic) => topic.topic === section?.selectedTopic));
+      setSelectedTopic(
+        topics.find((topic) => topic.topic === section?.selectedTopic)
+      );
       setEnabled(section?.isShowTitle);
       setContainerScreen(section?.isFullContainerGrid);
       setFullScreen(!section?.isFullContainerGrid);
@@ -327,6 +330,7 @@ export default function Sections({
     selectedTopic,
   ]);
 
+  console.log(section)
   return (
     <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
       <div className="flex flex-col xl:flex-row items-center justify-between gap-8 max-w-screen-xl mx-auto px-4 lg:px-8 mb-12">
@@ -675,7 +679,7 @@ export default function Sections({
                 setFullScreen(false);
               }}
               className={classNames(
-                containerScreen ? 'text-purple-700' : 'text-slate-400'
+                !fullScreen ? 'text-purple-700' : 'text-slate-400'
               )}
               disabled={selectedIndex === 1 ? true : selectedIndex === 2}
             >

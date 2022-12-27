@@ -158,20 +158,22 @@ export default function AligmentPublicationLayout({
                   </li>
                 ))}
               </ul>
-              <SocialIcons
-                twitter={twitter}
-                facebook={facebook}
-                linkedin={linkedin}
-                color={color}
-              />
-
-              {user && (
-                <FollowButton
-                  isFollowing={publication?.isFollowing}
-                  isLoading={!preview && isLoading}
-                  onClick={!preview ? handleFollowButton : null}
+              <div className='flex gap-8'>
+                <SocialIcons
+                  twitter={twitter}
+                  facebook={facebook}
+                  linkedin={linkedin}
+                  color={color}
                 />
-              )}
+
+                {user && (
+                  <FollowButton
+                    isFollowing={publication?.isFollowing}
+                    isLoading={!preview && isLoading}
+                    onClick={!preview ? handleFollowButton : null}
+                  />
+                )}
+              </div>
             </div>
           </div>
         </div>

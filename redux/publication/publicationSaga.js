@@ -161,11 +161,45 @@ function* deletePublicationSectionRequest({ payload: { sectionIndex } }) {
       (state) => state.story.featureStories
     );
     const sections = yield select((state) => state.publication.sections);
-    const newSections = [...sections];
+    const featurePage = yield select((state) => state.publication.featurePage);
+    const newSections = sections.filter(
+      (section) => section.sectionIndex !== sectionIndex
+    );
     const newFeatureStories = { ...selectedFeatureStories };
     delete newFeatureStories[`section-${sectionIndex}`];
     newSections.splice(sectionIndex, 1);
+    const tempSections = featurePage.sections.filter(
+      (section) => section.sectionIndex !== sectionIndex
+    );
+
+
+    const newFeaturePage = {
+      ...featurePage,
+      sections: tempSections.map((section, index) => {
+
+        if (index >= sectionIndex) {
+          return {
+            ...section,
+            sectionIndex: section.sectionIndex - 1
+          }
+        }
+        return section
+      })
+    };
+
+
+    newSections.forEach((section, index) => {
+      if (index >= sectionIndex) {
+        const newSection = {
+          ...section,
+          sectionIndex: section.sectionIndex - 1,
+        };
+        newSections[index] = newSection;
+      }
+    });
+
     yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
+    yield put(publicationActions.updateFeaturePageSuccessFromDelete(newFeaturePage));
     yield put(publicationActions.deletePublicationSectionSuccess(newSections));
   } catch (error) {
     console.log(error)

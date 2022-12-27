@@ -65,13 +65,14 @@ export default function MonthlyStatsCard({ name, statistics }) {
                           {statistic.viewCount ?? 0}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
-                          {statistic.readCount ?? 0}
+                          {statistic.readingCount ?? 0}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
                           %
-                          {statistic.readingCount > 0
-                            ? statistic.viewCount / statistic.readingCount
-                            : 0}
+                          {Math.ceil(
+                            (statistic.readingCount / statistic.viewCount) *
+                              100 || 0
+                          )}
                         </td>
                         <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
                           {statistic.fanCount ?? 0}

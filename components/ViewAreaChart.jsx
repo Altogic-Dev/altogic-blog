@@ -1,4 +1,4 @@
-import { toMonthName } from '@/utils/utils';
+import { sortDate, toMonthName } from '@/utils/utils';
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
 
@@ -25,7 +25,8 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
         tempData = {
           [monthName]: {
             ..._.get(tempData, monthName),
-            internalViews: (_.get(tempData,monthName)?.internalViews ?? 0) +  obj.count,
+            internalViews:
+              (_.get(tempData, monthName)?.internalViews ?? 0) + obj.count,
             name: monthName,
           },
         };
@@ -36,7 +37,8 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
         tempData = {
           [toMonthName(monthName)]: {
             ..._.get(tempData, monthName),
-            externalViews: (_.get(tempData,monthName)?.externalViews ?? 0) +  obj.count,
+            externalViews:
+              (_.get(tempData, monthName)?.externalViews ?? 0) + obj.count,
             name: monthName,
           },
         };
@@ -47,7 +49,9 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
           ...tempData,
           [obj.groupby.group]: {
             ..._.get(tempData, obj.groupby.group),
-            internalViews: (_.get(tempData, obj.groupby.group)?.internalViews ?? 0) +  obj.count,
+            internalViews:
+              (_.get(tempData, obj.groupby.group)?.internalViews ?? 0) +
+              obj.count,
             name: obj.groupby.group,
           },
         };
@@ -57,7 +61,9 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
           ...tempData,
           [obj.groupby.group]: {
             ..._.get(tempData, obj.groupby.group),
-            externalViews: (_.get(tempData, obj.groupby.group)?.externalViews ?? 0) + obj.count,
+            externalViews:
+              (_.get(tempData, obj.groupby.group)?.externalViews ?? 0) +
+              obj.count,
             name: obj.groupby.group,
           },
         };
@@ -70,13 +76,12 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
         internalViews: obj.internalViews ?? 0,
       });
     });
-    setData(tempStack);
-
+    setData(sortDate(tempStack, 'name'));
   }, [firstData, secondData]);
 
   return (
     <div className="w-full h-[280px] md:h-[550px]">
-      {!(firstData?.length === 0 && secondData?.length ===0) ? (
+      {!(firstData?.length === 0 && secondData?.length === 0) ? (
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart width={500} height={400} data={data}>
             <CartesianGrid strokeDasharray="3 3" />

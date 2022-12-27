@@ -28,7 +28,7 @@ export default function Chart() {
   const user = useSelector((state) => state.auth.user);
   const [data, setData] = useState();
   const [selectedChart, setSelectedChart] = useState('Views');
-
+  const [selectedPeriod, setSelectedPeriod] = useState('12 Months');
   const totalViewsLastXDays = useSelector(
     (state) => state.stats.totalViewsLastXDays
   );
@@ -69,6 +69,8 @@ export default function Chart() {
     );
   };
   const getDataByTime = (time, dateType) => {
+    setSelectedPeriod(dateType);
+
     if (selectedChart === 'Reads') {
       getTotalReadsLastXDays(time, dateType);
     } else if (selectedChart === 'Views') {
@@ -86,7 +88,6 @@ export default function Chart() {
       setData(totalLikesLastXDays);
     }
   }, [totalReadsLastXDays, totalViewsLastXDays, totalLikesLastXDays]);
-
 
   useEffect(() => {
     getDataByTime(DateTime.local().plus({ year: -1 }).toISODate(), '12 Months');
@@ -107,13 +108,17 @@ export default function Chart() {
           ))}
         </div>
 
-        <PeriodButtons onClick={getDataByTime} />
+        <PeriodButtons selected={selectedPeriod} onClick={getDataByTime} />
       </div>
       <h2 className="text-slate-700 text-2xl sm:text-3xl tracking-md">
         Total {`${selectedChart} `}
         <span className="font-medium">{_.first(data)?.text}</span>
       </h2>
-      <ReadingBarChart type={data?.dateType} data={data} />
+      <ReadingBarChart
+        type={data?.dateType}
+        data={data}
+        isHour={selectedPeriod.includes('Hour')}
+      />
     </div>
   );
 }

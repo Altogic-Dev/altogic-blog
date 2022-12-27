@@ -10,6 +10,7 @@ import _ from 'lodash';
 import Button from '@/components/basic/button';
 import { DateTime } from 'luxon';
 import PeriodButtons from '@/components/stats/PeriodButtons';
+import { convertTime } from '@/utils/utils';
 
 const ViewAreaChart = dynamic(import('@/components/ViewAreaChart'), {
   ssr: false,
@@ -148,10 +149,11 @@ export default function StatsBlogPost() {
       },
       {
         title: 'Average Reading Time',
-        number: (totalReadTime / (externalViews + internalViews) > 0
-          ? totalReadTime / (externalViews + internalViews)
-          : 0
-        ).toFixed(1),
+        number: convertTime(
+          totalReadTime / (externalViews + internalViews) > 0
+            ? totalReadTime / (externalViews + internalViews)
+            : 0
+        ),
       },
       {
         title: 'Likes',
@@ -290,7 +292,7 @@ export default function StatsBlogPost() {
               <h2 className="text-slate-700 text-2xl sm:text-3xl tracking-md">
                 Views
               </h2>
-              <PeriodButtons dataType="View" onClick={getDataByTime} />
+              <PeriodButtons selected={viewDateTypeState} dataType="View" onClick={getDataByTime} />
             </div>
             <div className="grid lg:grid-cols-[220px,1fr] xl:grid-cols-[280px,1fr] gap-8">
               <div className="flex flex-col gap-7">
@@ -316,16 +318,17 @@ export default function StatsBlogPost() {
               <h2 className="text-slate-700 text-2xl sm:text-3xl tracking-md">
                 Member Reading Time
               </h2>
-              <PeriodButtons dataType="Read" onClick={getDataByTime} />
+              <PeriodButtons selected={readingDateTypeState}   dataType="Read" onClick={getDataByTime} />
             </div>
             <div className="grid lg:grid-cols-[220px,1fr] xl:grid-cols-[280px,1fr] gap-8">
               <div className="flex flex-col gap-7">
                 <StatsCard
                   title={`${readingDateTypeState} Reading Time`}
-                  number={periodialTotalReadingTime}
+                  number={convertTime(periodialTotalReadingTime)}
                 />
               </div>
               <MemberAreaChart
+                timeUnit={convertTime(periodialTotalReadingTime).split(' ')[1]}
                 type={readingDateTypeState}
                 rawData={storyTotalReadTimePeriodically[readingDateTypeState]}
               />
