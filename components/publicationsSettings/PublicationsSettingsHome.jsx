@@ -45,9 +45,7 @@ export default function PublicationsSettingsHome({
         backgroundImage: _.isNil(uploadedFileLink) ? null : uploadedFileLink,
       })
     );
-    dispatch(
-      fileActions.updateFileState()
-    );
+    dispatch(fileActions.updateFileState());
   };
 
   const fillFields = () => {
@@ -80,11 +78,17 @@ export default function PublicationsSettingsHome({
   }, [bgColor]);
 
   useEffect(() => {
-    const tab = navigations[selectedTabIndex];
-    if (_.get(tab, 'tabType') === 'feature') {
-      dispatch(publicationActions.getFeaturePageRequest(tab._id));
+    if (_.isEmpty(navigations)) {
+      dispatch(
+        publicationActions.getPublicationNavigationRequest(publication._id)
+      );
+    } else {
+      const tab = navigations[selectedTabIndex];
+      if (_.get(tab, 'tabType') === 'feature') {
+        dispatch(publicationActions.getFeaturePageRequest(tab._id));
+      }
     }
-  }, [selectedTabIndex]);
+  }, [selectedTabIndex, navigations]);
 
   useEffect(() => {
     fillFields();

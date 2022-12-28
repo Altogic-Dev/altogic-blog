@@ -100,7 +100,7 @@ export default function ReadingBarChart({ type, data, timeUnit, isHour }) {
       tempDataManipulated.push(tempObj);
     });
     setDataManipulated(sortDate(tempDataManipulated, 'name', isHour));
-  }, [data]);
+  }, [data,timeUnit]);
 
   if (data?.length > 0) {
     return (

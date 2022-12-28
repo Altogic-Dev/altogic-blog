@@ -120,7 +120,7 @@ export default function WriteAStory({ id }) {
         userProfilePicture: user.profilePicture,
         content,
         storyImages: storyImages.filter((item) => item && item !== 'undefined'),
-        title: inpTitle.replace(/[^a-zA-Z0-9! ]+/g, "") || 'Untitled',
+        title: inpTitle || 'Untitled',
         estimatedReadingTime: Math.ceil(content.split(' ').length / 200) || 1,
         isPublished: false,
         publication: !_.isNil(selectedPublication)

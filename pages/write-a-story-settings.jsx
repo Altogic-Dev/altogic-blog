@@ -13,7 +13,7 @@ import { topicsActions } from '@/redux/topics/topicsSlice';
 import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 import Button from '@/components/basic/button';
 import Input from '@/components/Input';
-import { parseHtml } from '@/utils/utils';
+import { capitiliazeAllWords, parseHtml } from '@/utils/utils';
 
 export default function WriteAStorySettings() {
   const router = useRouter();
@@ -68,10 +68,11 @@ export default function WriteAStorySettings() {
       ) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setInpCategoryNames((prev) => [...prev, topic.name]);
+      setInpCategoryNames((prev) => [...prev, capitiliazeAllWords(topic.name)]);
       setInpCategory('');
     }
   };
+
   const handleInsert = (e) => {
     if (e.key === 'Enter' && _.size(inpCategoryNames) < 5) {
       if (!isSearchOpen && inpCategory.trim()) {

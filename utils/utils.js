@@ -190,10 +190,14 @@ export function sortDate(data, value, isHour) {
 }
 
 
-export function parseTextWithLastDot(text){
+export function parseTextWithLastDot(text) {
   const lastDotIndex = text.lastIndexOf('.');
   if (lastDotIndex === -1) {
     return text;
   }
   return text.slice(0, lastDotIndex + 1);
+}
+
+export function capitiliazeAllWords(str) {
+  return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }
