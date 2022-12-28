@@ -46,12 +46,13 @@ export default function PublicationsNormalCard({
     );
   };
 
-
   useEffect(() => {
     if (story && publicationsStories) {
       handleSelectStory(
         publicationsStories.find((pubStory) => pubStory?._id === story.story)
       );
+    } else if (!story) {
+      handleSelectStory(_.get(publicationsStories, `[0]`));
     }
   }, [story, publicationsStories]);
   useEffect(() => {

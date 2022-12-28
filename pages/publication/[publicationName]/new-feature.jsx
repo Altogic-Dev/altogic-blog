@@ -25,6 +25,7 @@ export default function PublicationsNewFeature() {
   const [file, setFile] = useState();
   const [featurePageRequest, setFeaturePageRequest] = useState();
   const [fileUploadError, setFileUploadError] = useState();
+  const [noLogoUpdate, setNoLogoUpdate] = useState(false);
   const formSchema = new yup.ObjectSchema({
     title: yup.string().required('Title is required'),
     description: yup.string().required('Description is required'),
@@ -148,7 +149,7 @@ export default function PublicationsNewFeature() {
     } else if (featurePage?.logo) {
       setLogoState(featurePage.logo);
     } else {
-      setFileUploadError('Logo is required');
+      setNoLogoUpdate(true);
     }
   };
 
@@ -170,7 +171,7 @@ export default function PublicationsNewFeature() {
   };
 
   useEffect(() => {
-    if (logoState) {
+    if (logoState || noLogoUpdate) {
       if (!id) {
         dispatch(
           publicationActions.createFeaturePageRequest({
@@ -193,7 +194,7 @@ export default function PublicationsNewFeature() {
       setIsLoading(false);
       router.push(`/publication/${publication.publicationName}/feature`);
     }
-  }, [logoState]);
+  }, [logoState, noLogoUpdate]);
 
   useEffect(() => {
     if (logo) {
@@ -297,7 +298,7 @@ export default function PublicationsNewFeature() {
                       htmlFor="description"
                       className="block text-slate-700 mb-3 text-lg"
                     >
-                      Header logo*
+                      Header logo
                     </label>
                     <p className="text-sm">
                       This image replaces the title at the top of your feature

@@ -14,6 +14,7 @@ export default function PublicationsFullImageVerticalCard({
   index,
   listBox,
   sectionIndex,
+  story,
 }) {
   const [selectedSection, setSelectedSection] = useState();
   const publicationsStories = useSelector(
@@ -41,6 +42,14 @@ export default function PublicationsFullImageVerticalCard({
       })
     );
   };
+
+  useEffect(() => {
+    if (story && publicationsStories) {
+      handleSelectStory(
+        publicationsStories.find((pubStory) => pubStory?._id === story.story)
+      );
+    }
+  }, [story, publicationsStories]);
   useEffect(() => {
     if (publicationsStories) {
       if (_.isArray(publicationsStories[sectionIndex])) {
@@ -70,9 +79,8 @@ export default function PublicationsFullImageVerticalCard({
           )}
         >
           <div>
-            <h2 className="text-slate-100 mb-4 text-2xl font-semibold">
-              {selectedSection?.title}
-            </h2>
+            <span className="flex w-[267px] h-6 bg-black/20" />
+
             {listBox && (
               <Listbox value={selectedSection} onChange={handleSelectStory}>
                 <div className="relative">

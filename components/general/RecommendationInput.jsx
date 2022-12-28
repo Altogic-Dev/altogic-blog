@@ -1,4 +1,5 @@
 import { topicsActions } from '@/redux/topics/topicsSlice';
+import { capitiliazeAllWords } from '@/utils/utils';
 import _ from 'lodash';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +33,7 @@ export default function RecommendationInput() {
       ) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setInpCategoryNames((prev) => [...prev, topic.name]);
+      setInpCategoryNames((prev) => [...prev, capitiliazeAllWords(topic.name)]);
       setInpCategory('');
     }
   };

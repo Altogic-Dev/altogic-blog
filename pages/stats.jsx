@@ -6,7 +6,7 @@ import { statsActions } from '@/redux/stats/statsSlice';
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import Chart from '@/components/stats/chart';
-import { parseHtml } from '@/utils/utils';
+import { convertTime, parseHtml } from '@/utils/utils';
 import Link from 'next/link';
 
 const statCards = [
@@ -32,14 +32,11 @@ export default function Stats() {
   const [percentages, setPercentages] = useState([]);
   const dispatch = useDispatch();
 
-
   const user = useSelector((state) => state.auth.user);
   const statisticsData = useSelector((state) => state.stats.statistics);
   const storiesStatistics = useSelector(
     (state) => state.stats.storiesStatistics
   );
-
-
 
   const getStatistics = () => {
     dispatch(statsActions.getStatisticsRequest({ userId: user._id }));
@@ -61,12 +58,13 @@ export default function Stats() {
         temp['Total Blogs'] = _.first(statisticsData.totalBlogs)?.count ?? 0;
         temp['Total Reading Time'] =
           _.first(statisticsData.totalReading)?.sum ?? 0;
-        temp['Average Reading Time'] = (
+        temp['Average Reading Time'] = convertTime(
           _.first(statisticsData.totalReading)?.count
             ? _.first(statisticsData.totalReading).sum /
-              _.first(statisticsData.totalReading).count
-            : 100
-        ).toFixed(1);
+                _.first(statisticsData.totalReading).count
+            : 100,
+          true
+        );
         temp['Total Likes Received'] =
           _.first(statisticsData.totalLikes)?.count ?? 0;
         temp['Total Views Received'] =
@@ -153,7 +151,6 @@ export default function Stats() {
       <HeadContent>
         <title>Altogic Medium Blog App Stats</title>
         <meta name="description" content="Altogic Medium Blog App Stats" />
-        
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
@@ -276,9 +273,11 @@ export default function Stats() {
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
                                 %
-                                {statistic.readingCount > 0
-                                  ? statistic.viewCount / statistic.readingCount
-                                  : 0}
+                                {Math.ceil(
+                                  (statistic.readingCount /
+                                    statistic.viewCount) *
+                                    100 ||  0
+                                )}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">
                                 {statistic.fanCount ?? 0}

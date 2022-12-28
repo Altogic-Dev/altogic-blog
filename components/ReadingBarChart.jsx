@@ -1,4 +1,9 @@
-import { toMonthName } from '@/utils/utils';
+/* eslint-disable prefer-destructuring */
+import {
+  convertTimeAccordingToType,
+  sortDate,
+  toMonthName,
+} from '@/utils/utils';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
 
@@ -28,7 +33,7 @@ function CustomTooltip({ active, payload, label }) {
   return null;
 }
 
-export default function ReadingBarChart({ type, data }) {
+export default function ReadingBarChart({ type, data, timeUnit, isHour }) {
   const [dataManipulated, setDataManipulated] = useState();
 
   useEffect(() => {
@@ -38,45 +43,64 @@ export default function ReadingBarChart({ type, data }) {
       data?.forEach((obj) => {
         const hour = obj.groupby.group.split(':')[0];
         const minute = obj.groupby.group.split(':')[1];
-        tempData = {
-          ...tempData,
-          [`${hour}:${minute}`]: {
-            name: `${hour}:${minute}`,
-            count: _.get(tempData, `${hour}:${minute}`.count) ?? 0 + obj.count,
-          },
-        };
+        if (_.get(tempData, `${hour}:${minute}`)) {
+          tempData[`${hour}:${minute}`].count += obj.count;
+        } else {
+          tempData = {
+            ...tempData,
+            [`${hour}:${minute}`]: {
+              name: `${hour}:${minute}`,
+              count: obj.count,
+            },
+          };
+        }
       });
     } else if (type === '12 Months') {
       data?.forEach((obj) => {
-        const monthText = toMonthName(obj.groupby.group.split('-')[1]);
-        tempData = {
-          ...tempData,
-          [monthText]: {
-            name: monthText,
-            count: _.get(tempData, monthText.count) ?? 0 + obj.count,
-          },
-        };
+        const month = obj.groupby.group.split('-')[1];
+        const monthText = toMonthName(month);
+        if (_.get(tempData, monthText)) {
+          tempData[monthText].count += obj.count;
+        } else {
+          tempData = {
+            ...tempData,
+            [monthText]: {
+              name: monthText,
+              count: obj.count,
+            },
+          };
+        }
       });
     } else {
       data?.forEach((obj) => {
         const day = obj.groupby.group.split('-')[0];
         const monthText = toMonthName(obj.groupby.group.split('-')[1]);
 
-        tempData = {
-          ...tempData,
-          [`${day} ${monthText}`]: {
-            name: `${day} ${monthText}`,
-            count:
-              _.get(tempData, `${day} ${monthText}`.count) ?? 0 + obj.count,
-          },
-        };
+        if (_.get(tempData, `${day} ${monthText}`)) {
+          tempData[`${day} ${monthText}`].count += obj.count;
+        } else {
+          tempData = {
+            ...tempData,
+            [`${day} ${monthText}`]: {
+              name: `${day} ${monthText}`,
+              count: obj.count,
+            },
+          };
+        }
       });
     }
     _.forEach(tempData, (obj) => {
-      tempDataManipulated.push(obj);
+      const tempObj = { ...obj };
+      if (timeUnit) {
+        tempObj.count = (
+          tempObj.count / convertTimeAccordingToType(timeUnit.toLowerCase())
+        ).toFixed(2);
+      }
+
+      tempDataManipulated.push(tempObj);
     });
-    setDataManipulated(tempDataManipulated);
-  }, [data]);
+    setDataManipulated(sortDate(tempDataManipulated, 'name', isHour));
+  }, [data,timeUnit]);
 
   if (data?.length > 0) {
     return (

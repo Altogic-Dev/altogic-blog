@@ -261,7 +261,7 @@ export const publicationSlice = createSlice({
     deletePublicationSectionRequest(state) {
       state.isLoading = true;
     },
-    deletePublicationSectionSuccess(state,action) {
+    deletePublicationSectionSuccess(state, action) {
       state.sections = action.payload;
     },
     setFeaturePageSectionsRequest(state) {
@@ -375,6 +375,12 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+ 
+    updateFeaturePageSuccessFromDelete(state, action) {
+      state.isLoading = false;
+      state.featurePage = action.payload
+    },
+
 
     cleanFeaturePageRequest(state) {
       state.featurePage = null;

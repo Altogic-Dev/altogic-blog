@@ -32,7 +32,7 @@ export default function Sections({
   const [counter, setCounter] = useState(3);
   const [enabled, setEnabled] = useState(false);
   const [fullScreen, setFullScreen] = useState(false);
-  const [containerScreen, setContainerScreen] = useState(false);
+  const [containerScreen, setContainerScreen] = useState(true);
   const [wrappers, setWrappers] = useState([]);
   const [children, setChildren] = useState([]);
   const [sectionTitle, setSectionTitle] = useState('');
@@ -73,7 +73,7 @@ export default function Sections({
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[index * 3 + k] || [],
+                story: section?.stories[index * 3 + k],
               }),
             }),
           ]);
@@ -91,7 +91,7 @@ export default function Sections({
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[counter - (counter % 3) + j] || [],
+                story: section?.stories[counter - (counter % 3) + j],
               }),
             }),
           ]);
@@ -115,7 +115,7 @@ export default function Sections({
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[index * 3 + j] || [],
+                story: section?.stories[index * 3 + j],
               }),
             }),
           ]);
@@ -126,14 +126,14 @@ export default function Sections({
           setChildren((children) => [
             ...children,
             createElement(PublicationsFullImageVerticalCard, {
-              index: index * 3 + k,
-              key: index * 3 + k,
+              index: counter - (counter % 3) + k,
+              key: counter - (counter % 3) + k,
               largeSize: true,
               singleBigCard: counter % 3 === 1,
               listBox: !selectedSectionBar.isTag,
               sectionIndex,
               ...(!selectedSectionBar.isTag && {
-                story: section?.stories[index * 3 + k] || [],
+                story: section?.stories[counter - (counter % 3) + k],
               }),
             }),
           ]);
@@ -279,7 +279,9 @@ export default function Sections({
 
   useEffect(() => {
     if (section) {
-      setSelectedTopic(topics.find((topic) => topic.topic === section?.selectedTopic));
+      setSelectedTopic(
+        topics.find((topic) => topic.topic === section?.selectedTopic)
+      );
       setEnabled(section?.isShowTitle);
       setContainerScreen(section?.isFullContainerGrid);
       setFullScreen(!section?.isFullContainerGrid);
@@ -675,7 +677,7 @@ export default function Sections({
                 setFullScreen(false);
               }}
               className={classNames(
-                containerScreen ? 'text-purple-700' : 'text-slate-400'
+                !fullScreen ? 'text-purple-700' : 'text-slate-400'
               )}
               disabled={selectedIndex === 1 ? true : selectedIndex === 2}
             >

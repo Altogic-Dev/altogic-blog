@@ -13,7 +13,7 @@ import _ from 'lodash';
 import { storyActions } from '@/redux/story/storySlice';
 import Category from '@/components/Category';
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/react/solid';
-import { classNames, parseHtml } from '@/utils/utils';
+import { capitiliazeAllWords, classNames, parseHtml } from '@/utils/utils';
 import PublicationSettingsSuggestions from '@/components/publicationsSettings/suggestions/PublicationSettingsSuggestions';
 import { Listbox, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
@@ -63,7 +63,7 @@ export default function PublishSettings() {
       ) &&
       _.size(inpCategoryNames) < 5
     ) {
-      setInpCategoryNames((prev) => [...prev, topic.name]);
+      setInpCategoryNames((prev) => [...prev, capitiliazeAllWords(topic.name)]);
       setInpCategory('');
     }
   };
@@ -100,7 +100,7 @@ export default function PublishSettings() {
   };
 
   const addCategoryFromRecommended = (categoryName) => {
-    handleAddTopic({name: categoryName});
+    handleAddTopic({ name: categoryName });
   };
   const handlePublish = () => {
     setLoading(true);

@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon';
 import { convert } from 'html-to-text';
+import _ from 'lodash';
 
 export function lowerCaseFirstLetter(string) {
   return string.charAt(0).toLowerCase() + string.slice(1);
@@ -89,4 +90,114 @@ export function getLicenseTitle(license) {
     default:
       return '-';
   }
+}
+
+export function convertTime(seconds, limit) {
+  if (seconds < 60) {
+    return `${seconds.toFixed(1)} ${limit ? 'Sec' : 'Seconds'}`
+  }
+  if (seconds < 3600) {
+    return `${(seconds / 60).toFixed(1)} ${limit ? 'Min' : 'Minutes'}`
+  }
+  if (seconds < 86400) {
+    return `${(seconds / 3600).toFixed(1)} Hours`
+  }
+  return `${(seconds / 86400).toFixed(1)} Days`
+
+}
+export function convertTimeAccordingToType(type) {
+  if (type === 'seconds') {
+    return 1
+  }
+  if (type === 'minutes') {
+    return 60
+  }
+  if (type === 'hours') {
+    return 3600
+  }
+  return 86400
+
+}
+function sortingForMonth(data, value) {
+  return data.sort((a, b) => {
+    const [dayA, monthA] = a[value].split('.');
+    const [dayB, monthB] = b[value].split('.');
+    if (monthA === monthB) {
+      return dayA - dayB;
+    }
+    return monthA - monthB;
+  });
+}
+
+function sortByMonth(data, value) {
+  const monthsArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  return data.sort((a, b) => {
+    const [dayA, monthA] = a[value].split(' ');
+    const [dayB, monthB] = b[value].split(' ');
+    if (monthsArray.indexOf(monthA) === monthsArray.indexOf(monthB)) {
+      return dayA - dayB;
+    }
+    return monthsArray.indexOf(monthA) - monthsArray.indexOf(monthB);
+  });
+
+}
+function sortByHour(data, value) {
+  return data.sort((a, b) => {
+    const [hourA, minuteA] = a[value].split(':');
+    const [hourB, minuteB] = b[value].split(':');
+    if (hourA === hourB) {
+      return minuteA - minuteB;
+    }
+    return hourA - hourB;
+  });
+
+}
+
+export function addZeroToHourAndMinute(hour, minute) {
+  let tempHour = hour;
+  let tempMinute = minute;
+
+  if (hour < 10) {
+    tempHour = `0${hour}`;
+  }
+  if (minute < 10) {
+    tempMinute = `0${minute}`;
+  }
+  return `${tempHour}:${tempMinute}`;
+
+}
+
+
+
+export function sortDate(data, value, isHour) {
+  if (isHour) {
+    return sortByHour(data, value).map(time => {
+      const [hour, minute] = time[value].split(':');
+      return {
+        ...time,
+        [value]: addZeroToHourAndMinute(hour, minute)
+      }
+    }
+    )
+  }
+
+  if (_.size(data) > 0 && data[0][value].split('.').length === 2) {
+    return sortingForMonth(data, value)
+  }
+
+  return sortByMonth(data, value)
+
+}
+
+
+export function parseTextWithLastDot(text) {
+  const lastDotIndex = text.lastIndexOf('.');
+  if (lastDotIndex === -1) {
+    return text;
+  }
+  return text.slice(0, lastDotIndex + 1);
+}
+
+export function capitiliazeAllWords(str) {
+  return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
 }

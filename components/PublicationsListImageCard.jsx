@@ -52,9 +52,8 @@ export default function PublicationsListImageCard({
   return (
     <div className="flex items-center justify-between space-y-4">
       <div>
-        <h2 className="text-slate-500 text-2xl font-semibold tracking-md">
-          {selectedSection?.title}
-        </h2>
+      <span className="flex w-[380px] h-6 bg-black/20" />
+
         {listBox && (
           <Listbox value={selectedSection} onChange={handleSelectStory}>
             <div className="relative">

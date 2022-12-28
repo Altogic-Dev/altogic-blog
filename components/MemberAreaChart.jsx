@@ -1,6 +1,10 @@
-import { toMonthName } from '@/utils/utils';
+import {
+  convertTimeAccordingToType,
+  sortDate,
+  toMonthName,
+} from '@/utils/utils';
 import _ from 'lodash';
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AreaChart,
   Area,
@@ -11,8 +15,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-
-export default function MemberAreaChart({rawData, type}) {
+export default function MemberAreaChart({ rawData, type, timeUnit, isHour }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -25,7 +28,8 @@ export default function MemberAreaChart({rawData, type}) {
         tempData = {
           [monthName]: {
             ..._.get(tempData, monthName),
-            memberReadTimes: (_.get(tempData,monthName)?.memberReadTimes ?? 0) +  obj.sum,
+            memberReadTimes:
+              (_.get(tempData, monthName)?.memberReadTimes ?? 0) + obj.sum,
             name: monthName,
           },
         };
@@ -36,20 +40,26 @@ export default function MemberAreaChart({rawData, type}) {
           ...tempData,
           [obj.groupby.group]: {
             ..._.get(tempData, obj.groupby.group),
-            memberReadTimes: (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +  obj.sum,
+            memberReadTimes:
+              (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +
+              obj.sum,
             name: obj.groupby.group,
           },
         };
       });
     }
     _.forEach(tempData, (obj) => {
-      tempStack.push({
-        name: obj.name,
-        memberReadTimes: obj.memberReadTimes ?? 0,
-      });
+      const tempObj = { ...obj };
+      if (timeUnit) {
+        tempObj.memberReadTimes = (
+          tempObj.memberReadTimes /
+          convertTimeAccordingToType(timeUnit.toLowerCase())
+        ).toFixed(1);
+      }
+      tempStack.push(tempObj);
     });
-    setData(tempStack);
-  }, [rawData]);
+    setData(sortDate(tempStack, 'name', isHour));
+  }, [rawData, timeUnit]);
 
   return (
     <div className="w-full h-[280px] md:h-[550px]">
