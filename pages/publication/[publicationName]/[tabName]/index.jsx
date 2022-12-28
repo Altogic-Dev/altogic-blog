@@ -114,7 +114,7 @@ export default function Publications({ tabName }) {
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
         />
-        <div className="w-full flex justify-center pb-16">
+        <div className="w-full flex justify-center pb-16 ">
           <div>
             <div
               className={`flex flex-col-reverse ${
@@ -128,7 +128,7 @@ export default function Publications({ tabName }) {
                 <PublicationTab tab={selectedTab} publication={publication} />
               </div>
             </div>
-            <div>
+            <div className=' px-60'>
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>

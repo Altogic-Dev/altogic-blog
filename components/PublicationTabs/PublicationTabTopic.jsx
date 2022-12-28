@@ -27,7 +27,7 @@ function PublicationTabTopic({ tab, publication }) {
   }, [publication, tab]);
 
   return (
-    <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:min-w-[100vw] lg:min-w-[80vw] ">
+    <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:min-w-[100vw] lg:min-w-[80vw] px-60 ">
       {_.map(stories, (post) => (
         <PublicationPostCard
           key={post._id}
