@@ -252,6 +252,7 @@ function* isPublicationnameExistSaga({
 }
 
 function* selectPublicationSaga({ payload }) {
+  console.log(payload)
   LocalStorageUtil.set(LocalStorageUtil.SELECTED_PUBLICATION, payload);
   yield put(publicationActions.selectPublicationSuccess(payload));
 }
@@ -264,6 +265,7 @@ function* updatePublicationSaga({ payload: { publication, onSuccess } }) {
     );
     if (errors) throw errors.items;
     if (updatedPublication) {
+      console.log(updatedPublication)
       if (_.isFunction(onSuccess)) onSuccess();
       yield put(
         publicationActions.updatePublicationSuccess(updatedPublication)
@@ -436,7 +438,7 @@ function* setPublications({ payload }) {
     PublicationService.getAllUserPublications,
     payload
   );
-  yield put(publicationActions.setPublicationsOnLogin(data));
+  yield put(publicationActions.setPublicationsSuccess(data));
 }
 function* addPublicationToUser({ payload: publication }) {
   yield put(publicationActions.addPublicationsToUser(publication));

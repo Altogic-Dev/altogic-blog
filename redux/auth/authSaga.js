@@ -1,5 +1,4 @@
 import AuthService from '@/services/auth';
-import PublicationService from '@/services/publication';
 import ToastMessage from '@/utils/toast';
 import {
   takeEvery,
@@ -9,7 +8,6 @@ import {
   select,
   debounce,
 } from 'redux-saga/effects';
-import { publicationActions } from '../publication/publicationSlice';
 import { storyActions } from '../story/storySlice';
 import { authActions } from './authSlice';
 
@@ -64,13 +62,6 @@ function* loginSaga({ payload }) {
       payload.password
     );
     if (user) {
-      if (user.publications) {
-        const { data } = yield call(
-          PublicationService.getAllUserPublications,
-          user.publications
-        );
-        yield put(publicationActions.setPublicationsOnLogin(data));
-      }
       yield put(authActions.loginSuccess(user));
 
       payload.onSuccess();

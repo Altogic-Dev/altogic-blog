@@ -8,15 +8,17 @@ const StatsService = {
   getTotalReadsLastXDays(userId, date, dateType) {
     return db
       .model('story_view')
+      .lookup({ field: 'story' })
       .filter(
-        `createdAt > ${date} && this.author == '${userId}' && isRead==true`
+        `story.isPublished && createdAt > ${date} && this.author == '${userId}' && isRead==true`
       )
       .group(
         dateType === '24 Hours'
           ? "TOTEXT(hour(this.createdAt)) + ':' + TOTEXT(minute(this.createdAt))"
           : "TOTEXT(day(this.createdAt)) + '-' + TOTEXT(month(this.createdAt)) + '-' + TOTEXT(year(this.createdAt))"
       )
-      .compute([{ name: 'count', type: 'count' }]);
+      .compute([{ name: 'count', type: 'count' }])
+      ;
   },
 
   getStoryReadingTimePeriodically(storySlug, date) {
@@ -79,12 +81,12 @@ const StatsService = {
       date,
     });
   },
-  getPublicationsStoriesStats(publication,page) {
+  getPublicationsStoriesStats(publication, page) {
     return endpoint.get(`/publication/stories-stats`, {
       publication,
       page
     });
-    
+
   },
 };
 

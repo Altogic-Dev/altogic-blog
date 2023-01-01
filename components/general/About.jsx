@@ -68,7 +68,7 @@ function About(props) {
 
   return (
     <>
-      <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
+      <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full ">
         {/* eslint-disable-next-line no-nested-ternary */}
         {isMyProfile && isEmpty(htmlToText(about).trim()) ? (
           <p className="text-sm">
@@ -83,7 +83,10 @@ function About(props) {
         ) : isEmpty(htmlToText(about).trim()) ? (
           <p className="text-sm">No Information</p>
         ) : (
-          <p dangerouslySetInnerHTML={{ __html: about }} />
+          <p
+            className="flex-wrap w-48 "
+            dangerouslySetInnerHTML={{ __html: about }}
+          />
         )}
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 text-slate-500 text-base tracking-sm py-10 mt-10 border-t border-b border-slate-200">

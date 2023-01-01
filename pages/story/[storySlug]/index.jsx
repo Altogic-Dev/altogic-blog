@@ -48,6 +48,9 @@ export default function BlogDetail({ ip }) {
   const myFollowings = useSelector(
     (state) => state.followerConnection.myFollowings
   );
+  const storyConnectInfo = useSelector(
+    (state) => state.general.storyConnectInfo
+  );
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -79,12 +82,14 @@ export default function BlogDetail({ ip }) {
     (user) => user.followingUser === story?.user?._id
   );
 
+  console.log(story);
   const moreFromFollowing = isPublication
     ? isFollowingPublication
     : isFollowing;
 
   const toggleFollow = () => {
     if (isFollowing) {
+      dispatch(storyActions.unfollowUserFromStoryRequest());
       return dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(user, '_id'),
@@ -93,6 +98,8 @@ export default function BlogDetail({ ip }) {
         })
       );
     }
+    dispatch(storyActions.followUserFromStoryRequest());
+
     return dispatch(
       followerConnectionActions.followRequest({
         followerUser: user,
@@ -112,7 +119,7 @@ export default function BlogDetail({ ip }) {
         story: story?._id,
         user: user._id,
         readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
-        isRead,
+        isRead: isRead || _.size(story?.content) < 100,
         ip,
         publication: _.get(story, 'publication._id'),
         isExternal: !!(facebook || twitter || linkedin),
@@ -249,7 +256,6 @@ export default function BlogDetail({ ip }) {
           name="description"
           content={story?.content || 'Story Content  '}
         />
-        
       </HeadContent>
 
       <Layout loading={isLoading}>
@@ -296,8 +302,8 @@ export default function BlogDetail({ ip }) {
                   isMuted={isMuted}
                   isReported={isReported}
                 />
-                {!isMyProfile && _.size(moreUserStories) > 0 && (
-                  <div className="bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
+                {user && !isMyProfile && _.size(moreUserStories) > 0 && (
+                  <div className="mt-5 bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
                     <div className="flex items-center justify-between gap-2 mb-10">
                       <div>
                         <p className="text-slate-600 mb-1 text-xl tracking-md">
@@ -395,6 +401,7 @@ export default function BlogDetail({ ip }) {
 
               <div className="hidden lg:block p-8 space-y-10">
                 <Sidebar
+                  updateProfile
                   profile={_.get(story, 'user')}
                   isFollowing={_.some(
                     myFollowings,

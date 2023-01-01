@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import _ from 'lodash';
+import Image from 'next/image';
 import { ClipLoader } from 'react-spinners';
 
 export default function FileInput({
@@ -33,7 +34,9 @@ export default function FileInput({
         ) : _.isNil(link) ? (
           <div className="w-16 h-16 rounded-full object-contain border border-purple-700 " />
         ) : (
-          <img
+          <Image
+            width={64}
+            height={64}
             className="w-16 h-16 rounded-full object-contain"
             src={link}
             alt=""

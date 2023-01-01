@@ -66,7 +66,7 @@ function PublicationTabStory({ tab, publication }) {
   }, [story]);
 
   return (
-    <div>
+    <div className='md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto '>
       <StoryContent
         bookmarkLists={bookmarkLists}
         setCreateNewList={setCreateNewList}
@@ -75,6 +75,7 @@ function PublicationTabStory({ tab, publication }) {
         isFollowing={isFollowing}
         isMuted={isMuted}
         isReported={isReported}
+        hideButtons
       />
       {createNewList && (
         <CreateBookmarkList setCreateNewList={setCreateNewList} story={story} />

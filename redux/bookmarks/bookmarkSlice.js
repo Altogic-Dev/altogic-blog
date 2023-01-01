@@ -20,7 +20,7 @@ const initialState = {
 
   isLoading: false,
   bookmarkListLoading: true,
-  bookmarkListsUserLoading: false,
+  bookmarkListsUserLoading: true,
   error: null,
   isStoryBookmarked: null,
 };
@@ -56,18 +56,19 @@ export const bookmarkSlice = createSlice({
       state.bookmarkListsUserLoading = true;
     },
     getUserBookmarkListsSuccess(state, action) {
-      state.bookmarkListsUserLoading = false;
       state.bookmarkLists[action.payload.username] = {
         bookmarkLists: [...(_.get(state.bookmarkLists, `${action.payload.username}.bookmarkLists`) ?? []), ...action.payload.data],
         totalPages: action.payload.info.totalPages,
         page: action.payload.info.currentPage,
         count: action.payload.info.count
       }
+      state.bookmarkListsUserLoading = false;
 
     },
     getUserBookmarkListsFailure(state, action) {
-      state.bookmarkListsUserLoading = false;
       state.error = action.payload;
+      state.bookmarkListsUserLoading = false;
+
     },
     createBookmarkListRequest(state) {
       state.isLoading = true;
@@ -96,6 +97,10 @@ export const bookmarkSlice = createSlice({
       state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount += 1
       state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
       state.createdBookmarkList = null;
+      if (_.size(state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages) < 4) {
+        state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages = [...state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages, action.payload.bookmark.story.storyImages[0]]
+      }
+
     },
     addBookmarkFailure(state, action) {
       ToastMessage.error("This story doesn't exist any longer");
@@ -113,6 +118,7 @@ export const bookmarkSlice = createSlice({
 
       const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === action.payload.data.bookmarkList)
       state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount -= 1
+      state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages = action.payload.newImages
 
       state.myBookmarks = state.myBookmarks.filter(
         (bookmark) => bookmark._id !== action.payload.data._id
@@ -123,6 +129,7 @@ export const bookmarkSlice = createSlice({
       state.error = action.payload;
     },
     getBookmarkListDetailRequest(state) {
+      state.error = null;
       state.bookmarkListLoading = true;
     },
     getBookmarkListDetailSuccess(state, action) {

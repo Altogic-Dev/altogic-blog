@@ -10,6 +10,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/outline';
 import { useDispatch, useSelector } from 'react-redux';
+import Image from 'next/image';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { useRouter } from 'next/router';
 import Avatar from './profile/Avatar';
@@ -18,7 +19,7 @@ export default function HeaderDropdown({ user, logout, className }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const publications = useSelector((state) => state.publication.publications);
+  const publications = useSelector((state) => state.publication.userPublications);
   const selectPublication = (publication) => {
     dispatch(publicationActions.selectPublicationRequest(publication));
   };
@@ -110,13 +111,16 @@ export default function HeaderDropdown({ user, logout, className }) {
               <Popover.Button
                 key={publication._id}
                 onClick={() => selectPublication(publication)}
-                className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
+                className="w-full flex items-center  gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50"
               >
-                <img
-                  src={publication?.logo}
-                  alt={publication?.name}
-                  className="w-5 h-5 rounded-full"
-                />
+                <div className='w-5 h-5'>
+                  <Image
+                    width={40}
+                    height={40}
+                    src={publication?.logo}
+                    alt={publication?.name}
+                  />
+                </div>
                 {publication?.name}
               </Popover.Button>
             ))}

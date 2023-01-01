@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import UserCard from '../general/UserCard';
 import SidebarTitle from '../SidebarTitle';
@@ -15,7 +16,8 @@ export default function PeopleMatch({ whoFollows, query }) {
             <UserCard
               key={whoFollow._id}
               user={whoFollow}
-              isFollowing={userFollowings.some(
+              isFollowing={_.some(
+                userFollowings,
                 (u) => u.followingUser === whoFollow._id
               )}
             />

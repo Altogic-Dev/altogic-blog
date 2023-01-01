@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { Popover } from '@headlessui/react';
 import { TagIcon } from '@heroicons/react/solid';
 import { useRouter } from 'next/router';
+import Avatar from '../profile/Avatar';
 
 export default function Suggestion({ suggestions, name, onClick, selected }) {
   const router = useRouter();
@@ -55,13 +56,15 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
                   <div>
                     {suggestion.profilePicture ||
                     _.get(suggestion, 'storyImages[0]') ? (
-                      <img
+                      <Avatar
                         src={
                           suggestion.profilePicture ||
                           _.get(suggestion, 'storyImages[0]')
                         }
                         alt="profile"
                         className="w-8 h-8 rounded-full mr-2"
+                        width={32}
+                        height={32}
                       />
                     ) : (
                       <div className="w-8 h-8 rounded-full mr-2 bg-gray-200" />

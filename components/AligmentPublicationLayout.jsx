@@ -10,7 +10,6 @@ import SocialIcons from './publication/SocialIcons';
 
 export default function AligmentPublicationLayout({
   layout,
-  bgColor,
   color,
   logo,
   isCentered,
@@ -22,6 +21,10 @@ export default function AligmentPublicationLayout({
   linkedin,
   navigations,
   preview,
+  bgPreview,
+  bgOpacity,
+  bottomPreview,
+  bottomOpacity,
 }) {
   const dispatch = useDispatch();
   const router = useRouter();
@@ -49,7 +52,7 @@ export default function AligmentPublicationLayout({
       dispatch(
         publicationActions.unfollowPublicationRequest({
           publication: _.get(publication, '_id'),
-          followerUser,
+          user: followerUser,
         })
       );
     } else if (publication) {
@@ -58,7 +61,7 @@ export default function AligmentPublicationLayout({
           publication: {
             ...publicationReq,
           },
-          followerUser,
+          user: followerUser,
         })
       );
     }
@@ -74,7 +77,8 @@ export default function AligmentPublicationLayout({
         style={
           _.isNil(bgImage)
             ? {
-                backgroundColor: bgColor,
+                backgroundColor: bgPreview,
+                opacity: bgOpacity,
               }
             : {
                 backgroundImage: `url(${bgImage})`,
@@ -123,7 +127,14 @@ export default function AligmentPublicationLayout({
       <div>
         <div className="relative w-full h-[64px] bg-no-repeat bg-cover bg-center">
           <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
-            <div className="flex items-center justify-between gap-4 py-3 border-b border-gray-200">
+            <div
+              style={{
+                backgroundColor: bottomPreview,
+                opacity: bottomOpacity,
+                borderRadius: '10px 10px 0px 0px',
+              }}
+              className=" flex items-center justify-between gap-4 py-3 border-b border-gray-200"
+            >
               <ul className="flex items-center gap-4">
                 {_.map(navigations, (nav, index) => (
                   <li
@@ -158,7 +169,7 @@ export default function AligmentPublicationLayout({
                   </li>
                 ))}
               </ul>
-              <div className='flex gap-8'>
+              <div className="flex gap-8">
                 <SocialIcons
                   twitter={twitter}
                   facebook={facebook}

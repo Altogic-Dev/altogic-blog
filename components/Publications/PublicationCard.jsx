@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import _ from 'lodash';
+import Image from 'next/image';
 import { useSelector, useDispatch } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import FollowButton from '../basic/followbutton';
@@ -59,7 +60,9 @@ export default function PublicationCard({
         <Link href={`/publication/${publication.name}`}>
           <a className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full overflow-hidden">
-              <img
+              <Image
+                width={48}
+                height={48}
                 src={publication.logo}
                 alt={publication.name}
                 className="w-full h-full object-cover"

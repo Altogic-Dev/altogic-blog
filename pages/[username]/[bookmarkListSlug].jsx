@@ -42,14 +42,14 @@ export default function ListDetail() {
   const [editBookmarkList, setEditBookmarkList] = useState(false);
   const [user, setUser] = useState();
   const [isMyProfileState, setIsMyProfileState] = useState(false);
-  const [stories, setStories] = useState([]);
+  const [stories, setStories] = useState();
   const [bookmarkListState, setBookmarkListState] = useState();
   const [bookmarkListPage, setBookmarkListPage] = useState(1);
   const [followingPage, setFollowingPage] = useState(1);
   const [followingModal, setFollowingModal] = useState(false);
   const [unfollowed, setUnfollowed] = useState([]);
   const sessionUser = useSelector((state) => state.auth.user);
-
+  const bookmarkError = useSelector((state) => state.bookmark.error);
   const bookmarkList = useSelector((state) =>
     _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists.find(
       (list) => list.slug === bookmarkListSlug
@@ -61,10 +61,6 @@ export default function ListDetail() {
   );
   const updatedBookmark = useSelector(
     (state) => state.bookmark.updatedBookmark
-  );
-
-  const bookmarkListsUserLoading = useSelector(
-    (state) => state.bookmark.bookmarkListsUserLoading
   );
 
   const profileUser = useSelector((state) => state.auth.profileUser);
@@ -158,13 +154,10 @@ export default function ListDetail() {
   }, [isMyProfileState, profileUser, sessionUser]);
 
   useEffect(() => {
-    if (!sessionUser && bookmarkList?.isPrivate) {
+    if (bookmarkList?.user !== sessionUser?._id && bookmarkList?.isPrivate) {
       router.push('/');
     }
-    if (bookmarks) {
-      setStories(bookmarks.map((bookmark) => bookmark.story));
-    }
-  }, [bookmarks, sessionUser]);
+  }, [sessionUser, bookmarkList]);
 
   useEffect(() => {
     if (
@@ -204,6 +197,18 @@ export default function ListDetail() {
       setBookmarkListState(bookmarkList);
     }
   }, [updatedBookmark]);
+  useEffect(() => {
+    if (bookmarks) {
+      setStories(bookmarks.map((bookmark) => bookmark.story));
+    } else {
+      setStories([]);
+    }
+  }, [bookmarks]);
+  useEffect(() => {
+    if (bookmarkError) {
+      router.push('/');
+    }
+  }, [bookmarkError]);
 
   return (
     <div>
@@ -214,7 +219,7 @@ export default function ListDetail() {
           content="Altogic Medium Blog App List Detail"
         />
       </HeadContent>
-      <Layout loading={bookmarkListsUserLoading}>
+      <Layout loading={!bookmarkList?.name}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">
@@ -277,7 +282,7 @@ export default function ListDetail() {
                   {bookmarkList?.isPrivate ? 'Private' : 'Public'}
                 </span>
 
-                {bookmarkList?.user === sessionUser?._id && (
+                {bookmarkList?.user === user?._id && (
                   <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
@@ -358,12 +363,21 @@ export default function ListDetail() {
                 )}
               </div>
 
-              {stories.length > 0 ? (
+              {_.size(bookmarks) === 0 ? (
+                <div className="items-center flex flex-col">
+                  <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                    <FlagIcon className="w-7 h-7 text-purple-600" />
+                  </span>
+                  <p className="text-slate-500 text-md">
+                    No stories has been bookmarked to this list yet!
+                  </p>
+                </div>
+              ) : (
                 <div className="divide-y divide-gray-200">
                   <ListObserver
                     onEnd={() => setBookmarkListPage((prev) => prev + 1)}
                   >
-                    {stories.map((post) => (
+                    {stories?.map((post) => (
                       <PostCard
                         key={post.id}
                         listDetailMenu
@@ -404,15 +418,6 @@ export default function ListDetail() {
                       />
                     ))}
                   </ListObserver>
-                </div>
-              ) : (
-                <div className="items-center flex flex-col">
-                  <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
-                    <FlagIcon className="w-7 h-7 text-purple-600" />
-                  </span>
-                  <p className="text-slate-500 text-md">
-                    No stories has been bookmarked to this list yet!
-                  </p>
                 </div>
               )}
             </div>

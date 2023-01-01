@@ -9,6 +9,7 @@ import {
 } from '@heroicons/react/outline';
 import { ClipLoader } from 'react-spinners';
 import { Fragment, useEffect, useState, useRef } from 'react';
+import { parseHtml } from '@/utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
@@ -34,6 +35,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   );
   const user = useSelector((state) => state.auth.user);
 
+  const likeLoading = useSelector((state) => state.story.likeLoading);
+
+  const [isLiked, setIsLiked] = useState(false);
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [showReplies, setShowReplies] = useState([]);
   const [editRespondBoxes, setEditRespondBoxes] = useState([]);
@@ -96,7 +100,10 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleEditReply = (reply) => {
-    if (user._id === reply.user._id || user._id === reply.user) {
+    if (
+      _.size(parseHtml(replyEditQuill.root.innerHTML).trim()) > 0 &&
+      (user._id === reply.user._id || user._id === reply.user)
+    ) {
       const temp = { ...reply };
       temp.content = replyEditQuill.root.innerHTML;
       dispatch(storyActions.editReplyRequest(temp));
@@ -111,25 +118,28 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
   const handleRespond = (e) => {
     e.preventDefault();
-
-    const reply = {
-      story: story._id,
-      name: user.name,
-      user: user._id,
-      type: 'story',
-      userProfilePicture: user.profilePicture,
-      username: user.username,
-      content: quillInstance.root.innerHTML,
-      likeCount: 0,
-      commentCount: 0,
-      author: story.user._id,
-    };
-    createReply(reply);
-    quillInstance.setContents([{ insert: '\n' }]);
-    sendNotification('reply');
+    if (_.size(parseHtml(quillInstance.root.innerHTML).trim()) > 0) {
+      const reply = {
+        story: story._id,
+        name: user.name,
+        user: user._id,
+        type: 'story',
+        userProfilePicture: user.profilePicture,
+        username: user.username,
+        content: quillInstance.root.innerHTML,
+        likeCount: 0,
+        commentCount: 0,
+        author: story.user._id,
+      };
+      createReply(reply);
+      quillInstance.setContents([{ insert: '\n' }]);
+      sendNotification('reply');
+    }
   };
 
+  console.log(isLiked, likeLoading);
   const handleReplyLike = (reply) => {
+    setIsLiked(true);
     if (user && !reply.reply_likes)
       dispatch(
         storyActions.likeReplyRequest({
@@ -147,28 +157,30 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     }
   };
   const handleComment = (e, reply, index) => {
-    if (!showReplies[index]) {
-      handleShowComments(reply, index);
-    }
-    setCommentBoxes(
-      commentBoxes.map((item, i) => {
-        if (index === i) return false;
-        return item;
-      })
-    );
     e.preventDefault();
-    const comment = {
-      reply: reply._id,
-      name: user.name,
-      user: user._id,
-      userProfilePicture: user.profilePicture,
-      username: user.username,
-      content: commentQuill.root.innerHTML,
-    };
+    if (_.size(parseHtml(commentQuill.root.innerHTML).trim()) > 0) {
+      if (!showReplies[index]) {
+        handleShowComments(reply, index);
+      }
+      setCommentBoxes(
+        commentBoxes.map((item, i) => {
+          if (index === i) return false;
+          return item;
+        })
+      );
+      const comment = {
+        reply: reply._id,
+        name: user.name,
+        user: user._id,
+        userProfilePicture: user.profilePicture,
+        username: user.username,
+        content: commentQuill.root.innerHTML,
+      };
 
-    createComment(comment);
-    sendNotification('comment');
-    getComments(reply, index);
+      createComment(comment);
+      sendNotification('comment');
+      getComments(reply, index);
+    }
   };
 
   useEffect(() => {
@@ -469,9 +481,12 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
                                   {user && (
-                                    <Button className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm">
+                                    <Button
+                                      onClick={() => handleReplyLike(reply)}
+                                      disabled={likeLoading}
+                                      className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm"
+                                    >
                                       <HeartIcon
-                                        onClick={() => handleReplyLike(reply)}
                                         className={`w-6 ${
                                           reply.reply_likes
                                             ? 'text-red-500'

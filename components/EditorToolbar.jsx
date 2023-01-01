@@ -55,7 +55,25 @@ export const modules = {
     userOnly: true,
   },
 };
-
+export const preventEnter = {
+  keyboard: {
+    bindings: {
+      shift_enter: {
+        key: 13,
+        shiftKey: true,
+        handler: (range) => {
+          this.editor.insertText(range.index, '\n');
+        },
+      },
+      enter: {
+        key: 13,
+        handler: () => {
+          // submit form }
+        },
+      },
+    },
+  },
+};
 // Formats objects for setting up the Quill editor
 export const formats = [
   'bold',

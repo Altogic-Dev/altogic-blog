@@ -1,4 +1,4 @@
-import React, { Fragment, } from 'react';
+import React, { Fragment } from 'react';
 import { Transition, Menu } from '@headlessui/react';
 import _ from 'lodash';
 import {
@@ -12,6 +12,7 @@ import {
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { storyActions } from '@/redux/story/storySlice';
+import Image from 'next/image';
 
 export default function PublicationDropdown({ publication, className }) {
   const router = useRouter();
@@ -37,7 +38,13 @@ export default function PublicationDropdown({ publication, className }) {
         className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50 `}
       >
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200 w-full h-full">
-          <img src={publication?.logo} alt={publication?.name} />
+          <Image
+            width={40}
+            height={40}
+            src={publication?.logo}
+            alt={publication?.name}
+          />
+          {publication?.name}
         </div>
         <div className="divide-y divide-gray-200">
           <div>

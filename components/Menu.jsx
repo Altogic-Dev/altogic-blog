@@ -248,7 +248,7 @@ export default function HeaderMenu() {
           </a>
         </Link>
         {user && (
-          <Link href={`/${user?.username}/lists`}>
+          <Link href={`/${user?.username}?tab=list`}>
             <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
               <BookmarkIcon
                 className="w-6 h-6 text-slate-300 group-hover:text-purple-500"

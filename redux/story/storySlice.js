@@ -32,6 +32,7 @@ const initialState = {
   userFollows: false,
   error: null,
   mutedUsers: [],
+  likeLoading: false,
 };
 
 // Actual Slice
@@ -531,19 +532,28 @@ export const storySlice = createSlice({
       }
     },
 
-    likeStoryRequest() { },
+    likeStoryRequest(state) {
+
+      state.likeLoading = true
+    },
     likeStorySuccess(state, action) {
       state.likedStories = [...state.likedStories, action.payload];
-    },
-    likeStoryFailure() {
-      ToastMessage.error("This story doesn't exist any longer");
+      state.likeLoading = false
 
     },
-    unlikeStoryRequest() { },
+    likeStoryFailure(state) {
+      ToastMessage.error("This story doesn't exist any longer");
+      state.likeLoading = false
+
+
+    },
+    unlikeStoryRequest(state) {
+      state.likeLoading = true
+    },
     unlikeStorySuccess(state, action) {
 
       state.likedStories = state.likedStories.filter(like => like !== action.payload)
-
+      state.likeLoading = false
     },
 
     isLikedStoryRequest() { },
@@ -551,7 +561,8 @@ export const storySlice = createSlice({
       state.likedStories = [...state.likedStories, action.payload];
     },
 
-    likeReplyRequest() {
+    likeReplyRequest(state) {
+      state.likeLoading = true
     }
     ,
     likeReplySuccess(state, action) {
@@ -569,11 +580,17 @@ export const storySlice = createSlice({
         console.log(error)
       }
       state.replyIsLiked = true
+      state.likeLoading = false
+
     },
-    likeReplyFailure() {
+    likeReplyFailure(state) {
+      state.likeLoading = false
+
     },
     unlikeReplyRequest(state) {
       state.replyIsLiked = true
+      state.likeLoading = true
+      
     }
     ,
     unlikeReplySuccess(state, action) {
@@ -591,9 +608,13 @@ export const storySlice = createSlice({
       } catch (error) {
         console.log(error)
       }
+      state.likeLoading = false
+
     },
     unlikeReplyFailure(state) {
       state.replyIsLiked = true
+      state.likeLoading = false
+
     },
 
     getMutedUsersRequest() {
@@ -606,6 +627,13 @@ export const storySlice = createSlice({
     getMutedUsersFailure() {
 
     },
+    followUserFromStoryRequest(state) {
+      state.story.user.followerCount += 1;
+    },
+    unfollowUserFromStoryRequest(state) {
+      state.story.user.followerCount -= 1;
+    },
+
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

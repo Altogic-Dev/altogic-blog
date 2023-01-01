@@ -2,8 +2,8 @@ import { fileActions } from '@/redux/file/fileSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { Popover } from '@headlessui/react';
 import _ from 'lodash';
+import { useEffect } from 'react';
 
-import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AligmentPublicationLayout from '../AligmentPublicationLayout';
 import ColorPicker from '../ColorPicker';
@@ -14,6 +14,28 @@ export default function PublicationsSettingsHome({
   setDoSave,
   doClear,
   setDoClear,
+  layout,
+  setLayout,
+  isCentered,
+  setIsCentered,
+  textColor,
+  setTextColor,
+  selectedTabIndex,
+  setSelectedTabIndex,
+  isMounted,
+  setIsMounted,
+  bgColor,
+  bgOpacity,
+  bgPreview,
+  setBgColor,
+  setBgOpacity,
+  setBgPreview,
+  bottomColor,
+  bottomOpacity,
+  bottomPreview,
+  setBottomColor,
+  setBottomOpacity,
+  setBottomPreview,
 }) {
   const dispatch = useDispatch();
   const publication = useSelector(
@@ -25,13 +47,6 @@ export default function PublicationsSettingsHome({
     (state) => state.publication.publicationNavigation
   );
   const featurePage = useSelector((state) => state.publication.featurePage);
-
-  const [layout, setLayout] = useState('title');
-  const [isCentered, setIsCentered] = useState(false);
-  const [textColor, setTextColor] = useState('#000');
-  const [bgColor, setBgColor] = useState('#fff');
-  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
-
   const sections = featurePage?.sections;
 
   const handleSave = () => {
@@ -41,7 +56,10 @@ export default function PublicationsSettingsHome({
         layout,
         isCentered,
         textColor,
-        backgroundColor: bgColor,
+        backgroundColor: bgPreview,
+        backgroundOpacity: bgOpacity,
+        bottomColor: bottomPreview,
+        bottomOpacity,
         backgroundImage: _.isNil(uploadedFileLink) ? null : uploadedFileLink,
       })
     );
@@ -91,7 +109,10 @@ export default function PublicationsSettingsHome({
   }, [selectedTabIndex, navigations]);
 
   useEffect(() => {
-    fillFields();
+    if (!isMounted) {
+      setIsMounted(true);
+      fillFields();
+    }
   }, [homeLayout]);
 
   useEffect(() => {
@@ -326,7 +347,11 @@ export default function PublicationsSettingsHome({
                 </Popover.Button>
                 <ColorPicker
                   color={bgColor}
-                  onChangeComplete={({ hex }) => setBgColor(hex)}
+                  onChangeComplete={(data) => {
+                    setBgColor(data.hsl);
+                    setBgOpacity(data.hsl.a);
+                    setBgPreview(data.hex);
+                  }}
                 />
               </Popover>
             </div>
@@ -341,11 +366,65 @@ export default function PublicationsSettingsHome({
                 Add background image
               </button>
             </div>
+            <Popover>
+              <Popover.Button
+                type="button"
+                className="inline-flex items-center gap-2 ml-5 text-slate-400 py-1 text-sm tracking-sm transition hover:text-purple-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M2 12C2 17.5228 6.47715 22 12 22C13.6569 22 15 20.6569 15 19V18.5C15 18.0356 15 17.8034 15.0257 17.6084C15.2029 16.2622 16.2622 15.2029 17.6084 15.0257C17.8034 15 18.0356 15 18.5 15H19C20.6569 15 22 13.6569 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M7 13C7.55228 13 8 12.5523 8 12C8 11.4477 7.55228 11 7 11C6.44772 11 6 11.4477 6 12C6 12.5523 6.44772 13 7 13Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M16 9C16.5523 9 17 8.55228 17 8C17 7.44772 16.5523 7 16 7C15.4477 7 15 7.44772 15 8C15 8.55228 15.4477 9 16 9Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M10 8C10.5523 8 11 7.55228 11 7C11 6.44772 10.5523 6 10 6C9.44772 6 9 6.44772 9 7C9 7.55228 9.44772 8 10 8Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+                Bottom background color
+              </Popover.Button>
+              <ColorPicker
+                color={bottomColor}
+                onChangeComplete={(data) => {
+                  setBottomColor(data.hsl);
+                  setBottomOpacity(data.hsl.a);
+                  setBottomPreview(data.hex);
+                }}
+              />
+            </Popover>
           </div>
         </div>
         <AligmentPublicationLayout
           layout={layout}
-          bgColor={bgColor}
+          bgPreview={bgPreview}
+          bgOpacity={bgOpacity}
+          bottomPreview={bottomPreview}
+          bottomOpacity={bottomOpacity}
           color={textColor}
           logo={publication?.logo}
           isCentered={isCentered}
