@@ -169,7 +169,11 @@ export default function HeaderMenu() {
                     dispatch(storyActions.clearStory());
                     router.push('/write-a-story');
                   }}
-                  className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${router.pathname !== '/write-a-story' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-gray-600 hover:bg-gray-700'}`}
+                  className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${
+                    router.pathname !== '/write-a-story'
+                      ? 'bg-purple-600 hover:bg-purple-700'
+                      : 'bg-gray-600 hover:bg-gray-700'
+                  }`}
                 >
                   <PencilIcon className="w-5 h-5" />
                 </Button>
@@ -238,20 +242,26 @@ export default function HeaderMenu() {
           </div>
         </div>
       </div>
-      <div className="flex lg:hidden items-center justify-around gap-14 fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
+      <div className="flex lg:hidden items-center justify-around gap-8 fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
         <Link href="/">
-          <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+          <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
             <HomeIcon
-              className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+              className={`w-8 h-7  group-hover:text-purple-500 ${
+                router.asPath === '/' ? 'text-purple-500' : 'text-slate-300'
+              }`}
               viewBox="0 0 21 21"
             />
           </a>
         </Link>
         {user && (
-          <Link href={`/${user?.username}/lists`}>
-            <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+          <Link href={`/${user?.username}?tab=list`}>
+            <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
               <BookmarkIcon
-                className="w-6 h-6 text-slate-300 group-hover:text-purple-500"
+                className={`w-8 h-7  group-hover:text-purple-500 ${
+                  router.asPath.includes('?tab=list')
+                    ? 'text-purple-500'
+                    : 'text-slate-300'
+                }`}
                 viewBox="0 0 21 21"
               />
             </a>
@@ -259,9 +269,13 @@ export default function HeaderMenu() {
         )}
         {user && (
           <Link href="/my-stories">
-            <a className="group inline-flex items-center gap-3 text-slate-800 px-3 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
+            <a className="group inline-flex items-center gap-3 text-slate-800  py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
               <BookOpenIcon
-                className="w-8 h-7 text-slate-300 group-hover:text-purple-500"
+                className={`w-8 h-7  group-hover:text-purple-500 ${
+                  router.asPath === '/my-stories'
+                    ? 'text-purple-500'
+                    : 'text-slate-300'
+                }`}
                 viewBox="0 0 21 21"
               />
             </a>
@@ -307,7 +321,7 @@ export default function HeaderMenu() {
 
             <PublicationDropdown
               publication={selectedPublication}
-              className="origin-top-right absolute top-10 w-56"
+              className="fixed bottom-20 w-full"
             />
           </Menu>
         )}

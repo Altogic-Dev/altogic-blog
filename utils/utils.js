@@ -1,3 +1,5 @@
+/* eslint-disable prefer-template */
+/* eslint-disable no-param-reassign */
 import { DateTime } from 'luxon';
 import { convert } from 'html-to-text';
 import _ from 'lodash';
@@ -7,6 +9,27 @@ export function lowerCaseFirstLetter(string) {
 }
 export function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+export function RGBAToHexA(color) {
+
+  if (color?.a || color?.r || color?.g || color?.b) {
+    let r = color.r.toString(16);
+    let g = color.g.toString(16);
+    let b = color.b.toString(16);
+    let a = Math.round(color.a * 255).toString(16);
+
+    if (r.length === 1)
+      r = "0" + r;
+    if (g.length === 1)
+      g = "0" + g;
+    if (b.length === 1)
+      b = "0" + b;
+    if (a.length === 1)
+      a = "0" + a;
+
+    return "#" + r + g + b + a;
+  }
+  return color
 }
 export function replaceTurkishChars(str) {
   return str

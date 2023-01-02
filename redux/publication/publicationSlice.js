@@ -175,8 +175,13 @@ export const publicationSlice = createSlice({
     getFeaturePageSuccess(state, action) {
       state.featurePage = action.payload;
     },
-    setPublicationsOnLogin(state, action) {
+
+    setPublicationsRequest(state) {
+      state.isLoading = true
+    },
+    setPublicationsSuccess(state, action) {
       state.publications = action.payload;
+      state.isLoading = false
     },
     addPublicationsToUser(state, action) {
       state.publications = [...state.publications, action.payload];
@@ -302,9 +307,7 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    setPublicationsRequest(state, action) {
-      state.publications = action.payload;
-    },
+    
     getUserPublicationsRequest(state) {
       state.isLoading = true;
     },
@@ -375,7 +378,7 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
- 
+
     updateFeaturePageSuccessFromDelete(state, action) {
       state.isLoading = false;
       state.featurePage = action.payload

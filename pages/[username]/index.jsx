@@ -41,6 +41,7 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
   const userStories = useSelector((state) => state.story.userStories);
   const sessionUser = useSelector((state) => state.auth.user);
+  const [showDialog, setShowDialog] = useState(false);
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -86,7 +87,7 @@ export default function ProfilePage() {
   );
 
   const authLoading = useSelector((state) => state.auth.isLoading);
-
+  const subcribeLoading = useSelector((state) => state.general.isLoading);
   const storyLoading = useSelector((state) => state.story.isLoading);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [blockModal, setBlockModal] = useState(false);
@@ -139,6 +140,15 @@ export default function ProfilePage() {
   }, [tab]);
 
   useEffect(() => {
+    if (profileUser && sessionUser) {
+      dispatch(
+        generalActions.getFollowAndSubscribedInfoRequest(
+          _.get(profileUser, '_id')
+        )
+      );
+    }
+  }, [profileUser]);
+  useEffect(() => {
     if (
       sessionUser &&
       profileUser &&
@@ -157,15 +167,6 @@ export default function ProfilePage() {
     setFollowingModal(false);
   }, [username]);
 
-  useEffect(() => {
-    if (profileUser && sessionUser) {
-      dispatch(
-        generalActions.getFollowAndSubscribedInfoRequest(
-          _.get(profileUser, '_id')
-        )
-      );
-    }
-  }, [profileUser]);
   const getUserBookmarkLists = () => {
     dispatch(
       getUserBookmarkListsRequest({
@@ -211,7 +212,6 @@ export default function ProfilePage() {
     }
   }, [bookmarkListPage, username]);
 
- 
   const setRefs = useCallback(
     (node) => {
       ref.current = node;
@@ -224,6 +224,15 @@ export default function ProfilePage() {
     if (inView && !_.isEmpty(bookmarkLists)) handleBookmarkListEnd();
   }, [inView]);
 
+  useEffect(() => {
+    setShowDialog(
+      !subcribeLoading &&
+        !isMyProfile &&
+        !isSubscribed &&
+        sessionUser &&
+        !authLoading
+    );
+  }, [isSubscribed, authLoading, subcribeLoading]);
   return (
     <div>
       <HeadContent>
@@ -397,16 +406,13 @@ export default function ProfilePage() {
                       followingCount={userFollowingsCount}
                       toggleFollowingsModal={toggleFollowingsModal}
                     />
-                    {!isMyProfile &&
-                      !isSubscribed &&
-                      sessionUser &&
-                      !authLoading && (
-                        <AboutSubscribeCard
-                          profileId={_.get(profileUser, '_id')}
-                          name={_.get(profileUser, 'name')}
-                          mailAddress={_.get(sessionUser, 'email')}
-                        />
-                      )}
+                    {showDialog && (
+                      <AboutSubscribeCard
+                        profileId={_.get(profileUser, '_id')}
+                        name={_.get(profileUser, 'name')}
+                        mailAddress={_.get(sessionUser, 'email')}
+                      />
+                    )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
@@ -447,12 +453,20 @@ export default function ProfilePage() {
                 <ClipLoader />
               ) : (
                 <Sidebar
+                  isSubscribed={isSubscribed}
                   following={{
                     followings: sessionUser ? _.take(userFollowings, 5) : null,
                     count: userFollowingsCount,
                     seeAllButton: toggleFollowingsModal,
                   }}
                   profile={profileUser}
+                  isFollowing={
+                    isFollowing ||
+                    _.some(
+                      myFollowings,
+                      (user) => user?.followingUser === profileUser?._id
+                    )
+                  }
                 />
               )}
             </div>

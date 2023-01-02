@@ -60,6 +60,7 @@ const StoryService = {
       .sort('createdAt', 'desc')
       .page(page)
       .limit(limit)
+      .lookup({ field: 'publication' })
       .get();
   },
 

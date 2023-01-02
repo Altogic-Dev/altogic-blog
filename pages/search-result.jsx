@@ -187,7 +187,8 @@ export default function SearchResult() {
                             <UserCard
                               key={people._id}
                               user={people}
-                              isFollowing={userFollowings.some(
+                              isFollowing={_.some(
+                                userFollowings,
                                 (u) => u.followingUser === people._id
                               )}
                             />

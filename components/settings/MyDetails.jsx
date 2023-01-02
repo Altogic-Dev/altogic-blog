@@ -11,9 +11,14 @@ import Avatar from '@/components/profile/Avatar';
 import constants from '@/constants';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { parseHtml } from '@/utils/utils';
 import { authActions } from '@/redux/auth/authSlice';
 import UserSettingsInput from './UserSettingsInput';
-import EditorToolbar, { modules, formats } from '../EditorToolbar';
+import EditorToolbar, {
+  modules,
+  formats,
+  preventEnter,
+} from '../EditorToolbar';
 import Button from '../basic/button';
 
 const ReactQuill = dynamic(
@@ -36,7 +41,10 @@ export default function MyDetails({ user }) {
     email: yup.string().email(),
     username: yup
       .string()
-      .matches(/^[a-zA-Z0-9_]+$/, 'Only alphanumeric characters are allowed for this field ')
+      .matches(
+        /^[a-zA-Z0-9_]+$/,
+        'Only alphanumeric characters are allowed for this field '
+      )
       .max(15, 'Username must be at most 15 characters'),
     name: yup.string(),
     website: yup.string().nullable(true),
@@ -52,6 +60,7 @@ export default function MyDetails({ user }) {
   const [about, setAbout] = useState();
   const [updateProfileLoading, setUpdateProfileLoading] = useState(false);
   const quillRef = useRef();
+
   const {
     handleSubmit,
     register,
@@ -197,10 +206,10 @@ export default function MyDetails({ user }) {
                 value={about}
                 onChange={handleAbout}
                 placeholder="You can start typing the forum you want to start."
-                modules={modules}
+                modules={{ ...modules, keyboard: preventEnter.keyboard }}
                 formats={formats}
               />
-              {about?.length > 200 && (
+              {parseHtml(about)?.length >= 300 && (
                 <p className="text-red-500 text-xs py-2 ml-60">
                   Reached Max Characters
                 </p>

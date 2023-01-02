@@ -1,4 +1,4 @@
-import { call, takeEvery, put } from 'redux-saga/effects';
+import { call, takeEvery, put, select } from 'redux-saga/effects';
 import GeneralService from '@/services/general';
 import { generalActions } from './generalSlice';
 import { followerConnectionActions } from '../followerConnection/followerConnectionSlice';
@@ -16,7 +16,10 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     );
     if (errors) throw errors;
     if (data) {
-      yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
+      const user = yield select((state) => state.auth.user);
+
+      if(data.isFollowing)
+      yield put(followerConnectionActions.setIsFollowing({ followerUser: user, followingUser: authorId }));
       if (data.isStoryLiked)
         yield put(storyActions.isLikedStorySuccess(storyId));
       yield put(
@@ -37,6 +40,7 @@ function* getFollowAndSubscribedInfoSaga({ payload: authorId }) {
     );
     if (errors) throw errors;
     if (data) {
+      yield put (generalActions.getFollowAndSubscribedInfoSuccess());
       yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
       yield put(subscribeConnectionActions.setIsSubscribed(data.isSubscribed));
     }

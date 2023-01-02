@@ -62,7 +62,7 @@ export default function PublicationsNavigation() {
       let req = {};
       // eslint-disable-next-line no-restricted-syntax
       for (const pair of new FormData(form)) {
-        if (pair[0].includes('title')) {
+        if (pair[0] === 'title') {
           req = {
             ...req,
             tabName: pair[1],

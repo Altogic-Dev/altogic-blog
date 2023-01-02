@@ -20,6 +20,7 @@ import useUnload from '@/hooks/useUnload';
 import Link from 'next/link';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import StoryService from '@/services/story';
+import Image from 'next/image';
 
 export async function getServerSideProps({ req, params }) {
   // const storyName = params.storySlug;
@@ -47,6 +48,9 @@ export default function BlogDetail({ ip }) {
   const isMuted = useSelector((state) => state.blockConnection.isBlocked);
   const myFollowings = useSelector(
     (state) => state.followerConnection.myFollowings
+  );
+  const storyConnectInfo = useSelector(
+    (state) => state.general.storyConnectInfo
   );
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
@@ -85,6 +89,7 @@ export default function BlogDetail({ ip }) {
 
   const toggleFollow = () => {
     if (isFollowing) {
+      dispatch(storyActions.unfollowUserFromStoryRequest());
       return dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(user, '_id'),
@@ -93,6 +98,8 @@ export default function BlogDetail({ ip }) {
         })
       );
     }
+    dispatch(storyActions.followUserFromStoryRequest());
+
     return dispatch(
       followerConnectionActions.followRequest({
         followerUser: user,
@@ -112,7 +119,7 @@ export default function BlogDetail({ ip }) {
         story: story?._id,
         user: user._id,
         readingTime: DateTime.now().diff(enterTime, 'seconds').seconds,
-        isRead,
+        isRead: isRead || _.size(story?.content) < 100,
         ip,
         publication: _.get(story, 'publication._id'),
         isExternal: !!(facebook || twitter || linkedin),
@@ -249,7 +256,6 @@ export default function BlogDetail({ ip }) {
           name="description"
           content={story?.content || 'Story Content  '}
         />
-        
       </HeadContent>
 
       <Layout loading={isLoading}>
@@ -265,11 +271,12 @@ export default function BlogDetail({ ip }) {
             <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
               <div className="pt-8 lg:py-5 lg:px-8">
                 {isPublication && (
-                  <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200">
-                    <img
-                      className="w-20"
+                  <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200 ">
+                    <Image
                       src={_.get(story, 'publication.logo')}
                       alt=""
+                      width={40}
+                      height={40}
                     />
                     <span className="text-slate-500 text-sm tracking-sm">
                       Published in{' '}
@@ -296,8 +303,8 @@ export default function BlogDetail({ ip }) {
                   isMuted={isMuted}
                   isReported={isReported}
                 />
-                {!isMyProfile && _.size(moreUserStories) > 0 && (
-                  <div className="bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
+                {user && !isMyProfile && _.size(moreUserStories) > 0 && (
+                  <div className="mt-5 bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
                     <div className="flex items-center justify-between gap-2 mb-10">
                       <div>
                         <p className="text-slate-600 mb-1 text-xl tracking-md">
@@ -395,6 +402,7 @@ export default function BlogDetail({ ip }) {
 
               <div className="hidden lg:block p-8 space-y-10">
                 <Sidebar
+                  updateProfile
                   profile={_.get(story, 'user')}
                   isFollowing={_.some(
                     myFollowings,

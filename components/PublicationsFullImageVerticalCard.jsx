@@ -15,6 +15,7 @@ export default function PublicationsFullImageVerticalCard({
   listBox,
   sectionIndex,
   story,
+  isTag,
 }) {
   const [selectedSection, setSelectedSection] = useState();
   const publicationsStories = useSelector(
@@ -43,6 +44,15 @@ export default function PublicationsFullImageVerticalCard({
     );
   };
 
+  useEffect(() => {
+    if (!isTag && story && publicationsStories) {
+      handleSelectStory(
+        publicationsStories.find((pubStory) => pubStory?._id === story.story)
+      );
+    } else if (!isTag && !story) {
+      handleSelectStory(_.get(publicationsStories, `[0]`));
+    }
+  }, [story, publicationsStories]);
   useEffect(() => {
     if (story && publicationsStories) {
       handleSelectStory(

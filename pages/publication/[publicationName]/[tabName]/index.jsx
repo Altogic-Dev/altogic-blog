@@ -83,12 +83,10 @@ export default function Publications({ tabName }) {
   }, [publication]);
 
   useEffect(() => {
-    if(!navigations && publication){
-      getPublicationNavigations(publication)
+    if (!navigations && publication) {
+      getPublicationNavigations(publication);
     }
-  }, [navigations,publication]);
-
-
+  }, [navigations, publication]);
 
   return (
     <div>
@@ -102,6 +100,7 @@ export default function Publications({ tabName }) {
       <Layout>
         <AligmentPublicationLayout
           layout={homeLayout?.layout}
+          bottomColor={homeLayout?.bottomColor}
           bgColor={homeLayout?.backgroundColor}
           color={homeLayout?.textColor}
           logo={publication?.logo}
@@ -117,22 +116,20 @@ export default function Publications({ tabName }) {
         <div className="w-full flex justify-center pb-16 ">
           <div>
             <div
-              className={`flex flex-col-reverse ${
+              className={`${
                 _.get(selectedTab, 'tabType') !== 'feature' &&
                 'grid lg:divide-x lg:divide-gray-200 mb-[60px]'
               } `}
             >
-              <div
-                className="divide-y divide-gray-200"
-              >
+              <div className="divide-y divide-gray-200">
                 <PublicationTab tab={selectedTab} publication={publication} />
               </div>
             </div>
-            <div className=' px-60'>
+            <div className="px-8 ">
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>
-              <div className="mt-5 items-start grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 overflow-x-auto">
+              <div className="mt-5 items-start grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 overflow-x-auto ">
                 {latestPublicationStories?.map((post) => (
                   <PublicationPostCard
                     key={post._id}

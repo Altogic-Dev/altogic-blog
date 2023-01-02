@@ -69,6 +69,10 @@ export const fileSlice = createSlice({
     setFileLinkByProfilePictureRequest(state) {
       state.isLoading = true;
     },
+    clearUploadedFiles(state) {
+      state.fileLinks = {};
+    }
+    
   },
   extraReducers: {
     [HYDRATE]: (state, action) => ({

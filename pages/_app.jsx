@@ -121,12 +121,12 @@ function MyApp({ Component, pageProps }) {
     dispatch(storyActions.getMutedUsersRequest({ user }));
   };
 
-
   useEffect(() => {
     if (sessionUser?.username && !isMounted) {
       checkFollowing();
       setIsMounted(true);
       getMutedUsers(sessionUser);
+      dispatch(publicationActions.getUserPublicationsRequest());
     }
   }, [sessionUser]);
   useEffect(() => {
@@ -143,14 +143,10 @@ function MyApp({ Component, pageProps }) {
   }, [publicationName]);
 
   useEffect(() => {
-    if (_.isEmpty(publications) && !_.isEmpty(sessionUser?.publications)) {
-      dispatch(
-        publicationActions.setPublicationsRequest(sessionUser?.publications)
-      );
+    if (!_.isEmpty(sessionUser?.publications)) {
       setSelectedPublicationIfIsExist();
     }
   }, [sessionUser, publications]);
-
 
   useEffect(() => {
     if (
@@ -164,8 +160,6 @@ function MyApp({ Component, pageProps }) {
     else if (!sessionUser && router.asPath === '/my-stories')
       router.push('/login');
   }, [router.asPath]);
-
- 
 
   return (
     <>

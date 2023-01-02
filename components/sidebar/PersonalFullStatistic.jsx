@@ -18,7 +18,7 @@ export default function PersonalFullStatistic() {
         </span>
         <span className="flex flex-col text-slate-700">
           <span className="text-3xl font-bold tracking-md">
-            {_.size(topicAnalytics?.profilePictures)}
+            {topicAnalytics?.profilePictures?.length}
           </span>
           <span className="text-xl tracking-md">
             {_.size(topicAnalytics?.profilePictures) > 1 ? 'Writers' : 'Writer'}

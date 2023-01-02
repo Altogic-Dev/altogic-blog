@@ -109,7 +109,6 @@ export default function PublicationsNewFeature() {
       setValue('description', featurePage.description);
     }
   }, [featurePage]);
-console.log('update')
   const submitFunction = async (data) => {
     const stories = [];
     Object.keys(featStories).forEach((key) => {

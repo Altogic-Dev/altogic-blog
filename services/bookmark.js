@@ -10,8 +10,8 @@ const BookmarkService = {
     }),
   createBookmarkList: (list) => db.model('bookmark_list').create(list),
   addBookmark: (bookmark) => endpoint.post('/bookmark', bookmark),
-  deleteBookmark: ({ listId, storyId }) =>
-    endpoint.delete(`bookmark?storyId=${storyId}&listId=${listId}`),
+  deleteBookmark: ({ listId, storyId, newImages }) =>
+    endpoint.post(`delete-bookmark?storyId=${storyId}&listId=${listId}`, {newImages}),
   getBookmarkListDetail: ({ slug, limit, page }) =>
     endpoint.get(`/bookmark/list/detail`, {
       slug,

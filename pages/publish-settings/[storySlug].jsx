@@ -27,7 +27,9 @@ export default function PublishSettings() {
 
   const story = useSelector((state) => state.story.story);
   const userFromStorage = useSelector((state) => state.auth.user);
-  const publications = useSelector((state) => state.publication.publications);
+  const userPublications = useSelector(
+    (state) => state.publication.userPublications
+  );
   const [loading, setLoading] = useState(false);
   const topicLoading = useSelector((state) => state.topics.isLoading);
   const selectedPublication = useSelector(
@@ -190,7 +192,7 @@ export default function PublishSettings() {
       avatar: userFromStorage?.profilePicture,
       type: 'user',
     };
-    const publicationAuthors = _.map(publications, (publication) => ({
+    const publicationAuthors = _.map(userPublications, (publication) => ({
       id: publication._id,
       name: publication.name,
       userName: publication.publicationname,
@@ -211,7 +213,7 @@ export default function PublishSettings() {
     } else {
       setInpSelectedAuthor(userAuthor);
     }
-  }, [publications]);
+  }, [userPublications]);
   useEffect(() => {
     document.body.addEventListener('click', () => {
       setIsSearchOpen(false);

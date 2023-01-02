@@ -1,5 +1,5 @@
 import { publicationActions } from '@/redux/publication/publicationSlice';
-import { classNames } from '@/utils/utils';
+import { classNames, RGBAToHexA } from '@/utils/utils';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
@@ -10,7 +10,6 @@ import SocialIcons from './publication/SocialIcons';
 
 export default function AligmentPublicationLayout({
   layout,
-  bgColor,
   color,
   logo,
   isCentered,
@@ -22,7 +21,10 @@ export default function AligmentPublicationLayout({
   linkedin,
   navigations,
   preview,
+  bgColor,
+  bottomColor,
 }) {
+  console.log(bottomColor)
   const dispatch = useDispatch();
   const router = useRouter();
   const { publicationName, tabName } = router.query;
@@ -49,7 +51,7 @@ export default function AligmentPublicationLayout({
       dispatch(
         publicationActions.unfollowPublicationRequest({
           publication: _.get(publication, '_id'),
-          followerUser,
+          user: followerUser,
         })
       );
     } else if (publication) {
@@ -58,7 +60,7 @@ export default function AligmentPublicationLayout({
           publication: {
             ...publicationReq,
           },
-          followerUser,
+          user: followerUser,
         })
       );
     }
@@ -74,7 +76,7 @@ export default function AligmentPublicationLayout({
         style={
           _.isNil(bgImage)
             ? {
-                backgroundColor: bgColor,
+                backgroundColor: RGBAToHexA(bgColor),
               }
             : {
                 backgroundImage: `url(${bgImage})`,
@@ -121,9 +123,31 @@ export default function AligmentPublicationLayout({
         )}
       </div>
       <div>
-        <div className="relative w-full h-[64px] bg-no-repeat bg-cover bg-center">
+        <div className="relative w-[100vw] h-[64px] bg-no-repeat bg-cover bg-center">
           <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
-            <div className="flex items-center justify-between gap-4 py-3 border-b border-gray-200">
+            <div className="flex gap-8 justify-between mb-5">
+              <SocialIcons
+                twitter={twitter}
+                facebook={facebook}
+                linkedin={linkedin}
+                color={color}
+              />
+
+              {user && (
+                <FollowButton
+                  isFollowing={publication?.isFollowing}
+                  isLoading={!preview && isLoading}
+                  onClick={!preview ? handleFollowButton : null}
+                />
+              )}
+            </div>
+            <div
+              style={{
+                backgroundColor: RGBAToHexA(bottomColor),
+                borderRadius: '10px 10px 0px 0px',
+              }}
+              className=" flex items-center justify-between gap-4 py-3 border-b border-gray-200"
+            >
               <ul className="flex items-center gap-4">
                 {_.map(navigations, (nav, index) => (
                   <li
@@ -137,8 +161,10 @@ export default function AligmentPublicationLayout({
                             `/publication/${publicationName}/${nav.tabName}`
                           )
                         }
-                        className={`inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700 ${
-                          tabName === nav?.tabName ? 'bg-gray-700' : ''
+                        className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
+                          tabName === nav?.tabName
+                            ? 'text-purple-500'
+                            : 'text-slate-500'
                         }`}
                         style={{ color }}
                       >
@@ -158,22 +184,6 @@ export default function AligmentPublicationLayout({
                   </li>
                 ))}
               </ul>
-              <div className='flex gap-8'>
-                <SocialIcons
-                  twitter={twitter}
-                  facebook={facebook}
-                  linkedin={linkedin}
-                  color={color}
-                />
-
-                {user && (
-                  <FollowButton
-                    isFollowing={publication?.isFollowing}
-                    isLoading={!preview && isLoading}
-                    onClick={!preview ? handleFollowButton : null}
-                  />
-                )}
-              </div>
             </div>
           </div>
         </div>

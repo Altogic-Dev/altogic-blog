@@ -8,7 +8,6 @@ import Suggestion from './Suggestion';
 
 export default function SuggestionList({
   filteredSuggestions,
-  onClick,
   query,
 }) {
   const loading = useSelector((state) => state.general.isLoading);
@@ -27,22 +26,18 @@ export default function SuggestionList({
             <Suggestion
               suggestions={filteredSuggestions?.users}
               name="Users"
-              onClick={onClick}
             />
             <Suggestion
               suggestions={filteredSuggestions?.publications}
               name="Publications"
-              onClick={onClick}
             />
             <Suggestion
               suggestions={filteredSuggestions?.topics}
               name="Categories"
-              onClick={onClick}
             />
             <Suggestion
               suggestions={filteredSuggestions?.stories}
               name="Stories"
-              onClick={onClick}
             />
             <hr className="border-gray-300 h-px mb-2" />
             <Link href={`/search-result?search=${query}`}>

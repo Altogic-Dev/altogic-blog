@@ -20,10 +20,10 @@ export default function Search({
       closeModal();
     }
   };
-  const onClick = (e) => {
-    setInput(e.target.innerText);
-    closeSuggestions();
-  };
+  // const onClick = (e) => {
+  //   setInput(e.target.innerText);
+  //   closeSuggestions();
+  // };
 
   const handleDebounceFn = (inputValue) => {
     if (inputValue.length > 3) {
@@ -73,11 +73,7 @@ export default function Search({
         </div>
       </div>
       {showSuggestions && input && (
-        <SuggestionList
-          filteredSuggestions={suggestions}
-          onClick={onClick}
-          query={input}
-        />
+        <SuggestionList filteredSuggestions={suggestions} query={input} />
       )}
     </div>
   );

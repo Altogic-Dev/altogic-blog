@@ -19,7 +19,6 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       _.get(state.bookmark.bookmarkLists, user?.username)?.bookmarkLists
   );
 
-
   const addBookmark = (list) => {
     let { coverImages } = list;
     const storyImages = _.map(story?.storyImages, (image) => image);
@@ -34,7 +33,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       userId: user._id,
       username: user.username,
       story: story?._id,
-      coverImages: null,
+      coverImages: story?.storyImages[0] ? [story?.storyImages[0]] : null,
     };
 
     dispatch(addBookmarkRequest(req));
@@ -47,6 +46,9 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
         deleteBookmarkRequest({
           listId: list._id,
           storyId: story._id,
+          newImages: list.coverImages.filter(
+            (image) => image !== story?.storyImages[0]
+          ),
         })
       );
     }
@@ -77,7 +79,8 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
                     checked={myBookmarks?.some(
                       (bk) =>
                         bk.bookmarkList === list._id &&
-                        (bk?.story?._id  === story?._id || bk?.story === story?._id)
+                        (bk?.story?._id === story?._id ||
+                          bk?.story === story?._id)
                     )}
                     className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded cursor-pointer"
                     onChange={(e) => handleAddBookmark(e, list)}

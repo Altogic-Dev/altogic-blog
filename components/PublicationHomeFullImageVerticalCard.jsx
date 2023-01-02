@@ -46,7 +46,7 @@ export default function PublicationHomeFullImageVerticalCard({
           </div>
           <div className="mt-4 space-y-1">
             <span className="h-[400px] w-[267px]   text-slate-100">
-              {storyContent}
+              {storyContent.split(' ').slice(0, 10).join(' ')}
             </span>
           </div>
         </div>

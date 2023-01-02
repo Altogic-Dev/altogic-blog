@@ -6,6 +6,9 @@ import { useSelector } from 'react-redux';
 import { Tab } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import { classNames } from '@/utils/utils';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
 import PublicationSettingsInfo from './PublicationsSettingsInfo';
 import PublicationsSettingsHome from './PublicationsSettingsHome';
 
@@ -15,7 +18,7 @@ export default function PublicationsSettings({ isCreate }) {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const user = useSelector((state) => state.auth.user);
+  const sessionUser = useSelector((state) => state.auth.user);
 
   const [isInfo, setIsInfo] = useState(!isHome);
   const [doHomeSave, setDoHomeSave] = useState(false);
@@ -23,6 +26,59 @@ export default function PublicationsSettings({ isCreate }) {
   const [doInfoSave, setDoInfoSave] = useState(false);
   const [doInfoClear, setDoInfoClear] = useState(false);
 
+  const [isMountedHome, setIsMountedHome] = useState(false);
+  const [isMountedInfo, setIsMountedInfo] = useState(false);
+  const [layout, setLayout] = useState('title');
+  const [isCentered, setIsCentered] = useState(false);
+  const [textColor, setTextColor] = useState('#000');
+  const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+
+  const [bottomColor, setBottomColor] = useState();
+
+  const [bgColor, setBgColor] = useState();
+
+  const [tags, setTags] = useState([]);
+  const [inpEditor, setInpEditor] = useState('');
+  const [editors, setEditors] = useState([]);
+  const [inpWriter, setInpWriter] = useState('');
+  const [writers, setWriters] = useState([]);
+  const [user, setUser] = useState();
+  const [isEditorSearch, setIsEditorSearch] = useState(false);
+  const [avatarError, setAvatarError] = useState(null);
+  const [logoError, setLogoError] = useState(null);
+
+  const [fileUploading, setFileUploading] = useState([false, false, false]);
+
+  const schema = yup.object().shape({
+    name: yup.string().required('Name is required'),
+    description: yup
+      .string()
+      .max(280, 'Description should be max 280 characters')
+      .required('Description is required'),
+    tagline: yup
+      .string()
+      .max(100, 'Tagline should be max 100 characters')
+      .required('Tagline is required'),
+    email: yup
+      .string()
+      .email('Please enter a valid email')
+      .required('Email is required'),
+    twitter: yup.string().url('Please enter a valid url'),
+    linkedin: yup.string().url('Please enter a valid url'),
+    facebook: yup.string().url('Please enter a valid url'),
+  });
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    setValue,
+    setError,
+    clearErrors,
+    getValues,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const handleSave = () => {
     if (isInfo) setDoInfoSave(true);
     setDoHomeSave(true);
@@ -39,23 +95,27 @@ export default function PublicationsSettings({ isCreate }) {
       !['admin'].includes(sessionUser.role) ||
       _.lowerCase(publicationName) !==
         _.lowerCase(publication.publicationName) ||
-      _.isNil(publication) ||
-      !_.includes(user.publications, publication._id)
+      _.isNil(publication)
     ) {
       router.push('/');
     }
   };
 
   useEffect(() => {
-    if (!isCreate && publication && publicationName) {
+    if (!isCreate && publication && publicationName && user) {
       const sessionUser = _.find(
         publication.users,
-        (person) => person.user === user._id
+        (person) => person.user === user?._id
       );
       checkAuthorization(publication, sessionUser);
     }
-  }, [publication,publicationName]);
+  }, [publication, publicationName, user]);
 
+  useEffect(() => {
+    if (sessionUser) {
+      setUser(sessionUser);
+    }
+  }, [sessionUser]);
   return (
     <div>
       <HeadContent>
@@ -134,14 +194,56 @@ export default function PublicationsSettings({ isCreate }) {
                 doClear={doInfoClear}
                 setDoClear={setDoInfoClear}
                 isCreate={isCreate}
+                tags={tags}
+                setTags={setTags}
+                inpEditor={inpEditor}
+                setInpEditor={setInpEditor}
+                editors={editors}
+                setEditors={setEditors}
+                inpWriter={inpWriter}
+                setInpWriter={setInpWriter}
+                writers={writers}
+                setWriters={setWriters}
+                isEditorSearch={isEditorSearch}
+                setIsEditorSearch={setIsEditorSearch}
+                avatarError={avatarError}
+                setAvatarError={setAvatarError}
+                logoError={logoError}
+                setLogoError={setLogoError}
+                fileUploading={fileUploading}
+                setFileUploading={setFileUploading}
+                isMounted={isMountedInfo}
+                setIsMounted={setIsMountedInfo}
+                register={register}
+                handleSubmit={handleSubmit}
+                watch={watch}
+                errors={errors}
+                setValue={setValue}
+                setError={setError}
+                clearErrors={clearErrors}
+                getValues={getValues}
               />
             </Tab.Panel>
             <Tab.Panel>
               <PublicationsSettingsHome
+                layout={layout}
+                setLayout={setLayout}
+                isCentered={isCentered}
+                setIsCentered={setIsCentered}
+                textColor={textColor}
+                setTextColor={setTextColor}
+                selectedTabIndex={selectedTabIndex}
+                setSelectedTabIndex={setSelectedTabIndex}
                 doSave={doHomeSave}
                 setDoSave={setDoHomeSave}
                 doClear={doHomeClear}
                 setDoClear={setDoHomeClear}
+                isMounted={isMountedHome}
+                setIsMounted={setIsMountedHome}
+                bgColor={bgColor}
+                setBgColor={setBgColor}
+                bottomColor={bottomColor}
+                setBottomColor={setBottomColor}
               />
             </Tab.Panel>
           </Tab.Panels>

@@ -40,6 +40,7 @@ export default function Sidebar({
   followingStoriesPage,
   followingTopics,
   userTopics,
+  updateProfile
 }) {
   return (
     <>
@@ -54,6 +55,7 @@ export default function Sidebar({
           isFollowing={isFollowing}
           isSubscribed={isSubscribed}
           isLoading={followLoading}
+          updateProfile={updateProfile}
         />
       )}
       {following && (

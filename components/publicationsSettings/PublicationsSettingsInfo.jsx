@@ -3,12 +3,10 @@ import { fileActions } from '@/redux/file/fileSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
 import { PlusIcon } from '@heroicons/react/solid';
-import { yupResolver } from '@hookform/resolvers/yup';
 import _ from 'lodash';
-import * as yup from 'yup';
+
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FileInput from '../FileInput';
 import Input from '../Input';
@@ -23,11 +21,39 @@ export default function PublicationSettingsInfo({
   doClear,
   setDoClear,
   isCreate,
+  tags,
+  setTags,
+  inpEditor,
+  setInpEditor,
+  editors,
+  setEditors,
+  inpWriter,
+  setInpWriter,
+  writers,
+  setWriters,
+  isEditorSearch,
+  setIsEditorSearch,
+  avatarError,
+  setAvatarError,
+  logoError,
+  setLogoError,
+  fileUploading,
+  setFileUploading,
+  user,
+  isMounted,
+  setIsMounted,
+  register,
+  handleSubmit,
+  watch,
+  errors,
+  setValue,
+  setError,
+  clearErrors,
+  getValues,
 }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const userFromLocale = useSelector((state) => state.auth.user);
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
@@ -41,49 +67,8 @@ export default function PublicationSettingsInfo({
   const foundUsers = useSelector((state) => state.auth.foundUsers);
   const loading = useSelector((state) => state.auth.isLoading);
 
-  const [avatarError, setAvatarError] = useState(null);
-  const [logoError, setLogoError] = useState(null);
-
-  const [fileUploading, setFileUploading] = useState([false, false, false]);
-  const schema = yup.object().shape({
-    name: yup.string().required('Name is required'),
-    description: yup
-      .string()
-      .max(280, 'Description should be max 280 characters')
-      .required('Description is required'),
-    tagline: yup
-      .string()
-      .max(100, 'Tagline should be max 100 characters')
-      .required('Tagline is required'),
-    email: yup
-      .string()
-      .email('Please enter a valid email')
-      .required('Email is required'),
-    twitter: yup.string().url('Please enter a valid url'),
-    linkedin: yup.string().url('Please enter a valid url'),
-    facebook: yup.string().url('Please enter a valid url'),
-  });
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-    setValue,
-    setError,
-    clearErrors,
-    getValues,
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
   const watchFields = watch(['twitter', 'linkedin', 'facebook']);
 
-  const [tags, setTags] = useState([]);
-  const [inpEditor, setInpEditor] = useState('');
-  const [editors, setEditors] = useState([]);
-  const [inpWriter, setInpWriter] = useState('');
-  const [writers, setWriters] = useState([]);
-  const [user, setUser] = useState();
-  const [isEditorSearch, setIsEditorSearch] = useState(false);
   const addTagFromRecommended = (tag) => {
     if (!_.includes(tags, tag) && _.size(tags) < 5) {
       setTags((prev) => [tag, ...prev]);
@@ -257,7 +242,10 @@ export default function PublicationSettingsInfo({
   };
 
   useEffect(() => {
-    fillFields();
+    if (!isMounted) {
+      setIsMounted(true);
+      fillFields();
+    }
   }, [publication]);
 
   useEffect(() => {
@@ -269,12 +257,6 @@ export default function PublicationSettingsInfo({
       setValue('linkedin', `https://linkedin.com/${getValues('linkedin')}`);
     }
   }, [watchFields]);
-
-  useEffect(() => {
-    if (userFromLocale) {
-      setUser(userFromLocale);
-    }
-  }, [userFromLocale]);
 
   useEffect(() => {
     const publicationname = removeSpaces(watch('name'));
@@ -312,6 +294,13 @@ export default function PublicationSettingsInfo({
       setDoClear(false);
     }
   }, [doClear]);
+
+  useEffect(
+    () => () => {
+      dispatch(fileActions.clearUploadedFiles());
+    },
+    []
+  );
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-8 lg:mt-20 ">
@@ -426,6 +415,7 @@ export default function PublicationSettingsInfo({
         <hr className="my-8 lg:my-14 border-gray-200" />
         <div className="grid lg:grid-cols-2 gap-8 mb-14">
           <div id="logo">
+            
             <FileInput
               loading={_.get(fileUploading, 1)}
               label="Publication logo*"
@@ -609,10 +599,12 @@ export default function PublicationSettingsInfo({
           </div>
           <div className="grid md:grid-cols-[180px,1fr] gap-8">
             <div>
-              <h6 className="text-slate-700 mb-3 text-lg tracking-sm">Categories</h6>
+              <h6 className="text-slate-700 mb-3 text-lg tracking-sm">
+                Categories
+              </h6>
               <p className="text-slate-500 text-sm tracking-sm">
-                Adding categories (up to 5) allows people to search for and discover
-                your publication.
+                Adding categories (up to 5) allows people to search for and
+                discover your publication.
               </p>
             </div>
             <div>

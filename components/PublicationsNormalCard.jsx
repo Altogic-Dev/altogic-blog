@@ -17,6 +17,7 @@ export default function PublicationsNormalCard({
   index,
   sectionIndex,
   story,
+  isTag,
 }) {
   const [selectedSection, setSelectedSection] = useState();
   const publicationsStories = useSelector(
@@ -47,11 +48,11 @@ export default function PublicationsNormalCard({
   };
 
   useEffect(() => {
-    if (story && publicationsStories) {
+    if (!isTag && story && publicationsStories) {
       handleSelectStory(
         publicationsStories.find((pubStory) => pubStory?._id === story.story)
       );
-    } else if (!story) {
+    } else if (!isTag && !story) {
       handleSelectStory(_.get(publicationsStories, `[0]`));
     }
   }, [story, publicationsStories]);

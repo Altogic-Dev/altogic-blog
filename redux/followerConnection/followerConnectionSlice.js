@@ -18,7 +18,7 @@ const initialState = {
   isLoading: false,
   followingUserLoading: false,
 
-  isUnfollowed : false,
+  isUnfollowed: false,
 };
 
 // Actual Slice
@@ -143,11 +143,9 @@ export const followerConnectionSlice = createSlice({
 
 
     setIsFollowing(state, action) {
-      state.isFollowing = action.payload;
+      const { followingUser, followerUser } = action.payload
+      state.myFollowings = [...state.myFollowings, { followingUser, followerUser }]
       state.isLoading = false
-    },
-    increaseFollowingStoriesPage(state) {
-      if (state.userFollowings?.length > 0) state.followingStoriesPage += 1;
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper

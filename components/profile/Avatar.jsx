@@ -9,12 +9,16 @@ export default function Avatar({
   id,
   width,
   height,
+  layout,
+  objectFit,
 }) {
   if (src)
     return (
       <Image
-        width={width}
-        height={height}
+        {...(layout && { layout })}
+        {...(height && { height })}
+        {...(width && { width })}
+        {...(objectFit && { objectFit })}
         className={`max-w-none rounded-full object-cover ${className}`}
         src={src}
         alt={alt}

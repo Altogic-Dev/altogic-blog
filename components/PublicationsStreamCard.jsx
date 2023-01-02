@@ -11,6 +11,8 @@ export default function PublicationsStreamCard({
   dropdown,
   index,
   sectionIndex,
+  story,
+  isTag,
 }) {
   const [selectedSection, setSelectedSection] = useState();
   const publicationsStories = useSelector(
@@ -32,6 +34,16 @@ export default function PublicationsStreamCard({
   };
 
   useEffect(() => {
+    if (!isTag && story && publicationsStories) {
+      handleSelectStory(
+        publicationsStories.find((pubStory) => pubStory?._id === story.story)
+      );
+    } else if (!isTag && !story) {
+      handleSelectStory(_.get(publicationsStories, `[0]`));
+    }
+  }, [story, publicationsStories]);
+
+  useEffect(() => {
     if (featStories || stories) {
       setSelectedSection(
         _.get(featStories, `[section-${sectionIndex}][${index}]`) ||
@@ -50,10 +62,9 @@ export default function PublicationsStreamCard({
     }
   }, [publicationsStories]);
 
-
   return (
     <div className="space-y-4">
-           <span className="flex w-[380px] h-6 bg-black/20" />
+      <span className="flex w-[380px] h-6 bg-black/20" />
 
       {listBox && (
         <Listbox value={selectedSection} onChange={handleSelectStory}>

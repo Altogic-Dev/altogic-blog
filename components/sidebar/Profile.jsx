@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import Link from 'next/link';
+import { storyActions } from '@/redux/story/storySlice';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import { subscribeConnectionActions } from '@/redux/subscribeConnection/subscribeConnectionSlice';
 import FollowButton from '../basic/followbutton';
@@ -13,6 +14,7 @@ export default function Profile({
   isFollowing,
   isSubscribed,
   isLoading,
+  updateProfile,
 }) {
   const sessionUser = useSelector((state) => state.auth.user);
   const isLoadingSubscribe = useSelector(
@@ -22,10 +24,12 @@ export default function Profile({
   const [clickedIsLoading, setClickedIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  
   const toggleFollow = () => {
     setClickedIsLoading(true);
     if (isFollowing) {
+      if (updateProfile) {
+        dispatch(storyActions.unfollowUserFromStoryRequest());
+      }
       return dispatch(
         followerConnectionActions.unfollowRequest({
           userId: _.get(sessionUser, '_id'),
@@ -35,6 +39,9 @@ export default function Profile({
           fromProfile: true,
         })
       );
+    }
+    if (updateProfile) {
+      dispatch(storyActions.followUserFromStoryRequest(-1));
     }
     return dispatch(
       followerConnectionActions.followRequest({
@@ -64,7 +71,9 @@ export default function Profile({
 
   useEffect(() => {
     if (sessionUser) {
-      setIsMyProfile(sessionUser._id === profile._id);
+      setIsMyProfile(
+        sessionUser._id === profile._id || sessionUser._id === profile
+      );
     }
   }, [sessionUser]);
 

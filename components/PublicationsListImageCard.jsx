@@ -11,6 +11,8 @@ export default function PublicationsListImageCard({
   dropdown,
   index,
   sectionIndex,
+  story,
+  isTag,
 }) {
   const [selectedSection, setSelectedSection] = useState();
   const publicationsStories = useSelector(
@@ -30,6 +32,15 @@ export default function PublicationsListImageCard({
       })
     );
   };
+  useEffect(() => {
+    if (!isTag && story && publicationsStories) {
+      handleSelectStory(
+        publicationsStories.find((pubStory) => pubStory?._id === story.story)
+      );
+    } else if (!isTag && !story) {
+      handleSelectStory(_.get(publicationsStories, `[0]`));
+    }
+  }, [story, publicationsStories]);
 
   useEffect(() => {
     if (featStories || stories) {
