@@ -59,7 +59,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const getReplyComments = (reply) => {
-    dispatch(storyActions.getReplyCommentsRequest(reply));
+     dispatch(storyActions.getReplyCommentsRequest(reply));
   };
 
   const createReply = (reply) => {

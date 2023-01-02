@@ -197,7 +197,7 @@ export const storySlice = createSlice({
     },
     getReplyCommentsSuccess(state, action) {
       state.replies = state.replies.map((reply) => {
-        if (reply._id === action.payload[0].reply) {
+        if (reply._id === action.payload[0]?.reply) {
           return {
             ...reply,
             comments: action.payload,
