@@ -16,9 +16,13 @@ export const generalSlice = createSlice({
   initialState,
   reducers: {
     // Action to set the authentication status
-    getConnectInformationStoryRequest() {},
+    getConnectInformationStoryRequest(state) {
+      state.isLoading = true;
+    },
     getConnectInformationStorySuccess(state, action) {
       state.storyConnectInfo = action.payload;
+      state.isLoading = false;
+
     },
     searchRequest(state) {
       state.isLoading = true;
@@ -43,7 +47,13 @@ export const generalSlice = createSlice({
       state.isLoading = false;
     },
 
-    getFollowAndSubscribedInfoRequest() {},
+    getFollowAndSubscribedInfoRequest(state) {
+      state.isLoading = true;
+    },
+
+    getFollowAndSubscribedInfoSuccess(state) {
+      state.isLoading = false;
+    },
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {
       [HYDRATE]: (state, action) => ({

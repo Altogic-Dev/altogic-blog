@@ -415,7 +415,7 @@ function* updateFeaturePage({ payload: { feature, sections } }) {
       PublicationService.updateFeaturePage,
       {
         ...feature,
-        customLink: feature.title,
+        customLink: feature._id,
       },
       sections
 

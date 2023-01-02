@@ -1,5 +1,6 @@
 import { fileActions } from '@/redux/file/fileSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
+import { RGBAToHexA } from '@/utils/utils';
 import { Popover } from '@headlessui/react';
 import _ from 'lodash';
 import { useEffect } from 'react';
@@ -20,22 +21,14 @@ export default function PublicationsSettingsHome({
   setIsCentered,
   textColor,
   setTextColor,
+  bgColor,
+  setBgColor,
   selectedTabIndex,
   setSelectedTabIndex,
   isMounted,
   setIsMounted,
-  bgColor,
-  bgOpacity,
-  bgPreview,
-  setBgColor,
-  setBgOpacity,
-  setBgPreview,
   bottomColor,
-  bottomOpacity,
-  bottomPreview,
   setBottomColor,
-  setBottomOpacity,
-  setBottomPreview,
 }) {
   const dispatch = useDispatch();
   const publication = useSelector(
@@ -50,17 +43,16 @@ export default function PublicationsSettingsHome({
   const sections = featurePage?.sections;
 
   const handleSave = () => {
+    console.log(RGBAToHexA(textColor))
     dispatch(
       publicationActions.updatePublicationHomeLayoutRequest({
         ...homeLayout,
         layout,
         isCentered,
-        textColor,
-        backgroundColor: bgPreview,
-        backgroundOpacity: bgOpacity,
-        bottomColor: bottomPreview,
-        bottomOpacity,
+        textColor: RGBAToHexA(textColor),
+        backgroundColor: RGBAToHexA(bgColor),
         backgroundImage: _.isNil(uploadedFileLink) ? null : uploadedFileLink,
+        bottomColor: RGBAToHexA(bottomColor),
       })
     );
     dispatch(fileActions.updateFileState());
@@ -72,12 +64,14 @@ export default function PublicationsSettingsHome({
       setIsCentered(homeLayout.isCentered);
       setTextColor(homeLayout.textColor);
       setBgColor(homeLayout.backgroundColor);
+      setBottomColor(homeLayout.bottomColor);
       if (homeLayout.backgroundImage) {
         dispatch(fileActions.uploadFileSuccess(homeLayout.backgroundImage));
       } else {
         dispatch(fileActions.clearFileLink());
       }
     }
+    setIsMounted(true);
   };
 
   useEffect(() => {
@@ -109,8 +103,7 @@ export default function PublicationsSettingsHome({
   }, [selectedTabIndex, navigations]);
 
   useEffect(() => {
-    if (!isMounted) {
-      setIsMounted(true);
+    if (!isMounted && homeLayout) {
       fillFields();
     }
   }, [homeLayout]);
@@ -300,7 +293,7 @@ export default function PublicationsSettingsHome({
                 </Popover.Button>
                 <ColorPicker
                   color={textColor}
-                  onChangeComplete={({ hex }) => setTextColor(hex)}
+                  onChangeComplete={({ rgb }) => setTextColor(rgb)}
                 />
               </Popover>
               <Popover>
@@ -347,11 +340,7 @@ export default function PublicationsSettingsHome({
                 </Popover.Button>
                 <ColorPicker
                   color={bgColor}
-                  onChangeComplete={(data) => {
-                    setBgColor(data.hsl);
-                    setBgOpacity(data.hsl.a);
-                    setBgPreview(data.hex);
-                  }}
+                  onChangeComplete={({ rgb }) => setBgColor(rgb)}
                 />
               </Popover>
             </div>
@@ -410,22 +399,16 @@ export default function PublicationsSettingsHome({
               </Popover.Button>
               <ColorPicker
                 color={bottomColor}
-                onChangeComplete={(data) => {
-                  setBottomColor(data.hsl);
-                  setBottomOpacity(data.hsl.a);
-                  setBottomPreview(data.hex);
-                }}
+                onChangeComplete={({ rgb }) => setBottomColor(rgb)}
               />
             </Popover>
           </div>
         </div>
         <AligmentPublicationLayout
+          bottomColor={bottomColor}
+          bgColor={bgColor}
           layout={layout}
-          bgPreview={bgPreview}
-          bgOpacity={bgOpacity}
-          bottomPreview={bottomPreview}
-          bottomOpacity={bottomOpacity}
-          color={textColor}
+          color={RGBAToHexA(textColor)}
           logo={publication?.logo}
           isCentered={isCentered}
           title={publication?.name}

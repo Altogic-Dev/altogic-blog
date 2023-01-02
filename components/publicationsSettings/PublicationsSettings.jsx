@@ -33,13 +33,9 @@ export default function PublicationsSettings({ isCreate }) {
   const [textColor, setTextColor] = useState('#000');
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
-  const [bottomColor, setBottomColor] = useState('transparent');
-  const [bottomPreview, setBottomPreview] = useState();
-  const [bottomOpacity, setBottomOpacity] = useState(1);
+  const [bottomColor, setBottomColor] = useState();
 
-  const [bgColor, setBgColor] = useState('#fff');
-  const [bgPreview, setBgPreview] = useState();
-  const [bgOpacity, setBgOpacity] = useState(1);
+  const [bgColor, setBgColor] = useState();
 
   const [tags, setTags] = useState([]);
   const [inpEditor, setInpEditor] = useState('');
@@ -244,16 +240,8 @@ export default function PublicationsSettings({ isCreate }) {
                 setDoClear={setDoHomeClear}
                 isMounted={isMountedHome}
                 setIsMounted={setIsMountedHome}
-                bgOpacity={bgOpacity}
-                bgPreview={bgPreview}
                 bgColor={bgColor}
-                setBgPreview={setBgPreview}
                 setBgColor={setBgColor}
-                setBgOpacity={setBgOpacity}
-                bottomOpacity={bottomOpacity}
-                setBottomOpacity={setBottomOpacity}
-                bottomPreview={bottomPreview}
-                setBottomPreview={setBottomPreview}
                 bottomColor={bottomColor}
                 setBottomColor={setBottomColor}
               />

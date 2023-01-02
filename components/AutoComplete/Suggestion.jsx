@@ -54,25 +54,32 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
                   <TagIcon className="w-6 h-6 rounded-full mr-2 text-gray-600" />
                 ) : (
                   <div>
-                    {suggestion.profilePicture ||
-                    _.get(suggestion, 'storyImages[0]') ? (
-                      <Avatar
-                        src={
-                          suggestion.profilePicture ||
-                          _.get(suggestion, 'storyImages[0]')
-                        }
-                        alt="profile"
-                        className="w-8 h-8 rounded-full mr-2"
-                        width={32}
-                        height={32}
-                      />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full mr-2 bg-gray-200" />
+                    {_.get(suggestion, 'storyImages[0]') && (
+                      <img src={_.get(suggestion, 'storyImages[0]')} alt="" />
                     )}
+                    {(suggestion.logo || suggestion.profilePicture) && (
+                      <Avatar
+                        src={suggestion.logo || suggestion.profilePicture}
+                        alt="profile"
+                        width={40}
+                        height={40}
+                      />
+                    )}
+
+                    {!_.get(suggestion, 'storyImages[0]') &&
+                      !suggestion.profilePicture && (
+                        <div className="w-8 h-8 rounded-full mr-2 bg-gray-200" />
+                      )}
                   </div>
                 )}
                 <div className="ml-2 w-full text-start">
-                  <p className={`text-sm w-96 truncate flex items-center ${ selected === index ? 'text-purple-500 font-semibold'  : 'text-gray-600'}`}>
+                  <p
+                    className={`text-sm w-96 truncate flex items-center ${
+                      selected === index
+                        ? 'text-purple-500 font-semibold'
+                        : 'text-gray-600'
+                    }`}
+                  >
                     {name === 'Stories' ? suggestion.title : suggestion.name}
                   </p>
                 </div>

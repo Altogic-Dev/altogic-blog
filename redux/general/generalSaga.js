@@ -40,6 +40,7 @@ function* getFollowAndSubscribedInfoSaga({ payload: authorId }) {
     );
     if (errors) throw errors;
     if (data) {
+      yield put (generalActions.getFollowAndSubscribedInfoSuccess());
       yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
       yield put(subscribeConnectionActions.setIsSubscribed(data.isSubscribed));
     }

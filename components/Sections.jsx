@@ -75,6 +75,7 @@ export default function Sections({
               ...(!selectedSectionBar.isTag && {
                 story: section?.stories[index * 3 + k],
               }),
+              isTag: selectedSectionBar.isTag,
             }),
           ]);
         }
@@ -93,6 +94,7 @@ export default function Sections({
               ...(!selectedSectionBar.isTag && {
                 story: section?.stories[counter - (counter % 3) + j],
               }),
+              isTag: selectedSectionBar.isTag,
             }),
           ]);
         }
@@ -117,6 +119,7 @@ export default function Sections({
               ...(!selectedSectionBar.isTag && {
                 story: section?.stories[index * 3 + j],
               }),
+              isTag: selectedSectionBar.isTag,
             }),
           ]);
         }
@@ -135,6 +138,7 @@ export default function Sections({
               ...(!selectedSectionBar.isTag && {
                 story: section?.stories[counter - (counter % 3) + k],
               }),
+              isTag: selectedSectionBar.isTag,
             }),
           ]);
         }

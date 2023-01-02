@@ -113,7 +113,7 @@ export default function WriteAStory({ id }) {
   useEffect(() => {
     if ((content !== '<p><br></p>' || inpTitle) && isChanged) {
       setLoading(true);
-      setMinRead(Math.ceil(content.split(' ').length / 200) || 1)
+      setMinRead(Math.ceil(content.split(' ').length / 200) || 1);
       const story = {
         user: user._id,
         username: user.username,
@@ -220,34 +220,16 @@ export default function WriteAStory({ id }) {
         <meta name="description" content="Altogic Medium Blog App" />
       </HeadContent>
       <Layout loading={!isMounted || (id && !newStory)}>
-        <div className="max-w-screen-xl mx-auto h-screen w-screen px-4 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center">
-          <div className="flex items-center justify-between gap-4 md:mb-12 w-full">
-            <div className="text-slate-800 text-lg tracking-sm w-1/3 flex h-10 items-center">
+        <div className="max-w-screen-xl mx-auto h-screen w-screen px-9 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center ">
+          <div className="flex items-center justify-between gap-4 md:mb-5 w-full  ">
+            <div className="text-slate-800 text-lg tracking-sm w-2/3 flex h-10 items-center">
               <div className="mr-4">
                 Draft in{' '}
                 <span className="font-semibold">
                   {selectedPublication ? selectedPublication.name : username}
                 </span>
               </div>
-              {isShowSaving && (
-                <div className="text-green-700 font-semibold">
-                  {loading ? (
-                    <span>
-                      <span className="animate-pulse">Saving</span>...
-                      <ClipLoader size={10} color="#15803c" loading={loading} />
-                    </span>
-                  ) : (
-                    <div className="flex items-center justify-center">
-                      <span>Saved</span>
-                      <CheckCircleIcon className="w-5 h-5 ml-2" />
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-            <p className="text-slate-500 w-1/3 text-center">
-              {minRead} min read
-            </p>
 
             {setIsShowSaving && !loading && router.isReady && (
               <div className="w-1/3 flex justify-end">
@@ -261,7 +243,27 @@ export default function WriteAStory({ id }) {
               </div>
             )}
           </div>
-          <form className="w-full">
+          <div className="flex justify-between w-full">
+            <p className="py-4 md:py-0 text-slate-500 text-end">
+              {minRead} min read
+            </p>
+            {isShowSaving && (
+              <div className="text-green-700 font-semibold">
+                {loading ? (
+                  <span>
+                    <span className="animate-pulse">Saving</span>...
+                    <ClipLoader size={10} color="#15803c" loading={loading} />
+                  </span>
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <span>Saved</span>
+                    <CheckCircleIcon className="w-5 h-5 ml-2" />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+          <form className="w-full  lg:px-0">
             <Input
               type="text"
               name="story-title"
@@ -271,9 +273,9 @@ export default function WriteAStory({ id }) {
               register={register('title')}
               error={errors.title}
               onChange={handleChangeTitle}
-            />
+            />  
 
-            <div className="mt-4 w-full">
+            <div className="mt-4 w-11/12">
               <Editor
                 setIsShowSaving={setIsShowSaving}
                 onChange={handleChange}

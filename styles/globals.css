@@ -170,10 +170,23 @@ html {
   display: none;
   position: absolute;
 }
+
 #sidebar-controls button {
   background-color: transparent;
   border: none;
   padding: 0;
+}
+@media only screen and (max-width: 1300px) {
+  #sidebar-controls button {
+    position: absolute;
+    left: 2vw;
+  }
+}
+@media only screen and (max-width: 680px) {
+  #sidebar-controls button {
+    position: absolute;
+    left: 3vw;
+  }
 }
 #sidebar-controls i.fa {
   background-color: #fff;

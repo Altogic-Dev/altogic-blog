@@ -50,6 +50,8 @@ export default function ListDetail() {
   const [unfollowed, setUnfollowed] = useState([]);
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkError = useSelector((state) => state.bookmark.error);
+  const bookmarkLoading = useSelector((state) => state.bookmark.bookmarkListLoading);
+  // const [loading, setLoading] = useState(true);
   const bookmarkList = useSelector((state) =>
     _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists.find(
       (list) => list.slug === bookmarkListSlug
@@ -210,6 +212,7 @@ export default function ListDetail() {
     }
   }, [bookmarkError]);
 
+
   return (
     <div>
       <HeadContent>
@@ -219,7 +222,7 @@ export default function ListDetail() {
           content="Altogic Medium Blog App List Detail"
         />
       </HeadContent>
-      <Layout loading={!bookmarkList?.name}>
+      <Layout loading={bookmarkLoading && !_.size(stories)}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">

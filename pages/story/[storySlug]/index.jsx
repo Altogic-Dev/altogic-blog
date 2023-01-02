@@ -20,6 +20,7 @@ import useUnload from '@/hooks/useUnload';
 import Link from 'next/link';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import StoryService from '@/services/story';
+import Image from 'next/image';
 
 export async function getServerSideProps({ req, params }) {
   // const storyName = params.storySlug;
@@ -82,7 +83,6 @@ export default function BlogDetail({ ip }) {
     (user) => user.followingUser === story?.user?._id
   );
 
-  console.log(story);
   const moreFromFollowing = isPublication
     ? isFollowingPublication
     : isFollowing;
@@ -271,11 +271,12 @@ export default function BlogDetail({ ip }) {
             <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
               <div className="pt-8 lg:py-5 lg:px-8">
                 {isPublication && (
-                  <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200">
-                    <img
-                      className="w-20"
+                  <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200 ">
+                    <Image
                       src={_.get(story, 'publication.logo')}
                       alt=""
+                      width={40}
+                      height={40}
                     />
                     <span className="text-slate-500 text-sm tracking-sm">
                       Published in{' '}

@@ -167,7 +167,6 @@ export default function ProfilePage() {
     setFollowingModal(false);
   }, [username]);
 
- 
   const getUserBookmarkLists = () => {
     dispatch(
       getUserBookmarkListsRequest({
@@ -228,7 +227,7 @@ export default function ProfilePage() {
   useEffect(() => {
     setShowDialog(
       !subcribeLoading &&
-        isMyProfile &&
+        !isMyProfile &&
         !isSubscribed &&
         sessionUser &&
         !authLoading
@@ -243,7 +242,7 @@ export default function ProfilePage() {
           content="Altogic Medium Blog App Notifications"
         />
       </HeadContent>
-      <Layout loading={isLoading || subcribeLoading}>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="lg:py-10 lg:px-8">
@@ -454,12 +453,20 @@ export default function ProfilePage() {
                 <ClipLoader />
               ) : (
                 <Sidebar
+                  isSubscribed={isSubscribed}
                   following={{
                     followings: sessionUser ? _.take(userFollowings, 5) : null,
                     count: userFollowingsCount,
                     seeAllButton: toggleFollowingsModal,
                   }}
                   profile={profileUser}
+                  isFollowing={
+                    isFollowing ||
+                    _.some(
+                      myFollowings,
+                      (user) => user?.followingUser === profileUser?._id
+                    )
+                  }
                 />
               )}
             </div>
