@@ -51,6 +51,7 @@ export default function PublicationSettingsInfo({
   clearErrors,
   getValues,
 }) {
+  console.log(user)
   const dispatch = useDispatch();
   const router = useRouter();
 
