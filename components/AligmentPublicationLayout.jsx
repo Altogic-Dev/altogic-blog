@@ -24,7 +24,6 @@ export default function AligmentPublicationLayout({
   bgColor,
   bottomColor,
 }) {
-  console.log(bottomColor)
   const dispatch = useDispatch();
   const router = useRouter();
   const { publicationName, tabName } = router.query;

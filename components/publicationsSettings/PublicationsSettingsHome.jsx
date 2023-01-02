@@ -43,7 +43,6 @@ export default function PublicationsSettingsHome({
   const sections = featurePage?.sections;
 
   const handleSave = () => {
-    console.log(RGBAToHexA(textColor))
     dispatch(
       publicationActions.updatePublicationHomeLayoutRequest({
         ...homeLayout,
