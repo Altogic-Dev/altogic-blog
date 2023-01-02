@@ -222,6 +222,7 @@ export default function PublicationsSettings({ isCreate }) {
                 setError={setError}
                 clearErrors={clearErrors}
                 getValues={getValues}
+                user={user}
               />
             </Tab.Panel>
             <Tab.Panel>
