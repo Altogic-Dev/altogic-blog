@@ -121,7 +121,7 @@ function* bookmarkListDetailSaga({ payload }) {
       BookmarkService.getBookmarkListDetail,
       payload
     );
-
+      console.log('this')
 
     if (data) {
       yield put(getBookmarkListDetailSuccess(data));
