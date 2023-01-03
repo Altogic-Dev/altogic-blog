@@ -152,6 +152,7 @@ export default function WriteAStory({ id }) {
         };
         webworker.postMessage(dataObject);
         webworker.onmessage = (e) => {
+          console.log(content.length);
           if (e.data.data) {
             const temp = e.data;
             if (selectedPublication)
@@ -236,7 +237,7 @@ export default function WriteAStory({ id }) {
               </div>
             </div>
 
-            {setIsShowSaving && !loading && router.isReady && (
+            {isShowSaving && !loading && router.isReady && (
               <div className="w-1/3 flex justify-end">
                 <Button
                   onClick={handlePublish}

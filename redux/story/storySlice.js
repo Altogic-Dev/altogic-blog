@@ -46,11 +46,11 @@ export const storySlice = createSlice({
     },
     getFollowingStoriesSuccess(state, action) {
 
+     try {
       const filteredList = action.payload.data.filter(story => !state.mutedUsers.some(user => user.blockedUser === story.user))
 
-
       state.isLoading = false;
-      if (_.isArray(state.followingStories)) {
+      if (_.isArray(state.followingStories) && action.payload.page !== 1) {
         state.followingStories = [
           ...state.followingStories,
           ...filteredList,
@@ -59,12 +59,15 @@ export const storySlice = createSlice({
         state.followingStories = filteredList;
       }
       state.followingStoriesInfo = action.payload.info;
+     } catch (error) {
+      console.log(error)
+     }
     },
     getRecommendedStoriesRequest(state) {
       state.isLoading = true;
     },
 
-    resetRecommendedStories(state, action) {
+    resetStories(state, action) {
       state.recommendedStories = null;
       state.followingStories = null;
       state.mutedUsers = state.mutedUsers.filter(user => user.blockedUser !== action.payload)
@@ -569,8 +572,7 @@ export const storySlice = createSlice({
 
     likeReplyRequest(state) {
       state.likeLoading = true
-    }
-    ,
+    },
     likeReplySuccess(state, action) {
       try {
         state.replies = state.replies.map(reply => {

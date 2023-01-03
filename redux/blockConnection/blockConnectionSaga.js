@@ -57,7 +57,7 @@ function* unblockAuthorSaga({ payload: blockedUserId }) {
     if (errors) throw errors.items;
     if (data) {
       yield put(blockConnectionActions.unblockAuthorSuccess(blockedUserId));
-      yield put(storyActions.resetRecommendedStories(blockedUserId));
+      yield put(storyActions.resetStories(blockedUserId));
     }
   } catch (e) {
     yield put(blockConnectionActions.unblockAuthorFailure(e));

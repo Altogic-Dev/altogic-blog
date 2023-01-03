@@ -58,7 +58,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
             onSuccess: () =>
               dispatch(
                 storyActions.getFollowingStoriesRequest({
-                  userId: user?._id,
+                  userId: me?._id,
                   page: 1,
                 })
               ),

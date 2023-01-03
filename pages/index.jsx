@@ -19,7 +19,7 @@ import HeadContent from '@/components/general/HeadContent';
 export default function Home() {
   const [followingListPage, setFollowingListPage] = useState(1);
   const [recommendedListPage, setRecommendedListPage] = useState(1);
-
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const followingStories = useSelector((state) => state.story.followingStories);
   const followingStoriesInfo = useSelector(
     (state) => state.story.followingStoriesInfo
@@ -108,6 +108,11 @@ export default function Home() {
     }
   }, [isLoading, followingStories, recommendedStories]);
 
+  useEffect(() => {
+    if (!_.size(followingStories)) {
+      setSelectedIndex(2);
+    }
+  }, [followingStories]);
   return (
     <div>
       <HeadContent>
@@ -120,8 +125,20 @@ export default function Home() {
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               <YourTopics />
 
-              <Tab.Group selectedIndex={2}>
+              <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
+                  <Tab
+                    className={({ selected }) =>
+                      classNames(
+                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
+                        selected
+                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
+                          : 'text-slate-500'
+                      )
+                    }
+                  >
+                    Recommended
+                  </Tab>
                   {user && !_.isEmpty(followingStories) && (
                     <Tab
                       className={({ selected }) =>
@@ -136,82 +153,63 @@ export default function Home() {
                       Your Following
                     </Tab>
                   )}
-                  <Tab
-                    className={({ selected }) =>
-                      classNames(
-                        'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
-                        selected
-                          ? 'text-purple-700 relative before:absolute before:bottom-0 before:left-0 before:w-full before:h-0.5 before:bg-purple-700'
-                          : 'text-slate-500'
-                      )
-                    }
-                  >
-                    Recommended
-                  </Tab>
                 </Tab.List>
 
                 <Tab.Panels>
-                  {user && !_.isEmpty(followingStories) && (
-                    <Tab.Panel className="divide-y divide-gray-200">
-                      {!_.isNil(followingStories) && (
-                        <ListObserver onEnd={handleFollowingEndOfList}>
-                          {_.map(followingStories, (story) => (
-                            <PostCard
-                              publication={story.publication}
-                              key={story._id}
-                              noActiveBookmark
-                              normalMenu
-                              authorUrl={`/${story.username}`}
-                              authorName={story.username}
-                              authorImage={story.userProfilePicture}
-                              storyUrl={`/story/${story.storySlug}`}
-                              timeAgo={DateTime.fromISO(
-                                story.createdAt
-                              ).toRelative()}
-                              title={story.title}
-                              infoText={story.excerpt}
-                              badgeName={_.first(story.categoryNames)}
-                              min={story.estimatedReadingTime}
-                              images={_.first(story.storyImages)}
-                              actionMenu
-                              story={story}
-                              optionButtons={{
-                                unfollow: () =>
-                                  dispatch(
-                                    followerConnectionActions.unfollowRequest({
-                                      userId: user._id,
-                                      followingUserId: story.user,
-                                      followingUsername: _.get(
-                                        story,
-                                        'username'
-                                      ),
-
-                                      notUpdate: true,
-                                    })
-                                  ),
-                                report: () =>
-                                  dispatch(
-                                    reportActions.reportStoryRequest({
-                                      userId: user._id,
-                                      storyId: story._id,
-                                      reportedUserId: story.user,
-                                    })
-                                  ),
-                              }}
-                            />
-                          ))}
-                        </ListObserver>
-                      )}
-                    </Tab.Panel>
-                  )}
-
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {!_.isNil(recommendedStories) && (
-                      <ListObserver onEnd={handleRecommendedEndOfList}>
-                        {_.map(recommendedStories, (story, index) => (
+                    <ListObserver onEnd={handleRecommendedEndOfList}>
+                      {_.map(recommendedStories, (story, index) => (
+                        <PostCard
+                          publication={story.publication}
+                          key={story._id + index}
+                          noActiveBookmark
+                          normalMenu
+                          authorUrl={`/${story.username}`}
+                          authorName={story.username}
+                          authorImage={story.userProfilePicture}
+                          storyUrl={`/story/${story.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            story.createdAt
+                          ).toRelative()}
+                          title={story.title}
+                          infoText={story.excerpt}
+                          badgeName={_.first(story.categoryNames)}
+                          min={story.estimatedReadingTime}
+                          images={_.first(story.storyImages)}
+                          actionMenu
+                          bookmarkList={bookmarkLists}
+                          story={story}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            mute: () =>
+                              dispatch(
+                                blockConnectionActions.blockUserRequest({
+                                  blockedUserId: story.user,
+                                  blockedUsername: story.username,
+                                  blockedUserProfilePicture:
+                                    story.userProfilePicture,
+                                })
+                              ),
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user._id,
+                                  storyId: story._id,
+                                  reportedUserId: story.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))}
+                    </ListObserver>
+                  </Tab.Panel>
+                  <Tab.Panel className="divide-y divide-gray-200">
+                    {!_.isNil(followingStories) && (
+                      <ListObserver onEnd={handleFollowingEndOfList}>
+                        {_.map(followingStories, (story) => (
                           <PostCard
                             publication={story.publication}
-                            key={story._id + index}
+                            key={story._id}
                             noActiveBookmark
                             normalMenu
                             authorUrl={`/${story.username}`}
@@ -227,17 +225,16 @@ export default function Home() {
                             min={story.estimatedReadingTime}
                             images={_.first(story.storyImages)}
                             actionMenu
-                            bookmarkList={bookmarkLists}
                             story={story}
-                            bookmarks={bookmarks}
                             optionButtons={{
-                              mute: () =>
+                              unfollow: () =>
                                 dispatch(
-                                  blockConnectionActions.blockUserRequest({
-                                    blockedUserId: story.user,
-                                    blockedUsername: story.username,
-                                    blockedUserProfilePicture:
-                                      story.userProfilePicture,
+                                  followerConnectionActions.unfollowRequest({
+                                    userId: user._id,
+                                    followingUserId: story.user,
+                                    followingUsername: _.get(story, 'username'),
+
+                                    notUpdate: true,
                                   })
                                 ),
                               report: () =>

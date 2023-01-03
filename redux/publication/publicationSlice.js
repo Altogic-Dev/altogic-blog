@@ -70,6 +70,7 @@ export const publicationSlice = createSlice({
     },
     getLatestPublicationStoriesRequest(state) {
       state.isLoading = true;
+      state.latestPublicationStories = [];
     },
     getLatestPublicationStoriesSuccess(state, action) {
       state.latestPublicationStories = [

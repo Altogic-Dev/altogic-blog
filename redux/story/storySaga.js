@@ -6,9 +6,11 @@ import { storyActions } from './storySlice';
 import { deleteStorySuccess } from '../bookmarks/bookmarkSlice';
 import { deleteTopicWritersSaga, insertTopicsSaga } from '../topics/topicsSaga';
 
-function* getFollowingStoriesSaga({ payload: { userId, page } }) {
+export function* getFollowingStoriesSaga({ payload: { userId, page } }) {
+
   try {
     const info = yield select((state) => state.story.followingStoriesInfo);
+    console.log(info)
 
     if (_.isNil(info) || page <= info.totalPages) {
       const { data, errors } = yield call(
@@ -16,11 +18,13 @@ function* getFollowingStoriesSaga({ payload: { userId, page } }) {
         userId,
         page
       );
+      console.log(data)
       if (!_.isNil(data) && _.isNil(errors)) {
         yield put(
           storyActions.getFollowingStoriesSuccess({
             data: data.data,
             info: data.info,
+            page,
           })
         );
       }

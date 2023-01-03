@@ -7,6 +7,7 @@ import {
 } from '../story/storySaga';
 import { updateProfileUserSaga, updateUserSaga } from '../auth/authSaga';
 
+
 function* unfollowSaga({
   payload: { userId, followingUserId, fromProfile, followingUsername },
 }) {
@@ -52,10 +53,10 @@ function* followSaga({
     if (errors) throw errors;
     yield put(followerConnectionActions.followSuccess({ followingUser, followerUser }));
 
-    if(_.isFunction(onSuccess)){
+    if (_.isFunction(onSuccess)) {
       onSuccess()
     }
-    
+
     if (fromProfile) {
       const userProfile = yield select((state) => state.auth.profileUser);
       yield fork(updateProfileUserSaga, {
