@@ -62,7 +62,7 @@ export default function Stats() {
           _.first(statisticsData.totalReading)?.count
             ? _.first(statisticsData.totalReading).sum /
                 _.first(statisticsData.totalReading).count
-            : 100,
+            : 0,
           true
         );
         temp['Total Likes Received'] =
@@ -134,8 +134,7 @@ export default function Stats() {
               _.first(statisticsData.totalReadingLastYear).count)
           ).toFixed(1);
         } catch (error) {
-          console.log(error);
-          if (!_.first(statisticsData.totalReadingThisYear)?.count) {
+          if (!_.first(statisticsData.totalReadingThisYear)?.count && _.first(statisticsData.totalReadingLastYear)?.count) {
             temp['Average Reading Time'] = -100;
           } else {
             temp['Average Reading Time'] = 100;

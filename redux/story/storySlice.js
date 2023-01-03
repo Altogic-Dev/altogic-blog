@@ -63,6 +63,12 @@ export const storySlice = createSlice({
     getRecommendedStoriesRequest(state) {
       state.isLoading = true;
     },
+
+    resetRecommendedStories(state, action) {
+      state.recommendedStories = null;
+      state.followingStories = null;
+      state.mutedUsers = state.mutedUsers.filter(user => user.blockedUser !== action.payload)
+    },
     getRecommendedStoriesSuccess(state, action) {
 
       const filteredList = action.payload.data.filter(story => !state.mutedUsers.some(user => user.blockedUser === story.user))
@@ -590,7 +596,7 @@ export const storySlice = createSlice({
     unlikeReplyRequest(state) {
       state.replyIsLiked = true
       state.likeLoading = true
-      
+
     }
     ,
     unlikeReplySuccess(state, action) {

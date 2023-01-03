@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useEffect ,useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Button from './basic/button';
 import Avatar from './profile/Avatar';
@@ -12,29 +12,27 @@ export default function UserMutedCard({ user, unmuteAuthor }) {
     if (!mutedUserLoading) setMutedUserLoading(false);
   }, [mutedUserLoading]);
   return (
-    <li key={user?._id} className="flex items-start justify-between gap-3 py-4">
+    <li key={user?._id} className="justify-between gap-3 py-4 flex items-center">
       <Link href={`/${user?.username}`}>
         <a className="flex items-center gap-3">
-          <div className="flex gap-3">
-            <Avatar
-              width={40}
-              height={40}
-              className="w-10 h-10 rounded-full "
-              placeholderName={user?.name}
-              src={user?.profilePicture}
-              alt={user?.name}
-            />
-            <div className="flex flex-col">
-              <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                {user?.name}
-              </span>
-              {user?.about && (
-                <span
-                  className="text-slate-500 text-xs tracking-sm"
-                  dangerouslySetInnerHTML={{ __html: user?.about }}
-                />
-              )}
-            </div>
+          <Avatar
+            width={40}
+            height={40}
+            className="rounded-full "
+            placeholderName={user?.name}
+            src={user?.profilePicture}
+            alt={user?.name}
+          />
+          <div className="flex flex-col">
+            <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
+              {user?.name}
+            </span>
+            {user?.about && (
+              <span
+                className="text-slate-500 text-xs tracking-sm w-[300px] break-words md:w-[600px]"
+                dangerouslySetInnerHTML={{ __html: user?.about }}
+              />
+            )}
           </div>
         </a>
       </Link>

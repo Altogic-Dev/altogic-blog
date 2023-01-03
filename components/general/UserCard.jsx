@@ -92,7 +92,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
               </span>
               {user?.about && (
                 <p
-                  className="text-slate-500 text-xs tracking-sm"
+                  className="text-slate-500 text-xs tracking-sm break-words w-full" 
                   dangerouslySetInnerHTML={{ __html: user.about }}
                 />
               )}

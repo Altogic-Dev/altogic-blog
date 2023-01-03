@@ -299,7 +299,10 @@ export default function BlogDetail({ ip }) {
                   setCreateNewList={setCreateNewList}
                   bookmarks={myBookmarks}
                   toggleFollow={toggleFollow}
-                  isFollowing={isFollowing}
+                  isFollowing={_.some(
+                    myFollowings,
+                    (user) => user.followingUser === story?.user?._id
+                  )}
                   isMuted={isMuted}
                   isReported={isReported}
                 />
