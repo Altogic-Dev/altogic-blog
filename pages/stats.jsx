@@ -134,6 +134,7 @@ export default function Stats() {
               _.first(statisticsData.totalReadingLastYear).count)
           ).toFixed(1);
         } catch (error) {
+          console.log(error);
           if (!_.first(statisticsData.totalReadingThisYear)?.count) {
             temp['Average Reading Time'] = -100;
           } else {
@@ -146,6 +147,7 @@ export default function Stats() {
     }
   }, [statisticsData]);
 
+  console.log(percentages);
   return (
     <div>
       <HeadContent>
@@ -276,7 +278,7 @@ export default function Stats() {
                                 {Math.ceil(
                                   (statistic.readingCount /
                                     statistic.viewCount) *
-                                    100 ||  0
+                                    100 || 0
                                 )}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">

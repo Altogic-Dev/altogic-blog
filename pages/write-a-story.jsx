@@ -13,6 +13,7 @@ import HeadContent from '@/components/general/HeadContent';
 import useStorage from '@/hooks/useStorage';
 import dynamic from 'next/dynamic';
 import { ClipLoader } from 'react-spinners';
+import { parseHtml } from '@/utils/utils';
 import Layout from '../layouts/Layout';
 
 const Editor = dynamic(() => import('@/components/Editor'), {
@@ -111,7 +112,11 @@ export default function WriteAStory({ id }) {
   }, [router.isReady]);
 
   useEffect(() => {
-    if ((content !== '<p><br></p>' || inpTitle) && isChanged) {
+    if (
+      (_.trim(parseHtml(content)) !== '<p><br></p>' ||
+        _.size(_.trim(inpTitle))) &&
+      isChanged
+    ) {
       setLoading(true);
       setMinRead(Math.ceil(content.split(' ').length / 200) || 1);
       const story = {
@@ -177,7 +182,7 @@ export default function WriteAStory({ id }) {
     debounceFn(e.target.value);
   };
   const handlePublish = () => {
-    if (inpTitle) {
+    if (_.size(_.trim(inpTitle))) {
       dispatch(
         storyActions.updateStoryRequest({
           story: {
@@ -273,7 +278,7 @@ export default function WriteAStory({ id }) {
               register={register('title')}
               error={errors.title}
               onChange={handleChangeTitle}
-            />  
+            />
 
             <div className="mt-4 w-11/12">
               <Editor

@@ -233,6 +233,11 @@ export default function ProfilePage() {
         !authLoading
     );
   }, [isSubscribed, authLoading, subcribeLoading]);
+
+  console.log(
+    _.some(myFollowings, (user) => user?.followingUser === profileUser?._id)
+  );
+  console.log(myFollowings)
   return (
     <div>
       <HeadContent>
@@ -419,8 +424,7 @@ export default function ProfilePage() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              {(followerConnectionLoading || !profileUser) &&
-              !followingModal ? (
+              {!profileUser && !followingModal ? (
                 <ClipLoader />
               ) : (
                 <Sidebar

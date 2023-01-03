@@ -292,7 +292,7 @@ export default function WriteAStorySettings() {
                         {_.get(userState, 'followerCount')} Followers
                       </span>
                       <p
-                        className="text-slate-500 text-xs mb-8"
+                        className="text-slate-500 text-xs mb-8 break-words w-3/12"
                         dangerouslySetInnerHTML={{
                           __html: _.get(userState, 'about'),
                         }}
@@ -926,7 +926,7 @@ export default function WriteAStorySettings() {
                           placeholder={_.get(story, 'storySlug')}
                           required
                           disabled={radioCustomizeLink === 'automatic'}
-                          className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                          className="appearance-none block w-full px-1 pr-8 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                           onChange={(e) =>
                             setInpStorySlug(e.target.value.toLowerCase())
                           }

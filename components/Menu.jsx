@@ -80,6 +80,8 @@ export default function HeaderMenu() {
       })
     );
   };
+
+
   return (
     <div>
       <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6">
@@ -131,7 +133,7 @@ export default function HeaderMenu() {
           <div
             className={`${
               !hideMenu && 'lg:w-0'
-            } flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 gap-4`}
+            } flex items-center flex-row-reverse lg:flex-row justify-end w-10/12 lg:flex-1 gap-4`}
           >
             <div
               className={`${

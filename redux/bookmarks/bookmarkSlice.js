@@ -97,9 +97,10 @@ export const bookmarkSlice = createSlice({
       state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount += 1
       state.bookmarks[action.payload.bookmarkList._id] = [...(state.bookmarks[action.payload.bookmarkList._id] ?? []), action.payload.bookmark]
       state.createdBookmarkList = null;
-      if (_.size(state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages) < 4) {
+      if (_.size(state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages) < 4 && action.payload.bookmark.story.storyImages[0]) {
         state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages = [...state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages, action.payload.bookmark.story.storyImages[0]]
       }
+
 
     },
     addBookmarkFailure(state, action) {
@@ -194,6 +195,10 @@ export const bookmarkSlice = createSlice({
       const index = _.findIndex(state.bookmarkLists[action.payload.username].bookmarkLists, list => list._id === action.payload._id)
       state.bookmarkLists[action.payload.username].bookmarkLists[index].storyCount = 0
       state.bookmarks[action.payload._id] = []
+
+
+      state.bookmarkLists[action.payload.username].bookmarkLists[index].coverImages = []
+
     },
     clearBookmarkListFailure(state, action) {
       state.isLoading = false;

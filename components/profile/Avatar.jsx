@@ -21,7 +21,7 @@ export default function Avatar({
         {...(objectFit && { objectFit })}
         className={`max-w-none rounded-full object-cover ${className}`}
         src={src}
-        alt={alt}
+        {...(src && { alt })}
         id={id}
       />
     );

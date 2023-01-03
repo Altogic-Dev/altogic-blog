@@ -14,7 +14,7 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
         router.push(`/${suggestion.username}`);
         break;
       case 'Publications':
-        router.push(`/publication/${suggestion.id}`);
+        router.push(`/publication/${suggestion.name}`);
         break;
       case 'Categories':
         router.push(`/tag/${suggestion.name}`);

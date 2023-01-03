@@ -109,7 +109,7 @@ export default function Profile({
           {_.get(profile, 'followerCount')} Followers
         </span>
         <p
-          className="text-slate-500 text-xs mb-8"
+          className="text-slate-500 text-xs mb-8 w-full break-words"
           dangerouslySetInnerHTML={{ __html: _.get(profile, 'about') }}
         />
         <div className="grid grid-cols-2 lg:flex lg:items-center gap-4">

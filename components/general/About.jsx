@@ -84,7 +84,7 @@ function About(props) {
           <p className="text-sm">No Information</p>
         ) : (
           <p
-            className="flex-wrap w-48 "
+            className="w-full break-words "
             dangerouslySetInnerHTML={{ __html: about }}
           />
         )}
