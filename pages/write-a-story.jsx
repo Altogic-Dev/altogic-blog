@@ -152,7 +152,6 @@ export default function WriteAStory({ id }) {
         };
         webworker.postMessage(dataObject);
         webworker.onmessage = (e) => {
-          console.log(content.length);
           if (e.data.data) {
             const temp = e.data;
             if (selectedPublication)
