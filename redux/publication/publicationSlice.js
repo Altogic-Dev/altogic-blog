@@ -131,6 +131,7 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     getPublicationNavigationRequest(state) {
+      state.publicationNavigation = null;
       state.isLoading = true;
     },
     getPublicationNavigationSuccess(state, action) {
