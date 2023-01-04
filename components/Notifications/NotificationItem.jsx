@@ -12,6 +12,9 @@ export default function NotificationItem({ notification }) {
       case 'story_like':
         router.push(`/story/${notification.targetSlug}`);
         break;
+      case 'reply_like':
+        router.push(`/story/${notification.targetSlug}`);
+        break;
       case 'comment':
         router.push(`/story/${notification.targetSlug}`);
         break;

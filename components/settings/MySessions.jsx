@@ -44,10 +44,6 @@ export default function MySessions() {
         <h3 className="text-3xl font-medium text-slate-800 tracking-[-0.8px]">
           Where you’re logged in
         </h3>
-        <p className="mt-1 text-sm text-slate-500 tracking-[-0.4px]">
-          We’ll alert you via olivia@rhye.com if there is any unusual activity
-          on your account.
-        </p>
       </div>
       <div>
         <ul className="divide-y divide-gray-200 border-b border-gray-200">

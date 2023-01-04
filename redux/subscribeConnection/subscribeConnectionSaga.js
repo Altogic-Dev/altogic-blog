@@ -1,6 +1,7 @@
-import { call, takeEvery, put, all, select } from 'redux-saga/effects';
+import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import SubscribeConnectionService from '@/services/subscribeConnection';
 import { subscribeConnectionActions } from './subscribeConnectionSlice';
+import { createNotificationSaga } from '../notifications/notificationsSaga';
 
 function* unsubscribeSaga({ payload: subscribingUserId }) {
   try {
@@ -28,6 +29,15 @@ function* subscribeSaga({ payload: subscribingUserId }) {
     );
     if (errors) throw errors;
     yield put(subscribeConnectionActions.subscribeSuccess());
+    yield fork(createNotificationSaga, {
+      payload: {
+        user: subscribingUserId,
+        sentUsername: session.username,
+        sentUser: session._id,
+        type: 'subscribe',
+        sentUserProfilePicture: session.profilePicture,
+      }
+    })
   } catch (e) {
     yield put(subscribeConnectionActions.subscribeFailure());
   }

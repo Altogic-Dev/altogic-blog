@@ -1,5 +1,6 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import NotificationService from '@/services/notification';
+import _ from 'lodash';
 import { notificationsActions } from './notificationsSlice';
 
 function* getNotificationsSaga({ payload: userId }) {
@@ -23,7 +24,8 @@ function* getNotificationsSaga({ payload: userId }) {
     yield put(notificationsActions.getNotificationsFailure(e));
   }
 }
-function* createNotificationSaga({ payload: notification }) {
+export function* createNotificationSaga({ payload: notification }) {
+  console.log(notification)
   try {
     const { data, errors } = yield call(
       NotificationService.createNotification,
@@ -59,7 +61,7 @@ function* getNotificationPreview({ payload }) {
       NotificationService.getUnreadNotificationsCount,
       payload
     );
-    if (data && count) {
+    if (_.size(data) && count) {
       yield put(notificationsActions.getNotificationPreviewSuccess(data));
       yield put(notificationsActions.setUnreadNotificationsCount(count[0]));
     }

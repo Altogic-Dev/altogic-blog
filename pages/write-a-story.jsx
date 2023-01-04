@@ -236,17 +236,16 @@ export default function WriteAStory({ id }) {
               </div>
             </div>
 
-            {isShowSaving && !loading && router.isReady && (
-              <div className="w-1/3 flex justify-end">
-                <Button
-                  onClick={handlePublish}
-                  className=" inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
-                >
-                  <CheckCircleIcon className="w-5 h-5" />
-                  Publish
-                </Button>
-              </div>
-            )}
+            <div className="w-1/3 flex justify-end">
+              <Button
+                disabled={!(isShowSaving && !loading && router.isReady)}
+                onClick={handlePublish}
+                className=" inline-flex items-center gap-2 px-[14px] py-2.5 text-sm font-medium tracking-sm rounded-full text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-24"
+              >
+                <CheckCircleIcon className="w-5 h-5" />
+                Publish
+              </Button>
+            </div>
           </div>
           <div className="flex justify-between w-full">
             <p className="py-4 md:py-0 text-slate-500 text-end">

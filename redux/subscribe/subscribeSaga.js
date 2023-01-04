@@ -9,9 +9,9 @@ function* subscribeUserSaga({ payload: { subscriberUser, subscribingUser } }) {
       subscriberUser,
       subscribingUser
     );
-
     if (data) {
       yield put(subscribeActions.subscribeUserSuccess(data));
+
     }
     if (errors) {
       throw errors.items;

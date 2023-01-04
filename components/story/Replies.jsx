@@ -58,7 +58,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const getReplyComments = (reply) => {
-     dispatch(storyActions.getReplyCommentsRequest(reply));
+    dispatch(storyActions.getReplyCommentsRequest(reply));
   };
 
   const createReply = (reply) => {
@@ -137,14 +137,15 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleReplyLike = (reply) => {
-    if (user && !reply.reply_likes)
+    if (user && !reply.reply_likes) {
       dispatch(
         storyActions.likeReplyRequest({
           replyId: reply._id,
           userId: user._id,
         })
       );
-    else if (reply.reply_likes) {
+      sendNotification('reply_like');
+    } else if (reply.reply_likes) {
       dispatch(
         storyActions.unlikeReplyRequest({
           replyId: reply._id,
