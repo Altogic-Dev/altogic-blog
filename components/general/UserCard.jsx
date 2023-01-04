@@ -1,3 +1,4 @@
+/* eslint-disable no-lone-blocks */
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
@@ -12,6 +13,8 @@ import Button from '../basic/button';
 export default function UserCard({ subscription, user, isFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
+
+
 
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
@@ -46,24 +49,26 @@ export default function UserCard({ subscription, user, isFollowing }) {
           })
         );
       } else {
-        dispatch(
-          followerConnectionActions.followRequest({
-            followerUser: me,
-            followingUser: {
-              followingUser: _.get(user, '_id'),
-              followingName: _.get(user, 'name'),
-              followingUserProfilePicture: _.get(user, 'profilePicture'),
-              followingUsername: _.get(user, 'username'),
-            },
-            onSuccess: () =>
-              dispatch(
-                storyActions.getFollowingStoriesRequest({
-                  userId: me?._id,
-                  page: 1,
-                })
-              ),
-          })
-        );
+        {
+          dispatch(
+            followerConnectionActions.followRequest({
+              followerUser: me,
+              followingUser: {
+                followingUser: _.get(user, '_id'),
+                followingName: _.get(user, 'name'),
+                followingUserProfilePicture: _.get(user, 'profilePicture'),
+                followingUsername: _.get(user, 'username'),
+              },
+              onSuccess: () =>
+                dispatch(
+                  storyActions.getFollowingStoriesRequest({
+                    userId: me?._id,
+                    page: 1,
+                  })
+                ),
+            })
+          );
+        }
       }
     }
   };
@@ -92,7 +97,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
               </span>
               {user?.about && (
                 <p
-                  className="text-slate-500 text-xs tracking-sm break-words w-full" 
+                  className="text-slate-500 text-xs tracking-sm break-words w-full"
                   dangerouslySetInnerHTML={{ __html: user.about }}
                 />
               )}

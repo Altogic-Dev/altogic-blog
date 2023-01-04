@@ -30,6 +30,7 @@ export default function HeaderMenu() {
   const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
   );
+  const [isMounted, setIsMounted] = useState(false);
 
   const [user, setUser] = useState('undefined');
   const [selectedPublication, setSelectedPublication] = useState();
@@ -65,7 +66,8 @@ export default function HeaderMenu() {
   }, [user]);
 
   useEffect(() => {
-    if (user) {
+    if (user && !isMounted) {
+      setIsMounted(true);
       realtime.join('notification');
       realtime.on(user?._id, (payload) => {
         dispatch(
@@ -86,7 +88,7 @@ export default function HeaderMenu() {
   if (user === 'undefined')
     return (
       <div>
-        <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6 h-24"/>
+        <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6 h-24" />
       </div>
     );
   return (

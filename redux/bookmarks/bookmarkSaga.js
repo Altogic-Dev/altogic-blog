@@ -56,6 +56,7 @@ function* addBookmarkSaga({ payload }) {
     if (data) {
       data.username = payload.username
       yield put(addBookmarkSuccess(data));
+
     }
     if (errors) throw errors.items;
   } catch (error) {
@@ -121,7 +122,7 @@ function* bookmarkListDetailSaga({ payload }) {
       BookmarkService.getBookmarkListDetail,
       payload
     );
-      console.log('this')
+    console.log('this')
 
     if (data) {
       yield put(getBookmarkListDetailSuccess(data));

@@ -6,6 +6,7 @@ import {
   removeUnfollowingStories,
 } from '../story/storySaga';
 import { updateProfileUserSaga, updateUserSaga } from '../auth/authSaga';
+import { createNotificationSaga } from '../notifications/notificationsSaga';
 
 
 function* unfollowSaga({
@@ -52,7 +53,16 @@ function* followSaga({
     );
     if (errors) throw errors;
     yield put(followerConnectionActions.followSuccess({ followingUser, followerUser }));
-
+    yield fork(createNotificationSaga, {
+      payload: {
+        user: followingUser.followingUser,
+        sentUsername: followerUser.username,
+        sentUser: followerUser._id,
+        type: 'follow',
+        sentUserProfilePicture: followerUser.profilePicture,
+      }
+    }
+    )
     if (_.isFunction(onSuccess)) {
       onSuccess()
     }

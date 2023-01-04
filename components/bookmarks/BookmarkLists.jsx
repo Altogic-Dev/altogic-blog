@@ -5,6 +5,7 @@ import {
   deleteBookmarkRequest,
 } from '@/redux/bookmarks/bookmarkSlice';
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/outline';
+import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import Input from '../Input';
@@ -19,6 +20,20 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
       _.get(state.bookmark.bookmarkLists, user?.username)?.bookmarkLists
   );
 
+  const sendNotification = (type, story) => {
+    dispatch(
+      notificationsActions.createNotificationRequest({
+        sentUsername: user.username,
+        sentUser: user._id,
+        type,
+        sentUserProfilePicture: user.profilePicture,
+        user: story.user?._id || story.user,
+        targetId: story._id,
+        targetTitle: story.title,
+        targetSlug: story.storySlug,
+      })
+    );
+  };
   const addBookmark = (list) => {
     let { coverImages } = list;
     const storyImages = _.map(story?.storyImages, (image) => image);
@@ -37,6 +52,7 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
     };
 
     dispatch(addBookmarkRequest(req));
+    sendNotification('bookmark', story);
   };
   const handleAddBookmark = (e, list) => {
     if (e.target.checked) {
