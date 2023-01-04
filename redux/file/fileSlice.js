@@ -71,8 +71,10 @@ export const fileSlice = createSlice({
     },
     clearUploadedFiles(state) {
       state.fileLinks = {};
+    },
+    createPublicationSuccess(state) {
+      state.fileLinks = {};
     }
-    
   },
   extraReducers: {
     [HYDRATE]: (state, action) => ({

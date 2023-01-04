@@ -24,7 +24,6 @@ export default function PublicationProfile() {
     };
     const publicationReq = {
       publication: _.get(publication, '_id'),
-      publicationName: _.get(publication, 'name'),
       publicationDescription: _.get(publication, 'description'),
       publicationLogo: _.get(publication, 'logo'),
     };

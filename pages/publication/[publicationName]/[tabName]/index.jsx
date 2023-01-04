@@ -72,7 +72,7 @@ export default function Publications({ tabName }) {
   }, [publication]);
 
   useEffect(() => {
-    if (publication) {
+    if (publication && _.first(navigations)?.publication !== publication._id) {
       getPublicationNavigations(publication);
     }
   }, [publication]);
@@ -86,7 +86,7 @@ export default function Publications({ tabName }) {
           content="Altogic Medium Blog App Publications"
         />
       </HeadContent>
-      <Layout>
+      <Layout loading={_.size(latestPublicationStories) === 0}>
         <AligmentPublicationLayout
           layout={homeLayout?.layout}
           bottomColor={homeLayout?.bottomColor}

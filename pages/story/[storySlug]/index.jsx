@@ -387,7 +387,7 @@ export default function BlogDetail({ ip }) {
                           isPublication
                             ? `/publication/${_.get(
                                 story,
-                                'publication.publicationName'
+                                'publication.name'
                               )}`
                             : `/${_.get(story, 'username')}`
                         }

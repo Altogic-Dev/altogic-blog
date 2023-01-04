@@ -75,6 +75,7 @@ export default function PublicationsSettingsHome({
 
   useEffect(() => {
     if (publication?._id) {
+      console.log(publication?._id);
       dispatch(
         publicationActions.getPublicationHomeLayoutRequest(publication._id)
       );

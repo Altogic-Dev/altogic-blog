@@ -118,13 +118,15 @@ export default function PublicationsNavigation() {
       publication.users,
       (person) => person.user === user._id
     );
+    console.log(publication.name);
+    console.log(publicationName);
+
     if (
       publicationName &&
       (_.isNil(sessionUser) ||
         !['admin', 'editor'].includes(sessionUser.role) ||
         _.lowerCase(publicationName) !==
-          _.lowerCase(publication.publicationName) ||
-        _.isNil(publication))
+          _.lowerCase(publication.name))
     ) {
       router.push('/');
     }

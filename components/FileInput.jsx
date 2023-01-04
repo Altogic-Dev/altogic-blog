@@ -11,6 +11,7 @@ export default function FileInput({
   subLabel,
   loading,
   error,
+  hideDelete,
 }) {
   return (
     <div className="grid md:grid-cols-2 items-center gap-8">
@@ -43,14 +44,16 @@ export default function FileInput({
           />
         )}
         <div className="space-x-4">
-          <button
-            type="button"
-            className="text-slate-600 text-sm font-medium tracking-sm"
-            disabled={_.isNil(link)}
-            onClick={onDelete}
-          >
-            Delete
-          </button>
+          {!hideDelete && (
+            <button
+              type="button"
+              className="text-slate-600 text-sm font-medium tracking-sm"
+              disabled={_.isNil(link)}
+              onClick={onDelete}
+            >
+              Delete
+            </button>
+          )}
           <button
             type="button"
             className="text-purple-700 text-sm font-medium tracking-sm"

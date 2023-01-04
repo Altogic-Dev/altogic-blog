@@ -18,7 +18,7 @@ export default function PublicationsSettings({ isCreate }) {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const isLoading = useSelector((state) => state.publication.isLoading);
+  const isLoading = useSelector((state) => state.publication.publicationLoading);
   const sessionUser = useSelector((state) => state.auth.user);
 
   const [isInfo, setIsInfo] = useState(!isHome);
@@ -95,7 +95,7 @@ export default function PublicationsSettings({ isCreate }) {
       _.isNil(sessionUser) ||
       !['admin'].includes(sessionUser.role) ||
       _.lowerCase(publicationName) !==
-        _.lowerCase(publication.publicationName) ||
+        _.lowerCase(publication.name) ||
       _.isNil(publication)
     ) {
       router.push('/');
@@ -118,7 +118,7 @@ export default function PublicationsSettings({ isCreate }) {
     }
   }, [sessionUser]);
 
-
+  console.log(getValues('description'))
   return (
     <div>
       <HeadContent>

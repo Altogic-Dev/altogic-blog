@@ -53,7 +53,7 @@ export default function PublicationSettingsInfo({
 }) {
   const dispatch = useDispatch();
   const router = useRouter();
-
+  const { publicationName } = router.query;
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
@@ -62,18 +62,18 @@ export default function PublicationSettingsInfo({
     (state) => state.publication.isPublicationnameValid
   );
   const publicationname = useSelector(
-    (state) => state.publication.publicationname
+    (state) => state.publication.publication?.name
   );
   const foundUsers = useSelector((state) => state.auth.foundUsers);
   const loading = useSelector((state) => state.auth.isLoading);
 
   const watchFields = watch(['twitter', 'linkedin', 'facebook']);
-
   const addTagFromRecommended = (tag) => {
     if (!_.includes(tags, tag) && _.size(tags) < 5) {
       setTags((prev) => [tag, ...prev]);
     }
   };
+  console.log(publication);
 
   useEffect(() => {
     setFileUploading([false, false, false]);
@@ -127,14 +127,16 @@ export default function PublicationSettingsInfo({
     dispatch(authActions.searchUserByUsernameRequest(value));
   };
 
+  console.log(publicationname)
   const checkKeyDown = (e) => {
     if (e.code === 'Enter' || e.code === 'NumpadEnter') e.preventDefault();
   };
   const handleSave = (formValues) => {
     if (
       isValid &&
-      _.get(uploadedFileLinks, 'profilePicture') &&
-      _.get(uploadedFileLinks, 'logo')
+      (_.get(uploadedFileLinks, 'profilePicture') ||
+        publication?.profilePicture) &&
+      (_.get(uploadedFileLinks, 'logo') || publication?.logo)
     ) {
       const writerList = _.map(writers, (writer) => ({
         user: writer._id || writer.user,
@@ -156,18 +158,18 @@ export default function PublicationSettingsInfo({
         const createdPublication = {
           ...formValues,
           profilePicture: uploadedFileLinks?.profilePicture,
-          coverImage: uploadedFileLinks?.coverImage,
           logo: uploadedFileLinks?.logo,
           tags,
           users: [adminUser, ...writerList, ...editorList],
-          publicationName: publicationname,
         };
         dispatch(
           publicationActions.createPublicationRequest({
             publication: createdPublication,
             onSuccess: () =>
               router.push(
-                `/publication/${publicationname}/publications-settings?isHome=true`
+                `/publication/${
+                  publicationname ?? getValues('name')
+                }/publications-settings?isHome=true`
               ),
           })
         );
@@ -182,23 +184,20 @@ export default function PublicationSettingsInfo({
         const editedPublication = {
           ...publication,
           ...formValues,
-          profilePicture: uploadedFileLinks?.profilePicture,
-          coverImage: uploadedFileLinks?.coverImage,
-          logo: uploadedFileLinks?.logo,
+          profilePicture:
+            uploadedFileLinks?.profilePicture || publication?.profilePicture,
+          logo: uploadedFileLinks?.logo || publication?.logo,
           tags,
           users: [...adminUsers, ...writerList, ...editorList],
-          publicationName: publicationname,
+          name: getValues('name'),
         };
+
         dispatch(
           publicationActions.updatePublicationRequest({
             publication: editedPublication,
             onSuccess: () => {
-              if (
-                router.query.publicationName !==
-                editedPublication.publicationName
-              ) {
-                router.query.publicationName =
-                  editedPublication.publicationName;
+              if (router.query.publicationName !== editedPublication.name) {
+                router.query.publicationName = editedPublication.name;
                 router.push(router);
               }
             },
@@ -206,12 +205,15 @@ export default function PublicationSettingsInfo({
         );
       }
     } else {
-      if (!_.get(uploadedFileLinks, 'profilePicture')) {
+      if (
+        !_.get(uploadedFileLinks, 'profilePicture') &&
+        !publication?.profilePicture
+      ) {
         setAvatarError('This Field is required.');
         const element = document.getElementById('avatar');
         element.scrollIntoView();
       }
-      if (!_.get(uploadedFileLinks, 'logo')) {
+      if (!_.get(uploadedFileLinks, 'logo') && !publication?.logo) {
         setLogoError('This Field is required.');
         const element = document.getElementById('logo');
         element.scrollIntoView();
@@ -224,7 +226,6 @@ export default function PublicationSettingsInfo({
       dispatch(
         fileActions.setUploadedFiles({
           profilePicture: publication?.profilePicture,
-          coverImage: publication?.coverImage,
           logo: publication?.logo,
         })
       );
@@ -263,7 +264,7 @@ export default function PublicationSettingsInfo({
     if (publicationname) {
       dispatch(
         publicationActions.isPublicationnameExistRequest({
-          publicationId: _.get(publication, '_id'),
+          ...(publicationName && { publicationId: _.get(publication, '_id') }),
           publicationname,
         })
       );
@@ -334,7 +335,7 @@ export default function PublicationSettingsInfo({
                 error={errors.name}
               />
               <p className="mt-1.5 text-sm text-slate-500">
-                Link: opinate.com/{publicationname}
+                Link: opinate.com/{getValues('name')}
               </p>
             </div>
           </div>
@@ -387,6 +388,7 @@ export default function PublicationSettingsInfo({
           </div>
           <div id="avatar">
             <FileInput
+              hideDelete
               loading={_.get(fileUploading, 0)}
               label="Publication avatar*"
               subLabel="The avatar appears with your stories across Medium. Recommended
@@ -407,7 +409,10 @@ export default function PublicationSettingsInfo({
                   })
                 )
               }
-              link={_.get(uploadedFileLinks, 'profilePicture')}
+              link={
+                _.get(uploadedFileLinks, 'profilePicture') ||
+                (publicationName && publication?.profilePicture)
+              }
               error={avatarError}
             />
           </div>
@@ -415,8 +420,8 @@ export default function PublicationSettingsInfo({
         <hr className="my-8 lg:my-14 border-gray-200" />
         <div className="grid lg:grid-cols-2 gap-8 mb-14">
           <div id="logo">
-            
             <FileInput
+              hideDelete
               loading={_.get(fileUploading, 1)}
               label="Publication logo*"
               subLabel="The logo is displayed at the top of your publication. We
@@ -433,27 +438,13 @@ export default function PublicationSettingsInfo({
                   })
                 )
               }
-              link={_.get(uploadedFileLinks, 'logo')}
+              link={
+                _.get(uploadedFileLinks, 'logo') ||
+                (publicationName && publication?.logo)
+              }
               error={logoError}
             />
           </div>
-          <FileInput
-            loading={_.get(fileUploading, 2)}
-            label="Publication cover image"
-            subLabel="The cover image is used to promote your publication on Blog."
-            onChange={() =>
-              handleUploadPhoto('coverImage', publication?.coverImage, 2)
-            }
-            onDelete={() =>
-              dispatch(
-                fileActions.deleteFileRequest({
-                  name: 'coverImage',
-                  data: _.get(uploadedFileLinks, 'coverImage'),
-                })
-              )
-            }
-            link={_.get(uploadedFileLinks, 'coverImage')}
-          />
         </div>
         <div className="pb-2 mb-8 border-b border-gray-200">
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
@@ -477,7 +468,7 @@ export default function PublicationSettingsInfo({
                   name="email"
                   id="email"
                   placeholder={
-                    `info@${_.toLower(publicationname)}.com` ||
+                    `info@${_.toLower(getValues('name'))}.com` ||
                     'info@opinate.com'
                   }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"

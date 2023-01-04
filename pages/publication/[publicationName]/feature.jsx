@@ -47,7 +47,7 @@ export default function PublicationsFeature() {
       (_.isNil(sessionUser) ||
         !['admin', 'editor'].includes(sessionUser.role) ||
         _.lowerCase(publicationName) !==
-          _.lowerCase(publication.publicationName) ||
+          _.lowerCase(publication.name) ||
         _.isNil(publication) ||
         !_.includes(user.publications, publication._id))
     ) {
