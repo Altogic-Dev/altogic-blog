@@ -37,7 +37,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
 
   const likeLoading = useSelector((state) => state.story.likeLoading);
 
-  const [isLiked, setIsLiked] = useState(false);
   const [commentBoxes, setCommentBoxes] = useState([]);
   const [showReplies, setShowReplies] = useState([]);
   const [editRespondBoxes, setEditRespondBoxes] = useState([]);
@@ -138,7 +137,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleReplyLike = (reply) => {
-    setIsLiked(true);
     if (user && !reply.reply_likes)
       dispatch(
         storyActions.likeReplyRequest({
