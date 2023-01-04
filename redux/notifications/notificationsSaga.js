@@ -25,7 +25,6 @@ function* getNotificationsSaga({ payload: userId }) {
   }
 }
 export function* createNotificationSaga({ payload: notification }) {
-  console.log(notification)
   try {
     const { data, errors } = yield call(
       NotificationService.createNotification,

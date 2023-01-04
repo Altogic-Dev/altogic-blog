@@ -196,7 +196,7 @@ export default function PublishSettings() {
     const publicationAuthors = _.map(userPublications, (publication) => ({
       id: publication._id,
       name: publication.name,
-      userName: publication.publicationname,
+      userName: publication.name,
       avatar: publication.logo,
       type: 'publication',
     }));

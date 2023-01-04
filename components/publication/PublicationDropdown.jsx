@@ -108,7 +108,7 @@ export default function PublicationDropdown({ publication, className }) {
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                 onClick={() =>
                   router.push(
-                    `/publication/${publication.publicationName}/navigation`
+                    `/publication/${publication.name}/navigation`
                   )
                 }
               >
@@ -134,7 +134,7 @@ export default function PublicationDropdown({ publication, className }) {
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                 onClick={() =>
                   router.push(
-                    `/publication/${publication.publicationName}/feature`
+                    `/publication/${publication.name}/feature`
                   )
                 }
               >
@@ -147,7 +147,7 @@ export default function PublicationDropdown({ publication, className }) {
                 className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
                 onClick={() =>
                   router.push(
-                    `/publication/${publication.publicationName}/publications-settings`
+                    `/publication/${publication.name}/publications-settings`
                   )
                 }
               >

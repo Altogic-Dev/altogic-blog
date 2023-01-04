@@ -18,6 +18,7 @@ const initialState = {
   publicationNavigation: null,
   error: null,
   isLoading: false,
+  publicationLoading: false,
   userPublications: null,
   followed_publications: [],
   userFollowingPublication: [],
@@ -47,15 +48,15 @@ export const publicationSlice = createSlice({
     },
 
     getPublicationRequest(state) {
-      state.isLoading = true;
+      state.publicationLoading = true;
     },
     getPublicationSuccess(state, action) {
       state.publication = action.payload;
-      state.isLoading = false;
+      state.publicationLoading = false;
     },
     getPublicationFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.publicationLoading = false;
     },
     getPublicationFeaturesRequest(state) {
       state.isLoading = true;
@@ -309,7 +310,7 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
-    
+
     getUserPublicationsRequest(state) {
       state.isLoading = true;
     },

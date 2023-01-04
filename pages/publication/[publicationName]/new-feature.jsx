@@ -60,7 +60,7 @@ export default function PublicationsNewFeature() {
       (_.isNil(sessionUser) ||
         !['admin', 'editor'].includes(sessionUser.role) ||
         _.lowerCase(publicationName) !==
-          _.lowerCase(publication.publicationName) ||
+          _.lowerCase(publication.name) ||
         _.isNil(publication) ||
         !_.includes(user.publications, publication._id))
     ) {
@@ -191,7 +191,7 @@ export default function PublicationsNewFeature() {
       }
 
       setIsLoading(false);
-      router.push(`/publication/${publication.publicationName}/feature`);
+      router.push(`/publication/${publication.name}/feature`);
     }
   }, [logoState, noLogoUpdate]);
 

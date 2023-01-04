@@ -34,7 +34,7 @@ export default function Publications() {
       setPublicationsFollow(
         followedPublications.map((publication) => ({
           _id: publication.publication,
-          name: publication.publicationName,
+          name: publication.name,
           description: publication.publicationDescription,
           logo: publication.publicationLogo,
           isFollowing: userFollowingPublication.some(

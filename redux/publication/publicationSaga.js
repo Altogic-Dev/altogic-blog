@@ -14,6 +14,7 @@ import { publicationActions } from './publicationSlice';
 import { storyActions } from '../story/storySlice';
 import { clearFileLink } from '../file/fileSaga';
 import { updateUserSaga } from '../auth/authSaga';
+import { fileActions } from '../file/fileSlice';
 
 function* getPublicationFollowersSaga({ payload: publicationId }) {
   try {
@@ -252,7 +253,6 @@ function* isPublicationnameExistSaga({
 }
 
 function* selectPublicationSaga({ payload }) {
-  console.log(payload)
   LocalStorageUtil.set(LocalStorageUtil.SELECTED_PUBLICATION, payload);
   yield put(publicationActions.selectPublicationSuccess(payload));
 }
@@ -265,7 +265,6 @@ function* updatePublicationSaga({ payload: { publication, onSuccess } }) {
     );
     if (errors) throw errors.items;
     if (updatedPublication) {
-      console.log(updatedPublication)
       if (_.isFunction(onSuccess)) onSuccess();
       yield put(
         publicationActions.updatePublicationSuccess(updatedPublication)
@@ -525,6 +524,7 @@ function* createPublicationSaga({ payload: { publication, onSuccess } }) {
     }
     if (data) {
       yield put(publicationActions.createPublicationSuccess(data));
+      yield put(fileActions.createPublicationSuccess());
       yield fork(selectPublicationSaga, { payload: data });
       yield fork(addPublicationToUser, { payload: data });
       const user = yield select((state) => state.auth.user);
