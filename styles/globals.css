@@ -178,13 +178,13 @@ html {
 }
 @media only screen and (max-width: 1300px) {
   #sidebar-controls button {
-    position: absolute;
+    position: relative;
     left: 2vw;
   }
 }
 @media only screen and (max-width: 680px) {
   #sidebar-controls button {
-    position: absolute;
+    position: relative;
     left: 3vw;
   }
 }
