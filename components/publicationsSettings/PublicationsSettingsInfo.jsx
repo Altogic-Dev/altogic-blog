@@ -51,7 +51,6 @@ export default function PublicationSettingsInfo({
   clearErrors,
   getValues,
 }) {
-  console.log(user)
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -129,7 +128,7 @@ export default function PublicationSettingsInfo({
   };
 
   const checkKeyDown = (e) => {
-    if (e.code === 'Enter') e.preventDefault();
+    if (e.code === 'Enter' || e.code === 'NumpadEnter') e.preventDefault();
   };
   const handleSave = (formValues) => {
     if (

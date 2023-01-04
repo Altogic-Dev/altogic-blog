@@ -18,6 +18,7 @@ export default function PublicationsSettings({ isCreate }) {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
+  const isLoading = useSelector((state) => state.publication.isLoading);
   const sessionUser = useSelector((state) => state.auth.user);
 
   const [isInfo, setIsInfo] = useState(!isHome);
@@ -116,6 +117,8 @@ export default function PublicationsSettings({ isCreate }) {
       setUser(sessionUser);
     }
   }, [sessionUser]);
+
+
   return (
     <div>
       <HeadContent>
@@ -125,7 +128,7 @@ export default function PublicationsSettings({ isCreate }) {
           content="Altogic Medium Blog App Publications Settings"
         />
       </HeadContent>
-      <Layout>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 my-8 lg:my-[60px]">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full">

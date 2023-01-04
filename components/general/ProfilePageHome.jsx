@@ -24,6 +24,7 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
   const [deletedStory, setDeletedStory] = useState(null);
   const PAGE_LIMIT = 6;
 
+  console.log(isMyProfile)
   const handleEndOfList = () => {
     if (
       userStories.length === userStoriesInfo.count ||

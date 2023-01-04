@@ -70,6 +70,7 @@ export const publicationSlice = createSlice({
     },
     getLatestPublicationStoriesRequest(state) {
       state.isLoading = true;
+      state.latestPublicationStories = [];
     },
     getLatestPublicationStoriesSuccess(state, action) {
       state.latestPublicationStories = [
@@ -130,6 +131,7 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     getPublicationNavigationRequest(state) {
+      state.publicationNavigation = null;
       state.isLoading = true;
     },
     getPublicationNavigationSuccess(state, action) {
@@ -360,6 +362,7 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     createPublicationSuccess(state, action) {
+      state.userPublications = [...state.userPublications, action.payload];
       state.publication = action.payload;
       state.isLoading = false;
     },

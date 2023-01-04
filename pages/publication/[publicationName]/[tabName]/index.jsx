@@ -43,14 +43,12 @@ export default function Publications({ tabName }) {
   const [didMount, setDidMount] = useState(false);
 
   const getLatestPublicationStories = () => {
-    if (
-      publicationName &&
-      latestPublicationStoriesCount >= latestPublicationStories.length
-    ) {
+    if (publicationName) {
+      console.log('sa')
       dispatch(
         publicationActions.getLatestPublicationStoriesRequest({
           publicationName,
-          page: latestPublicationStoriesPage + 1 ?? 1,
+          page: 1,
           pageSize,
         })
       );
@@ -74,19 +72,18 @@ export default function Publications({ tabName }) {
   }, [publicationName]);
 
   useEffect(() => {
-    if (publication && !didMount) {
+    if (publication) {
       dispatch(
         publicationActions.getPublicationHomeLayoutRequest(publication._id)
       );
-      setDidMount(true);
     }
   }, [publication]);
 
   useEffect(() => {
-    if (!navigations && publication) {
+    if (publication) {
       getPublicationNavigations(publication);
     }
-  }, [navigations, publication]);
+  }, [publication]);
 
   return (
     <div>

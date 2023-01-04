@@ -18,8 +18,8 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
     if (data) {
       const user = yield select((state) => state.auth.user);
 
-      if(data.isFollowing)
-      yield put(followerConnectionActions.setIsFollowing({ followerUser: user, followingUser: authorId }));
+      if (data.isFollowing)
+        yield put(followerConnectionActions.setIsFollowing({ followerUser: user, followingUser: authorId }));
       if (data.isStoryLiked)
         yield put(storyActions.isLikedStorySuccess(storyId));
       yield put(
@@ -34,14 +34,18 @@ function* getConnectInformationStorySaga({ payload: { storyId, authorId } }) {
 }
 function* getFollowAndSubscribedInfoSaga({ payload: authorId }) {
   try {
+    const user = yield select((state) => state.auth.user);
+
     const { data, errors } = yield call(
       GeneralService.getFollowAndSubscribedInfo,
       authorId
     );
     if (errors) throw errors;
     if (data) {
-      yield put (generalActions.getFollowAndSubscribedInfoSuccess());
-      yield put(followerConnectionActions.setIsFollowing(data.isFollowing));
+      yield put(generalActions.getFollowAndSubscribedInfoSuccess());
+      if (data.isFollowing)
+        yield put(followerConnectionActions.setIsFollowing({ followerUser: user._id, followingUser: authorId }));
+
       yield put(subscribeConnectionActions.setIsSubscribed(data.isSubscribed));
     }
   } catch (e) {

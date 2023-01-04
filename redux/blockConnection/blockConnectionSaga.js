@@ -2,6 +2,7 @@ import BlockConnectionService from '@/services/blockConnection';
 import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
 import { removeRecommendedStories } from '../story/storySaga';
+import { storyActions } from '../story/storySlice';
 import { blockConnectionActions } from './blockConnectionSlice';
 
 function* getBlockedUsersSaga({ payload: { page, limit } }) {
@@ -56,6 +57,7 @@ function* unblockAuthorSaga({ payload: blockedUserId }) {
     if (errors) throw errors.items;
     if (data) {
       yield put(blockConnectionActions.unblockAuthorSuccess(blockedUserId));
+      yield put(storyActions.resetStories(blockedUserId));
     }
   } catch (e) {
     yield put(blockConnectionActions.unblockAuthorFailure(e));

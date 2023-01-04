@@ -26,7 +26,7 @@ export default function Search({
   // };
 
   const handleDebounceFn = (inputValue) => {
-    if (inputValue.length > 3) {
+    if (inputValue.length >= 3) {
       onSearch(inputValue);
       setShowSuggestions(true);
     }

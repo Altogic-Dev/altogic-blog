@@ -31,13 +31,15 @@ export default function HeaderMenu() {
     (state) => state.publication.selectedPublication
   );
 
-  const [user, setUser] = useState();
+  const [user, setUser] = useState('undefined');
   const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hideMenu, setHideMenu] = useState(false);
   useEffect(() => {
     if (sessionUser) {
       setUser(sessionUser);
+    } else {
+      setUser(null);
     }
   }, [sessionUser]);
   useEffect(() => {
@@ -80,6 +82,13 @@ export default function HeaderMenu() {
       })
     );
   };
+
+  if (user === 'undefined')
+    return (
+      <div>
+        <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6 h-24"/>
+      </div>
+    );
   return (
     <div>
       <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6">
@@ -131,7 +140,7 @@ export default function HeaderMenu() {
           <div
             className={`${
               !hideMenu && 'lg:w-0'
-            } flex items-center flex-row-reverse lg:flex-row justify-end lg:flex-1 gap-4`}
+            } flex items-center flex-row-reverse lg:flex-row justify-end w-10/12 lg:flex-1 gap-4`}
           >
             <div
               className={`${

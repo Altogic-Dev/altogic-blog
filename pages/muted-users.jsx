@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function MutedUsers() {
   const dispatch = useDispatch();
 
-
   const blockedUsers = useSelector(
     (state) => state.blockConnection.blockedUsers
   );
@@ -45,7 +44,6 @@ export default function MutedUsers() {
           name="description"
           content="Altogic Medium Blog App Notifications"
         />
-        
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
@@ -68,6 +66,7 @@ export default function MutedUsers() {
                               person?._id
                             )
                           );
+
                         }}
                       />
                     ))}

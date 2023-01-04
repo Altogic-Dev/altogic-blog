@@ -50,6 +50,8 @@ export default function ProfilePage() {
   );
   const profileUser = useSelector((state) => state.auth.profileUser);
 
+  const generalLoading = useSelector((state) => state.general.isLoading);
+
   const userFollowings = useSelector((state) =>
     _.get(state.followerConnection.followingsData[username], 'userFollowings')
   );
@@ -94,7 +96,7 @@ export default function ProfilePage() {
   const [followingModal, setFollowingModal] = useState(false);
   const [followingPage, setFollowingPage] = useState(1);
 
-  const [isMyProfile, setIsMyProfile] = useState(true);
+  const [isMyProfile, setIsMyProfile] = useState(false);
   const { ref: inViewRef, inView } = useInView();
   const ref = useRef();
 
@@ -147,7 +149,7 @@ export default function ProfilePage() {
         )
       );
     }
-  }, [profileUser]);
+  }, [profileUser?.username]);
   useEffect(() => {
     if (
       sessionUser &&
@@ -233,6 +235,8 @@ export default function ProfilePage() {
         !authLoading
     );
   }, [isSubscribed, authLoading, subcribeLoading]);
+
+
   return (
     <div>
       <HeadContent>
@@ -419,8 +423,7 @@ export default function ProfilePage() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              {(followerConnectionLoading || !profileUser) &&
-              !followingModal ? (
+              {(!profileUser && !followingModal || generalLoading)  ? (
                 <ClipLoader />
               ) : (
                 <Sidebar

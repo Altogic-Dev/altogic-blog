@@ -48,7 +48,9 @@ export default function AuthRedirect(props) {
   }, []);
 
   useEffect(() => {
-    if (sessionUser?.username) router.push('/');
+    if (sessionUser?.username) {
+      router.push('/')
+    };
   }, [sessionUser]);
   if (
     router.query.action === 'change-email' ||

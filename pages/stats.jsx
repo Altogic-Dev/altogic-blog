@@ -62,7 +62,7 @@ export default function Stats() {
           _.first(statisticsData.totalReading)?.count
             ? _.first(statisticsData.totalReading).sum /
                 _.first(statisticsData.totalReading).count
-            : 100,
+            : 0,
           true
         );
         temp['Total Likes Received'] =
@@ -134,7 +134,7 @@ export default function Stats() {
               _.first(statisticsData.totalReadingLastYear).count)
           ).toFixed(1);
         } catch (error) {
-          if (!_.first(statisticsData.totalReadingThisYear)?.count) {
+          if (!_.first(statisticsData.totalReadingThisYear)?.count && _.first(statisticsData.totalReadingLastYear)?.count) {
             temp['Average Reading Time'] = -100;
           } else {
             temp['Average Reading Time'] = 100;
@@ -146,6 +146,7 @@ export default function Stats() {
     }
   }, [statisticsData]);
 
+  console.log(percentages);
   return (
     <div>
       <HeadContent>
@@ -276,7 +277,7 @@ export default function Stats() {
                                 {Math.ceil(
                                   (statistic.readingCount /
                                     statistic.viewCount) *
-                                    100 ||  0
+                                    100 || 0
                                 )}
                               </td>
                               <td className="whitespace-nowrap px-3 py-4 text-center font-semibold text-slate-600 tracking-sm">

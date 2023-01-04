@@ -14,6 +14,7 @@ import PublicationSettingsSuggestions from '@/components/publicationsSettings/su
 import Button from '@/components/basic/button';
 import Input from '@/components/Input';
 import { capitiliazeAllWords, parseHtml } from '@/utils/utils';
+import { authActions } from '@/redux/auth/authSlice';
 
 export default function WriteAStorySettings() {
   const router = useRouter();
@@ -25,6 +26,7 @@ export default function WriteAStorySettings() {
   const user = useSelector((state) => state.auth.user);
   const foundTopics = useSelector((state) => state.topics.searchTopics);
   const topicLoading = useSelector((state) => state.topics.isLoading);
+  const profileUser = useSelector((state) => state.auth.profileUser);
 
   const [userState, setUserState] = useState(null);
   const [basePath, setBasePath] = useState();
@@ -173,6 +175,11 @@ export default function WriteAStorySettings() {
     }
   }, [isLoading]);
 
+  useEffect(() => {
+    if (user?.username) {
+      dispatch(authActions.getUserByUserNameRequest(user.username));
+    }
+  }, [user]);
   return (
     <div>
       <HeadContent>
@@ -218,14 +225,7 @@ export default function WriteAStorySettings() {
                   SEO Settings
                 </a>
               </li>
-              <li>
-                <a
-                  href="#promotion"
-                  className="flex text-slate-500 px-6 py-2.5 text-base whitespace-nowrap tracking-sm hover:bg-gray-50 hover:text-slate-800"
-                >
-                  Promotion
-                </a>
-              </li>
+
               <li>
                 <a
                   href="#content-licensing"
@@ -281,18 +281,18 @@ export default function WriteAStorySettings() {
                   <div className="flex gap-6">
                     <img
                       className="w-20 h-20 mb-3 rounded-full"
-                      src={_.get(userState, 'profilePicture')}
+                      src={_.get(profileUser, 'profilePicture')}
                       alt=""
                     />
                     <div className="tracking-sm">
                       <h2 className="text-slate-700 text-base font-medium">
-                        {_.get(userState, 'name')}
+                        {_.get(profileUser, 'name')}
                       </h2>
                       <span className="inline-block mb-3 text-slate-500 text-sm">
-                        {_.get(userState, 'followerCount')} Followers
+                        {_.get(profileUser, 'followerCount')} Followers
                       </span>
                       <p
-                        className="text-slate-500 text-xs mb-8"
+                        className="text-slate-500 text-xs mb-8 break-words w-3/12"
                         dangerouslySetInnerHTML={{
                           __html: _.get(userState, 'about'),
                         }}
@@ -314,7 +314,7 @@ export default function WriteAStorySettings() {
                       onChange={() => setInpPinStory((prev) => !prev)}
                       checked={inpPinStory}
                     />
-                    <label htmlFor="all-rights-reserved" className="ml-3 block">
+                    <label className="ml-3 block">
                       <h2 className="text-base font-medium text-slate-700">
                         Pin Story
                       </h2>
@@ -926,7 +926,7 @@ export default function WriteAStorySettings() {
                           placeholder={_.get(story, 'storySlug')}
                           required
                           disabled={radioCustomizeLink === 'automatic'}
-                          className="appearance-none block w-full px-3 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                          className="appearance-none block w-full px-1 pr-8 py-3 h-[44px] text-slate-500 border border-gray-300 rounded-md shadow-sm placeholder-slate-500 focus:outline-none focus:ring-purple-500 focus:border-purple-500"
                           onChange={(e) =>
                             setInpStorySlug(e.target.value.toLowerCase())
                           }

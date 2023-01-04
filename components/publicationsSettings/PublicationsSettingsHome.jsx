@@ -99,7 +99,7 @@ export default function PublicationsSettingsHome({
         dispatch(publicationActions.getFeaturePageRequest(tab._id));
       }
     }
-  }, [selectedTabIndex, navigations]);
+  }, [selectedTabIndex]);
 
   useEffect(() => {
     if (!isMounted && homeLayout) {

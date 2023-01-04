@@ -294,6 +294,7 @@ export function* setDefaultAvatarSaga() {
     );
     if (errors) throw errors;
     if (data) {
+
       yield call(AuthService.authStateChange, data);
       yield put(authActions.updateUserSuccess(data));
     }
