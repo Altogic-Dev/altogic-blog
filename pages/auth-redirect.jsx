@@ -2,9 +2,11 @@
 import { useEffect } from 'react';
 import AuthService from '@/services/auth';
 import { useRouter } from 'next/router';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import { ClipLoader } from 'react-spinners';
+
+
 
 export default function AuthRedirect(props) {
   const sessionUser = useSelector((state) => state.auth.user);
@@ -47,15 +49,8 @@ export default function AuthRedirect(props) {
 
   useEffect(() => {
     if (sessionUser?.username) {
-      router.push('/');
-    } else if (sessionUser?._id && !sessionUser?.username)
-      dispatch(
-        authActions.getAuthGrantRequest({
-          session: props?.session,
-          user: props?.user,
-          error: props?.error,
-        })
-      );
+      router.push('/')
+    };
   }, [sessionUser]);
   if (
     router.query.action === 'change-email' ||

@@ -50,7 +50,9 @@ export default function ListDetail() {
   const [unfollowed, setUnfollowed] = useState([]);
   const sessionUser = useSelector((state) => state.auth.user);
   const bookmarkError = useSelector((state) => state.bookmark.error);
-  const bookmarkLoading = useSelector((state) => state.bookmark.bookmarkListLoading);
+  const bookmarkLoading = useSelector(
+    (state) => state.bookmark.bookmarkListLoading
+  );
   // const [loading, setLoading] = useState(true);
   const bookmarkList = useSelector((state) =>
     _.get(state.bookmark.bookmarkLists, username)?.bookmarkLists.find(
@@ -162,6 +164,8 @@ export default function ListDetail() {
   }, [sessionUser, bookmarkList]);
 
   useEffect(() => {
+    console.log(bookmarkList?.storyCount);
+    console.log(_.size(bookmarks));
     if (
       sessionUser?.username !== username &&
       bookmarkListSlug &&
@@ -212,7 +216,7 @@ export default function ListDetail() {
     }
   }, [bookmarkError]);
 
-
+  console.log(bookmarkList);
   return (
     <div>
       <HeadContent>
@@ -222,7 +226,7 @@ export default function ListDetail() {
           content="Altogic Medium Blog App List Detail"
         />
       </HeadContent>
-      <Layout loading={bookmarkLoading }>
+      <Layout loading={bookmarkLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-8 lg:py-10 lg:px-8">
@@ -333,6 +337,7 @@ export default function ListDetail() {
                               Remove items
                             </Button>
                           </Menu.Item>
+
                           <Menu.Item>
                             <Button
                               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
@@ -409,6 +414,7 @@ export default function ListDetail() {
                                 storyId: post._id,
                               })
                             ),
+
                           report: () =>
                             dispatch(
                               reportActions.reportStoryRequest({
