@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
@@ -29,22 +29,14 @@ export default function Publications({ tabName }) {
   const latestPublicationStories = useSelector(
     (state) => state.publication.latestPublicationStories
   );
-  const latestPublicationStoriesPage = useSelector(
-    (state) => state.publication.latestPublicationStoriesPage
-  );
-  const latestPublicationStoriesCount = useSelector(
-    (state) => state.publication.latestPublicationStoriesCount
-  );
+
   const navigations = useSelector(
     (state) => state.publication.publicationNavigation
   );
   const homeLayout = useSelector((state) => state.publication.homeLayout);
 
-  const [didMount, setDidMount] = useState(false);
-
   const getLatestPublicationStories = () => {
     if (publicationName) {
-      console.log('sa')
       dispatch(
         publicationActions.getLatestPublicationStoriesRequest({
           publicationName,

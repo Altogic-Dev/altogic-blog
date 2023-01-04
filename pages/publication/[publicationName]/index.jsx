@@ -25,9 +25,6 @@ export default function PublicationHome() {
     }
   }, [publication]);
   useEffect(() => {
-    console.log(publication);
-    console.log(navigations);
-
     if (
       navigations &&
       (_.get(_.first(navigations), 'publication') === publication?._id ||

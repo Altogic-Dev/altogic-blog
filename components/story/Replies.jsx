@@ -137,7 +137,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     }
   };
 
-  console.log(isLiked, likeLoading);
   const handleReplyLike = (reply) => {
     setIsLiked(true);
     if (user && !reply.reply_likes)

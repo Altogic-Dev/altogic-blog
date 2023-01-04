@@ -146,7 +146,6 @@ export default function Stats() {
     }
   }, [statisticsData]);
 
-  console.log(percentages);
   return (
     <div>
       <HeadContent>
