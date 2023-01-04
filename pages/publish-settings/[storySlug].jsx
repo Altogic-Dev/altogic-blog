@@ -19,6 +19,7 @@ import { Listbox, Transition } from '@headlessui/react';
 import Layout from '@/layouts/Layout';
 import Button from '@/components/basic/button';
 import { topicsActions } from '@/redux/topics/topicsSlice';
+import Image from 'next/image';
 
 export default function PublishSettings() {
   const router = useRouter();
@@ -334,11 +335,15 @@ export default function PublishSettings() {
                                 {({ selected }) => (
                                   <>
                                     <div className="flex items-center">
-                                      <img
-                                        src={author?.avatar}
-                                        alt=""
-                                        className="flex-shrink-0 h-6 w-6 rounded-full"
-                                      />
+                                      <div className='w-8 h-8'>
+                                        <Image
+                                          width={40}
+                                          height={40}
+                                          src={author?.avatar}
+                                          alt=""
+                                          className="flex-shrink-0  rounded-full"
+                                        />
+                                      </div>
                                       <span
                                         className={classNames(
                                           selected

@@ -124,8 +124,7 @@ export default function PublicationsNavigation() {
         !['admin', 'editor'].includes(sessionUser.role) ||
         _.lowerCase(publicationName) !==
           _.lowerCase(publication.publicationName) ||
-        _.isNil(publication) ||
-        !_.includes(user.publications, publication._id))
+        _.isNil(publication))
     ) {
       router.push('/');
     }

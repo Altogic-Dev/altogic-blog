@@ -361,6 +361,7 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     createPublicationSuccess(state, action) {
+      state.userPublications = [...state.userPublications, action.payload];
       state.publication = action.payload;
       state.isLoading = false;
     },
