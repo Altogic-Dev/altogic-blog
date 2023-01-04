@@ -118,7 +118,6 @@ export default function PublicationsSettings({ isCreate }) {
     }
   }, [sessionUser]);
 
-  console.log(getValues('description'))
   return (
     <div>
       <HeadContent>

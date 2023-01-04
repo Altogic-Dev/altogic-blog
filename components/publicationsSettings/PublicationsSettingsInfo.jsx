@@ -73,7 +73,6 @@ export default function PublicationSettingsInfo({
       setTags((prev) => [tag, ...prev]);
     }
   };
-  console.log(publication);
 
   useEffect(() => {
     setFileUploading([false, false, false]);
@@ -127,7 +126,6 @@ export default function PublicationSettingsInfo({
     dispatch(authActions.searchUserByUsernameRequest(value));
   };
 
-  console.log(publicationname)
   const checkKeyDown = (e) => {
     if (e.code === 'Enter' || e.code === 'NumpadEnter') e.preventDefault();
   };
@@ -167,9 +165,9 @@ export default function PublicationSettingsInfo({
             publication: createdPublication,
             onSuccess: () =>
               router.push(
-                `/publication/${
-                  publicationname ?? getValues('name')
-                }/publications-settings?isHome=true`
+                `/publication/${  getValues(
+                  'name'
+                )}/publications-settings?isHome=true`
               ),
           })
         );
