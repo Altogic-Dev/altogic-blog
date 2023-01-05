@@ -36,6 +36,7 @@ export function replaceTurkishChars(str) {
     .replace(/[Ç]/g, 'C')
     .replace(/[Ğ]/g, 'G')
     .replace(/[İ]/g, 'I')
+    .replace(/[ı]/g, 'i')
     .replace(/[Ö]/g, 'O')
     .replace(/[Ş]/g, 'S')
     .replace(/[Ü]/g, 'U');

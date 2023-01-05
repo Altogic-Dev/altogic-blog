@@ -137,12 +137,12 @@ export default function PublicationSettingsInfo({
       (_.get(uploadedFileLinks, 'logo') || publication?.logo)
     ) {
       const writerList = _.map(writers, (writer) => ({
-        user: writer._id || writer.user,
+        user: writer.user || writer._id,
         name: writer.name,
         role: 'writer',
       }));
       const editorList = _.map(editors, (editor) => ({
-        user: editor._id || editor.user,
+        user: editor.user || editor._id,
         name: editor.name,
         role: 'editor',
       }));
@@ -165,7 +165,7 @@ export default function PublicationSettingsInfo({
             publication: createdPublication,
             onSuccess: () =>
               router.push(
-                `/publication/${  getValues(
+                `/publication/${getValues(
                   'name'
                 )}/publications-settings?isHome=true`
               ),
@@ -257,6 +257,7 @@ export default function PublicationSettingsInfo({
     }
   }, [watchFields]);
 
+  console.log(writers);
   useEffect(() => {
     const publicationname = removeSpaces(watch('name'));
     if (publicationname) {
