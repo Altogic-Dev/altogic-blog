@@ -23,22 +23,22 @@ export default function PublicationsListImageCard({
 
   const dispatch = useDispatch();
   const handleSelectStory = (story) => {
-    setSelectedSection(story);
-    dispatch(
-      storyActions.selectFeatureStoriesRequest({
-        story,
-        index,
-        sectionIndex,
-      })
-    );
+    if (story) {
+      setSelectedSection(story);
+      dispatch(
+        storyActions.selectFeatureStoriesRequest({
+          story,
+          index,
+          sectionIndex,
+        })
+      );
+    }
   };
   useEffect(() => {
     if (!isTag && story && publicationsStories) {
       handleSelectStory(
         publicationsStories.find((pubStory) => pubStory?._id === story.story)
       );
-    } else if (!isTag && !story) {
-      handleSelectStory(_.get(publicationsStories, `[0]`));
     }
   }, [story, publicationsStories]);
 
@@ -63,7 +63,7 @@ export default function PublicationsListImageCard({
   return (
     <div className="flex items-center justify-between space-y-4">
       <div>
-      <span className="flex w-[380px] h-6 bg-black/20" />
+        <span className="flex w-[380px] h-6 bg-black/20" />
 
         {listBox && (
           <Listbox value={selectedSection} onChange={handleSelectStory}>

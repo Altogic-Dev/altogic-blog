@@ -85,8 +85,8 @@ function PublicationTabFeature({ tab }) {
         }
         if (section?.designType === 'stream') {
           return (
-            <div className="mb-40">
-              <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
+            <div className="mb-40 md:min-w-[100vw] lg:min-w-[75vw] px-8 max-w-screen-xl w-full mx-auto">
+              <h2 className="text-slate-500 mb-4 text-2xl font-semibold ">
                 {_.get(section, 'sectionTitle')}
               </h2>
               {_.map(section?.stories, (story) => (
@@ -101,7 +101,7 @@ function PublicationTabFeature({ tab }) {
         }
         // designType = list
         return (
-          <div className="mb-40">
+          <div className="mb-40 md:min-w-[100vw] lg:min-w-[75vw] px-8 max-w-screen-xl w-full mx-auto">
             <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
               {_.get(section, 'sectionTitle')}
             </h2>

@@ -23,14 +23,16 @@ export default function PublicationsStreamCard({
 
   const dispatch = useDispatch();
   const handleSelectStory = (story) => {
-    setSelectedSection(story);
-    dispatch(
-      storyActions.selectFeatureStoriesRequest({
-        story,
-        index,
-        sectionIndex,
-      })
-    );
+    if (story) {
+      setSelectedSection(story);
+      dispatch(
+        storyActions.selectFeatureStoriesRequest({
+          story,
+          index,
+          sectionIndex,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -38,8 +40,6 @@ export default function PublicationsStreamCard({
       handleSelectStory(
         publicationsStories.find((pubStory) => pubStory?._id === story.story)
       );
-    } else if (!isTag && !story) {
-      handleSelectStory(_.get(publicationsStories, `[0]`));
     }
   }, [story, publicationsStories]);
 
