@@ -40,7 +40,7 @@ export default function PublicationHomeNormalCard({
               </h2>
             </div>
             <div className="mt-4 space-y-1">
-              <span className="h-[400px] overflow-hidden">
+              <span className="h-[400px] overflow-hidden break-words">
                 {parseTextWithLastDot(storyContent)}
               </span>
             </div>

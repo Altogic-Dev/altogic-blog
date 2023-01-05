@@ -45,6 +45,7 @@ export default function Sections({
   const publicationsStories = useSelector(
     (state) => state.story.publicationsStories
   );
+
   const handleTopicChange = (topic) => {
     setSelectedTopic(topic);
     dispatch(
@@ -60,6 +61,7 @@ export default function Sections({
   const handleNormalCardLayout = () => {
     setChildren([]);
     setWrappers([]);
+
     const wrapperCount = counter > 3 ? Math.floor(counter / 3) : 1;
     for (let index = 0; index < wrapperCount; index += 1) {
       if (counter >= 3) {
@@ -155,6 +157,9 @@ export default function Sections({
           key: index,
           listBox: !selectedSectionBar.isTag,
           sectionIndex,
+          ...(!selectedSectionBar.isTag && {
+            story: section?.stories[index],
+          }),
         }),
       ]);
     }
@@ -169,6 +174,9 @@ export default function Sections({
           key: index,
           listBox: !selectedSectionBar.isTag,
           sectionIndex,
+          ...(!selectedSectionBar.isTag && {
+            story: section?.stories[index],
+          }),
         }),
       ]);
     }

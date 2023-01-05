@@ -487,6 +487,7 @@ function* selectFeatureStoriesSaga({
       [`section-${sectionIndex}`]: [],
     });
   }
+  
   newFeatureStories = JSON.parse(JSON.stringify(newFeatureStories));
   newFeatureStories[`section-${sectionIndex}`][index] = story;
   yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));

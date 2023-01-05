@@ -26,7 +26,6 @@ export default function PublicationsNormalCard({
   const featStories = useSelector((state) => state.story.featureStories);
   const [stories, setStories] = useState([]);
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (featStories || stories) {
       setSelectedSection(
@@ -37,14 +36,16 @@ export default function PublicationsNormalCard({
   }, [featStories, stories]);
 
   const handleSelectStory = (story) => {
-    setSelectedSection(story);
-    dispatch(
-      storyActions.selectFeatureStoriesRequest({
-        story,
-        index,
-        sectionIndex,
-      })
-    );
+    if (story) {
+      setSelectedSection(story);
+      dispatch(
+        storyActions.selectFeatureStoriesRequest({
+          story,
+          index,
+          sectionIndex,
+        })
+      );
+    }
   };
 
   useEffect(() => {
@@ -52,8 +53,6 @@ export default function PublicationsNormalCard({
       handleSelectStory(
         publicationsStories.find((pubStory) => pubStory?._id === story.story)
       );
-    } else if (!isTag && !story) {
-      handleSelectStory(_.get(publicationsStories, `[0]`));
     }
   }, [story, publicationsStories]);
   useEffect(() => {

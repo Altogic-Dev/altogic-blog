@@ -64,7 +64,7 @@ export default function PublicationsFullNormalCard() {
                       <span className="flex text-slate-700 mb-2 text-base font-medium tracking-sm text-left truncate group-hover:text-slate-900">
                         {story.name}
                       </span>
-                      <span className="text-slate-700 text-xs tracking-sm">
+                      <span className="text-slate-700 text-xs tracking-sm break-words">
                         {story.info}
                       </span>
                     </Listbox.Option>
