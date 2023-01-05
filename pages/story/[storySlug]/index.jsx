@@ -273,7 +273,7 @@ export default function BlogDetail({ ip }) {
                 {isPublication && (
                   <div className="flex items-center gap-3 mb-8 pb-4 border-b border-gray-200 ">
                     <Image
-                      src={_.get(story, 'publication.logo')}
+                      src={_.get(story, 'publication.profilePicture')}
                       alt=""
                       width={40}
                       height={40}
