@@ -234,7 +234,7 @@ export default function ProfilePage() {
         !isMyProfile &&
         !isSubscribed &&
         sessionUser &&
-        !authLoading
+        !authLoading && profileUser?._id !== sessionUser?._id
     );
   }, [isSubscribed, authLoading, subcribeLoading]);
 
