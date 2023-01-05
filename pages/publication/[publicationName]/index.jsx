@@ -25,18 +25,18 @@ export default function PublicationHome() {
     }
   }, [publication]);
   useEffect(() => {
+    console.log(publication);
+    console.log(navigations);
+
     if (
       navigations &&
       (_.get(_.first(navigations), 'publication') === publication?._id ||
         _.size(navigations) === 0) &&
       publicationName === publication?.name
     ) {
-      if (_.size(navigations) === 0)
-        router.push(`/publication/${publicationName}/navigation`);
-      else
-        router.push(
-          `/publication/${publicationName}/${navigations[0]?.tabName}`
-        );
+      router.push(
+        `/publication/${publicationName}/${navigations[0]?.tabName ?? 'home'}`
+      );
     }
   }, [navigations, publicationName]);
   return (
