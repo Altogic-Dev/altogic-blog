@@ -289,7 +289,7 @@ export default function ListDetail() {
                   {bookmarkList?.isPrivate ? 'Private' : 'Public'}
                 </span>
 
-                {bookmarkList?.user === user?._id && (
+                {bookmarkList?.user === sessionUser?._id && (
                   <div className="flex items-center gap-4 relative before:block before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:bg-gray-300 before:w-[1px] before:h-[30px]">
                     <Menu as="div" className="relative inline-block text-left">
                       <div>
@@ -317,16 +317,15 @@ export default function ListDetail() {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          {bookmarkList?.user === sessionUser?._id && (
-                            <Menu.Item>
-                              <Button
-                                className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                                onClick={() => setEditBookmarkList(true)}
-                              >
-                                Rename list
-                              </Button>
-                            </Menu.Item>
-                          )}
+                          <Menu.Item>
+                            <Button
+                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                              onClick={() => setEditBookmarkList(true)}
+                            >
+                              Rename list
+                            </Button>
+                          </Menu.Item>
+
                           <Menu.Item>
                             <Button
                               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
