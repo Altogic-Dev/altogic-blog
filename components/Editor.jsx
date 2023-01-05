@@ -361,6 +361,7 @@ export default function Editor({
     quillInstance.focus();
   };
   const handleFormat = (type, param) => {
+    
     quillInstance.format(type, param);
   };
   const addCodeBlock = () => {

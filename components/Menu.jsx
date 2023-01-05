@@ -142,7 +142,7 @@ export default function HeaderMenu() {
           <div
             className={`${
               !hideMenu && 'lg:w-0'
-            } flex items-center flex-row-reverse lg:flex-row justify-end w-10/12 lg:flex-1 gap-4`}
+            } flex items-center flex-row-reverse lg:flex-row lg:justify-end w-10/12 lg:flex-1 gap-4`}
           >
             <div
               className={`${

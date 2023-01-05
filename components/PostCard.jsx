@@ -94,7 +94,7 @@ export default function PostCard({
 
           <div>
             <Link href={storyUrl}>
-              <a className="group inline-flex flex-col mb-4 md:mb-11 space-y-2">
+              <a className="group inline-flex flex-col mb-4 md:mb-11 space-y-2 ">
                 <div className="flex items-center gap-2">
                   {isDeleted && (
                     <div className="group">
@@ -118,7 +118,7 @@ export default function PostCard({
                     {title}
                   </h2>
                 </div>
-                <p className="text-slate-500 text-sm tracking-sm line-clamp-2">
+                <p className="text-slate-500 text-sm tracking-sm line-clamp-2 break-words w-[600px] ">
                   {infoText}
                 </p>
               </a>
@@ -328,7 +328,7 @@ export default function PostCard({
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                    {!_.isNil(optionButtons?.unBookmark) && (
+                    {_.isFunction(optionButtons?.unBookmark) && (
                       <Menu.Item>
                         <Button
                           onClick={optionButtons?.unBookmark}

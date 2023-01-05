@@ -407,13 +407,16 @@ export default function ListDetail() {
                         story={post}
                         bookmarks={bookmarks}
                         optionButtons={{
-                          unBookmark: () =>
-                            dispatch(
-                              deleteBookmarkRequest({
-                                listId: bookmarkList._id,
-                                storyId: post._id,
-                              })
-                            ),
+                          unBookmark:
+                            bookmarkList?.user === sessionUser._id
+                              ? () =>
+                                  dispatch(
+                                    deleteBookmarkRequest({
+                                      listId: bookmarkList._id,
+                                      storyId: post._id,
+                                    })
+                                  )
+                              : null,
 
                           report: () =>
                             dispatch(

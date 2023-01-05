@@ -8,6 +8,7 @@ const initialState = {
   error: null,
   searchResult: null,
   searchPreview: null,
+  
 };
 
 // Actual Slice
@@ -29,7 +30,7 @@ export const generalSlice = createSlice({
     },
     searchSuccess(state, action) {
       state.searchResult = action.payload;
-      state.isLoading = false;
+      state.searchLoading = false;
     },
     searchFailure(state, action) {
       state.error = action.payload;
@@ -48,11 +49,11 @@ export const generalSlice = createSlice({
     },
 
     getFollowAndSubscribedInfoRequest(state) {
-      state.isLoading = true;
+      state.infoRequestLoading = true;
     },
 
     getFollowAndSubscribedInfoSuccess(state) {
-      state.isLoading = false;
+      state.infoRequestLoading = false;
     },
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

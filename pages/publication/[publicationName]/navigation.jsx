@@ -123,8 +123,7 @@ export default function PublicationsNavigation() {
       publicationName &&
       (_.isNil(sessionUser) ||
         !['admin', 'editor'].includes(sessionUser.role) ||
-        _.lowerCase(publicationName) !==
-          _.lowerCase(publication.name))
+        _.lowerCase(publicationName) !== _.lowerCase(publication.name))
     ) {
       router.push('/');
     }

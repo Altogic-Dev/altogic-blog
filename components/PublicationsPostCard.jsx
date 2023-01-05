@@ -72,7 +72,7 @@ export default function PublicationPostCard({
                 {title}
               </h2>
             </div>
-            <p className="text-slate-500 text-sm tracking-sm">
+            <p className="text-slate-500 text-sm tracking-sm break-words w-96 sm:w-full">
               {htmlToText(description?.substring(0, 200)) || 'No content'}
             </p>
           </a>
