@@ -21,18 +21,20 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
   );
 
   const sendNotification = (type, story) => {
-    dispatch(
-      notificationsActions.createNotificationRequest({
-        sentUsername: user.username,
-        sentUser: user._id,
-        type,
-        sentUserProfilePicture: user.profilePicture,
-        user: story.user?._id || story.user,
-        targetId: story._id,
-        targetTitle: story.title,
-        targetSlug: story.storySlug,
-      })
-    );
+    if (story.user?._id !== user._id && story.user !== user._id) {
+      dispatch(
+        notificationsActions.createNotificationRequest({
+          sentUsername: user.username,
+          sentUser: user._id,
+          type,
+          sentUserProfilePicture: user.profilePicture,
+          user: story.user?._id || story.user,
+          targetId: story._id,
+          targetTitle: story.title,
+          targetSlug: story.storySlug,
+        })
+      );
+    }
   };
   const addBookmark = (list) => {
     let { coverImages } = list;

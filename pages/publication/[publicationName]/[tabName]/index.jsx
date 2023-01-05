@@ -118,7 +118,7 @@ export default function Publications({ tabName }) {
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>
-              <div className="mt-5 items-start grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 overflow-x-auto ">
+              <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
                 {latestPublicationStories?.map((post) => (
                   <PublicationPostCard
                     key={post._id}

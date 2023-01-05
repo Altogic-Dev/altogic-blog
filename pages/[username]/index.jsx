@@ -31,6 +31,8 @@ import { ClipLoader } from 'react-spinners';
 import ToastMessage from '@/utils/toast';
 
 export default function ProfilePage() {
+
+
   const BOOKMARK_LIST_LIMIT = 3;
   const FOLLOWING_PAGE_LIMIT = 5;
   const router = useRouter();
@@ -50,7 +52,7 @@ export default function ProfilePage() {
   );
   const profileUser = useSelector((state) => state.auth.profileUser);
 
-  const generalLoading = useSelector((state) => state.general.isLoading);
+  const infoLoading = useSelector((state) => state.general.infoRequestLoading);
 
   const userFollowings = useSelector((state) =>
     _.get(state.followerConnection.followingsData[username], 'userFollowings')
@@ -235,7 +237,6 @@ export default function ProfilePage() {
         !authLoading
     );
   }, [isSubscribed, authLoading, subcribeLoading]);
-
 
   return (
     <div>
@@ -423,7 +424,7 @@ export default function ProfilePage() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              {(!profileUser && !followingModal || generalLoading)  ? (
+              {(!profileUser && !followingModal) || infoLoading ? (
                 <ClipLoader />
               ) : (
                 <Sidebar

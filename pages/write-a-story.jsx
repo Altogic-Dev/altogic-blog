@@ -113,8 +113,7 @@ export default function WriteAStory({ id }) {
 
   useEffect(() => {
     if (
-      (_.trim(parseHtml(content)) !== '<p><br></p>' ||
-        _.size(_.trim(inpTitle))) &&
+      (_.size(_.trim(parseHtml(content))) > 0 || _.size(_.trim(inpTitle))) &&
       isChanged
     ) {
       setLoading(true);
@@ -126,7 +125,7 @@ export default function WriteAStory({ id }) {
         content,
         storyImages: storyImages.filter((item) => item && item !== 'undefined'),
         title: inpTitle || 'Untitled',
-        estimatedReadingTime: Math.ceil(content.split(' ').length / 200) || 1,
+        estimatedReadingTime: Math.ceil(content.length / 1000) || 1,
         isPublished: false,
         publication: !_.isNil(selectedPublication)
           ? selectedPublication._id

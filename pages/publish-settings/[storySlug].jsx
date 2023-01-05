@@ -247,7 +247,7 @@ export default function PublishSettings() {
                   {story?.title}
                 </h1>
                 <div
-                  className="prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-base prose-h1:md:text-lg prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm mb-10 sm:mb-24"
+                  className="break-words prose prose-img:rounded-none prose-figcaption:mt-0 prose-blockquote:text-2xl prose-blockquote:md:text-3xl prose-blockquote:pl-5 prose-blockquote:md:pl-6 prose-blockquote:not-italic prose-blockquote:border-purple-700 prose-blockquote:border-l-2 prose-h1:text-base prose-h1:md:text-lg prose-h1:text-slate-800 prose-h1:font-bold prose-h1:tracking-md prose-h2:text-xl prose-h2:font-semibold prose-p:text-base prose-p:text-slate-500 prose-p:tracking-sm mb-10 sm:mb-24"
                   dangerouslySetInnerHTML={{ __html: _.get(story, 'content') }}
                 />
                 <Link href={`/write-a-story?id=${_.get(story, '_id')}`}>
@@ -291,11 +291,15 @@ export default function PublishSettings() {
                       <div className="relative mb-8">
                         <Listbox.Button className="relative w-full bg-white border border-gray-300 rounded-lg shadow-sm pl-3.5 pr-10 py-2.5 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500 sm:text-sm">
                           <span className="flex items-center">
-                            <img
-                              src={inpSelectedAuthor?.avatar}
-                              alt=""
-                              className="flex-shrink-0 h-6 w-6 rounded-full"
-                            />
+                            <div className="w-8 h-8">
+                              <Image
+                                width={40}
+                                height={40}
+                                src={inpSelectedAuthor?.avatar}
+                                alt=""
+                                className="flex-shrink-0  rounded-full"
+                              />
+                            </div>
                             <span className="ml-2 block truncate">
                               {inpSelectedAuthor?.name}{' '}
                               <span className="text-slate-500">
@@ -335,7 +339,7 @@ export default function PublishSettings() {
                                 {({ selected }) => (
                                   <>
                                     <div className="flex items-center">
-                                      <div className='w-8 h-8'>
+                                      <div className="w-8 h-8">
                                         <Image
                                           width={40}
                                           height={40}
