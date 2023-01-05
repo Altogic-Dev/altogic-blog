@@ -317,14 +317,16 @@ export default function ListDetail() {
                         leaveTo="transform opacity-0 scale-95"
                       >
                         <Menu.Items className="absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none">
-                          <Menu.Item>
-                            <Button
-                              className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
-                              onClick={() => setEditBookmarkList(true)}
-                            >
-                              Rename list
-                            </Button>
-                          </Menu.Item>
+                          {bookmarkList?.user === sessionUser?._id && (
+                            <Menu.Item>
+                              <Button
+                                className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
+                                onClick={() => setEditBookmarkList(true)}
+                              >
+                                Rename list
+                              </Button>
+                            </Menu.Item>
+                          )}
                           <Menu.Item>
                             <Button
                               className="w-full px-6 py-3 text-slate-600 text-base tracking-sm text-start transform transition ease-out duration-200 hover:bg-purple-50 hover:text-purple-700 hover:scale-105"
@@ -408,7 +410,7 @@ export default function ListDetail() {
                         bookmarks={bookmarks}
                         optionButtons={{
                           unBookmark:
-                            bookmarkList?.user === sessionUser._id
+                            bookmarkList?.user === sessionUser?._id
                               ? () =>
                                   dispatch(
                                     deleteBookmarkRequest({

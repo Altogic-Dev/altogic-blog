@@ -130,7 +130,7 @@ function StoryContent(props) {
             <Button
               className="w-full px-6 py-4 text-slate-600 text-base tracking-sm text-start hover:bg-slate-50 hover:text-purple-700"
               onClick={() => {
-                router.push(`/story/stats-blog-post?id=${story._id}`);
+                router.push(`/story/${story.storySlug}/stats`);
               }}
             >
               Story Stats
