@@ -70,10 +70,10 @@ export default function PublicationsNewsletterSettings() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Newsletter Settings</title>
+        <title>Opinate Publications Newsletter Settings</title>
         <metae
           name="description"
-          content="Altogic Medium Blog App Publications Newsletter Settings"
+          content="Opinate Publications Newsletter Settings"
         />
       </HeadContent>
       <Layout>

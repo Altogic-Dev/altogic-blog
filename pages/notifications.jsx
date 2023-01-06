@@ -3,12 +3,11 @@ import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import Avatar from '@/components/profile/Avatar';
-import { DateTime } from 'luxon';
 import { classNames } from '@/utils/utils';
 import ListObserver from '@/components/ListObserver';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
+import NotificationItem from '@/components/Notifications/NotificationItem';
 
 export default function Notifications() {
   const dispatch = useDispatch();
@@ -36,12 +35,11 @@ export default function Notifications() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Notifications</title>
+        <title>Opinate Notifications</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Notifications"
+          content="Opinate Notifications"
         />
-        
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
@@ -82,33 +80,11 @@ export default function Notifications() {
                     <ListObserver onEnd={handleLoadMore}>
                       <ul className="space-y-4">
                         {allNotifications.map((allNotification) => (
-                          <li
-                            key={allNotification.id}
-                            className="flex items-center gap-3"
-                          >
-                            <Avatar
-                              className="w-[30px] h-[30px]"
-                              width={30}
-                              height={30}
-                              src={allNotification.sentUserProfilePicture}
-                              alt={allNotification.sentUsername}
-                              placeholderName={allNotification.sentUsername}
-                            />
-                            <span className="text-sm font-light tracking-sm text-slate-500">
-                              <strong className="text-slate-600 font-semibold">
-                                {allNotification.sentUsername}
-                              </strong>{' '}
-                              {allNotification.intermediateText}{' '}
-                              <strong className="text-slate-600 font-semibold">
-                                {allNotification.targetTitle}
-                              </strong>{' '}
-                              <span className="text-slate-400 text-xs">
-                                {DateTime.fromISO(
-                                  allNotification.createdAt
-                                ).toRelative()}
-                              </span>
-                            </span>
-                          </li>
+                          <NotificationItem
+                            fromPage
+                            key={allNotification._id}
+                            notification={allNotification}
+                          />
                         ))}
                       </ul>
                     </ListObserver>
@@ -117,32 +93,11 @@ export default function Notifications() {
                     <ListObserver onEnd={handleLoadMore}>
                       <ul className="space-y-4">
                         {responses.map((response) => (
-                          <li
-                            key={response.id}
-                            className="flex items-center gap-3"
-                          >
-                            <Avatar
-                              width={30}
-                              height={30}
-                              src={response.sentUserProfilePicture}
-                              alt={response.sentUsername}
-                              placeholderName={response.sentUsername}
-                            />
-                            <span className="text-sm font-light tracking-sm text-slate-500">
-                              <strong className="text-slate-600 font-semibold">
-                                {response.sentUsername}
-                              </strong>{' '}
-                              {response.intermediateText}{' '}
-                              <strong className="text-slate-600 font-semibold">
-                                {response.targetTitle}
-                              </strong>{' '}
-                              <span className="text-slate-400 text-xs">
-                                {DateTime.fromISO(
-                                  response.createdAt
-                                ).toRelative()}
-                              </span>
-                            </span>
-                          </li>
+                          <NotificationItem
+                            fromPage
+                            key={response._id}
+                            notification={response}
+                          />
                         ))}
                       </ul>
                     </ListObserver>

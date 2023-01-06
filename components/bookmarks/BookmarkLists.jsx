@@ -56,8 +56,14 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
     dispatch(addBookmarkRequest(req));
     sendNotification('bookmark', story);
   };
-  const handleAddBookmark = (e, list) => {
-    if (e.target.checked) {
+  const handleAddBookmark = ( list) => {
+    if (
+      !myBookmarks?.some(
+        (bk) =>
+          bk.bookmarkList === list._id &&
+          (bk?.story?._id === story?._id || bk?.story === story?._id)
+      )
+    ) {
       addBookmark(list);
     } else {
       dispatch(
@@ -86,42 +92,42 @@ export default function BookmarkLists({ setCreateNewList, className, story }) {
         className={`${className} absolute right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20 focus:outline-none`}
       >
         {bookmarkLists?.map((list) => (
-          <Menu.Item key={list._id} disabled>
-            <div className="relative flex items-center justify-between w-full px-6 py-4 cursor-pointer hover:bg-slate-50">
-              <div className="flex items-start">
-                <Menu.Button className="flex items-center h-5 cursor-pointer">
-                  <Input
-                    id="private-list"
-                    name="list"
-                    type="checkbox"
-                    checked={myBookmarks?.some(
-                      (bk) =>
-                        bk.bookmarkList === list._id &&
-                        (bk?.story?._id === story?._id ||
-                          bk?.story === story?._id)
-                    )}
-                    className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded cursor-pointer"
-                    onChange={(e) => handleAddBookmark(e, list)}
-                  />
-                </Menu.Button>
-                <div className="ml-3 text-sm">
-                  <label
-                    htmlFor="private-list"
-                    className="text-sm font-medium text-slate-800 tracking-sm cursor-pointer"
-                  >
-                    {list.name}
-                  </label>
-                </div>
+          <Menu.Button
+            onClick={() => handleAddBookmark( list)}
+            key={list._id}
+            className="relative flex items-center justify-between w-full px-6 py-4 cursor-pointer hover:bg-slate-50"
+          >
+            <div className="flex items-start">
+              <div className="flex items-center h-5 cursor-pointer">
+                <Input
+                  id="private-list"
+                  name="list"
+                  type="checkbox"
+                  checked={myBookmarks?.some(
+                    (bk) =>
+                      bk.bookmarkList === list._id &&
+                      (bk?.story?._id === story?._id ||
+                        bk?.story === story?._id)
+                  )}
+                  className="focus:ring-purple-500 h-5 w-5 text-purple-600 border-gray-300 rounded cursor-pointer"
+                />
               </div>
-              <div>
-                {list.isPrivate ? (
-                  <LockClosedIcon className="w-6 h-6 text-slate-400" />
-                ) : (
-                  <LockOpenIcon className="w-6 h-6 text-slate-400" />
-                )}
+              <div className="ml-3 text-sm">
+                <label
+                  className="text-sm font-medium text-slate-800 tracking-sm cursor-pointer"
+                >
+                  {list.name}
+                </label>
               </div>
             </div>
-          </Menu.Item>
+            <div>
+              {list.isPrivate ? (
+                <LockClosedIcon className="w-6 h-6 text-slate-400" />
+              ) : (
+                <LockOpenIcon className="w-6 h-6 text-slate-400" />
+              )}
+            </div>
+          </Menu.Button>
         ))}
         <div>
           <Menu.Button

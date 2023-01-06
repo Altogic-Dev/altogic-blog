@@ -163,10 +163,10 @@ export default function PublicationsStats({ publicationName }) {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Story Page Published</title>
+        <title>Opinate Publications Story Page Published</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications Story Page Published"
+          content="Opinate Publications Story Page Published"
         />
       </HeadContent>
       <Layout>

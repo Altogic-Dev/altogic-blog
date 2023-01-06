@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import _ from 'lodash';
 import Image from 'next/image';
@@ -13,11 +13,14 @@ export default function PublicationCard({
   user,
   isStaff,
 }) {
-  const isLoading = useSelector((state) => state.publication.isLoading);
+  const isLoading = useSelector((state) => state.publication.followLoading);
   const sessionUser = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
+  const [followingLoad, setFollowingLoad] = useState(false);
 
   const handleFollowButton = () => {
+    setFollowingLoad(true);
+
     const user = {
       _id: sessionUser._id,
       userName: sessionUser.username,
@@ -29,6 +32,7 @@ export default function PublicationCard({
       publicationName: _.get(publication, 'name'),
       publicationDescription: _.get(publication, 'description'),
       publicationProfilePicture: _.get(publication, 'profilePicture'),
+      publicationLogo: _.get(publication, 'logo'),
     };
 
     if (publication.isFollowing && publication) {
@@ -50,10 +54,17 @@ export default function PublicationCard({
     }
   };
 
+  useEffect(() => {
+    if (!isLoading) setFollowingLoad(false);
+  }, [isLoading]);
+
   const handleSelectPublication = () => {
     dispatch(publicationActions.selectPublicationRequest(publication));
   };
 
+  console.log(isLoading && followingLoad);
+  console.log(followingLoad);
+  console.log(isLoading);
   return (
     <div className="my-12">
       <div className="flex items-center justify-between w-full mb-4">
@@ -81,7 +92,7 @@ export default function PublicationCard({
         {isFollow && (
           <FollowButton
             isFollowing={publication?.isFollowing}
-            isLoading={isLoading}
+            isLoading={isLoading && followingLoad && isFollow}
             onClick={handleFollowButton}
           />
         )}
@@ -95,7 +106,6 @@ export default function PublicationCard({
               </span>
             </div>
             <Button
-              loading={isLoading}
               extraClasses="gap-2 px-[14px] "
               onClick={handleSelectPublication}
             >

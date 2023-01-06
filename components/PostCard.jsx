@@ -197,7 +197,7 @@ export default function PostCard({
                 />
               </Menu>
             )}
-            {normalMenu &&
+            {normalMenu && optionButtons &&
               ((!_.isNil(optionButtons?.editStory) &&
                 story?.user === sessionUser._id) ||
                 _.isNil(optionButtons?.editStory)) && (

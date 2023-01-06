@@ -220,10 +220,10 @@ export default function ListDetail() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Bookmark List Detail</title>
+        <title>Opinate Bookmark List Detail</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App List Detail"
+          content="Opinate List Detail"
         />
       </HeadContent>
       <Layout loading={bookmarkLoading}>

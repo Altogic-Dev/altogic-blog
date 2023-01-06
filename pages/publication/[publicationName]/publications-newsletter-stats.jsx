@@ -80,10 +80,10 @@ export default function PublicationsNewsletterStats() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Newsletter Stats</title>
+        <title>Opinate Publications Newsletter Stats</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications Newsletter Stats"
+          content="Opinate Publications Newsletter Stats"
         />
         
       </HeadContent>

@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import Image from 'next/image';
 import { ClipLoader } from 'react-spinners';
+import Button from './basic/button';
 
 export default function FileInput({
   link,
@@ -35,13 +36,15 @@ export default function FileInput({
         ) : _.isNil(link) ? (
           <div className="w-16 h-16 rounded-full object-contain border border-purple-700 " />
         ) : (
-          <Image
-            width={64}
-            height={64}
-            className="w-16 h-16 rounded-full object-contain"
-            src={link}
-            alt=""
-          />
+          <button type="button" onClick={onChange}>
+            <Image
+              width={64}
+              height={64}
+              className="w-16 h-16 rounded-full object-contain"
+              src={link}
+              alt=""
+            />
+          </button>
         )}
         <div className="space-x-4">
           {!hideDelete && (

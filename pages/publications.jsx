@@ -34,7 +34,7 @@ export default function Publications() {
       setPublicationsFollow(
         followedPublications.map((publication) => ({
           _id: publication.publication,
-          name: publication.name,
+          name: publication.publicationName,
           description: publication.publicationDescription,
           logo: publication.publicationLogo,
           isFollowing: userFollowingPublication.some(
@@ -49,8 +49,8 @@ export default function Publications() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App</title>
-        <meta name="description" content="Altogic Medium Blog App" />
+        <title>Opinate</title>
+        <meta name="description" content="Opinate" />
       </HeadContent>
       <Layout loading={!publications}>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">

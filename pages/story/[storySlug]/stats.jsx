@@ -198,10 +198,10 @@ export default function StatsBlogPost() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Stats Blog Post</title>
+        <title>Opinate Stats Blog Post</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Stats Blog Post"
+          content="Opinate Stats Blog Post"
         />
       </HeadContent>
       <Layout>

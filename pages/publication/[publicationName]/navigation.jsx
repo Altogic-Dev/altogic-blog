@@ -217,10 +217,10 @@ export default function PublicationsNavigation() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Navigation</title>
+        <title>Opinate Publications Navigation</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications Navigation"
+          content="Opinate Publications Navigation"
         />
       </HeadContent>
       <Layout>

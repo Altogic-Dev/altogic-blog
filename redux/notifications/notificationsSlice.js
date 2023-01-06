@@ -34,9 +34,8 @@ export const notificationsSlice = createSlice({
     createNotificationRequest(state) {
       state.notificationsLoading = true;
     },
-    createNotificationSuccess(state, action) {
+    createNotificationSuccess(state) {
       state.notificationsLoading = false;
-      state.notifications = [...state.notifications, action.payload];
     },
     createNotificationFailure(state, action) {
       state.notificationsLoading = false;
