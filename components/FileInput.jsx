@@ -2,7 +2,6 @@
 import _ from 'lodash';
 import Image from 'next/image';
 import { ClipLoader } from 'react-spinners';
-import Button from './basic/button';
 
 export default function FileInput({
   link,
