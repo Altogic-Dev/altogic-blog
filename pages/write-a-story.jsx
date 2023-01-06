@@ -225,8 +225,8 @@ export default function WriteAStory({ id }) {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App</title>
-        <meta name="description" content="Altogic Medium Blog App" />
+        <title>Opinate</title>
+        <meta name="description" content="Opinate" />
       </HeadContent>
       <Layout loading={!isMounted || (id && !newStory)}>
         <div className="max-w-screen-xl mx-auto h-screen w-screen px-9 lg:px-8 pt-8 pb-[72px] lg:pb-0 flex flex-col items-center ">

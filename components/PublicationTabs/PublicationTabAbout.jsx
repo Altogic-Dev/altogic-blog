@@ -1,11 +1,10 @@
 import _ from 'lodash';
 import { DateTime } from 'luxon';
-import Topic from '../basic/topic';
 
 function PublicationTabAbout({ publication }) {
   return (
-    <>
-      <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full">
+    <div className="md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
+      <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full ">
         {_.get(publication, 'description')}
       </div>
       <div className="flex flex-col lg:flex-row lg:items-center gap-4 text-slate-500 text-base tracking-sm py-10 mt-10 border-t border-b border-slate-200">
@@ -24,15 +23,9 @@ function PublicationTabAbout({ publication }) {
           >
             <circle cx={4} cy={4} r={3} />
           </svg>
-          {publication?.topWriterTopics?.length && <span>Top writer in</span>}
-        </div>
-        <div className="flex flex-wrap items-center gap-4">
-          {_.map(publication?.topWriterTopics, (topic) => (
-            <Topic title={topic} key={topic} />
-          ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

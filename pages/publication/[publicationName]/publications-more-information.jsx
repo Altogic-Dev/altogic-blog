@@ -172,10 +172,10 @@ export default function PublicationsMoreInformation() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications More Information</title>
+        <title>Opinate Publications More Information</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications More Information"
+          content="Opinate Publications More Information"
         />
         
       </HeadContent>

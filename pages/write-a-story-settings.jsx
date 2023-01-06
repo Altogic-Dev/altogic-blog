@@ -183,10 +183,10 @@ export default function WriteAStorySettings() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Write A Story Settings</title>
+        <title>Opinate Write A Story Settings</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Write A Story Settings"
+          content="Opinate Write A Story Settings"
         />
       </HeadContent>
       <Layout>

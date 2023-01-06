@@ -18,6 +18,7 @@ const initialState = {
   publicationNavigation: null,
   error: null,
   isLoading: false,
+  followLoading: false,
   publicationLoading: false,
   userPublications: null,
   followed_publications: [],
@@ -191,12 +192,14 @@ export const publicationSlice = createSlice({
     },
 
     followPublicationRequest(state) {
-      state.isLoading = true;
+      state.followLoading = true;
     },
     followPublicationSuccess(state, action) {
-      state.isLoading = false;
-      state.publication.isFollowing = true;
-      state.publication.followerCount += 1;
+      state.followLoading = false;
+      if (state.publication) {
+        state.publication.isFollowing = true;
+        state.publication.followerCount += 1;
+      }
       state.publicationFollowers = [
         ...state.publicationFollowers,
         action.payload.user,
@@ -207,21 +210,23 @@ export const publicationSlice = createSlice({
       ];
     },
     followPublicationFailure(state) {
-      state.isLoading = false;
+      state.followLoading = false;
     },
     unfollowPublicationRequest(state) {
-      state.isLoading = true;
+      state.followLoading = true;
     },
     unfollowPublicationSuccess(state, action) {
-      state.isLoading = false;
-      state.publication.followerCount -= 1;
-      state.publication.isFollowing = false;
+      state.followLoading = false;
+      if (state.publication) {
+        state.publication.followerCount -= 1;
+        state.publication.isFollowing = false;
+      }
       state.userFollowingPublication = state.userFollowingPublication.filter(
         (item) => item !== action.payload
       );
     },
     unfollowPublicationFailure(state) {
-      state.isLoading = false;
+      state.followLoading = false;
     },
     checkPublicationFollowingRequest(state) {
       state.isLoading = true;

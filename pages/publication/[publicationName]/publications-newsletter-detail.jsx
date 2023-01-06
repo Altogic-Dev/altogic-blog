@@ -77,8 +77,8 @@ export default function PublicationsNewsletterDetail() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Detail</title>
-        <meta name="description" content="Altogic Medium Blog App Detail" />
+        <title>Opinate Detail</title>
+        <meta name="description" content="Opinate Detail" />
         
       </HeadContent>
       <Layout>

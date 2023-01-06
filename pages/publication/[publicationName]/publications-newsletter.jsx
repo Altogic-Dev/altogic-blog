@@ -44,10 +44,10 @@ export default function PublicationsNewsletter() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Newsletter</title>
+        <title>Opinate Publications Newsletter</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications Newsletter"
+          content="Opinate Publications Newsletter"
         />
         
       </HeadContent>

@@ -306,6 +306,7 @@ function* unfollowPublicationSaga({ payload: { publication, user } }) {
       yield put(publicationActions.unfollowPublicationSuccess(publication));
     }
   } catch (e) {
+    console.log(e)
     yield put(publicationActions.unfollowPublicationFailure(e));
   }
 }

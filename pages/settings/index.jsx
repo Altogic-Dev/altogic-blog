@@ -31,10 +31,10 @@ export default function Settings() {
       {user ? (
         <div>
           <HeadContent>
-            <title>Altogic Medium Blog App Settings</title>
+            <title>Opinate Settings</title>
             <meta
               name="description"
-              content="Altogic Medium Blog App Settings"
+              content="Opinate Settings"
             />
             
           </HeadContent>

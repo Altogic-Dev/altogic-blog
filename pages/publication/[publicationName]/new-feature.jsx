@@ -210,10 +210,10 @@ export default function PublicationsNewFeature() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications New Feature</title>
+        <title>Opinate Publications New Feature</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications New Feature"
+          content="Opinate Publications New Feature"
         />
       </HeadContent>
       <Layout>

@@ -36,12 +36,8 @@ const StoryService = {
   },
 
   getStory(id) {
-    return db
-      .model('story')
-      .filter(`_id == '${id}'`)
-      .lookup({ field: 'publication' })
-      .lookup({ field: 'user' })
-      .get();
+    return endpoint.get(`/story/${id}`);
+
   },
 
   getStoryBySlug(storySlug, userId) {
@@ -122,7 +118,7 @@ const StoryService = {
   },
 
   updateCategory(storyId, newCategoryNames) {
-    return endpoint.post(`/story/${storyId}/update-categories`, {newCategoryNames});
+    return endpoint.post(`/story/${storyId}/update-categories`, { newCategoryNames });
 
   },
   publishStory(story) {

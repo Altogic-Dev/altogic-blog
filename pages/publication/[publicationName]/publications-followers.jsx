@@ -31,10 +31,10 @@ export default function PublicationsFollowers() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Followers</title>
+        <title>Opinate Publications Followers</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications Followers"
+          content="Opinate Publications Followers"
         />
         
       </HeadContent>

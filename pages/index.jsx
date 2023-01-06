@@ -116,8 +116,8 @@ export default function Home() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App</title>
-        <meta name="description" content="Altogic Medium Blog App" />
+        <title>Opinate</title>
+        <meta name="description" content="Opinate" />
       </HeadContent>
       <Layout loading={loading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">

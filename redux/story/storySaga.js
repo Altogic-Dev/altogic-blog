@@ -160,7 +160,7 @@ function* getStorySaga({ payload: id }) {
   try {
     const { data, errors } = yield call(StoryService.getStory, id);
     if (!_.isNil(data) && _.isNil(errors)) {
-      yield put(storyActions.getStorySuccess(_.first(data)));
+      yield put(storyActions.getStorySuccess(data));
     }
   } catch (e) {
     console.error({ e });

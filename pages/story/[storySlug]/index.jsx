@@ -357,27 +357,6 @@ export default function BlogDetail({ ip }) {
                           images={_.first(moreStory.storyImages)}
                           actionMenu
                           story={moreStory}
-                          optionButtons={{
-                            unfollow: () =>
-                              dispatch(
-                                followerConnectionActions.unfollowRequest({
-                                  userId: _.get(user, '_id'),
-                                  followingUserId: _.get(moreStory, 'user'),
-                                  followingUsername: _.get(
-                                    moreStory,
-                                    'username'
-                                  ),
-                                })
-                              ),
-                            report: () =>
-                              dispatch(
-                                reportActions.reportStoryRequest({
-                                  userId: _.get(user, '_id'),
-                                  storyId: _.get(moreStory, '_id'),
-                                  reportedUserId: _.get(moreStory, 'user'),
-                                })
-                              ),
-                          }}
                         />
                       ))}
                     </div>
@@ -385,10 +364,7 @@ export default function BlogDetail({ ip }) {
                       <Link
                         href={
                           isPublication
-                            ? `/publication/${_.get(
-                                story,
-                                'publication.name'
-                              )}`
+                            ? `/publication/${_.get(story, 'publication.name')}`
                             : `/${_.get(story, 'username')}`
                         }
                       >

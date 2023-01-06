@@ -121,10 +121,10 @@ export default function PublicationsSettings({ isCreate }) {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications Settings</title>
+        <title>Opinate Publications Settings</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications Settings"
+          content="Opinate Publications Settings"
         />
       </HeadContent>
       <Layout loading={isLoading}>

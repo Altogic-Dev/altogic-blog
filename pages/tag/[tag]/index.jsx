@@ -77,8 +77,8 @@ export default function TagPage() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App</title>
-        <meta name="description" content="Altogic Medium Blog App" />
+        <title>Opinate</title>
+        <meta name="description" content="Opinate" />
         
       </HeadContent>
       <Layout >

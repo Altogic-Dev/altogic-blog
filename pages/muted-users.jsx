@@ -39,10 +39,10 @@ export default function MutedUsers() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Notifications</title>
+        <title>Opinate Notifications</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Notifications"
+          content="Opinate Notifications"
         />
       </HeadContent>
       <Layout>

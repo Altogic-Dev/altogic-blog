@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function NotificationItem({ notification }) {
+export default function NotificationItem({ notification, fromPage }) {
   const router = useRouter();
   const route = () => {
     switch (notification.type) {
@@ -68,15 +68,17 @@ export default function NotificationItem({ notification }) {
             </Button>
           </div>
         </div>
-        <div className="ml-4 flex-shrink-0 flex">
-          <button
-            type="button"
-            className="rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-          >
-            <span className="sr-only">Close</span>
-            <XIcon className="h-5 w-5" aria-hidden="true" />
-          </button>
-        </div>
+        {!fromPage && (
+          <div className="ml-4 flex-shrink-0 flex">
+            <button
+              type="button"
+              className="rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            >
+              <span className="sr-only">Close</span>
+              <XIcon className="h-5 w-5" aria-hidden="true" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

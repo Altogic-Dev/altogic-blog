@@ -109,8 +109,8 @@ export default function MyStories() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App My Stories</title>
-        <meta name="description" content="Altogic Medium Blog App My Stories" />
+        <title>Opinate My Stories</title>
+        <meta name="description" content="Opinate My Stories" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">

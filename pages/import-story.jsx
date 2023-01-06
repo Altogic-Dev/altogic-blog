@@ -5,10 +5,10 @@ export default function ImportStory() {
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Import a Story</title>
+        <title>Opinate Import a Story</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Import a Story"
+          content="Opinate Import a Story"
         />
         
       </HeadContent>

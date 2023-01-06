@@ -29,6 +29,7 @@ export default function Publications({ tabName }) {
   const latestPublicationStories = useSelector(
     (state) => state.publication.latestPublicationStories
   );
+  const isLoading = useSelector((state) => state.publication.isLoading);
 
   const navigations = useSelector(
     (state) => state.publication.publicationNavigation
@@ -64,29 +65,26 @@ export default function Publications({ tabName }) {
   }, [publicationName]);
 
   useEffect(() => {
+    if (publication && _.first(navigations)?.publication !== publication._id) {
+      getPublicationNavigations(publication);
+    }
     if (publication) {
       dispatch(
         publicationActions.getPublicationHomeLayoutRequest(publication._id)
       );
     }
-  }, [publication]);
-
-  useEffect(() => {
-    if (publication && _.first(navigations)?.publication !== publication._id) {
-      getPublicationNavigations(publication);
-    }
-  }, [publication]);
+  }, [publication?.name]);
 
   return (
     <div>
       <HeadContent>
-        <title>Altogic Medium Blog App Publications</title>
+        <title>Opinate Publications</title>
         <meta
           name="description"
-          content="Altogic Medium Blog App Publications"
+          content="Opinate Publications"
         />
       </HeadContent>
-      <Layout loading={_.size(latestPublicationStories) === 0}>
+      <Layout loading={isLoading}>
         <AligmentPublicationLayout
           layout={homeLayout?.layout}
           bottomColor={homeLayout?.bottomColor}
@@ -114,11 +112,11 @@ export default function Publications({ tabName }) {
                 <PublicationTab tab={selectedTab} publication={publication} />
               </div>
             </div>
-            <div className="px-8 ">
+            <div className="px-8 md:w-[100vw] max-w-screen-xl w-full mx-auto ">
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>
-              <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
+              <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
                 {latestPublicationStories?.map((post) => (
                   <PublicationPostCard
                     key={post._id}
