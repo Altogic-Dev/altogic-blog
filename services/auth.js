@@ -31,7 +31,7 @@ const AuthService = {
     if (provider !== 'altogic') {
       const nameArray = _name && _name.split(' ');
       const surname = _name ? nameArray[nameArray.length - 1] : 'User';
-      _username = `${lowerCaseFirstLetter(
+      _username = `${_.toLower(
         replaceTurkishChars(surname)
       )}${randomInt(1000, 99999)}`;
       req.username = _username;
@@ -109,7 +109,7 @@ const AuthService = {
   searchUserByUsername(username) {
     return endpoint.get('/user/searchByUsername', { username });
   },
- 
+
   setDefaultAvatar(name) {
     const req = {
       name,
