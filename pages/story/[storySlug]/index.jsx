@@ -244,12 +244,13 @@ export default function BlogDetail({ ip, story }) {
     <div>
       <HeadContent>
         <title>{story?.title ?? 'Untitled'}</title>
-        <meta property="og:title" content={`${story.title ?? 'Untitled'}`} />
+        <meta name="og:title" content={`${story.title ?? 'Untitled'}`} />
+        <meta name="og:type" content="article" />
         <meta
-          property="og:description"
+          name="og:description"
           content={`${story.content.slice(0, 100)} Your Title`}
         />
-        <meta property="og:image" content={`${_.first(story.storyImages)}`} />
+        <meta name="og:image" content={`${_.first(story.storyImages)}`} />
         <meta
           name="description"
           content={`${story.content.slice(0, 100)} Your Title`}
