@@ -23,18 +23,22 @@ import StoryService from '@/services/story';
 import Image from 'next/image';
 
 export async function getServerSideProps({ req, params }) {
-  // const storyName = params.storySlug;
+  const storyName = params.storySlug;
 
-  // const storyServerSide = await (await StoryService.getStoryBySlug(storyName)).data.story;
+  const storyServerSide = await (
+    await StoryService.getStoryBySlug(storyName)
+  ).data.story;
+  const storyTitle = storyServerSide.title;
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
       ip,
+      storyTitle,
     },
   };
 }
 
-export default function BlogDetail({ ip }) {
+export default function BlogDetail({ ip, storyTitle }) {
   const router = useRouter();
   const { storySlug, facebook, twitter, linkedin } = router.query;
 
@@ -247,12 +251,12 @@ export default function BlogDetail({ ip }) {
   useEffect(() => {
     if (errors?.status === 404) setIsLoading(false);
   }, [errors]);
-
+  console.log(storyTitle);
   return (
     <div>
       <HeadContent>
         <title>{story?.title || 'Untitled'}</title>
-        <meta property="og:title" content={`${story?.title} Your Title`} />
+        <meta property="og:title" content={`${storyTitle} Your Title`} />
         <meta
           name="description"
           content={story?.content || 'Story Content  '}
