@@ -34,11 +34,11 @@ function StoryContent(props) {
     isReported,
     forwardedRef,
     hideButtons,
+    story,
   } = props;
 
   const dispatch = useDispatch();
   const router = useRouter();
-  const story = useSelector((state) => state.story.story);
 
   const isLiked = _.some(
     useSelector((state) => state.story.likedStories),

@@ -24,7 +24,6 @@ import Image from 'next/image';
 
 export async function getServerSideProps({ req, params }) {
   const storyName = params.storySlug;
-
   const storyServerSide = await (
     await StoryService.getStoryBySlug(storyName)
   ).data.story;
@@ -43,7 +42,7 @@ export default function BlogDetail({ ip, story }) {
   const { storySlug, facebook, twitter, linkedin } = router.query;
 
   const dispatch = useDispatch();
-
+  const [storyUser, setStoryUser] = useState();
   const loading = useSelector((state) => state.story.isLoading);
   const errors = useSelector((state) => state.story.error);
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
@@ -188,6 +187,10 @@ export default function BlogDetail({ ip, story }) {
   });
 
   useEffect(() => {
+    setStoryUser(_.get(story, 'user'));
+  }, [story]);
+
+  useEffect(() => {
     setEnterTime(DateTime.now());
     window.addEventListener('scroll', onScroll, { passive: true });
     if (!_.isNil(story) && didMount) {
@@ -300,6 +303,7 @@ export default function BlogDetail({ ip, story }) {
                   )}
                   isMuted={isMuted}
                   isReported={isReported}
+                  story={story}
                 />
                 {user && !isMyProfile && _.size(moreUserStories) > 0 && (
                   <div className="mt-5 bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
@@ -376,8 +380,8 @@ export default function BlogDetail({ ip, story }) {
 
               <div className="hidden lg:block p-8 space-y-10">
                 <Sidebar
+                  profile={storyUser}
                   updateProfile
-                  profile={_.get(story, 'user')}
                   isFollowing={_.some(
                     myFollowings,
                     (user) => user.followingUser === story?.user?._id
