@@ -23,24 +23,27 @@ import StoryService from '@/services/story';
 import Image from 'next/image';
 
 export async function getServerSideProps({ req, params }) {
-  // const storyName = params.storySlug;
+  const storyName = params.storySlug;
 
-  // const storyServerSide = await (await StoryService.getStoryBySlug(storyName)).data.story;
+  const storyServerSide = await (
+    await StoryService.getStoryBySlug(storyName)
+  ).data.story;
+
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
       ip,
+      story: storyServerSide,
     },
   };
 }
 
-export default function BlogDetail({ ip }) {
+export default function BlogDetail({ ip, story }) {
   const router = useRouter();
   const { storySlug, facebook, twitter, linkedin } = router.query;
 
   const dispatch = useDispatch();
 
-  const story = useSelector((state) => state.story.story);
   const loading = useSelector((state) => state.story.isLoading);
   const errors = useSelector((state) => state.story.error);
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
@@ -225,20 +228,6 @@ export default function BlogDetail({ ip }) {
   }, [story]);
 
   useEffect(() => {
-    if (storySlug) {
-      dispatch(
-        storyActions.getStoryBySlugRequest({
-          storySlug,
-          userId: user?._id,
-        })
-      );
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-    }
-  }, [storySlug]);
-
-  useEffect(() => {
     if (!loading && story?.storySlug === storySlug) {
       setIsLoading(false);
     }
@@ -251,10 +240,16 @@ export default function BlogDetail({ ip }) {
   return (
     <div>
       <HeadContent>
-        <title>{story?.title || 'Untitled'}</title>
+        <title>{story?.title ?? 'Untitled'}</title>
+        <meta property="og:title" content={`${story.title ?? 'Untitled'}`} />
+        <meta
+          property="og:description"
+          content={`${story.content.slice(0, 100)} Your Title`}
+        />
+        <meta property="og:image" content={`${_.first(story.storyImages)}`} />
         <meta
           name="description"
-          content={story?.content || 'Story Content  '}
+          content={`${story.content.slice(0, 100)} Your Title`}
         />
       </HeadContent>
 

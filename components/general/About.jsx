@@ -37,6 +37,10 @@ function About(props) {
     (state) => state.followerConnection.myFollowings
   );
 
+
+
+  
+
   const [followersModal, setFollowersModal] = useState(false);
   const [followerPage, setFollowerPage] = useState(0);
 
