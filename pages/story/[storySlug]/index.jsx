@@ -252,6 +252,7 @@ export default function BlogDetail({ ip }) {
     <div>
       <HeadContent>
         <title>{story?.title || 'Untitled'}</title>
+        <meta property="og:title" content={`${story?.title} Your Title`} />
         <meta
           name="description"
           content={story?.content || 'Story Content  '}
