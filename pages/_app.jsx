@@ -129,9 +129,6 @@ function MyApp({ Component, pageProps }) {
       setIsMounted(true);
       getMutedUsers(sessionUser);
       dispatch(publicationActions.getUserPublicationsRequest());
-    } else if (!sessionUser?.username && !isMounted) {
-      dispatch(authActions.updateUserSuccess());
-      setIsMounted(true);
     }
   }, [sessionUser]);
 

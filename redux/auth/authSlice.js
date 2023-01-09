@@ -4,8 +4,8 @@ import { HYDRATE } from 'next-redux-wrapper';
 import ToastMessage from '@/utils/toast';
 // Initial state
 const initialState = {
+  isAuthenticated: !!AuthService.getUser(),
   isLoading: false,
-  userLoading: true,
   error: null,
   loginError: null,
   registerError: null,
@@ -14,7 +14,6 @@ const initialState = {
   changeEmailError: null,
   user: AuthService.getUser(),
   profileUser: null,
-  isAuthenticated: false,
   sessions: [],
   foundUsers: [],
 };
@@ -48,7 +47,8 @@ export const authSlice = createSlice({
       state.error = action.payload;
     },
     setUser(state, action) {
-      state.userLoading = false;
+      state.isLoading = false;
+
       state.user = action.payload;
     },
     loginRequest(state) {
@@ -134,7 +134,7 @@ export const authSlice = createSlice({
       state.isLoading = true;
     },
     updateUserSuccess(state, action) {
-      state.isLoading = false;
+      state.isLoading = true;
       state.user = action.payload;
       if (state.profileUser?._id === state.user?._id) {
         state.profileUser = action.payload;

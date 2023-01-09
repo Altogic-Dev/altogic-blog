@@ -26,7 +26,8 @@ export default function HeaderMenu() {
   const router = useRouter();
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.auth.user);
-  const isLoading = useSelector((state) => state.auth.userLoading);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   const searchResults = useSelector((state) => state.general.searchPreview);
   const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
@@ -34,12 +35,20 @@ export default function HeaderMenu() {
   const [isMounted, setIsMounted] = useState(false);
 
   const [user, setUser] = useState('undefined');
+  const [isAuthenticatedState, setIsAuthenticatedState] = useState(true);
+
   const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hideMenu, setHideMenu] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) setIsAuthenticatedState(isAuthenticated);
+  }, [isAuthenticated]);
+
   useEffect(() => {
     setUser(sessionUser);
   }, [sessionUser]);
+
   useEffect(() => {
     if (selectedPublicationState) {
       setSelectedPublication(selectedPublicationState);
@@ -82,12 +91,6 @@ export default function HeaderMenu() {
     );
   };
 
-  if (isLoading)
-    return (
-      <div>
-        <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6 h-24" />
-      </div>
-    );
   return (
     <div>
       <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6">
@@ -169,7 +172,7 @@ export default function HeaderMenu() {
                 <SearchIcon className="w-5 h-5" />
               </Button>
             </div>
-            {user ? (
+            {isAuthenticatedState ? (
               <>
                 <Button
                   disabled={router.pathname === '/write-a-story'}
