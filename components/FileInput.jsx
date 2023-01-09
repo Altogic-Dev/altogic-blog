@@ -33,7 +33,11 @@ export default function FileInput({
             <ClipLoader color="#9333ea" size={30} />
           </div>
         ) : _.isNil(link) ? (
-          <div className="w-16 h-16 rounded-full object-contain border border-purple-700 " />
+          <input
+            type="button"
+            onClick={onChange}
+            className=" cursor-pointer w-16 h-16 rounded-full object-contain border border-purple-700 "
+          />
         ) : (
           <button type="button" onClick={onChange}>
             <Image

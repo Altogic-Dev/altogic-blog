@@ -136,7 +136,7 @@ function MyApp({ Component, pageProps }) {
     if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
     }
-  }, [router.asPath]);
+  }, [router.asPath,sessionUser]);
 
   useEffect(() => {
     if (publicationName) {
