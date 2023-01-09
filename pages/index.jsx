@@ -117,7 +117,7 @@ export default function Home() {
     <div>
       <HeadContent>
         <title>Opinate</title>
-        <meta name="description" content="Opinate" />
+        <meta name="description" content="Opinate Blog" />
       </HeadContent>
       <Layout loading={loading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">

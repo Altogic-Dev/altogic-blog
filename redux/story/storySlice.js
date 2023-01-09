@@ -46,22 +46,22 @@ export const storySlice = createSlice({
     },
     getFollowingStoriesSuccess(state, action) {
 
-     try {
-      const filteredList = action.payload.data.filter(story => !state.mutedUsers.some(user => user.blockedUser === story.user))
+      try {
+        const filteredList = action.payload.data.filter(story => !state.mutedUsers.some(user => user.blockedUser === story.user))
 
-      state.isLoading = false;
-      if (_.isArray(state.followingStories) && action.payload.page !== 1) {
-        state.followingStories = [
-          ...state.followingStories,
-          ...filteredList,
-        ];
-      } else {
-        state.followingStories = filteredList;
+        state.isLoading = false;
+        if (_.isArray(state.followingStories) && action.payload.page !== 1) {
+          state.followingStories = [
+            ...state.followingStories,
+            ...filteredList,
+          ];
+        } else {
+          state.followingStories = filteredList;
+        }
+        state.followingStoriesInfo = action.payload.info;
+      } catch (error) {
+        console.log(error)
       }
-      state.followingStoriesInfo = action.payload.info;
-     } catch (error) {
-      console.log(error)
-     }
     },
     getRecommendedStoriesRequest(state) {
       state.isLoading = true;
@@ -641,7 +641,12 @@ export const storySlice = createSlice({
     unfollowUserFromStoryRequest(state) {
       state.story.user.followerCount -= 1;
     },
-
+    putStory(state, action) {
+      state.story = action.payload;
+    },
+    putStoryRequest(state, action) {
+      state.story = action.payload;
+    },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
     extraReducers: {

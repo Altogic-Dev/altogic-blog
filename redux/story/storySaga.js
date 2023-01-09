@@ -265,6 +265,13 @@ export function* updateStoryLikeCountSaga(isIncrease) {
     );
   }
 }
+function* putStorySaga({ payload }) {
+  console.log(payload)
+  yield put(
+    storyActions.putStory(payload)
+  );
+}
+
 
 function* getUserStoriesSaga({ payload: { userId, page, limit } }) {
   try {
@@ -484,7 +491,7 @@ function* selectFeatureStoriesSaga({
       [`section-${sectionIndex}`]: [],
     });
   }
-  
+
   newFeatureStories = JSON.parse(JSON.stringify(newFeatureStories));
   newFeatureStories[`section-${sectionIndex}`][index] = story;
   yield put(storyActions.selectFeatureStoriesSuccess(newFeatureStories));
@@ -719,6 +726,7 @@ export default function* rootSaga() {
     takeEvery(storyActions.getStoryRequest.type, getStorySaga),
     takeEvery(storyActions.getStoryBySlugRequest.type, getStoryBySlugSaga),
     takeEvery(storyActions.getMutedUsersRequest.type, getMutedUsersSaga),
+    takeEvery(storyActions.putStoryRequest.type, putStorySaga),
 
     takeEvery(
       storyActions.getMoreUserStoriesRequest.type,
