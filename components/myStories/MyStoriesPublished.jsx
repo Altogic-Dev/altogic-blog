@@ -20,7 +20,7 @@ function MyStoriesPublished({
   const dispatch = useDispatch();
   const router = useRouter();
   const ref = useRef();
-  const { ref: inViewRef, inView } = useInView(); 
+  const { ref: inViewRef, inView } = useInView();
 
   const handleEndOfList = () => {
     if (!_.isNil(userStories) && _.size(userStories) < userStoriesInfo?.count) {
@@ -68,7 +68,7 @@ function MyStoriesPublished({
                   router.push(`/write-a-story-settings?id=${story._id}`);
                 },
                 storyStats: () => {
-                  router.push(`/story/stats-blog-post?id=${story._id}`);
+                  router.push(`/story/${story.storySlug}/stats`);
                 },
                 deleteStory: () => {
                   setDeletedStory({
