@@ -37,10 +37,6 @@ function About(props) {
     (state) => state.followerConnection.myFollowings
   );
 
-
-
-  
-
   const [followersModal, setFollowersModal] = useState(false);
   const [followerPage, setFollowerPage] = useState(0);
 
@@ -121,7 +117,7 @@ function About(props) {
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
         <Button onClick={followerCount ? toggleFollowersModal : null}>
-          {followerCount} Followers
+          {followerCount ?? 0 } Followers
         </Button>
         <svg
           className="h-1 w-1 text-slate-500"
@@ -131,7 +127,7 @@ function About(props) {
           <circle cx={4} cy={4} r={3} />
         </svg>
         <Button onClick={followingCount ? toggleFollowingsModal : null}>
-          {followingCount} Following
+          {followingCount ?? 0} Following
         </Button>
         <Transition appear show={followersModal} as={Fragment}>
           <Dialog
