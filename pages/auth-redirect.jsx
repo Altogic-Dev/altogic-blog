@@ -2,11 +2,9 @@
 import { useEffect } from 'react';
 import AuthService from '@/services/auth';
 import { useRouter } from 'next/router';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authActions } from '@/redux/auth/authSlice';
 import { ClipLoader } from 'react-spinners';
-
-
 
 export default function AuthRedirect(props) {
   const sessionUser = useSelector((state) => state.auth.user);
@@ -49,8 +47,8 @@ export default function AuthRedirect(props) {
 
   useEffect(() => {
     if (sessionUser?.username) {
-      router.push('/')
-    };
+      router.push('/');
+    }
   }, [sessionUser]);
   if (
     router.query.action === 'change-email' ||
@@ -62,6 +60,12 @@ export default function AuthRedirect(props) {
         <p className="mt-3 text-md text-slate-500">Verifying Email</p>
       </div>
     );
+  return (
+    <div className="w-[100vw] h-[100vh] flex flex-col justify-center items-center">
+      <ClipLoader color="#9333ea" size={100} />
+      <p className="mt-3 text-md text-slate-500">Logging In</p>
+    </div>
+  );
 }
 
 export async function getServerSideProps(context) {

@@ -26,6 +26,7 @@ export default function HeaderMenu() {
   const router = useRouter();
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.auth.user);
+  const isLoading = useSelector((state) => state.auth.userLoading);
   const searchResults = useSelector((state) => state.general.searchPreview);
   const selectedPublicationState = useSelector(
     (state) => state.publication.selectedPublication
@@ -37,11 +38,7 @@ export default function HeaderMenu() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hideMenu, setHideMenu] = useState(false);
   useEffect(() => {
-    if (sessionUser) {
-      setUser(sessionUser);
-    } else {
-      setUser(null);
-    }
+    setUser(sessionUser);
   }, [sessionUser]);
   useEffect(() => {
     if (selectedPublicationState) {
@@ -85,7 +82,7 @@ export default function HeaderMenu() {
     );
   };
 
-  if (user === 'undefined')
+  if (isLoading)
     return (
       <div>
         <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6 h-24" />

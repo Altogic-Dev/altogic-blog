@@ -164,8 +164,6 @@ export default function ListDetail() {
   }, [sessionUser, bookmarkList]);
 
   useEffect(() => {
-    console.log(bookmarkList?.storyCount);
-    console.log(_.size(bookmarks));
     if (
       sessionUser?.username !== username &&
       bookmarkListSlug &&
@@ -216,7 +214,6 @@ export default function ListDetail() {
     }
   }, [bookmarkError]);
 
-  console.log(bookmarkList);
   return (
     <div>
       <HeadContent>

@@ -5,6 +5,7 @@ import ToastMessage from '@/utils/toast';
 // Initial state
 const initialState = {
   isLoading: false,
+  userLoading: true,
   error: null,
   loginError: null,
   registerError: null,
@@ -47,6 +48,7 @@ export const authSlice = createSlice({
       state.error = action.payload;
     },
     setUser(state, action) {
+      state.userLoading = false;
       state.user = action.payload;
     },
     loginRequest(state) {
@@ -137,7 +139,8 @@ export const authSlice = createSlice({
       if (state.profileUser?._id === state.user?._id) {
         state.profileUser = action.payload;
       }
-      ToastMessage.success('Profile updated successfully');
+      if (action.payload)
+        ToastMessage.success('Profile updated successfully');
     },
     updateUserFailure(state, action) {
       state.isLoading = false;

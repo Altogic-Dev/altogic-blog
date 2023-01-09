@@ -257,7 +257,6 @@ export default function PublicationSettingsInfo({
     }
   }, [watchFields]);
 
-  console.log(writers);
   useEffect(() => {
     const publicationname = removeSpaces(watch('name'));
     if (publicationname) {

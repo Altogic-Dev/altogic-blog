@@ -50,11 +50,11 @@ export default function PostCard({
 
   return (
     <>
-      <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2">
-        <div className="w-full">
+      <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2 overflow-hidden  ">
+        <div className="flex-grow-0">
           <Link href={authorUrl}>
-            <a className="flex items-center gap-3 mb-4 md:mb-8">
-              <div className="flex-shrink-0">
+            <a className="flex items-center gap-3 mb-4 md:mb-8  ">
+              <div className="">
                 <span className="sr-only">{authorName}</span>
                 <Image
                   width={24}
@@ -118,7 +118,7 @@ export default function PostCard({
                     {title}
                   </h2>
                 </div>
-                <p className="text-slate-500 text-sm tracking-sm line-clamp-2 break-words w-[600px] ">
+                <p className="text-slate-500 text-sm tracking-sm line-clamp-2 break-words w-[400px] xl:w-[600px]  ">
                   {infoText}
                 </p>
               </a>
@@ -197,7 +197,8 @@ export default function PostCard({
                 />
               </Menu>
             )}
-            {normalMenu && optionButtons &&
+            {normalMenu &&
+              optionButtons &&
               ((!_.isNil(optionButtons?.editStory) &&
                 story?.user === sessionUser._id) ||
                 _.isNil(optionButtons?.editStory)) && (

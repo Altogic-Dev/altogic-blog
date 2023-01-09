@@ -1,6 +1,5 @@
 import { auth, db, endpoint } from '@/utils/altogic';
 import {
-  lowerCaseFirstLetter,
   randomInt,
   replaceTurkishChars,
 } from '@/utils/utils';

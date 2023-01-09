@@ -30,6 +30,9 @@ function* setUserFromLocalStorage() {
   if (user) {
     yield put(authActions.setUser(user));
   }
+  else {
+    yield put(authActions.setUser(null));
+  }
 }
 function* getAuthGrantSaga({ payload }) {
   try {
