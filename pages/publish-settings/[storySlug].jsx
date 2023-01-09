@@ -145,6 +145,12 @@ export default function PublishSettings() {
     );
   };
 
+
+  useEffect(() => {
+    setSelectedIndex(0);
+    if (_.size(foundTopics) === 0) setIsSearchOpen(false);
+    else setIsSearchOpen(true);
+  }, [story]);
   useEffect(() => {
     setSelectedIndex(0);
     if (_.size(foundTopics) === 0) setIsSearchOpen(false);
@@ -227,10 +233,7 @@ export default function PublishSettings() {
     <div>
       <HeadContent>
         <title>Opinate Publish Settings</title>
-        <meta
-          name="description"
-          content="Opinate Publish Settings"
-        />
+        <meta name="description" content="Opinate Publish Settings" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-12 pt-8 pb-[72px] lg:pb-36">

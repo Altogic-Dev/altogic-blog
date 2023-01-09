@@ -184,6 +184,13 @@ export default function BlogDetail({ ip, story }) {
     }
   });
 
+  const putStoryRequest = () => {
+    dispatch(storyActions.putStoryRequest(story));
+  };
+  useEffect(() => {
+    if (story) putStoryRequest();
+  }, [story]);
+
   useEffect(() => {
     setStoryUser(_.get(story, 'user'));
   }, [story]);
