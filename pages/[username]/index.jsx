@@ -29,10 +29,9 @@ import CreateBookmarkList from '@/components/bookmarks/CreateBookmarkList';
 import { useInView } from 'react-intersection-observer';
 import { ClipLoader } from 'react-spinners';
 import ToastMessage from '@/utils/toast';
+import AuthService from '@/services/auth';
 
 export default function ProfilePage() {
-
-
   const BOOKMARK_LIST_LIMIT = 3;
   const FOLLOWING_PAGE_LIMIT = 5;
   const router = useRouter();
@@ -42,7 +41,7 @@ export default function ProfilePage() {
   const tabNames = ['Home', 'Lists', 'About'];
   const [isLoading, setIsLoading] = useState(true);
   const userStories = useSelector((state) => state.story.userStories);
-  const sessionUser = useSelector((state) => state.auth.user);
+  const [sessionUser] = useState(AuthService.getUser());
   const [showDialog, setShowDialog] = useState(false);
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
@@ -151,7 +150,7 @@ export default function ProfilePage() {
         )
       );
     }
-  }, [profileUser?.username,sessionUser]);
+  }, [profileUser?.username, sessionUser]);
   useEffect(() => {
     if (
       sessionUser &&
@@ -201,6 +200,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (sessionUser && profileUser) {
+      console.log(sessionUser?._id === profileUser?._id);
       setIsMyProfile(sessionUser?._id === profileUser?._id);
     }
   }, [sessionUser, profileUser]);
@@ -230,22 +230,21 @@ export default function ProfilePage() {
 
   useEffect(() => {
     setShowDialog(
-      !subcribeLoading &&
+      profileUser &&
+        !subcribeLoading &&
         !isMyProfile &&
         !isSubscribed &&
         sessionUser &&
-        !authLoading && profileUser?._id !== sessionUser?._id
+        !authLoading &&
+        profileUser?._id !== sessionUser?._id
     );
-  }, [isSubscribed, authLoading, subcribeLoading]);
+  }, [isSubscribed, authLoading, subcribeLoading, isMyProfile,sessionUser, profileUser]);
 
   return (
     <div>
       <HeadContent>
         <title>Opinate Notifications</title>
-        <meta
-          name="description"
-          content="Opinate Notifications"
-        />
+        <meta name="description" content="Opinate Notifications" />
       </HeadContent>
       <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -435,7 +434,7 @@ export default function ProfilePage() {
                   }}
                   followingTopics={isMyProfile}
                   profile={profileUser}
-                  followLoading={followLoading}
+                  followLoading={followLoading && !followingModal}
                   isFollowing={
                     isFollowing ||
                     _.some(

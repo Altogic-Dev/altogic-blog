@@ -30,7 +30,6 @@ function PublicationTabStory({ tab, publication }) {
           userId: _.get(user, '_id'),
           followingUserId: _.get(story, 'user._id'),
           followingUsername: _.get(story, 'username'),
-
         })
       );
     }
@@ -66,17 +65,20 @@ function PublicationTabStory({ tab, publication }) {
   }, [story]);
 
   return (
-    <div className='md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto '>
-      <StoryContent
-        bookmarkLists={bookmarkLists}
-        setCreateNewList={setCreateNewList}
-        bookmarks={bookmarks}
-        toggleFollow={toggleFollow}
-        isFollowing={isFollowing}
-        isMuted={isMuted}
-        isReported={isReported}
-        hideButtons
-      />
+    <div className="md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
+      {story && (
+        <StoryContent
+          bookmarkLists={bookmarkLists}
+          setCreateNewList={setCreateNewList}
+          bookmarks={bookmarks}
+          toggleFollow={toggleFollow}
+          isFollowing={isFollowing}
+          isMuted={isMuted}
+          isReported={isReported}
+          hideButtons
+          story={story}
+        />
+      )}
       {createNewList && (
         <CreateBookmarkList setCreateNewList={setCreateNewList} story={story} />
       )}

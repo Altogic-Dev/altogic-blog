@@ -88,6 +88,7 @@ export const storySlice = createSlice({
     },
 
     getStoryRequest(state) {
+      state.story = null;
       state.isLoading = true;
     },
     getStorySuccess(state, action) {

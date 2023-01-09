@@ -31,7 +31,6 @@ export default function MyStories() {
   const userStoriesLoading = useSelector(
     (state) => state.story.userStoriesLoading
   );
-
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -99,8 +98,10 @@ export default function MyStories() {
 
   useEffect(() => {
     if (
-      _.size(userStories) < publishedPage * PAGE_LIMIT &&
-      userStoriesInfo?.count !== _.size(userStories) || userStoriesOwner !== sessionUser?._id
+      sessionUser &&
+      (userStoriesOwner !== sessionUser?._id ||
+        (_.size(userStories) < publishedPage * PAGE_LIMIT &&
+          userStoriesInfo?.count !== _.size(userStories)))
     ) {
       getUserStories();
     }
@@ -112,7 +113,7 @@ export default function MyStories() {
         <title>Opinate My Stories</title>
         <meta name="description" content="Opinate My Stories" />
       </HeadContent>
-      <Layout>
+      <Layout loading={userStoriesLoading && publishedPage < 2}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="lg:py-10 lg:px-8">

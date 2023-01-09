@@ -1,4 +1,5 @@
 import { LockClosedIcon, LockOpenIcon } from '@heroicons/react/outline';
+import _ from 'lodash';
 import Link from 'next/link';
 
 export default function PostList({
@@ -44,28 +45,28 @@ export default function PostList({
           <div className="group inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={images[0]}
+              src={_.first(images)}
               alt=""
             />
           </div>
           <div className="group inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={images[1]}
+              src={_.get(images, '[1]')}
               alt=""
             />
           </div>
           <div className="group hidden sm:inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={images[2]}
+              src={_.get(images, '[2]')}
               alt=""
             />
           </div>
           <div className="group hidden sm:inline-flex w-[120px] h-[120px] overflow-hidden">
             <img
               className="w-[120px] h-[120px] transform transition-transform ease-in-out duration-300 hover:scale-125"
-              src={images[3]}
+              src={_.get(images, '[3]')}
               alt=""
             />
           </div>
