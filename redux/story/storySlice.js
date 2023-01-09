@@ -546,8 +546,13 @@ export const storySlice = createSlice({
       state.likeLoading = true
     },
     likeStorySuccess(state, action) {
-      state.likedStories = [...state.likedStories, action.payload];
-      state.likeLoading = false
+      try {
+
+        state.likedStories = [...state.likedStories, action.payload];
+        state.likeLoading = false
+      } catch (error) {
+        console.log(error)
+      }
 
     },
     likeStoryFailure(state) {

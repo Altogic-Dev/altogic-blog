@@ -145,6 +145,12 @@ export default function PublishSettings() {
     );
   };
 
+  const putStoryRequest = () => {
+    dispatch(storyActions.putStoryRequest(story));
+  };
+  useEffect(() => {
+    if (story) putStoryRequest();
+  }, [story]);
 
   useEffect(() => {
     setSelectedIndex(0);
