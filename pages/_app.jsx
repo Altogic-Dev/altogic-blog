@@ -1,6 +1,6 @@
+import LocalStorageUtil from '@/utils/localStorageUtil';
 import { useRouter } from 'next/router';
 import '../styles/globals.css';
-import LocalStorageUtil from '@/utils/localStorageUtil';
 import { config } from '@fortawesome/fontawesome-svg-core';
 import { cssTransition, ToastContainer } from 'react-toastify';
 import '@fortawesome/fontawesome-svg-core/styles.css';
@@ -9,6 +9,7 @@ import { storyActions } from '@/redux/story/storySlice';
 import 'highlight.js/styles/tokyo-night-dark.css';
 import { DateTime } from 'luxon';
 import 'react-toastify/dist/ReactToastify.css';
+import { authActions } from '@/redux/auth/authSlice';
 import { useEffect, useState } from 'react';
 import {
   getUserBookmarkListsRequest,
@@ -123,12 +124,17 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (sessionUser?.username && !isMounted) {
+      dispatch(authActions.updateUserSuccess());
       checkFollowing();
       setIsMounted(true);
       getMutedUsers(sessionUser);
       dispatch(publicationActions.getUserPublicationsRequest());
+    } else if (!sessionUser?.username && !isMounted) {
+      dispatch(authActions.updateUserSuccess());
+      setIsMounted(true);
     }
   }, [sessionUser]);
+
   useEffect(() => {
     if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
@@ -145,6 +151,9 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     if (!_.isEmpty(sessionUser?.publications)) {
       setSelectedPublicationIfIsExist();
+    } else if (sessionUser) {
+      LocalStorageUtil.set(LocalStorageUtil.SELECTED_PUBLICATION, null);
+      dispatch(publicationActions.selectPublicationRequest(null));
     }
   }, [sessionUser, publications]);
 

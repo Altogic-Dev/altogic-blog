@@ -112,9 +112,7 @@ export default function WriteAStory({ id }) {
   }, [router.isReady]);
 
   useEffect(() => {
-    console.log(
-      _.size(_.trim(parseHtml(content))) > 0 && _.size(_.trim(inpTitle)) > 0
-    );
+  
 
     if (
       _.size(_.trim(parseHtml(content))) > 0 &&

@@ -62,9 +62,6 @@ export default function PublicationCard({
     dispatch(publicationActions.selectPublicationRequest(publication));
   };
 
-  console.log(isLoading && followingLoad);
-  console.log(followingLoad);
-  console.log(isLoading);
   return (
     <div className="my-12">
       <div className="flex items-center justify-between w-full mb-4">

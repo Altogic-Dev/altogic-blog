@@ -10,7 +10,6 @@ export function* getFollowingStoriesSaga({ payload: { userId, page } }) {
 
   try {
     const info = yield select((state) => state.story.followingStoriesInfo);
-    console.log(info)
 
     if (_.isNil(info) || page <= info.totalPages) {
       const { data, errors } = yield call(
@@ -18,7 +17,6 @@ export function* getFollowingStoriesSaga({ payload: { userId, page } }) {
         userId,
         page
       );
-      console.log(data)
       if (!_.isNil(data) && _.isNil(errors)) {
         yield put(
           storyActions.getFollowingStoriesSuccess({
@@ -360,7 +358,6 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
         const topic = { name: item }
         return topic
       }));
-    console.log(data)
 
     if (errors) throw errors;
     if (data)
