@@ -184,10 +184,7 @@ export default function WriteAStorySettings() {
     <div>
       <HeadContent>
         <title>Opinate Write A Story Settings</title>
-        <meta
-          name="description"
-          content="Opinate Write A Story Settings"
-        />
+        <meta name="description" content="Opinate Write A Story Settings" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-10 mb-20">
@@ -327,7 +324,11 @@ export default function WriteAStorySettings() {
                       setSortingLoading(true);
                       dispatch(
                         storyActions.updateStoryFieldRequest({
-                          story,
+                          story: {
+                            ...story,
+                            publication:
+                              story?.publication?._id || story?.publication,
+                          },
                           newStoryField: {
                             pinnedStory: inpPinStory,
                           },
@@ -453,7 +454,12 @@ export default function WriteAStorySettings() {
                             setSeoTitleLoading(true);
                             dispatch(
                               storyActions.updateStoryFieldRequest({
-                                story,
+                                story: {
+                                  ...story,
+                                  publication:
+                                    story?.publication?._id ||
+                                    story?.publication,
+                                },
                                 newStoryField: {
                                   seoTitle:
                                     inpSeoTitle || _.get(story, 'title'),
@@ -508,7 +514,12 @@ export default function WriteAStorySettings() {
                             setSeoDescLoading(true);
                             dispatch(
                               storyActions.updateStoryFieldRequest({
-                                story,
+                                story: {
+                                  ...story,
+                                  publication:
+                                    story?.publication?._id ||
+                                    story?.publication,
+                                },
                                 newStoryField: {
                                   seoDescription:
                                     inpSeoDescription ||
@@ -837,7 +848,11 @@ export default function WriteAStorySettings() {
                         setLicenseLoading(true);
                         dispatch(
                           storyActions.updateStoryFieldRequest({
-                            story,
+                            story: {
+                              ...story,
+                              publication:
+                                story?.publication?._id || story?.publication,
+                            },
                             newStoryField: {
                               license: radiolicense,
                             },
