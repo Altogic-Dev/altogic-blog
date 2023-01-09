@@ -145,7 +145,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (profileUser && sessionUser) {
-      console.log('bere')
       dispatch(
         generalActions.getFollowAndSubscribedInfoRequest(
           _.get(profileUser, '_id')

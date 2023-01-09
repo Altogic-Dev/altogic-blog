@@ -43,6 +43,7 @@ export default function BlogDetail({ ip, story }) {
   const [storyUser, setStoryUser] = useState();
   const loading = useSelector((state) => state.story.isLoading);
   const errors = useSelector((state) => state.story.error);
+  const storyState = useSelector((state) => state.story.story);
   const moreUserStories = useSelector((state) => state.story.moreUserStories);
   const user = useSelector((state) => state.auth.user);
   const isMuted = useSelector((state) => state.blockConnection.isBlocked);
@@ -309,7 +310,7 @@ export default function BlogDetail({ ip, story }) {
                   )}
                   isMuted={isMuted}
                   isReported={isReported}
-                  story={story}
+                  story={storyState}
                 />
                 {user && !isMyProfile && _.size(moreUserStories) > 0 && (
                   <div className="mt-5 bg-slate-50 py-8 px-4 sm:p-8 rounded-md">
