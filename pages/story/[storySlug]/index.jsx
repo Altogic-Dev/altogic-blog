@@ -194,8 +194,8 @@ export default function BlogDetail({ ip, story }) {
   }, [story]);
 
   useEffect(() => {
-    setStoryUser(_.get(story, 'user'));
-  }, [story]);
+    setStoryUser(_.get(storyState, 'user'));
+  }, [storyState]);
 
   useEffect(() => {
     setEnterTime(DateTime.now());

@@ -41,6 +41,7 @@ function* getUserBookmarkListsSaga({ payload }) {
     if (errors) throw errors.items;
     yield put(
       getUserBookmarkListsSuccess({
+        myLists: payload.myLists,
         username: payload.username,
         data: data.result,
         info: data.countInfo,

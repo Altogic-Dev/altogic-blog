@@ -9,7 +9,6 @@ const initialState = {
   isFollowing: false,
   profileFollowings: [],
   profileFollowingsCount: 0,
-
   myFollowings: [],
   followingsData: {},
   followersData: {},
