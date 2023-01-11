@@ -46,11 +46,11 @@ function MyApp({ Component, pageProps }) {
   });
 
   const getBookmarksAndLists = (user) => {
-    console.log('here')
     dispatch(
       getUserBookmarkListsRequest({
         username: user.username,
         includePrivates: true,
+        myLists: true,
       })
     );
     dispatch(
