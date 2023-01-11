@@ -45,7 +45,7 @@ function StoryContent(props) {
     (like) => story._id === like
   );
   const sessionUser = useSelector((state) => state.auth.user);
-  const replyCount = useSelector((state) => state.story.replyCount);
+  // const replyCount = useSelector((state) => state.story.replyCount);
   const likeLoading = useSelector((state) => state.story.likeLoading);
 
   const isLoadingFollow = useSelector(
@@ -394,7 +394,7 @@ function StoryContent(props) {
                         fill="currentColor"
                       />
                     </svg>
-                    {replyCount}
+                    {story?.commentCount}
                   </Button>
                 )}
               </div>
