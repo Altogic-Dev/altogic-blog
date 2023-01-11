@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-export default function ViewAreaChart({ firstData, secondData, type }) {
+export default function ViewAreaChart({ firstData, secondData, type, isHour }) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
           },
         };
       });
-    } else {
+    } else if (type === '24 Hours') {
       firstData?.forEach((obj) => {
         tempData = {
           ...tempData,
@@ -68,6 +68,35 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
           },
         };
       });
+    } else {
+      firstData?.forEach((obj) => {
+        const day = obj.groupby.group.split('.')[0];
+        const monthText = toMonthName(obj.groupby.group.split('.')[1]);
+        tempData = {
+          ...tempData,
+          [obj.groupby.group]: {
+            ..._.get(tempData, obj.groupby.group),
+            internalViews:
+              (_.get(tempData, obj.groupby.group)?.internalViews ?? 0) +
+              obj.count,
+            name: `${day} ${monthText}`,
+          },
+        };
+      });
+      secondData?.forEach((obj) => {
+        const day = obj.groupby.group.split('.')[0];
+        const monthText = toMonthName(obj.groupby.group.split('.')[1]);
+        tempData = {
+          ...tempData,
+          [obj.groupby.group]: {
+            ..._.get(tempData, obj.groupby.group),
+            externalViews:
+              (_.get(tempData, obj.groupby.group)?.externalViews ?? 0) +
+              obj.count,
+            name: `${day} ${monthText}`,
+          },
+        };
+      });
     }
     _.forEach(tempData, (obj) => {
       tempStack.push({
@@ -76,7 +105,7 @@ export default function ViewAreaChart({ firstData, secondData, type }) {
         internalViews: obj.internalViews ?? 0,
       });
     });
-    setData(sortDate(tempStack, 'name'));
+    setData(sortDate(tempStack, 'name', isHour));
   }, [firstData, secondData]);
 
   return (

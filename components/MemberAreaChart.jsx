@@ -17,7 +17,6 @@ import {
 
 export default function MemberAreaChart({ rawData, type, timeUnit, isHour }) {
   const [data, setData] = useState([]);
-
   useEffect(() => {
     let tempData = {};
     const tempStack = [];
@@ -34,7 +33,7 @@ export default function MemberAreaChart({ rawData, type, timeUnit, isHour }) {
           },
         };
       });
-    } else {
+    } else if (type === '24 Hours') {
       rawData?.forEach((obj) => {
         tempData = {
           ...tempData,
@@ -44,6 +43,21 @@ export default function MemberAreaChart({ rawData, type, timeUnit, isHour }) {
               (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +
               obj.sum,
             name: obj.groupby.group,
+          },
+        };
+      });
+    } else {
+      rawData?.forEach((obj) => {
+        const day = obj.groupby.group.split('.')[0];
+        const monthText = toMonthName(obj.groupby.group.split('.')[1]);
+        tempData = {
+          ...tempData,
+          [obj.groupby.group]: {
+            ..._.get(tempData, obj.groupby.group),
+            memberReadTimes:
+              (_.get(tempData, obj.groupby.group)?.memberReadTimes ?? 0) +
+              obj.sum,
+            name: `${day} ${monthText}`,
           },
         };
       });
@@ -58,6 +72,7 @@ export default function MemberAreaChart({ rawData, type, timeUnit, isHour }) {
       }
       tempStack.push(tempObj);
     });
+
     setData(sortDate(tempStack, 'name', isHour));
   }, [rawData, timeUnit]);
 
