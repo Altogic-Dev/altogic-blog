@@ -49,7 +49,7 @@ function PublicationTabFeature({ tab }) {
           return (
             <div className="mb-10 flex flex-col overflow-hidden text-ellipsis md:min-w-[100vw] lg:min-w-[75vw] px-8  w-full mx-auto">
               {_.get(section, 'sectionTitle') && (
-                <h2 className={`text-slate-500 mb-4 text-2xl font-semibold ${section?.isFullContainerGrid ? 'w-[100vw]' : ""}`}>
+                <h2 className={`text-slate-500 mb-4 text-2xl font-semibold ${section?.isFullContainerGrid ? 'w-[95vw]' : ""}`}>
                   {_.get(section, 'sectionTitle')}
                 </h2>
               )}
