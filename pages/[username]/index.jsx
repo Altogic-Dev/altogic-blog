@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import HeadContent from '@/components/general/HeadContent';
 import { Tab, Menu, Transition, Dialog } from '@headlessui/react';
-import _ from 'lodash';
+import _, { isNumber } from 'lodash';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
@@ -227,12 +227,14 @@ export default function ProfilePage() {
   }, [inView]);
 
   useEffect(() => {
+
     setShowDialog(
       profileUser &&
         !subcribeLoading &&
         !isMyProfile &&
         !isSubscribed &&
         sessionUser &&
+        isNumber(userFollowingsCount) &&
         !authLoading &&
         profileUser?._id !== sessionUser?._id
     );
@@ -243,6 +245,7 @@ export default function ProfilePage() {
     isMyProfile,
     sessionUser,
     profileUser,
+    userFollowingsCount
   ]);
 
   return (
