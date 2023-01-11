@@ -42,9 +42,10 @@ export default function MyStories() {
   );
 
   const [publishedPage, setPublishedPage] = useState(
-    _.size(userStories) / PAGE_LIMIT || 1
+    Math.ceil(_.size(userStories) / PAGE_LIMIT) || 1
   );
 
+  console.log(publishedPage)
   const copyToClipboard = () => {
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${_.get(user, 'username')}`;
@@ -79,6 +80,8 @@ export default function MyStories() {
   }, [draftPage]);
 
   const getUserStories = useCallback(() => {
+    console.log(publishedPage);
+
     dispatch(
       storyActions.getUserStoriesRequestNextPage({
         page: publishedPage,
@@ -98,10 +101,9 @@ export default function MyStories() {
 
   useEffect(() => {
     if (
-      sessionUser &&
-      (userStoriesOwner !== sessionUser?._id ||
-        (_.size(userStories) < publishedPage * PAGE_LIMIT &&
-          userStoriesInfo?.count !== _.size(userStories)))
+      userStoriesOwner !== sessionUser?._id ||
+      (_.size(userStories) < publishedPage * PAGE_LIMIT &&
+        userStoriesInfo?.count !== _.size(userStories))
     ) {
       getUserStories();
     }

@@ -12,6 +12,7 @@ function* getWhoToFollowSaga({ payload: { page, limit } }) {
       user._id
     );
     if (errors) throw errors.items;
+    data.page = page;
     if (data) yield put(recommendationsActions.getWhoToFollowSuccess(data));
   } catch (e) {
     yield put(recommendationsActions.getWhoToFollowFailure(e));
