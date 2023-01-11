@@ -21,12 +21,13 @@ export default function Notifications() {
   const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    dispatch(
-      notificationsActions.getNotificationsRequest({
-        userId: user?._id,
-        limit: notificationLimit,
-      })
-    );
+    if (user)
+      dispatch(
+        notificationsActions.getNotificationsRequest({
+          userId: user?._id,
+          limit: notificationLimit,
+        })
+      );
   }, [notificationLimit]);
 
   const handleLoadMore = () => {
@@ -36,10 +37,7 @@ export default function Notifications() {
     <div>
       <HeadContent>
         <title>Opinate Notifications</title>
-        <meta
-          name="description"
-          content="Opinate Notifications"
-        />
+        <meta name="description" content="Opinate Notifications" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">

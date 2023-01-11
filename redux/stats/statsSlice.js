@@ -87,8 +87,8 @@ export const statsSlice = createSlice({
       state.isLoading = true;
     },
     getAllStoriesStatisticsSuccess(state, action) {
-      state.storiesStatistics = action.payload;
       state.isLoading = false;
+      state.storiesStatistics = action.payload;
     },
     getAllStoriesStatisticsFailure(state, action) {
       state.error = action.payload;

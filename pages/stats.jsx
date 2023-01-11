@@ -8,6 +8,7 @@ import _ from 'lodash';
 import Chart from '@/components/stats/chart';
 import { convertTime, parseHtml } from '@/utils/utils';
 import Link from 'next/link';
+import { ClipLoader } from 'react-spinners';
 
 const statCards = [
   {
@@ -37,6 +38,7 @@ export default function Stats() {
   const storiesStatistics = useSelector(
     (state) => state.stats.storiesStatistics
   );
+  const isLoading = useSelector((state) => state.stats.isLoading);
 
   const getStatistics = () => {
     dispatch(statsActions.getStatisticsRequest({ userId: user._id }));
@@ -134,7 +136,10 @@ export default function Stats() {
               _.first(statisticsData.totalReadingLastYear).count)
           ).toFixed(1);
         } catch (error) {
-          if (!_.first(statisticsData.totalReadingThisYear)?.count && _.first(statisticsData.totalReadingLastYear)?.count) {
+          if (
+            !_.first(statisticsData.totalReadingThisYear)?.count &&
+            _.first(statisticsData.totalReadingLastYear)?.count
+          ) {
             temp['Average Reading Time'] = -100;
           } else {
             temp['Average Reading Time'] = 100;
@@ -186,17 +191,23 @@ export default function Stats() {
               </div>
             </form>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 xl:gap-6">
-            {statCards.map((statCard) => (
-              <StatsCard
-                key={statCard.title}
-                title={statCard.title}
-                number={stats[statCard.title]}
-                percentNumber={percentages[statCard.title]}
-                lastTime="last 12 Months"
-                upDown={percentages[statCard.title] >= 0 ? 1 : -1}
-              />
-            ))}
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 xl:gap-6 w-full  ">
+            {!isLoading ? (
+              statCards.map((statCard) => (
+                <StatsCard
+                  key={statCard.title}
+                  title={statCard.title}
+                  number={stats[statCard.title]}
+                  percentNumber={percentages[statCard.title]}
+                  lastTime="last 12 Months"
+                  upDown={percentages[statCard.title] >= 0 ? 1 : -1}
+                />
+              ))
+            ) : (
+              <div className="flex justify-center items-center w-[100vw] lg:w-[1200px]">
+                <ClipLoader color="#9333ea" size={40} />
+              </div>
+            )}
           </div>
           <hr className="mt-10 pb-10" />
 

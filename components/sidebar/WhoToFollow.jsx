@@ -97,12 +97,7 @@ export default function WhoToFollow({
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
   useEffect(() => {
-    if (
-      !_.isEmpty(people) &&
-      whoToFollow &&
-      _.size(people) < size * page &&
-      _.size(people) < count
-    ) {
+    if (whoToFollow && _.size(people) < size * page && _.size(people) < count) {
       getWhoToFollow(page, size);
     }
   }, [page]);

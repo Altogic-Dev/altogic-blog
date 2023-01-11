@@ -251,6 +251,7 @@ export default function BlogDetail({ ip, story }) {
     <div>
       <HeadContent>
         <title>{story?.title ?? 'Untitled'}</title>
+        
         <meta name="og:title" content={`${story.title ?? 'Untitled'}`} />
         <meta name="og:type" content="article" />
         <meta
@@ -262,9 +263,10 @@ export default function BlogDetail({ ip, story }) {
           name="description"
           content={`${story.content.slice(0, 100)} Your Title`}
         />
+        <meta name="twitter:card" content="summary_large_image"/>
       </HeadContent>
 
-      <Layout loading={isLoading}>
+      <Layout loading={!storyState}>
         {errors?.status === 404 || !story?.isPublished ? (
           <div className="w-full h-full flex items-center justify-center flex-col">
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">

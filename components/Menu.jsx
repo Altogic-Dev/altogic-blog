@@ -61,7 +61,7 @@ export default function HeaderMenu() {
 
   const [mobileNotifications, setMobileNotifications] = useState(false);
   useEffect(() => {
-    if (user) {
+    if (sessionUser) {
       dispatch(
         notificationsActions.getNotificationPreviewRequest({
           userId: user?._id,
@@ -72,7 +72,7 @@ export default function HeaderMenu() {
   }, [user]);
 
   useEffect(() => {
-    if (user && !isMounted) {
+    if (sessionUser && !isMounted) {
       setIsMounted(true);
       realtime.join('notification');
       realtime.on(user?._id, (payload) => {

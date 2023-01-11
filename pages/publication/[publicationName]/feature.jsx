@@ -75,7 +75,7 @@ export default function PublicationsFeature() {
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex flex-col gap-4 mt-8 mb-[80px] md:mt-[60px]">
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full mb-[60px]">
-              <h1 className="text-slate-700 mb-8 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
+              <h1 className="text-slate-700 mb-8 md:mb-0 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md w-9/12 break-words">
                 {publication?.name} feature pages
               </h1>
               <Link href={`/publication/${publication?.name}/new-feature`}>

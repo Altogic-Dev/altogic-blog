@@ -12,6 +12,7 @@ import { classNames } from '@/utils/utils';
 import _ from 'lodash';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
+import { ClipLoader } from 'react-spinners';
 
 export default function TagPage() {
   const user = useSelector((state) => state.auth.user);
@@ -25,6 +26,9 @@ export default function TagPage() {
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const bookmarks = useSelector((state) => state.bookmark.bookmarks);
   const trendingTopics = useSelector((state) => state.topics.trendingTopics);
+  const trendingLoading = useSelector((state) => state.topics.trendingLoading);
+  const bestLoading = useSelector((state) => state.topics.bestLoading);
+  const latestLoading = useSelector((state) => state.topics.latestLoading);
 
   const [posts, setPosts] = useState([]);
 
@@ -48,19 +52,19 @@ export default function TagPage() {
 
   useEffect(() => {
     if (tag) {
-      if (_.lowerCase(tab) === 'latest') {
+      if (_.lowerCase(tab) === 'latest' && latestTopics.length === 0) {
         getLatests(1);
         setSelectedIndex(1);
-      } else if (_.lowerCase(tab) === 'best') {
+      } else if (_.lowerCase(tab) === 'best' && bestTopics.length === 0) {
         getBests(1);
         setSelectedIndex(2);
-      } else {
+      } else if(latestTopics.length === 0){
         getTrendingTopics();
         setSelectedIndex(0);
       }
       dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
-  }, [tag, tab]);
+  }, [tag,tab]);
 
   useEffect(() => {
     if (_.lowerCase(tab) === 'latest') {
@@ -70,18 +74,15 @@ export default function TagPage() {
     } else {
       setPosts(trendingTopics);
     }
-    
-  }, [latestTopics, bestTopics, trendingTopics]);
-
+  }, [latestTopics, bestTopics, trendingTopics,tab]);
 
   return (
     <div>
       <HeadContent>
         <title>Opinate</title>
         <meta name="description" content="Opinate" />
-        
       </HeadContent>
-      <Layout >
+      <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 py-4 lg:py-0">
           <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
@@ -136,104 +137,122 @@ export default function TagPage() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        publication={post.publication}
-                        key={post._id}
-                        normalMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.excerpt}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        actionMenu
-                        bookmarkList={bookmarkLists}
-                        story={post}
-                        bookmarks={bookmarks}
-                        optionButtons={{
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: user?._id,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
+                    {trendingLoading && _.size(posts) === 0 ? (
+                      <ClipLoader className="mt-5" color="#9333ea" size={80} />
+                    ) : (
+                      posts.map((post) => (
+                        <PostCard
+                          publication={post.publication}
+                          key={post._id}
+                          normalMenu
+                          authorUrl={`/${post.username}`}
+                          authorName={post.username}
+                          authorImage={post.userProfilePicture}
+                          storyUrl={`/story/${post.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            post.createdAt
+                          ).toRelative()}
+                          title={post.title}
+                          infoText={post.excerpt}
+                          badgeName={_.first(post.categoryNames)}
+                          min={post.estimatedReadingTime}
+                          images={_.first(post.storyImages)}
+                          actionMenu
+                          bookmarkList={bookmarkLists}
+                          story={post}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user?._id,
+                                  storyId: post._id,
+                                  reportedUserId: post.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))
+                    )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        publication={post.publication}
-                        key={post._id}
-                        normalMenu
-                        actionMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.excerpt}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        bookmarkList={bookmarkLists}
-                        story={post}
-                        bookmarks={bookmarks}
-                        optionButtons={{
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: user?._id,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
+                    {latestLoading && _.size(posts) === 0 ? (
+                      <ClipLoader className="mt-5" color="#9333ea" size={80} />
+                    ) : (
+                      posts.map((post) => (
+                        <PostCard
+                          publication={post.publication}
+                          key={post._id}
+                          normalMenu
+                          actionMenu
+                          authorUrl={`/${post.username}`}
+                          authorName={post.username}
+                          authorImage={post.userProfilePicture}
+                          storyUrl={`/story/${post.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            post.createdAt
+                          ).toRelative()}
+                          title={post.title}
+                          infoText={post.excerpt}
+                          badgeName={_.first(post.categoryNames)}
+                          min={post.estimatedReadingTime}
+                          images={_.first(post.storyImages)}
+                          bookmarkList={bookmarkLists}
+                          story={post}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user?._id,
+                                  storyId: post._id,
+                                  reportedUserId: post.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))
+                    )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {posts.map((post) => (
-                      <PostCard
-                        publication={post.publication}
-                        key={post._id}
-                        noActiveBookmark
-                        normalMenu
-                        authorUrl={`/${post.username}`}
-                        authorName={post.username}
-                        authorImage={post.userProfilePicture}
-                        storyUrl={`/story/${post.storySlug}`}
-                        timeAgo={DateTime.fromISO(post.createdAt).toRelative()}
-                        title={post.title}
-                        infoText={post.excerpt}
-                        badgeName={_.first(post.categoryNames)}
-                        min={post.estimatedReadingTime}
-                        images={_.first(post.storyImages)}
-                        actionMenu
-                        bookmarkList={bookmarkLists}
-                        story={post}
-                        bookmarks={bookmarks}
-                        optionButtons={{
-                          report: () =>
-                            dispatch(
-                              reportActions.reportStoryRequest({
-                                userId: user?._id,
-                                storyId: post._id,
-                                reportedUserId: post.user,
-                              })
-                            ),
-                        }}
-                      />
-                    ))}
+                    {bestLoading && _.size(posts) === 0 ? (
+                      <ClipLoader className="mt-5" color="#9333ea" size={80} />
+                    ) : (
+                      posts.map((post) => (
+                        <PostCard
+                          publication={post.publication}
+                          key={post._id}
+                          noActiveBookmark
+                          normalMenu
+                          authorUrl={`/${post.username}`}
+                          authorName={post.username}
+                          authorImage={post.userProfilePicture}
+                          storyUrl={`/story/${post.storySlug}`}
+                          timeAgo={DateTime.fromISO(
+                            post.createdAt
+                          ).toRelative()}
+                          title={post.title}
+                          infoText={post.excerpt}
+                          badgeName={_.first(post.categoryNames)}
+                          min={post.estimatedReadingTime}
+                          images={_.first(post.storyImages)}
+                          actionMenu
+                          bookmarkList={bookmarkLists}
+                          story={post}
+                          bookmarks={bookmarks}
+                          optionButtons={{
+                            report: () =>
+                              dispatch(
+                                reportActions.reportStoryRequest({
+                                  userId: user?._id,
+                                  storyId: post._id,
+                                  reportedUserId: post.user,
+                                })
+                              ),
+                          }}
+                        />
+                      ))
+                    )}
                   </Tab.Panel>
                 </Tab.Panels>
               </Tab.Group>
