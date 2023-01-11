@@ -46,6 +46,7 @@ function MyApp({ Component, pageProps }) {
   });
 
   const getBookmarksAndLists = (user) => {
+    console.log('here')
     dispatch(
       getUserBookmarkListsRequest({
         username: user.username,
@@ -136,7 +137,7 @@ function MyApp({ Component, pageProps }) {
     if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
     }
-  }, [router.asPath, sessionUser]);
+  }, [router.asPath]);
 
   useEffect(() => {
     if (publicationName) {
