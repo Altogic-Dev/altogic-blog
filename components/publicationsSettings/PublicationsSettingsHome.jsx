@@ -144,10 +144,10 @@ export default function PublicationsSettingsHome({
 
   return (
     <>
-      <div className="mt-12">
+      <div className="mt-12 ">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-center pb-6 mb-6 border-b border-gray-200 divide-x divide-gray-200">
-            <div className="flex items-center gap-5 px-5">
+          <div className="grid grid-cols-2 gap-x-36 md:flex md:gap-x-0 items-center justify-center pb-6 mb-6 border-b border-gray-200 divide-x divide-gray-200 ">
+            <div className="flex items-center gap-5 " >
               <span className="inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
                 Layout
               </span>
@@ -221,7 +221,7 @@ export default function PublicationsSettingsHome({
                 Both
               </button>
             </div>
-            <div className="flex items-center gap-5 px-5">
+            <div className="flex items-center gap-5 px-5 ">
               <span className="inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
                 Alignment
               </span>

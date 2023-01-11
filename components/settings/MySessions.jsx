@@ -26,6 +26,7 @@ export default function MySessions() {
   }, [loading]);
 
   const logout = () => {
+
     dispatch(authActions.logoutRequest());
   };
 

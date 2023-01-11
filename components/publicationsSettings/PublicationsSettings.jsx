@@ -131,7 +131,7 @@ export default function PublicationsSettings({ isCreate }) {
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 my-8 lg:my-[60px]">
           <div className="flex flex-col gap-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between w-full">
-              <h1 className="text-slate-700 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
+              <h1 className="text-slate-700 text-3xl md:text-4xl xl:text-5xl font-bold tracking-md break-words">
                 {isCreate
                   ? 'New Publication'
                   : `${_.get(publication, 'name')} settings`}

@@ -69,7 +69,6 @@ export default function AligmentPublicationLayout({
     if (!user) setUser(sessionUser);
   }, [user]);
 
-  console.log(bgImage)
   return (
     <>
       <div
@@ -95,7 +94,7 @@ export default function AligmentPublicationLayout({
         {['title', 'both'].includes(layout) ? (
           <div
             className={classNames(
-              'flex flex-col max-w-screen-xl px-auto px-4 lg:px-8',
+              'flex flex-col max-w-screen-xl px-auto px-4 lg:px-8 overflow-hidden',
               isCentered ? 'justify-center items-center' : null,
               layout === 'both' ? 'mt-[-50px]' : null
             )}
@@ -104,7 +103,7 @@ export default function AligmentPublicationLayout({
               <img className="w-[250px] text-center" src={logo} alt="" />
             )}
             <h1
-              className="text-slate-600 max-w-4xl text-5xl tracking-md mt-2"
+              className="text-slate-600 max-w-4xl text-5xl tracking-md mt-2 break-words  w-60 md:w-full"
               style={{ color }}
             >
               {title}
