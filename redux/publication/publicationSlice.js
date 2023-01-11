@@ -355,6 +355,7 @@ export const publicationSlice = createSlice({
       state.isLoading = true;
     },
     updatePublicationHomeLayoutSuccess(state, action) {
+      console.log(action.payload)
       state.homeLayout = action.payload;
       ToastMessage.success('Publication layout updated successfully');
       state.isLoading = false;
