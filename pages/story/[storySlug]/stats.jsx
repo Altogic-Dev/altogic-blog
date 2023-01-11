@@ -51,30 +51,22 @@ export default function StatsBlogPost() {
   );
 
   const getStoryStatisticsPeriodically = (date, type) => {
-    if (externalViewsPeriodically[type] === undefined) {
-      dispatch(
-        statsActions.getStoryStatisticsPeriodicallyRequest({
-          storySlug,
-          date,
-          type,
-        })
-      );
-    } else {
-      setViewDateTypeState(type);
-    }
+    dispatch(
+      statsActions.getStoryStatisticsPeriodicallyRequest({
+        storySlug,
+        date,
+        type,
+      })
+    );
   };
   const getStoryReadingTimePeriodically = (date, type) => {
-    if (storyTotalReadTimePeriodically[type] === undefined) {
-      dispatch(
-        statsActions.getStoryReadingTimePeriodicallyRequest({
-          storySlug,
-          date,
-          type,
-        })
-      );
-    } else {
-      setReadingDateTypeState(type);
-    }
+    dispatch(
+      statsActions.getStoryReadingTimePeriodicallyRequest({
+        storySlug,
+        date,
+        type,
+      })
+    );
   };
   const getStoryStatistics = () => {
     dispatch(statsActions.getStoryStatisticsRequest(storySlug));
@@ -195,14 +187,13 @@ export default function StatsBlogPost() {
     []
   );
 
+  console.log(viewDateTypeState)
+
   return (
     <div>
       <HeadContent>
         <title>Opinate Stats Blog Post</title>
-        <meta
-          name="description"
-          content="Opinate Stats Blog Post"
-        />
+        <meta name="description" content="Opinate Stats Blog Post" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
@@ -292,7 +283,11 @@ export default function StatsBlogPost() {
               <h2 className="text-slate-700 text-2xl sm:text-3xl tracking-md">
                 Views
               </h2>
-              <PeriodButtons selected={viewDateTypeState} dataType="View" onClick={getDataByTime} />
+              <PeriodButtons
+                selected={viewDateTypeState}
+                dataType="View"
+                onClick={getDataByTime}
+              />
             </div>
             <div className="grid lg:grid-cols-[220px,1fr] xl:grid-cols-[280px,1fr] gap-8">
               <div className="flex flex-col gap-7">
@@ -309,6 +304,8 @@ export default function StatsBlogPost() {
                 type={viewDateTypeState}
                 firstData={internalViewsPeriodically[viewDateTypeState]}
                 secondData={externalViewsPeriodically[viewDateTypeState]}
+                isHour={viewDateTypeState?.includes('Hour')}
+
               />
             </div>
           </div>
@@ -318,7 +315,11 @@ export default function StatsBlogPost() {
               <h2 className="text-slate-700 text-2xl sm:text-3xl tracking-md">
                 Member Reading Time
               </h2>
-              <PeriodButtons selected={readingDateTypeState}   dataType="Read" onClick={getDataByTime} />
+              <PeriodButtons
+                selected={readingDateTypeState}
+                dataType="Read"
+                onClick={getDataByTime}
+              />
             </div>
             <div className="grid lg:grid-cols-[220px,1fr] xl:grid-cols-[280px,1fr] gap-8">
               <div className="flex flex-col gap-7">
@@ -331,6 +332,7 @@ export default function StatsBlogPost() {
                 timeUnit={convertTime(periodialTotalReadingTime).split(' ')[1]}
                 type={readingDateTypeState}
                 rawData={storyTotalReadTimePeriodically[readingDateTypeState]}
+                isHour={readingDateTypeState?.includes('Hour')}
               />
             </div>
           </div>

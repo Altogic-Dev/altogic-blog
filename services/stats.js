@@ -8,9 +8,8 @@ const StatsService = {
   getTotalReadsLastXDays(userId, date, dateType) {
     return db
       .model('story_view')
-      .lookup({ field: 'story' })
       .filter(
-        `story.isPublished && createdAt > ${date} && this.author == '${userId}' && isRead==true`
+        `createdAt > ${date} && this.author == '${userId}' && isRead==true`
       )
       .group(
         dateType === '24 Hours'

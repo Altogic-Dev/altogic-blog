@@ -179,6 +179,7 @@ export default function BlogDetail({ ip, story }) {
   }, []);
 
   useUnload((e) => {
+
     if (user) {
       visitStory();
       e.preventDefault();

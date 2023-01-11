@@ -46,6 +46,8 @@ export default function PublicationsStats({ publicationName }) {
     (state) => state.stats.publicationStories
   );
 
+  const [tabIndex, setTabIndex] = useState(0);
+
   const [totalViewsCount, setTotalViewsCount] = useState(0);
   const [totalReadsCount, setTotalReadsCount] = useState(0);
   const [totalLikesCount, setTotalLikesCount] = useState(0);
@@ -54,39 +56,33 @@ export default function PublicationsStats({ publicationName }) {
   const [likesDateTypeState, setLikesDateTypeState] = useState();
   const [page, setPage] = useState(0);
   const getPublicationViewsPeriodically = (date, type) => {
-    if (viewsPeriodically[type] === undefined) {
-      dispatch(
-        statsActions.getPublicationViewsPeriodicallyRequest({
-          publication,
-          date,
-          type,
-        })
-      );
-    }
+    dispatch(
+      statsActions.getPublicationViewsPeriodicallyRequest({
+        publication,
+        date,
+        type,
+      })
+    );
     setViewsDateTypeState(type);
   };
   const getPublicationLikesPeriodically = (date, type) => {
-    if (viewsPeriodically[type] === undefined) {
-      dispatch(
-        statsActions.getPublicationLikesPeriodicallyRequest({
-          publication,
-          date,
-          type,
-        })
-      );
-    }
+    dispatch(
+      statsActions.getPublicationLikesPeriodicallyRequest({
+        publication,
+        date,
+        type,
+      })
+    );
     setLikesDateTypeState(type);
   };
   const getPublicationReadsPeriodically = (date, type) => {
-    if (readsPeriodically[type] === undefined) {
-      dispatch(
-        statsActions.getPublicationReadsPeriodicallyRequest({
-          publication,
-          date,
-          type,
-        })
-      );
-    }
+    dispatch(
+      statsActions.getPublicationReadsPeriodicallyRequest({
+        publication,
+        date,
+        type,
+      })
+    );
     setReadsDateTypeState(type);
   };
   const getPublicationsStoriesStats = (page) => {
@@ -99,12 +95,7 @@ export default function PublicationsStats({ publicationName }) {
   };
 
   useEffect(() => {
-    if (
-      !_.get(readsPeriodically, 'readsDaysToShow') &&
-      !_.get(viewsPeriodically, 'viewDaysToShow') &&
-      !_.get(likesPeriodically, 'likesDaysToShow') &&
-      publication
-    ) {
+    if (publication && tabIndex === 0) {
       getPublicationReadsPeriodically(
         DateTime.local().plus({ month: -1 }).toISODate(),
         '30 Days'
@@ -118,7 +109,7 @@ export default function PublicationsStats({ publicationName }) {
         '30 Days'
       );
     }
-  }, [publication]);
+  }, [publication, tabIndex]);
 
   useEffect(() => {
     if (
@@ -126,7 +117,7 @@ export default function PublicationsStats({ publicationName }) {
       _.get(_.last(publicationStories)) < page
     )
       getPublicationsStoriesStats(page);
-  }, [page, publication]);
+  }, [page, publication, tabIndex]);
 
   useEffect(() => {
     let temp = 0;
@@ -174,7 +165,7 @@ export default function PublicationsStats({ publicationName }) {
           <h1 className="text-slate-700 my-8 md:my-[60px] text-3xl md:text-4xl xl:text-5xl font-bold tracking-md">
             {publicationName} stats
           </h1>
-          <Tab.Group>
+          <Tab.Group onChange={setTabIndex}>
             <Tab.List className="flex items-center gap-4 md:gap-10 h-11 border-b border-gray-300 mb-6">
               <Tab
                 className={({ selected }) =>
