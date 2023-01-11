@@ -43,6 +43,8 @@ export default function PublicationsSettingsHome({
   const sections = featurePage?.sections;
 
   const handleSave = () => {
+    console.log(uploadedFileLink);
+
     dispatch(
       publicationActions.updatePublicationHomeLayoutRequest({
         ...homeLayout,
@@ -412,7 +414,7 @@ export default function PublicationsSettingsHome({
           isCentered={isCentered}
           title={publication?.name}
           content={publication?.description}
-          bgImage={uploadedFileLink}
+          bgImage={uploadedFileLink || homeLayout?.backgroundImage}
           navigations={navigations}
           twitter={publication?.twitter}
           facebook={publication?.facebook}

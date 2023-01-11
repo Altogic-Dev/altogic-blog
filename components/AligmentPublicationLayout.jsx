@@ -69,6 +69,7 @@ export default function AligmentPublicationLayout({
     if (!user) setUser(sessionUser);
   }, [user]);
 
+  console.log(bgImage)
   return (
     <>
       <div
