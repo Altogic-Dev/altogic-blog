@@ -3,40 +3,36 @@ import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
-import { useRouter } from 'next/router';
 import Layout from '@/layouts/Layout';
 import { classNames } from '@/utils/utils';
 import _ from 'lodash';
 
 export default function PublicationsFollowers() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const router = useRouter();
   const dispatch = useDispatch();
   const peoples = useSelector(
     (state) => state.publication.publicationFollowers
   );
-  const publication = useSelector((state) => state.publication.publication);
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
+  );
   const isLoading = useSelector((state) => state.publication.isLoading);
 
-  const publicationId = router.query.id;
-
   const getFollowers = () => {
-    dispatch(publicationActions.getPublicationFollowersRequest(publicationId));
+    dispatch(
+      publicationActions.getPublicationFollowersRequest(publication._id)
+    );
   };
 
   useEffect(() => {
-    getFollowers();
-  }, [peoples, publicationId]);
+    if (publication) getFollowers();
+  }, [publication]);
 
   return (
     <div>
       <HeadContent>
         <title>Opinate Publications Followers</title>
-        <meta
-          name="description"
-          content="Opinate Publications Followers"
-        />
-        
+        <meta name="description" content="Opinate Publications Followers" />
       </HeadContent>
       <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
@@ -85,24 +81,21 @@ export default function PublicationsFollowers() {
                             <div className="flex items-center gap-3">
                               <img
                                 className="w-16 h-16 rounded-full"
-                                src={people.image}
-                                alt={people.name}
+                                src={people?.userProfilePicture}
+                                alt={people?.user?.name}
                               />
                               <div className="flex flex-col">
-                                <span className="text-slate-700 mb-1 text-sm font-medium tracking-sm">
-                                  {people.name}
+                                <span className="text-slate-700 mb-1 text-md font-medium tracking-sm">
+                                  {people?.user?.name}
                                 </span>
-                                <span className="text-slate-500 text-xs tracking-sm">
-                                  {people.desc}
-                                </span>
+                                <span
+                                  className="text-slate-500 text-xs tracking-sm"
+                                  dangerouslySetInnerHTML={{
+                                    __html: people?.userAbout,
+                                  }}
+                                />
                               </div>
                             </div>
-                            <a
-                              href={people.href}
-                              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full tracking-sm text-white bg-purple-600 transition ease-in-out duration-200 hover:bg-purple-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-                            >
-                              Follow
-                            </a>
                           </li>
                         ))}
                       </ul>

@@ -4,7 +4,8 @@ const PublicationService = {
   getPublicationFollowers(publicationId) {
     return db
       .model('publication_follower_connection')
-      .filter(`publication == '${publicationId}`)
+      .filter(`publication == '${publicationId}'`)
+      .lookup({ field: 'user' })
       .get();
   },
 

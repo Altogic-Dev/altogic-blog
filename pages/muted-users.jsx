@@ -11,11 +11,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export default function MutedUsers() {
   const dispatch = useDispatch();
-
+  const muteIsLoading = useSelector((state) => state.blockConnection.isLoading);
   const blockedUsers = useSelector(
     (state) => state.blockConnection.blockedUsers
   );
 
+  const [isLoading, setIsLoading] = useState(true);
   const PAGE_LIMIT = 10;
   const [page, setPage] = useState(1);
 
@@ -36,16 +37,20 @@ export default function MutedUsers() {
     }
   };
 
+  useEffect(() => {
+    if (!muteIsLoading) {
+      setIsLoading(false);
+    } else {
+      setIsLoading(true);
+    }
+  }, [muteIsLoading]);
   return (
     <div>
       <HeadContent>
         <title>Opinate Notifications</title>
-        <meta
-          name="description"
-          content="Opinate Notifications"
-        />
+        <meta name="description" content="Opinate Notifications" />
       </HeadContent>
-      <Layout>
+      <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="py-8 lg:py-10 lg:px-8">
@@ -66,7 +71,6 @@ export default function MutedUsers() {
                               person?._id
                             )
                           );
-
                         }}
                       />
                     ))}

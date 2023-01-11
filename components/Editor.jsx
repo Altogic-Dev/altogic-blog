@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import QuillImageDropAndPaste from 'quill-image-drop-and-paste';
 // import dynamic from 'next/dynamic';
 import FileService from '@/services/file';
 import _ from 'lodash';
@@ -122,6 +123,7 @@ export default function Editor({
   };
   const debounceFn = useCallback(_.debounce(handleDebounceFn, 200), []);
 
+ 
   useEffect(() => {
     const bindings = {
       code: {
@@ -134,13 +136,18 @@ export default function Editor({
         },
       },
     };
+    Quill.register('modules/imageDropAndPaste', QuillImageDropAndPaste);
 
     const quill = new Quill('#editor-container', {
       // scrollingContainer: document.documentElement,
       modules: {
+        imageDropAndPaste: {
+          handler: imageHandler,
+        },
         syntax: {
           highlight: (text) => hljs.highlightAuto(text).value,
         },
+
         clipboard: {
           matchVisual: false,
         },
@@ -161,7 +168,6 @@ export default function Editor({
     Quill.register(TweetBlot);
     Quill.register(VideoBlot);
     Quill.register(CustomCodeBlot, true);
-
     quill.addContainer(tooltip.current);
     quill.addContainer(sidebar.current);
     quill.addContainer(input.current);
@@ -227,6 +233,12 @@ export default function Editor({
       sidebar.current.style.display = 'none';
       sidebar.current.classList.remove('active');
     });
+    quill.clipboard.addMatcher('img', (node, delta) => {
+      console.log(node, delta);
+      const url = 'http://www.placehold.it/666x333.jpg';
+
+      return new Delta().insert({ image: url });
+    });
   }, []);
 
   useEffect(() => {
@@ -254,6 +266,16 @@ export default function Editor({
           range.index + leaf.domNode.length
         );
       } else {
+        // if (
+        //   quillInstance.getLeaf(range.index)[0]?.parent?.attributes?.attributes
+        //     .token?.keyName === 'hljs'
+        // ) {
+        //   quillInstance.getLeaf(range.index)[0].parent.domNode = new Inline(
+        //     '',
+        //     '',
+        //     ''
+        //   );
+        // }
         quillInstance.removeFormat(
           range.index,
           range.length,
@@ -361,13 +383,31 @@ export default function Editor({
     quillInstance.focus();
   };
   const handleFormat = (type, param) => {
-    
     quillInstance.format(type, param);
   };
   const addCodeBlock = () => {
     quillInstance.format('code-block', true);
   };
+  async function imageHandler(imageDataUrl, type, imageData) {
+    const file = imageData.toFile();
 
+
+    const position = 0;
+    quillInstance.insertText(position, 'Uploading Image. Please wait...', {
+      size: '2rem',
+    });
+    const res = await uploadImage(file, quillInstance);
+
+    quillInstance.insertEmbed(
+      0,
+      'image',
+      {
+        alt: 'Quill Cloud',
+        url: res,
+      },
+      Quill.sources.USER
+    );
+  }
   return (
     <div className="text-editor">
       <div ref={tooltip} id="tooltip-controls">

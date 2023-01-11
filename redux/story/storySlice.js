@@ -140,7 +140,7 @@ export const storySlice = createSlice({
     },
     createReplySuccess(state, action) {
       state.replies = [...state.replies, action.payload];
-      state.replyCount += 1;
+      state.story.commentCount += 1;
       state.isLoading = false;
     },
     createReplyFailure(state, action) {
@@ -171,7 +171,7 @@ export const storySlice = createSlice({
       state.replies = state.replies.filter(
         (reply) => reply._id !== action.payload._id
       );
-      state.replyCount -= 1;
+      state.story.commentCount -= 1;
       state.deletingIsLoading = false;
       state.replyLoading = false;
     },
