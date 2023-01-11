@@ -295,8 +295,8 @@ export default function Sections({
         topics.find((topic) => topic.topic === section?.selectedTopic)
       );
       setEnabled(section?.isShowTitle);
-      setContainerScreen(section?.isFullContainerGrid);
-      setFullScreen(!section?.isFullContainerGrid);
+      setContainerScreen(!section?.isFullContainerGrid);
+      setFullScreen(section?.isFullContainerGrid);
 
       setImageCard(section?.isFullStoryGrid);
       setNormalCard(!section?.isFullStoryGrid);
@@ -313,7 +313,7 @@ export default function Sections({
     const section = {
       isShowTitle: enabled,
       sectionTitle,
-      isFullContainerGrid: containerScreen,
+      isFullContainerGrid: fullScreen,
       isFullStoryGrid: imageCard,
       designType: designTypes[selectedIndex],
       sectionType: selectedSectionBar.isTag ? 'topic' : 'story',

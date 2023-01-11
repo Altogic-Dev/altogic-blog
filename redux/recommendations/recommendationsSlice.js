@@ -25,9 +25,12 @@ export const recommendationsSlice = createSlice({
     },
     getWhoToFollowSuccess(state, action) {
       state.whoToFollowLoading = false;
-      state.whoToFollow = [...state.whoToFollow, ...action.payload.result];
+      if (action.payload.page === 1)
+        state.whoToFollow = action.payload.result;
+      else
+        state.whoToFollow = [...state.whoToFollow, ...action.payload.result];
       state.whoToFollowInfo = action.payload.countInfo
-      
+
     },
     getWhoToFollowFailure(state, action) {
       state.whoToFollowLoading = false;

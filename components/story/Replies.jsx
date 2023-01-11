@@ -47,6 +47,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const [replyEditQuill, setReplyEditQuill] = useState();
   const [editText, setEditText] = useState();
   const getReplies = () => {
+    console.log(user)
     dispatch(
       storyActions.getStoryRepliesRequest({
         story: story._id,

@@ -9,7 +9,6 @@ import { storyActions } from '@/redux/story/storySlice';
 import 'highlight.js/styles/tokyo-night-dark.css';
 import { DateTime } from 'luxon';
 import 'react-toastify/dist/ReactToastify.css';
-import { authActions } from '@/redux/auth/authSlice';
 import { useEffect, useState } from 'react';
 import {
   getUserBookmarkListsRequest,
@@ -17,6 +16,7 @@ import {
 } from '@/redux/bookmarks/bookmarkSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { publicationActions } from '@/redux/publication/publicationSlice';
+import AuthService from '@/services/auth';
 import { IconProvider, DEFAULT_ICON_CONFIGS } from '@icon-park/react';
 import { wrapper } from '../redux/store';
 import '@icon-park/react/styles/index.css';
@@ -124,7 +124,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     if (sessionUser?.username && !isMounted) {
-      dispatch(authActions.updateUserSuccess());
+      AuthService.getUserFromDb();
       checkFollowing();
       setIsMounted(true);
       getMutedUsers(sessionUser);
@@ -136,7 +136,7 @@ function MyApp({ Component, pageProps }) {
     if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
     }
-  }, [router.asPath,sessionUser]);
+  }, [router.asPath, sessionUser]);
 
   useEffect(() => {
     if (publicationName) {

@@ -47,17 +47,19 @@ function PublicationTabFeature({ tab }) {
       {_.map(sections, (section) => {
         if (section?.designType === 'grid') {
           return (
-            <div className="mb-10 flex flex-col overflow-hidden text-ellipsis md:min-w-[100vw] lg:min-w-[75vw] px-8 max-w-screen-xl w-full mx-auto">
+            <div className="mb-10 flex flex-col overflow-hidden text-ellipsis md:min-w-[100vw] lg:min-w-[75vw] px-8  w-full mx-auto">
               {_.get(section, 'sectionTitle') && (
-                <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
+                <h2 className={`text-slate-500 mb-4 text-2xl font-semibold ${section?.isFullContainerGrid ? 'w-[95vw]' : ""}`}>
                   {_.get(section, 'sectionTitle')}
                 </h2>
               )}
               {_.map(getSlicedStories(section?.stories), (stories) => (
                 <div
                   key={_.first(stories)?._id}
-                  className={`grid grid-cols-1 md:grid-cols-2
-                  ${  section?.isFullContainerGrid ? 'lg:grid-cols-2' : 'lg:grid-cols-3'} gap-8`}
+                  className={`grid grid-cols-1 md:grid-cols-${
+                    _.size(stories) > 1 ? '2' : '1'
+                  } lg:grid-cols-${_.size(stories)}
+                  } gap-8`}
                 >
                   {_.map(stories, (story) =>
                     section?.isFullStoryGrid ? (

@@ -20,7 +20,7 @@ export default function WhoToFollow({
 
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
-
+  const [isMounted, setIsMounted] = useState(false);
   const [page, setPage] = useState(whoToFollowInfo?.currentPage || 1);
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
@@ -72,10 +72,10 @@ export default function WhoToFollow({
   };
 
   useEffect(() => {
-    if (!count) {
+    if (!count && !isMounted) {
+      setIsMounted(true);
       handleSeeMoreSuggestions();
     }
-
     document.body.addEventListener('click', (e) => {
       if (e.target.id !== 'who-to-follow-modal' && whoToFollowDataModal) {
         setwhoToFollowDataModal(false);
