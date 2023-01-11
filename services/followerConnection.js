@@ -32,18 +32,21 @@ const FollowerConnectionService = {
   },
 
   getFollowingUsers(sessionUserId, userId, page = 1, limit = 5) {
-    return db
-      .model('follower_connection')
-      .filter(`followerUser == '${userId}'`)
-      .lookup({
-        modelName: 'follower_connection',
-        name: 'isFollowing',
-        query: `this.followingUser == lookup.followingUser && lookup.followerUser == '${sessionUserId}'`,
-      })
-      .sort('createdAt', 'desc')
-      .page(page)
-      .limit(limit)
-      .get(true);
+    return endpoint.get(`/user/${userId}/followings`, {
+      sessionUserId, page, limit
+    })
+    // return db
+    //   .model('follower_connection')
+    //   .filter(`followerUser == '${userId}'`)
+    //   .lookup({
+    //     modelName: 'follower_connection',
+    //     name: 'isFollowing',
+    //     query: `this.followingUser == lookup.followingUser && lookup.followerUser == '${sessionUserId}'`,
+    //   })
+    //   .sort('createdAt', 'desc')
+    //   .page(page)
+    //   .limit(limit)
+    //   .get(true);
   },
   getSubscriptions(userId, page = 1, limit = 5) {
     return db

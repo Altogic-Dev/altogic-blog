@@ -114,31 +114,36 @@ export const followerConnectionSlice = createSlice({
     },
     getFollowingUsersSuccess(state, action) {
 
-      state.followingsData[action.payload.username] = {
-        userFollowings: [...(_.get(state.followingsData, `${action.payload.username}.userFollowings`) ?? []), ...action.payload.data],
-        count: action.payload.info.count,
-        totalPages: action.payload.info.totalPages,
-        page: action.payload.page
-      }
-      state.followingsData[action.payload.username].userFollowings = _.uniqBy(state.followingsData[action.payload.username].userFollowings, item => item.followingUser);
-      if (action.payload.sessionUser) {
+      try {
+        state.followingsData[action.payload.username] = {
+          userFollowings: [...(_.get(state.followingsData, `${action.payload.username}.userFollowings`) ?? []), ...action.payload.data],
+          count: action.payload.info.count,
+          totalPages: action.payload.info.totalPages,
+          page: action.payload.page
+        }
+        state.followingsData[action.payload.username].userFollowings = _.uniqBy(state.followingsData[action.payload.username].userFollowings, item => item.followingUser);
+        if (action.payload.sessionUser) {
 
-        state.myFollowings = [...state.myFollowings, ...action.payload.data]
-      }
-      else {
-        action.payload.data.forEach(item => {
-          if (item.isFollowing) {
-            const followingUser = {
-              followingUser: item.followingUser,
-              followingUsername: item.followingUsername
+          state.myFollowings = [...state.myFollowings, ...action.payload.data]
+        }
+        else {
+          action.payload.data.forEach(item => {
+            if (item.isFollowing) {
+              const followingUser = {
+                followingUser: item.followingUser,
+                followingUsername: item.followingUsername
+              }
+              state.myFollowings.push(followingUser)
             }
-            state.myFollowings.push(followingUser)
-          }
-        })
-      }
-      state.isUnfollowed = false
+          })
+        }
+        state.isUnfollowed = false
 
-      state.isLoading = false
+        state.isLoading = false
+
+      } catch (error) {
+        console.log(error)
+      }
     },
 
 
