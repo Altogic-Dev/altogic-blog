@@ -183,7 +183,7 @@ export default function HeaderMenu() {
                   className={`inline-flex items-center justify-center flex-shrink-0 w-10 h-10 rounded-full text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 ${
                     router.pathname !== '/write-a-story'
                       ? 'bg-purple-600 hover:bg-purple-700'
-                      : 'bg-gray-600 hover:bg-gray-700'
+                      : 'bg-purple-900 hover:bg-purple-900'
                   }`}
                 >
                   <PencilIcon className="w-5 h-5" />

@@ -128,12 +128,15 @@ function* getFollowingUsersSaga({ payload: { username, userId, page, limit } }) 
     );
 
     if (errors) throw errors;
-    if (_.isArray(data.data)) {
+    if (_.isArray(data.result)) {
       yield put(
         followerConnectionActions.getFollowingUsersSuccess({
           sessionUser: userId === sessionUserId,
-          data: data.data,
-          info: data.info,
+          data: data.result.map((user) => ({
+              ...user,
+              isFollowing: user.follower_connection
+            })),
+          info: data.countInfo,
           username,
           page,
         })

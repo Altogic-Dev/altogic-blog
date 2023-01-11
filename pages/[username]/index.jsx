@@ -153,7 +153,6 @@ export default function ProfilePage() {
   }, [profileUser?.username, sessionUser]);
   useEffect(() => {
     if (
-      sessionUser &&
       profileUser &&
       (!userFollowingsCount ||
         (_.size(userFollowings) < FOLLOWING_PAGE_LIMIT * followingPage &&
@@ -200,7 +199,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (sessionUser && profileUser) {
-      console.log(sessionUser?._id === profileUser?._id);
       setIsMyProfile(sessionUser?._id === profileUser?._id);
     }
   }, [sessionUser, profileUser]);
@@ -238,7 +236,14 @@ export default function ProfilePage() {
         !authLoading &&
         profileUser?._id !== sessionUser?._id
     );
-  }, [isSubscribed, authLoading, subcribeLoading, isMyProfile,sessionUser, profileUser]);
+  }, [
+    isSubscribed,
+    authLoading,
+    subcribeLoading,
+    isMyProfile,
+    sessionUser,
+    profileUser,
+  ]);
 
   return (
     <div>
@@ -428,7 +433,7 @@ export default function ProfilePage() {
               ) : (
                 <Sidebar
                   following={{
-                    followings: sessionUser ? _.take(userFollowings, 5) : null,
+                    followings: _.take(userFollowings, 5),
                     count: userFollowingsCount,
                     seeAllButton: toggleFollowingsModal,
                   }}
