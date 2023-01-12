@@ -134,10 +134,10 @@ function MyApp({ Component, pageProps }) {
   }, [sessionUser]);
 
   useEffect(() => {
-    if (router.isReady && _.isEmpty(bookmarkLists) && sessionUser) {
+    if (_.isEmpty(bookmarkLists) && sessionUser) {
       getBookmarksAndLists(sessionUser);
     }
-  }, [router.asPath]);
+  }, [sessionUser]);
 
   useEffect(() => {
     if (publicationName) {

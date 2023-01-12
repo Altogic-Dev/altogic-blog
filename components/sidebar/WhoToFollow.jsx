@@ -20,7 +20,6 @@ export default function WhoToFollow({
 
   const [whoToFollowDataModal, setwhoToFollowDataModal] = useState(false);
   const [people, setPeople] = useState([]);
-  const [isMounted, setIsMounted] = useState(false);
   const [page, setPage] = useState(whoToFollowInfo?.currentPage || 1);
   const whoToFollowData = useSelector(
     (state) => state.recommendations.whoToFollow
@@ -48,6 +47,7 @@ export default function WhoToFollow({
   };
 
   const getWhoToFollow = (page, size) => {
+    console.log(page);
     dispatch(
       recommendationsActions.getWhoToFollowRequest({ page, limit: size })
     );
@@ -60,7 +60,7 @@ export default function WhoToFollow({
   const handleSeeMoreSuggestions = () => {
     if (Tag && _.isNil(topicWritersData)) {
       getTopicWriters(Tag);
-    } else if (whoToFollow && whoToFollowData.length <= size) {
+    } else if (whoToFollow) {
       getWhoToFollow(1, size);
     } else if (topWriters && topWritersData.length <= size) {
       getTopWriters();
@@ -72,10 +72,8 @@ export default function WhoToFollow({
   };
 
   useEffect(() => {
-    if (!count && !isMounted) {
-      setIsMounted(true);
-      handleSeeMoreSuggestions();
-    }
+    handleSeeMoreSuggestions();
+    setPage(1);
     document.body.addEventListener('click', (e) => {
       if (e.target.id !== 'who-to-follow-modal' && whoToFollowDataModal) {
         setwhoToFollowDataModal(false);
@@ -84,7 +82,14 @@ export default function WhoToFollow({
     return () => {
       document.body.removeEventListener('click', () => {});
     };
-  }, [Tag]);
+  }, []);
+
+  useEffect(
+    () => () => {
+      console.log('unmounting');
+    },
+    []
+  );
 
   useEffect(() => {
     if (topicWriters) {
@@ -97,7 +102,12 @@ export default function WhoToFollow({
   }, [whoToFollowData, topicWritersData, topWritersData]);
 
   useEffect(() => {
-    if (whoToFollow && _.size(people) < size * page && _.size(people) < count) {
+    if (
+      page > 1 &&
+      whoToFollow &&
+      _.size(whoToFollowData) < size * page &&
+      _.size(whoToFollowData) < count
+    ) {
       getWhoToFollow(page, size);
     }
   }, [page]);
