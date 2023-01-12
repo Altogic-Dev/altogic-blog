@@ -1,4 +1,5 @@
 import AuthService from '@/services/auth';
+import localStorageUtil from '@/utils/localStorageUtil';
 import ToastMessage from '@/utils/toast';
 import {
   takeEvery,
@@ -244,7 +245,10 @@ export function* updateProfileUserSaga(newUser) {
 }
 function* logoutSaga() {
   yield call(AuthService.logout);
+  localStorageUtil.set(localStorageUtil.SELECTED_PUBLICATION, null);
+
   yield put(authActions.logoutSuccess());
+
 }
 function* changeEmailSaga({ payload }) {
   try {

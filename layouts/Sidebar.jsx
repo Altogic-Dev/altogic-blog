@@ -2,7 +2,6 @@ import WhoToFollow from '@/components/sidebar/WhoToFollow';
 import StoriesYouFollow from '@/components/sidebar/StoriesYouFollow';
 import PopularTopics from '@/components/sidebar/PopularTopics';
 import PopularStories from '@/components/sidebar/PopularStories';
-import MobilePopularStories from '@/components/sidebar/MobilePopularStories';
 import Following from '@/components/sidebar/Following';
 import TopicMatch from '@/components/sidebar/TopicMatch';
 import Profile from '@/components/sidebar/Profile';
@@ -22,7 +21,6 @@ export default function Sidebar({
   storiesYouFollow,
   popularTopics,
   popularStories,
-  mobilePopularStories,
   profile,
   following,
   relatedTopics,
@@ -65,7 +63,7 @@ export default function Sidebar({
           seeAllButton={following?.seeAllButton}
         />
       )}
-      {mobilePopularStories && <MobilePopularStories />}
+      {/* {mobilePopularStories && <MobilePopularStories />} */}
       {storiesYouFollow && (
         <StoriesYouFollow
           storiesYouFollow={storiesYouFollow}

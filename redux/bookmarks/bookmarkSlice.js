@@ -57,7 +57,7 @@ export const bookmarkSlice = createSlice({
     },
     getUserBookmarkListsSuccess(state, action) {
       state.bookmarkLists[action.payload.username] = {
-        bookmarkLists: action.payload.myLists ? [...(_.get(state.bookmarkLists, `${action.payload.username}.bookmarkLists`) ?? []), ...action.payload.data] : action.payload.data,
+        bookmarkLists: !action.payload.myLists ? [...(_.get(state.bookmarkLists, `${action.payload.username}.bookmarkLists`) ?? []), ...action.payload.data] : action.payload.data,
         totalPages: action.payload.info.totalPages,
         page: action.payload.info.currentPage,
         count: action.payload.info.count

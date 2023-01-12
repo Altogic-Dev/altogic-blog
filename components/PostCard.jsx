@@ -53,7 +53,7 @@ export default function PostCard({
       <div className="flex flex-col-reverse justify-between sm:flex-row md:items-center gap-4 md:gap-6 pt-8 md:pt-10 b-bottom-2  ">
         <div className="flex-grow-0">
           <Link href={authorUrl}>
-            <a className="flex items-center gap-3 mb-4 md:mb-8  ">
+            <a className="flex items-start md:items-center gap-3 mb-4 mt-4 md:mb-8  ">
               <div className="">
                 <span className="sr-only">{authorName}</span>
                 <Image
@@ -74,13 +74,13 @@ export default function PostCard({
                 >
                   &middot;
                 </span>
-                <span className="text-slate-500 text-sm tracking-sm">
+                <span className="text-slate-500 text-sm tracking-sm w-20">
                   {timeAgo}
                 </span>
                 {pinnedStory && <Pin className="text-purple-500" />}
               </div>
               {publication && (
-                <span className="text-slate-400 text-base tracking-sm cursor-default">
+                <span className="text-slate-400 text-base tracking-sm cursor-default w-40 md:w-full break-words">
                   Published in
                   <Link href={`/publication/${publication.name}`}>
                     <a className="text-purple-400 text-base tracking-sm cursor-pointer">

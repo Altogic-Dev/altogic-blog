@@ -56,7 +56,7 @@ export default function Search({
   }, []);
 
   return (
-    <div className="hidden lg:block">
+    <div className="">
       <div>
         <div className="rounded-md shadow-sm">
           <input
