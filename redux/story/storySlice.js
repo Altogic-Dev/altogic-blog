@@ -433,15 +433,18 @@ export const storySlice = createSlice({
           ...state.userStoriesInfo,
           count: state.userStoriesInfo.count + 1,
         };
-        state.userDraftStoriesInfo = {
-          ...state.userDraftStoriesInfo,
-          count: state.userDraftStoriesInfo.count - 1,
-        };
         state.userStories = _.orderBy(
           [...state.userStories, action.payload],
           ['pinnedStory', 'createdAt'],
           ['desc', 'desc']
         );
+      }
+      if (!_.isNil(state.userDraftStoriesInfo)) {
+
+        state.userDraftStoriesInfo = {
+          ...state.userDraftStoriesInfo,
+          count: state.userDraftStoriesInfo.count - 1,
+        };
         state.userDraftStories = state.userDraftStories.filter(
           (story) => story._id !== action.payload._id
         );

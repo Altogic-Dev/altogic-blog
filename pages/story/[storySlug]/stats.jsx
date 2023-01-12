@@ -187,7 +187,6 @@ export default function StatsBlogPost() {
     []
   );
 
-  console.log(viewDateTypeState)
 
   return (
     <div>

@@ -45,7 +45,6 @@ export default function MyStories() {
     Math.ceil(_.size(userStories) / PAGE_LIMIT) || 1
   );
 
-  console.log(publishedPage)
   const copyToClipboard = () => {
     const basePath = window.location.origin;
     const profileUrl = `${basePath}/${_.get(user, 'username')}`;
@@ -80,8 +79,6 @@ export default function MyStories() {
   }, [draftPage]);
 
   const getUserStories = useCallback(() => {
-    console.log(publishedPage);
-
     dispatch(
       storyActions.getUserStoriesRequestNextPage({
         page: publishedPage,

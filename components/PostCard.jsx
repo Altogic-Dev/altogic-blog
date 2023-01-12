@@ -74,7 +74,7 @@ export default function PostCard({
                 >
                   &middot;
                 </span>
-                <span className="text-slate-500 text-sm tracking-sm w-20">
+                <span className="text-slate-500 text-sm tracking-sm w-24">
                   {timeAgo}
                 </span>
                 {pinnedStory && <Pin className="text-purple-500" />}

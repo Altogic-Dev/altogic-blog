@@ -47,7 +47,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const [replyEditQuill, setReplyEditQuill] = useState();
   const [editText, setEditText] = useState();
   const getReplies = () => {
-    console.log(user)
     dispatch(
       storyActions.getStoryRepliesRequest({
         story: story._id,
@@ -224,7 +223,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     quillInstance.format('italic', true);
   };
 
-  console.log(replies)
   return (
     <Transition.Root show={slideOvers} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={setSlideOvers}>

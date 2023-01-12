@@ -313,6 +313,7 @@ export default function PublicationSettingsInfo({
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
             General
           </h2>
+       
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <div>

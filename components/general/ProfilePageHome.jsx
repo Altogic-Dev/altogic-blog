@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useEffect, useState, useRef } from 'react';
+import React, {  useState, useRef } from 'react';
 import { DateTime } from 'luxon';
 import { useRouter } from 'next/router';
 import _ from 'lodash';
@@ -12,17 +12,16 @@ import PostCard from '../PostCard';
 import DeleteStoryModal from '../DeleteStoryModal';
 import Button from '../basic/button';
 
-function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
+function ProfilePageHome({ userId, isMyProfile, setPage }) {
   const dispatch = useDispatch();
   const router = useRouter();
+
   const userStories = useSelector((state) => state.story.userStories);
   const userStoriesOwner = useSelector((state) => state.story.userStoriesOwner);
   const userStoriesInfo = useSelector((state) => state.story.userStoriesInfo);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
   const firstUpdate = useRef(true);
-  const [page, setPage] = useState(1);
   const [deletedStory, setDeletedStory] = useState(null);
-  const PAGE_LIMIT = 6;
 
   const handleEndOfList = () => {
     if (
@@ -34,32 +33,6 @@ function ProfilePageHome({ userId, selectedIndex, isMyProfile }) {
     }
     setPage((prev) => prev + 1);
   };
-
-  const getUserStoriesRequest = () => {
-    if (page === 0 || page === 1) {
-      dispatch(
-        storyActions.getUserStoriesRequest({
-          userId,
-          page,
-          limit: PAGE_LIMIT,
-        })
-      );
-    } else {
-      dispatch(
-        storyActions.getUserStoriesRequestNextPage({
-          userId,
-          page,
-          limit: PAGE_LIMIT,
-        })
-      );
-    }
-  };
-
-  useEffect(() => {
-    if (userId && selectedIndex === 0) {
-      getUserStoriesRequest();
-    }
-  }, [userId, page, selectedIndex]);
 
   return (
     <>
