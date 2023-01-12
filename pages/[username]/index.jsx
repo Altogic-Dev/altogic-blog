@@ -170,7 +170,7 @@ export default function ProfilePage() {
     if (username) {
       getUserStoriesRequest();
     }
-  }, [username, page]);
+  }, [profileUser, page]);
 
   useEffect(() => {
     if (profileUser && sessionUser) {
