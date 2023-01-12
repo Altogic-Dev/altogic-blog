@@ -264,6 +264,7 @@ export default function BlogDetail({ ip, story }) {
           content={`${story.seoDescription ?? story.content.slice(0, 100)} Your Title`}
         />
         <meta name="twitter:card" content="summary_large_image"/>
+        <meta property="twitter:card" content="summary_large_image"/>
 
       </HeadContent>
 
