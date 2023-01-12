@@ -30,6 +30,7 @@ import { useInView } from 'react-intersection-observer';
 import { ClipLoader } from 'react-spinners';
 import ToastMessage from '@/utils/toast';
 import AuthService from '@/services/auth';
+import { storyActions } from '@/redux/story/storySlice';
 
 export default function ProfilePage() {
   const BOOKMARK_LIST_LIMIT = 3;
@@ -43,6 +44,9 @@ export default function ProfilePage() {
   const userStories = useSelector((state) => state.story.userStories);
   const [sessionUser] = useState(AuthService.getUser());
   const [showDialog, setShowDialog] = useState(false);
+  const PAGE_LIMIT = 6;
+  const [page, setPage] = useState(1);
+
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -127,6 +131,26 @@ export default function ProfilePage() {
     setFollowingModal((prev) => !prev);
   };
 
+  const getUserStoriesRequest = () => {
+    if (page === 0 || page === 1) {
+      dispatch(
+        storyActions.getUserStoriesRequest({
+          userId: _.get(profileUser, '_id'),
+          page,
+          limit: PAGE_LIMIT,
+        })
+      );
+    } else {
+      dispatch(
+        storyActions.getUserStoriesRequestNextPage({
+          userId: _.get(profileUser, '_id'),
+          page,
+          limit: PAGE_LIMIT,
+        })
+      );
+    }
+  };
+
   useEffect(() => {
     switch (_.lowerCase(tab)) {
       case 'list':
@@ -141,6 +165,12 @@ export default function ProfilePage() {
         break;
     }
   }, [tab]);
+
+  useEffect(() => {
+    if (username) {
+      getUserStoriesRequest();
+    }
+  }, [username, page]);
 
   useEffect(() => {
     if (profileUser && sessionUser) {
@@ -227,7 +257,6 @@ export default function ProfilePage() {
   }, [inView]);
 
   useEffect(() => {
-
     setShowDialog(
       profileUser &&
         !subcribeLoading &&
@@ -245,7 +274,7 @@ export default function ProfilePage() {
     isMyProfile,
     sessionUser,
     profileUser,
-    userFollowingsCount
+    userFollowingsCount,
   ]);
 
   return (
@@ -333,7 +362,11 @@ export default function ProfilePage() {
               >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
-                    onClick={() => router.push(`/${profileUser.username}`)}
+                    onClick={() =>
+                      router.push(`/${profileUser.username}`, undefined, {
+                        scroll: false,
+                      })
+                    }
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -347,7 +380,11 @@ export default function ProfilePage() {
                   </Tab>
                   <Tab
                     onClick={() =>
-                      router.push(`/${profileUser.username}?tab=list`)
+                      router.push(
+                        `/${profileUser.username}?tab=list`,
+                        undefined,
+                        { scroll: false }
+                      )
                     }
                     className={({ selected }) =>
                       classNames(
@@ -362,7 +399,11 @@ export default function ProfilePage() {
                   </Tab>
                   <Tab
                     onClick={() =>
-                      router.push(`/${profileUser.username}?tab=about`)
+                      router.push(
+                        `/${profileUser.username}?tab=about`,
+                        undefined,
+                        { scroll: false }
+                      )
                     }
                     className={({ selected }) =>
                       classNames(
@@ -379,6 +420,7 @@ export default function ProfilePage() {
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
                     <ProfilePageHome
+                      setPage={setPage}
                       isMyProfile={isMyProfile}
                       selectedIndex={selectedIndex}
                       userId={_.get(profileUser, '_id')}

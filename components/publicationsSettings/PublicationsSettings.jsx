@@ -18,7 +18,9 @@ export default function PublicationsSettings({ isCreate }) {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const isLoading = useSelector((state) => state.publication.publicationLoading);
+  const isLoading = useSelector(
+    (state) => state.publication.publicationLoading
+  );
   const sessionUser = useSelector((state) => state.auth.user);
 
   const [isInfo, setIsInfo] = useState(!isHome);
@@ -82,20 +84,19 @@ export default function PublicationsSettings({ isCreate }) {
   });
   const handleSave = () => {
     if (isInfo) setDoInfoSave(true);
-    setDoHomeSave(true);
+    else setDoHomeSave(true);
   };
 
   const handleClear = () => {
     if (isInfo) setDoInfoClear(true);
-    setDoHomeClear(true);
+    else setDoHomeClear(true);
   };
 
   const checkAuthorization = (publication, sessionUser) => {
     if (
       _.isNil(sessionUser) ||
       !['admin'].includes(sessionUser.role) ||
-      _.lowerCase(publicationName) !==
-        _.lowerCase(publication.name) ||
+      _.lowerCase(publicationName) !== _.lowerCase(publication.name) ||
       _.isNil(publication)
     ) {
       router.push('/');
@@ -122,10 +123,7 @@ export default function PublicationsSettings({ isCreate }) {
     <div>
       <HeadContent>
         <title>Opinate Publications Settings</title>
-        <meta
-          name="description"
-          content="Opinate Publications Settings"
-        />
+        <meta name="description" content="Opinate Publications Settings" />
       </HeadContent>
       <Layout loading={isLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 my-8 lg:my-[60px]">

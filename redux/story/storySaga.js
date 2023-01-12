@@ -449,6 +449,7 @@ function* publishStorySaga({
     if (_.isFunction(onSuccess)) onSuccess();
 
   } catch (e) {
+    console.log(e)
     yield put(storyActions.publishStoryFailure(e));
   }
 }

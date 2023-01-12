@@ -32,17 +32,37 @@ import { Block } from '@/utils/QuillBlots/Blots';
 import Quill from 'quill';
 import { useRouter } from 'next/router';
 
+const uploadImage = async (file) => {
+  const { data } = await FileService.uploadFile(file, file.name);
+  return data.publicPath;
+};
+async function imageHandler(imageDataUrl, type, imageData) {
+  const file = imageData.toFile();
+  const range = this.quill.getSelection();
+  this.quill.insertText(range.index, 'Uploading Image. Please wait...', {
+    size: '2rem',
+  });
+  const res = await uploadImage(file);
+
+  this.quill.insertEmbed(
+    range.index,
+    'image',
+    {
+      alt: 'Quill Cloud',
+      url: res,
+    },
+    Quill.sources.USER
+  );
+  this.quill.deleteText(range.index + 1, 31);
+  this.quill.setSelection(range.index + 1, Quill.sources.SILENT);
+}
+
 export default function Editor({
   onChange,
   setImages,
   value,
   setIsShowSaving,
 }) {
-  const uploadImage = async (file) => {
-    const { data } = await FileService.uploadFile(file, file.name);
-    return data.publicPath;
-  };
-
   const [quillInstance, setQuillInstance] = useState();
   const [isStateUpdated, setIsStateUpdated] = useState(false);
   const tooltip = useRef();
@@ -53,26 +73,6 @@ export default function Editor({
   const tooltipButtons = useRef();
   const router = useRouter();
   const { id } = router.query;
-
-  async function imageHandler(imageDataUrl, type, imageData) {
-    const file = imageData.toFile();
-
-    const position = 0;
-    quillInstance.insertText(position, 'Uploading Image. Please wait...', {
-      size: '2rem',
-    });
-    const res = await uploadImage(file, quillInstance);
-
-    quillInstance.insertEmbed(
-      0,
-      'image',
-      {
-        alt: 'Quill Cloud',
-        url: res,
-      },
-      Quill.sources.USER
-    );
-  }
 
   function convertMedia(url) {
     const vimeo = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
@@ -279,16 +279,14 @@ export default function Editor({
           range.index + leaf.domNode.length
         );
       } else {
-        // if (
-        //   quillInstance.getLeaf(range.index)[0]?.parent?.attributes?.attributes
-        //     .token?.keyName === 'hljs'
-        // ) {
-        //   quillInstance.getLeaf(range.index)[0].parent.domNode = new Inline(
-        //     '',
-        //     '',
-        //     ''
-        //   );
-        // }
+        if (
+          quillInstance.getLeaf(range.index)[0]?.parent?.attributes?.attributes
+            .token?.keyName === 'hljs'
+        ) {
+          quillInstance
+            .getLeaf(range.index)[0]
+            ?.parent?.attributes.domNode.classList.remove('hljs-attribute');
+        }
         quillInstance.removeFormat(
           range.index,
           range.length,

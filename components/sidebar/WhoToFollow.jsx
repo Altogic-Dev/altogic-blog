@@ -47,7 +47,6 @@ export default function WhoToFollow({
   };
 
   const getWhoToFollow = (page, size) => {
-    console.log(page);
     dispatch(
       recommendationsActions.getWhoToFollowRequest({ page, limit: size })
     );
@@ -83,13 +82,6 @@ export default function WhoToFollow({
       document.body.removeEventListener('click', () => {});
     };
   }, []);
-
-  useEffect(
-    () => () => {
-      console.log('unmounting');
-    },
-    []
-  );
 
   useEffect(() => {
     if (topicWriters) {
