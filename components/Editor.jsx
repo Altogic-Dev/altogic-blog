@@ -54,6 +54,26 @@ export default function Editor({
   const router = useRouter();
   const { id } = router.query;
 
+  async function imageHandler(imageDataUrl, type, imageData) {
+    const file = imageData.toFile();
+
+    const position = 0;
+    quillInstance.insertText(position, 'Uploading Image. Please wait...', {
+      size: '2rem',
+    });
+    const res = await uploadImage(file, quillInstance);
+
+    quillInstance.insertEmbed(
+      0,
+      'image',
+      {
+        alt: 'Quill Cloud',
+        url: res,
+      },
+      Quill.sources.USER
+    );
+  }
+
   function convertMedia(url) {
     const vimeo = /(?:http?s?:\/\/)?(?:www\.)?(?:vimeo\.com)\/?(.+)/g;
     const youtube =
@@ -123,7 +143,6 @@ export default function Editor({
   };
   const debounceFn = useCallback(_.debounce(handleDebounceFn, 200), []);
 
- 
   useEffect(() => {
     const bindings = {
       code: {
@@ -232,12 +251,6 @@ export default function Editor({
       tooltip.current.style.display = 'none';
       sidebar.current.style.display = 'none';
       sidebar.current.classList.remove('active');
-    });
-    quill.clipboard.addMatcher('img', (node, delta) => {
-      console.log(node, delta);
-      const url = 'http://www.placehold.it/666x333.jpg';
-
-      return new Delta().insert({ image: url });
     });
   }, []);
 
@@ -388,26 +401,7 @@ export default function Editor({
   const addCodeBlock = () => {
     quillInstance.format('code-block', true);
   };
-  async function imageHandler(imageDataUrl, type, imageData) {
-    const file = imageData.toFile();
 
-
-    const position = 0;
-    quillInstance.insertText(position, 'Uploading Image. Please wait...', {
-      size: '2rem',
-    });
-    const res = await uploadImage(file, quillInstance);
-
-    quillInstance.insertEmbed(
-      0,
-      'image',
-      {
-        alt: 'Quill Cloud',
-        url: res,
-      },
-      Quill.sources.USER
-    );
-  }
   return (
     <div className="text-editor">
       <div ref={tooltip} id="tooltip-controls">
