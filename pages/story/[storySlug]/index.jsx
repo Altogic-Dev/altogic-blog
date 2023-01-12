@@ -251,19 +251,18 @@ export default function BlogDetail({ ip, story }) {
     <div>
       <HeadContent>
         <title>{story?.title ?? 'Untitled'}</title>
-        
-        <meta name="og:title" content={`${story.title ?? 'Untitled'}`} />
+        <meta name="twitter:card" content="summary_large_image"/>
+        <meta name="og:title" content={`${story.seoTitle ?? story.title ?? 'Untitled'}`} />
         <meta name="og:type" content="article" />
         <meta
           name="og:description"
-          content={`${story.content.slice(0, 100)} Your Title`}
+          content={`${story.seoDescription ?? story.content.slice(0, 100)} Your Title`}
         />
         <meta name="og:image" content={`${_.first(story.storyImages)}`} />
         <meta
           name="description"
           content={`${story.content.slice(0, 100)} Your Title`}
         />
-        <meta name="twitter:card" content="summary_large_image"/>
       </HeadContent>
 
       <Layout loading={!storyState}>
