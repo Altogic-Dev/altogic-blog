@@ -30,7 +30,7 @@ export async function getServerSideProps({ req, params }) {
   return {
     props: {
       ip,
-      story: storyServerSide.data.story,
+      story: storyServerSide?.data?.story ?? null,
     },
   };
 }
@@ -250,26 +250,26 @@ export default function BlogDetail({ ip, story }) {
   return (
     <div>
       <HeadContent>
-        <title>{story.seoTitle ?? story?.title ?? 'Untitled'}</title>
-        <meta name="og:title" content={`${story.seoTitle ?? story.title ?? 'Untitled'}`} />
+        <title>{story?.seoTitle ?? story?.title ?? 'Untitled'}</title>
+        <meta name="og:title" content={`${story?.seoTitle ?? story?.title ?? 'Untitled'}`} />
         <meta name="og:type" content="article" />
         <meta
           name="og:description"
-          content={`${story.seoDescription ?? story.content.slice(0, 100)} Your Title`}
+          content={`${story?.seoDescription ?? story?.content.slice(0, 100)} Your Title`}
         />
-        <meta name="og:image" content={`${_.first(story.storyImages)}`} />
+        <meta name="og:image" content={`${_.first(story?.storyImages)}`} />
     
         <meta
           name="description"
-          content={`${story.seoDescription ?? story.content.slice(0, 100)} Your Title`}
+          content={`${story?.seoDescription ?? story?.content.slice(0, 100)} Your Title`}
         />
         <meta name="twitter:card" content="summary_large_image"/>
         <meta property="twitter:card" content="summary_large_image"/>
 
       </HeadContent>
 
-      <Layout loading={!storyState}>
-        {errors?.status === 404 || !story?.isPublished ? (
+      <Layout>
+        {!story ? (
           <div className="w-full h-full flex items-center justify-center flex-col">
             <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
               <BookOpenIcon className="w-7 h-7 text-purple-600" />

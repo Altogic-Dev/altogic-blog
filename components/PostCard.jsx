@@ -74,24 +74,27 @@ export default function PostCard({
                 >
                   &middot;
                 </span>
-                <span className="text-slate-500 text-sm tracking-sm w-24">
+                <span className="text-slate-500 text-sm tracking-sm ">
                   {timeAgo}
                 </span>
                 {pinnedStory && <Pin className="text-purple-500" />}
               </div>
-              {publication && (
-                <span className="text-slate-400 text-base tracking-sm cursor-default w-40 md:w-full break-words">
-                  Published in
-                  <Link href={`/publication/${publication.name}`}>
-                    <a className="text-purple-400 text-base tracking-sm cursor-pointer">
-                      {` ${publication.name}`}
-                    </a>
-                  </Link>
-                </span>
-              )}
             </a>
           </Link>
-
+          {publication && (
+            <div className="w-96 overflow-hidden flex whitespace-nowrap text-ellipsis ">
+              <span className="text-slate-400 text-base tracking-sm cursor-default ">
+                Published in
+                <Link href={`/publication/${publication.name}`}>
+                  <a className="text-purple-400 text-base tracking-sm cursor-pointer ">
+                    {` ${
+                      publication.name + publication.name + publication.name
+                    }`}
+                  </a>
+                </Link>
+              </span>
+            </div>
+          )}
           <div>
             <Link href={storyUrl}>
               <a className="group inline-flex flex-col mb-4 md:mb-11 space-y-2 ">

@@ -238,8 +238,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-hidden">
-          <div className="absolute inset-0 overflow-hidden">
+        <div className="fixed inset-0 overflow-hidden ">
+          <div className="absolute inset-0 overflow-hidden ">
             <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
               <Transition.Child
                 as={Fragment}
@@ -250,8 +250,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
-                  <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll">
+                <Dialog.Panel className="pointer-events-auto w-[90vw] max-w-md ">
+                  <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll w-full overflow-hidden" >
                     {user && (
                       <div>
                         <div className="flex items-start justify-between pb-3">
@@ -337,7 +337,14 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                 </Button>
                               </div>
                               <div className="flex items-center gap-4">
-                                <Button primaryColor>Cancel</Button>
+                                <Button
+                                  primaryColor
+                                  onClick={() =>
+                                    quillInstance.setText('')
+                                  }
+                                >
+                                  Cancel
+                                </Button>
                                 <Button
                                   loading={
                                     storyIsLoading && !_.isEmpty(replies)
