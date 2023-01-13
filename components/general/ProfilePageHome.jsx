@@ -23,6 +23,8 @@ function ProfilePageHome({ userId, isMyProfile, setPage }) {
   const firstUpdate = useRef(true);
   const [deletedStory, setDeletedStory] = useState(null);
 
+  console.log(userStoriesOwner)
+  
   const handleEndOfList = () => {
     if (
       userStories.length === userStoriesInfo.count ||
@@ -33,7 +35,6 @@ function ProfilePageHome({ userId, isMyProfile, setPage }) {
     }
     setPage((prev) => prev + 1);
   };
-
   return (
     <>
       {userStoriesOwner && userId ? (

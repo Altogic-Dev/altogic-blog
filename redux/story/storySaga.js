@@ -107,7 +107,6 @@ function* createReplyComment({ payload: comment }) {
       yield put(storyActions.createReplyCommentSuccess(data));
     }
   } catch (e) {
-    console.error({ e });
     yield put(storyActions.createReplyCommentFailure(e));
   }
 }

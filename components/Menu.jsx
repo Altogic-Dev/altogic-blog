@@ -90,12 +90,15 @@ export default function HeaderMenu() {
       })
     );
   };
-
   return (
     <div>
       <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6">
         <div className="flex justify-between items-center lg:justify-start md:space-x-5">
-          <div className="flex justify-start lg:w-0 lg:flex-1">
+          <div
+            className={`${
+              !hideMenu ? 'flex' : 'hidden lg:flex'
+            } justify-start lg:w-0 lg:flex-1`}
+          >
             <Link href="/">
               <a>
                 <span className="sr-only">Altogic</span>
@@ -142,13 +145,13 @@ export default function HeaderMenu() {
           <div
             className={`${
               !hideMenu && 'lg:w-0'
-            } flex items-center flex-row-reverse lg:flex-row lg:justify-end w-10/12 lg:flex-1 gap-4`}
+            } flex items-center flex-row-reverse lg:flex-row lg:justify-end w-full lg:flex-1 gap-8 lg:gap-4 `}
           >
             <div
               className={`${
                 hideMenu &&
-                'w-[32rem] cursor-pointer border border-solid border-gray-300'
-              } relative h-12 w-12 bg-white rounded-xl p-1`}
+                'w-full lg:w-[32rem] cursor-pointer border border-solid border-gray-300 w-f'
+              } relative h-12  bg-white rounded-xl p-1`}
             >
               <Search
                 showSuggestions={showSuggestions}
@@ -167,13 +170,13 @@ export default function HeaderMenu() {
                     setShowSuggestions(false);
                   }
                 }}
-                className="absolute top-0 right-0 border-none w-10 h-10 p-2 bg-transparent cursor-pointer shadow-none rounded-full text-center"
+                className="absolute bottom-3 right-0 border-none w-12 h-10 p-4 bg-transparent cursor-pointer shadow-none rounded-full text-center"
               >
-                <SearchIcon className="w-5 h-5" />
+                <SearchIcon className="w-6 h-6" />
               </Button>
             </div>
             {isAuthenticatedState ? (
-              <>
+              <div className={!hideMenu ? 'flex gap-4' : 'hidden lg:flex gap-4'}>
                 <Button
                   disabled={router.pathname === '/write-a-story'}
                   onClick={() => {
@@ -213,7 +216,7 @@ export default function HeaderMenu() {
                     className="origin-top-right absolute top-10 w-56"
                   />
                 </Menu>
-              </>
+              </div>
             ) : (
               <div className="flex items-center gap-4">
                 <Link href="/login">
