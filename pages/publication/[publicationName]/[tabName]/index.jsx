@@ -108,7 +108,7 @@ export default function Publications({ tabName }) {
                 'grid lg:divide-x lg:divide-gray-200 mb-[60px]'
               } `}
             >
-              <div className="divide-y divide-gray-200">
+              <div className="divide-y divide-gray-200 w-full overflow-hidden">
                 <PublicationTab tab={selectedTab} publication={publication} />
               </div>
             </div>

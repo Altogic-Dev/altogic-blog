@@ -132,6 +132,7 @@ export default function ProfilePage() {
   };
 
   const getUserStoriesRequest = () => {
+    console.log(profileUser)
     if (page === 0 || page === 1) {
       dispatch(
         storyActions.getUserStoriesRequest({
@@ -167,7 +168,7 @@ export default function ProfilePage() {
   }, [tab]);
 
   useEffect(() => {
-    if (username) {
+    if (username && profileUser) {
       getUserStoriesRequest();
     }
   }, [profileUser?._id, page]);

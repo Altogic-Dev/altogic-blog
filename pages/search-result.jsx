@@ -71,10 +71,7 @@ export default function SearchResult() {
     <div>
       <HeadContent>
         <title>Opinate Notifications</title>
-        <meta
-          name="description"
-          content="Opinate Notifications"
-        />
+        <meta name="description" content="Opinate Notifications" />
       </HeadContent>
       <Layout>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0">
@@ -152,9 +149,9 @@ export default function SearchResult() {
                               authorName={story.username}
                               authorImage={story.userProfilePicture}
                               storyUrl={`/story/${story.storySlug}`}
-                              timeAgo={DateTime.fromISO(
-                                story.createdAt
-                              ).toRelative()}
+                              timeAgo={DateTime.fromISO(story.createdAt)
+                                .setLocale('en')
+                                .toRelative()}
                               title={story.title}
                               infoText={story.excerpt}
                               badgeUrl="badgeUrl"

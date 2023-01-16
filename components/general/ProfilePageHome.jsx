@@ -23,8 +23,7 @@ function ProfilePageHome({ userId, isMyProfile, setPage }) {
   const firstUpdate = useRef(true);
   const [deletedStory, setDeletedStory] = useState(null);
 
-  console.log(userStoriesOwner)
-  
+
   const handleEndOfList = () => {
     if (
       userStories.length === userStoriesInfo.count ||
@@ -49,7 +48,9 @@ function ProfilePageHome({ userId, isMyProfile, setPage }) {
                 authorName={story.username}
                 authorImage={story.userProfilePicture}
                 storyUrl={`/story/${story.storySlug}`}
-                timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+                timeAgo={DateTime.fromISO(story.createdAt)
+                  .setLocale('en')
+                  .toRelative()}
                 title={story.title}
                 infoText={story.excerpt}
                 badgeName={_.first(story.categoryNames)}

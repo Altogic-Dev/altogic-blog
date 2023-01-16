@@ -125,7 +125,10 @@ export default function Home() {
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
               <YourTopics />
 
-              <Tab.Group selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+              <Tab.Group
+                selectedIndex={selectedIndex}
+                onChange={setSelectedIndex}
+              >
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
                     className={({ selected }) =>
@@ -168,9 +171,9 @@ export default function Home() {
                           authorName={story.username}
                           authorImage={story.userProfilePicture}
                           storyUrl={`/story/${story.storySlug}`}
-                          timeAgo={DateTime.fromISO(
-                            story.createdAt
-                          ).toRelative()}
+                          timeAgo={DateTime.fromISO(story.createdAt)
+                            .setLocale('en')
+                            .toRelative()}
                           title={story.title}
                           infoText={story.excerpt}
                           badgeName={_.first(story.categoryNames)}
