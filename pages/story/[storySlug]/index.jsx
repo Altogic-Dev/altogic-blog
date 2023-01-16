@@ -76,7 +76,7 @@ export default function BlogDetail({ ip, story }) {
   const [createNewList, setCreateNewList] = useState(false);
   const [didMount, setDidMount] = useState(true);
   const [isRead, setIsRead] = useState(false);
-  const [enterTime, setEnterTime] = useState(0);
+  const [enterTime] = useState(DateTime.now());
   const [isLoading, setIsLoading] = useState(false);
   const isPublication = !_.isNil(_.get(story, 'publication._id'));
   const isFollowing = _.some(
@@ -178,14 +178,6 @@ export default function BlogDetail({ ip, story }) {
     }
   }, []);
 
-  useUnload((e) => {
-
-    if (user) {
-      visitStory();
-      e.preventDefault();
-    }
-  });
-
   const putStoryRequest = () => {
     dispatch(storyActions.putStoryRequest(story));
   };
@@ -197,8 +189,14 @@ export default function BlogDetail({ ip, story }) {
     setStoryUser(_.get(storyState, 'user'));
   }, [storyState]);
 
+  // useEffect(
+  //   () => () => {
+  //     visitStory();
+  //   },
+  //   []
+  // );
   useEffect(() => {
-    setEnterTime(DateTime.now());
+
     window.addEventListener('scroll', onScroll, { passive: true });
     if (!_.isNil(story) && didMount) {
       dispatch(
@@ -251,21 +249,27 @@ export default function BlogDetail({ ip, story }) {
     <div>
       <HeadContent>
         <title>{story?.seoTitle ?? story?.title ?? 'Untitled'}</title>
-        <meta name="og:title" content={`${story?.seoTitle ?? story?.title ?? 'Untitled'}`} />
+        <meta
+          name="og:title"
+          content={`${story?.seoTitle ?? story?.title ?? 'Untitled'}`}
+        />
         <meta name="og:type" content="article" />
         <meta
           name="og:description"
-          content={`${story?.seoDescription ?? story?.content.slice(0, 100)} Your Title`}
+          content={`${
+            story?.seoDescription ?? story?.content.slice(0, 100)
+          } Your Title`}
         />
         <meta name="og:image" content={`${_.first(story?.storyImages)}`} />
-    
+
         <meta
           name="description"
-          content={`${story?.seoDescription ?? story?.content.slice(0, 100)} Your Title`}
+          content={`${
+            story?.seoDescription ?? story?.content.slice(0, 100)
+          } Your Title`}
         />
-        <meta name="twitter:card" content="summary_large_image"/>
-        <meta property="twitter:card" content="summary_large_image"/>
-
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta property="twitter:card" content="summary_large_image" />
       </HeadContent>
 
       <Layout>

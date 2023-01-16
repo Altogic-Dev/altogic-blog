@@ -82,7 +82,7 @@ export default function PostCard({
             </a>
           </Link>
           {publication && (
-            <div className="w-96 overflow-hidden flex whitespace-nowrap text-ellipsis ">
+            <div className="w-96 overflow-hidden block whitespace-nowrap text-ellipsis ">
               <span className="text-slate-400 text-base tracking-sm cursor-default ">
                 Published in
                 <Link href={`/publication/${publication.name}`}>
