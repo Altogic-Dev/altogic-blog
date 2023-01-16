@@ -43,15 +43,14 @@ export default function PublicationsSettingsHome({
   const sections = featurePage?.sections;
 
   const handleSave = () => {
-
     dispatch(
       publicationActions.updatePublicationHomeLayoutRequest({
         ...homeLayout,
+        ...(uploadedFileLink && { backgroundImage: uploadedFileLink}),
         layout,
         isCentered,
         textColor: RGBAToHexA(textColor),
         backgroundColor: RGBAToHexA(bgColor),
-        backgroundImage: _.isNil(uploadedFileLink) ? null : uploadedFileLink,
         bottomColor: RGBAToHexA(bottomColor),
       })
     );

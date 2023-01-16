@@ -56,7 +56,7 @@ export default function PublicationsSettings({ isCreate }) {
     name: yup.string().required('Name is required'),
     description: yup
       .string()
-      .max(280, 'Description should be max 280 characters')
+      .max(100, 'Description should be max 100 characters')
       .required('Description is required'),
     tagline: yup
       .string()

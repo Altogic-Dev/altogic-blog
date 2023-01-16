@@ -357,7 +357,7 @@ export default function PublicationSettingsInfo({
               />
               <p className="mt-1.5 text-sm text-slate-500">
                 The description is longer, and appears in story footers, search
-                results and the like. Max 280 characters.
+                results and the like. Max 100 characters.
               </p>
             </div>
           </div>
