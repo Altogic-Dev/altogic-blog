@@ -1,6 +1,7 @@
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { classNames, RGBAToHexA } from '@/utils/utils';
 import _ from 'lodash';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -87,7 +88,7 @@ export default function AligmentPublicationLayout({
               }
         }
         className={classNames(
-          'flex flex-col h-[449px] justify-center items-center',
+          'flex-col h-[449px] justify-center items-center hidden md:flex',
           isCentered ? '' : null
         )}
       >
@@ -121,69 +122,136 @@ export default function AligmentPublicationLayout({
           </div>
         )}
       </div>
-      <div>
-        <div className="relative w-[100vw] h-[64px] bg-no-repeat bg-cover bg-center">
-          <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
-            <div className="flex gap-8 justify-between mb-5">
-              <SocialIcons
-                twitter={twitter}
-                facebook={facebook}
-                linkedin={linkedin}
-                color={color}
-              />
-
-              {user && (
-                <FollowButton
-                  isFollowing={publication?.isFollowing}
-                  isLoading={!preview && isLoading}
-                  onClick={!preview ? handleFollowButton : null}
-                />
-              )}
-            </div>
-            <div
-              style={{
-                backgroundColor: RGBAToHexA(bottomColor),
-                borderRadius: '10px 10px 0px 0px',
-              }}
-              className=" flex items-center justify-between gap-4 py-3 border-b border-gray-200"
+      <div className=" h-auto flex flex-col md:hidden justify-start items-start mt-5 mb-10 gap-6">
+        <Image width={250} height={250} src={logo} alt="" />
+        <div className="w-full p-6" style={{ color, backgroundColor: bgColor }}>
+          <h1
+            style={{ color }}
+            className="text-purple-600 font-bold w-full text-5xl tracking-md mt-2 break-words  "
+          >
+            {title}
+          </h1>
+          <h2
+            className="text-slate-600 max-w-4xl text-2xl tracking-md mt-2"
+            style={{ color }}
+          >
+            {content}
+          </h2>
+        </div>
+        <div className="flex justify-between w-full px-6">
+          <SocialIcons
+            twitter={twitter}
+            facebook={facebook}
+            linkedin={linkedin}
+            color={color}
+          />
+          {user && (
+            <FollowButton
+              isFollowing={publication?.isFollowing}
+              isLoading={!preview && isLoading}
+              onClick={!preview ? handleFollowButton : null}
+            />
+          )}
+        </div>
+        <ul className="flex items-center gap-4 w-11/12 overflow-y-auto px-6 md:hidden">
+          {_.map(navigations, (nav, index) => (
+            <li
+              key={`${_.get(nav, 'tabName')}-${index}`}
+              className="flex items-center justify-center"
             >
-              <ul className="flex items-center gap-4">
-                {_.map(navigations, (nav, index) => (
-                  <li
-                    key={`${_.get(nav, 'tabName')}-${index}`}
-                    className="flex items-center justify-center"
-                  >
-                    {nav?.tabType !== 'link' ? (
-                      <Button
-                        onClick={() =>
-                          router.push(
-                            `/publication/${publicationName}/${nav.tabName}`
-                          )
-                        }
-                        className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
-                          tabName === nav?.tabName
-                            ? 'text-purple-500'
-                            : 'text-slate-500'
-                        }`}
-                        style={{ color }}
-                      >
-                        {_.get(nav, 'tabName')}
-                      </Button>
-                    ) : (
-                      <a
-                        rel="noreferrer"
-                        target="_blank"
-                        href={_.get(nav, 'externalLink')}
-                        style={{ color }}
-                        className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
-                      >
-                        {_.get(nav, 'tabName')}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
+              {nav?.tabType !== 'link' ? (
+                <Button
+                  onClick={() =>
+                    router.push(
+                      `/publication/${publicationName}/${nav.tabName}`
+                    )
+                  }
+                  className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
+                    tabName === nav?.tabName
+                      ? 'text-purple-500'
+                      : 'text-slate-500'
+                  }`}
+                  style={{ color }}
+                >
+                  {_.get(nav, 'tabName')}
+                </Button>
+              ) : (
+                <a
+                  rel="noreferrer"
+                  target="_blank"
+                  href={_.get(nav, 'externalLink')}
+                  style={{ color }}
+                  className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
+                >
+                  {_.get(nav, 'tabName')}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="relative w-[100vw] h-[64px] bg-no-repeat bg-cover bg-center hidden md:flex">
+        <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
+          <div className="flex gap-8 justify-between mb-5">
+            <SocialIcons
+              twitter={twitter}
+              facebook={facebook}
+              linkedin={linkedin}
+              color={color}
+            />
+
+            {user && (
+              <FollowButton
+                isFollowing={publication?.isFollowing}
+                isLoading={!preview && isLoading}
+                onClick={!preview ? handleFollowButton : null}
+              />
+            )}
+          </div>
+
+          <div
+            style={{
+              backgroundColor: RGBAToHexA(bottomColor),
+              borderRadius: '10px 10px 0px 0px',
+            }}
+            className=" flex items-center justify-between gap-4 py-3 border-b border-gray-200"
+          >
+            <ul className="flex items-center gap-4 w-full overflow-y-auto">
+              {_.map(navigations, (nav, index) => (
+                <li
+                  key={`${_.get(nav, 'tabName')}-${index}`}
+                  className="flex items-center justify-center"
+                >
+                  {nav?.tabType !== 'link' ? (
+                    <Button
+                      onClick={() =>
+                        router.push(
+                          `/publication/${publicationName}/${nav.tabName}`
+                        )
+                      }
+                      className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
+                        tabName === nav?.tabName
+                          ? 'text-purple-500'
+                          : 'text-slate-500'
+                      }`}
+                      style={{ color }}
+                    >
+                      {_.get(nav, 'tabName')}
+                    </Button>
+                  ) : (
+                    <a
+                      rel="noreferrer"
+                      target="_blank"
+                      href={_.get(nav, 'externalLink')}
+                      style={{ color }}
+                      className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
+                    >
+                      {_.get(nav, 'tabName')}
+                    </a>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

@@ -50,7 +50,7 @@ function PublicationTabStory({ tab, publication }) {
     if (publication) {
       dispatch(storyActions.getStoryRequest(tab.story));
     }
-  }, [publication]);
+  }, [publication._id]);
 
   useEffect(() => {
     if (!_.isNil(story) && didMount) {

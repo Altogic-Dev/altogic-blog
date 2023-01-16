@@ -57,7 +57,9 @@ function MyStoriesDraft({
               authorName={story.username}
               authorImage={story.userProfilePicture}
               storyUrl={`/write-a-story?id=${story._id}`}
-              timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+              timeAgo={DateTime.fromISO(story.createdAt)
+                .setLocale('en')
+                .toRelative()}
               title={story.title}
               infoText={parseHtml(story?.content).slice(0, 300)}
               badgeName={_.first(story.categoryNames)}

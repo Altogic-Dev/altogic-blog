@@ -477,7 +477,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                 </>
                               ) : (
                                 <p
-                                  className="text-slate-700 text-sm tracking-sm break-words w-96"
+                                  className="text-slate-700 text-sm tracking-sm break-words w-96 pr-10 md:pr-0"
                                   dangerouslySetInnerHTML={{
                                     __html: reply.content,
                                   }}

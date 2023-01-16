@@ -258,9 +258,9 @@ export default function WriteAStorySettings() {
                       authorImage={_.get(userState, 'profilePicture')}
                       storyUrl={`/story/${_.get(story, 'storySlug')}`}
                       infoText={parseHtml(story?.content).slice(0, 300)}
-                      timeAgo={DateTime.fromISO(
-                        _.get(story, 'createdAt')
-                      ).toRelative()}
+                      timeAgo={DateTime.fromISO(_.get(story, 'createdAt'))
+                        .setLocale('en')
+                        .toRelative()}
                       title={_.get(story, 'title')}
                       badgeUrl="badgeUrl"
                       badgeName={_.first(_.get(story, 'categoryNames'))}

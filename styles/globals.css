@@ -254,6 +254,7 @@ textarea {
   height: 90vh;
 }
 #reply-input {
+  font-size: 16px;
   height: 100%;
 }
 #reply-input .ql-editor,

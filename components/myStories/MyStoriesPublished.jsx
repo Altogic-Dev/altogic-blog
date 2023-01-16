@@ -53,7 +53,9 @@ function MyStoriesPublished({
               authorName={story.username}
               authorImage={story.userProfilePicture}
               storyUrl={`/story/${story.storySlug}`}
-              timeAgo={DateTime.fromISO(story.createdAt).toRelative()}
+              timeAgo={DateTime.fromISO(story.createdAt)
+                .setLocale('en')
+                .toRelative()}
               title={story.title}
               infoText={story.excerpt}
               badgeName={_.first(story.categoryNames)}

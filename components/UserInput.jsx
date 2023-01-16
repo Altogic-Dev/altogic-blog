@@ -24,7 +24,7 @@ export default function UserInput({
       )}
       <div className="flex flex-wrap items-center gap-2 py-1 mb-8 rounded-md">
         <input
-          className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
+          className="justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white sm:text-sm font-medium text-slate-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500"
           onChange={onChange}
           value={value}
           {...inputProps}

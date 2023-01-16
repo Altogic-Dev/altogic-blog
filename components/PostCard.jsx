@@ -87,9 +87,7 @@ export default function PostCard({
                 Published in
                 <Link href={`/publication/${publication.name}`}>
                   <a className="text-purple-400 text-base tracking-sm cursor-pointer ">
-                    {` ${
-                      publication.name + publication.name + publication.name
-                    }`}
+                    {` ${publication.name}`}
                   </a>
                 </Link>
               </span>
