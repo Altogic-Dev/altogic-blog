@@ -144,9 +144,9 @@ export default function PublicationsSettingsHome({
     <>
       <div className="mt-12 ">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-2 gap-x-36 md:flex md:gap-x-0 items-center justify-center pb-6 mb-6 border-b border-gray-200 divide-x divide-gray-200 ">
-            <div className="flex items-center gap-5 " >
-              <span className="inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-x-36 gap-y-2 md:flex md:gap-x-0 items-center justify-center pb-6 mb-6 border-b border-gray-200 md:divide-x md:divide-gray-200 ">
+            <div className="flex items-center gap-5  px-5" >
+              <span className="hidden lg:inline-flex items-center text-slate-400 py-1 md:px-0 text-sm tracking-sm">
                 Layout
               </span>
               <button
@@ -220,7 +220,7 @@ export default function PublicationsSettingsHome({
               </button>
             </div>
             <div className="flex items-center gap-5 px-5 ">
-              <span className="inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
+              <span className="hidden lg:inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
                 Alignment
               </span>
               <button
@@ -269,7 +269,7 @@ export default function PublicationsSettingsHome({
               </button>
             </div>
             <div className="flex items-center gap-5 px-5">
-              <span className="inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
+              <span className="hidden lg:inline-flex items-center text-slate-400 py-1 text-sm tracking-sm">
                 Color
               </span>
               <Popover>
@@ -351,7 +351,7 @@ export default function PublicationsSettingsHome({
                   handleUploadPhoto('backgroundImage', layout?.backgroundImage)
                 }
               >
-                Add background image
+              Background image
               </button>
             </div>
             <Popover>
@@ -394,7 +394,7 @@ export default function PublicationsSettingsHome({
                     strokeLinejoin="round"
                   />
                 </svg>
-                Bottom background color
+                Bottom color
               </Popover.Button>
               <ColorPicker
                 color={bottomColor}

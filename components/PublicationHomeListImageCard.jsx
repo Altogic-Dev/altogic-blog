@@ -14,7 +14,7 @@ export default function PublicationHomeListImageCard({
             {storyTitle}
           </h2>
           <div className="mt-4 space-y-1">
-            <span className="flex w-[384px] break-words overflow-hidden">{storyContent}</span>
+            <span className="flex break-words overflow-hidden">{storyContent}</span>
           </div>
         </div>
         <img

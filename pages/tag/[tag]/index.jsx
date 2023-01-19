@@ -22,7 +22,7 @@ export default function TagPage() {
   const router = useRouter();
   const { tag, tab } = router.query;
   const dispatch = useDispatch();
-
+  const [lastTag, setLastTag] = useState('');
   const latestTopics = useSelector((state) => state.topics.latestTopics);
   const bestTopics = useSelector((state) => state.topics.bestTopics);
   const bookmarkLists = useSelector((state) => state.bookmark.bookmarkLists);
@@ -48,8 +48,14 @@ export default function TagPage() {
     );
   };
   const getTrendingTopics = () => {
+    console.log('girdi')
     dispatch(topicsActions.getTrendingTopicsRequest(tag));
   };
+  useEffect(() => {
+    dispatch(topicsActions.clearTopicsDataRequest());
+    setLastTag(tag);
+  }, [tag]);
+
   useEffect(() => {
     if (tag) {
       if (_.lowerCase(tab) === 'latest' && latestTopics.length === 0) {
@@ -58,13 +64,14 @@ export default function TagPage() {
       } else if (_.lowerCase(tab) === 'best' && bestTopics.length === 0) {
         getBests(1);
         setSelectedIndex(2);
-      } else if (latestTopics.length === 0) {
+      } else if (trendingTopics.length === 0) {
         getTrendingTopics();
         setSelectedIndex(0);
       }
+      setLastTag(tag);
       dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
-  }, [tag, tab]);
+  }, [tab, tag, lastTag]);
 
   useEffect(() => {
     if (_.lowerCase(tab) === 'latest') {
