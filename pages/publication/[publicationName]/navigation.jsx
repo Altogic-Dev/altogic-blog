@@ -63,6 +63,7 @@ export default function PublicationsNavigation() {
       // eslint-disable-next-line no-restricted-syntax
       for (const pair of new FormData(form)) {
         if (pair[0] === 'title') {
+          if (pair[1].length === 0) return;
           req = {
             ...req,
             tabName: pair[1],
@@ -218,10 +219,7 @@ export default function PublicationsNavigation() {
     <div>
       <HeadContent>
         <title>Opinate Publications Navigation</title>
-        <meta
-          name="description"
-          content="Opinate Publications Navigation"
-        />
+        <meta name="description" content="Opinate Publications Navigation" />
       </HeadContent>
       <Layout>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
@@ -247,7 +245,7 @@ export default function PublicationsNavigation() {
                 </Button>
               </div>
             </div>
-            <h2 className="text-slate-500 tracking-sm " >
+            <h2 className="text-slate-500 tracking-sm ">
               Add tabs and point them to tags or individual stories to create
               navigation. Navigation will be shown on homepage and stories
               within your publication.
@@ -356,7 +354,7 @@ export default function PublicationsNavigation() {
                 </div>
 
                 {enabled && (
-                  <form className="flex items-center justify-between gap-4">
+                  <form className="flex items-center justify-between gap-4 mb-10">
                     <div className="flex-1 h-14">
                       <Input
                         type="text"

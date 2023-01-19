@@ -21,13 +21,8 @@ import { UserGroupIcon } from '@heroicons/react/outline';
 export default function SearchResult() {
   const dispatch = useDispatch();
   const router = useRouter();
-
   const searchResults = useSelector((state) => state.general.searchResult);
   const user = useSelector((state) => state.auth.user);
-  const userFollowings = useSelector(
-    (state) => state.followerConnection.userFollowings
-  );
-
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [topicLimit, setTopicLimit] = useState(10);
   const [userLimit, setUserLimit] = useState(10);
@@ -184,10 +179,7 @@ export default function SearchResult() {
                             <UserCard
                               key={people._id}
                               user={people}
-                              isFollowing={_.some(
-                                userFollowings,
-                                (u) => u.followingUser === people._id
-                              )}
+                              isFollowing={people?.followedByMe}
                             />
                           ))
                         ) : (

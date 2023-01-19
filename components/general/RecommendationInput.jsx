@@ -1,20 +1,23 @@
 import { topicsActions } from '@/redux/topics/topicsSlice';
 import { capitiliazeAllWords } from '@/utils/utils';
+import { PlusIcon } from '@heroicons/react/outline';
 import _ from 'lodash';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Button from '../basic/button';
 import Category from '../Category';
 import PublicationSettingsSuggestions from '../publicationsSettings/suggestions/PublicationSettingsSuggestions';
 
-export default function RecommendationInput() {
+export default function RecommendationInput({ tags, setTags }) {
   const foundTopics = useSelector((state) => state.topics.searchTopics);
   const topicLoading = useSelector((state) => state.topics.isLoading);
   const categoryInputRef = useRef(null);
   const dispatch = useDispatch();
   const [inpCategory, setInpCategory] = useState('');
-  const [inpCategoryNames, setInpCategoryNames] = useState([]);
+  const [inpCategoryNames, setInpCategoryNames] = useState(tags);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const user = useSelector((state) => state.auth.user);
 
   const debouncedSearch = useCallback(
     _.debounce((category) => {
@@ -74,10 +77,15 @@ export default function RecommendationInput() {
     if (_.size(foundTopics) === 0) setIsSearchOpen(false);
     else setIsSearchOpen(true);
   }, [foundTopics]);
+
   useEffect(() => {
     setIsSearchOpen(false);
     if (inpCategory) debouncedSearch(inpCategory);
   }, [inpCategory]);
+
+  useEffect(() => {
+    setTags(inpCategoryNames);
+  }, [inpCategoryNames]);
 
   return (
     <div className="relative mb-4 md:mb-6">
@@ -112,6 +120,26 @@ export default function RecommendationInput() {
             className="mt-2 text-xs"
           />
         ))}
+      </div>
+      <div>
+        <p className="text-slate-600 mb-4 text-sm tracking-sm">
+          Recommended Categories
+        </p>
+        <div className="flex flex-wrap items-center gap-4">
+          {_.map(user?.recommendedTopics, (topic) => (
+            <Button
+              key={topic}
+              className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-5 rounded-md tracking-sm text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              onClick={() => handleAddTopic({ name: topic })}
+            >
+              <PlusIcon
+                className="mr-2 h-5 w-5 text-gray-700"
+                aria-hidden="true"
+              />
+              {topic}
+            </Button>
+          ))}
+        </div>
       </div>
     </div>
   );

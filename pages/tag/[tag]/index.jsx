@@ -96,7 +96,9 @@ export default function TagPage() {
               <Tab.Group selectedIndex={selectedIndex}>
                 <Tab.List className="flex items-center gap-10 h-11 border-b border-gray-300">
                   <Tab
-                    onClick={() => router.push(`/tag/${tag}`)}
+                    onClick={() =>
+                      router.push(`/tag/${tag}`, undefined, { scroll: false })
+                    }
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -109,7 +111,11 @@ export default function TagPage() {
                     Trending
                   </Tab>
                   <Tab
-                    onClick={() => router.push(`/tag/${tag}?tab=latest`)}
+                    onClick={() =>
+                      router.push(`/tag/${tag}?tab=latest`, undefined, {
+                        scroll: false,
+                      })
+                    }
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',
@@ -122,7 +128,11 @@ export default function TagPage() {
                     Latest
                   </Tab>
                   <Tab
-                    onClick={() => router.push(`/tag/${tag}?tab=best`)}
+                    onClick={() =>
+                      router.push(`/tag/${tag}?tab=best`, undefined, {
+                        scroll: false,
+                      })
+                    }
                     className={({ selected }) =>
                       classNames(
                         'inline-flex gap-2 h-full text-sm font-medium tracking-sm px-2 focus:outline-none',

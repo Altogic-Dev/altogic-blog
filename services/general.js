@@ -7,13 +7,14 @@ const GeneralService = {
   getFollowAndSubscribedInfo(authorId) {
     return endpoint.get(`/connect-info/${authorId}`);
   },
-  search({ query, topicLimit, userLimit, publicationLimit, postLimit }) {
+  search({ query, topicLimit, userLimit, publicationLimit, postLimit, userId }) {
     return endpoint.get('search', {
       query,
       topicLimit,
       userLimit,
       publicationLimit,
       postLimit,
+      userId
     });
   },
 };

@@ -54,7 +54,8 @@ function* getFollowAndSubscribedInfoSaga({ payload: authorId }) {
 }
 function* searchSaga({ payload }) {
   try {
-    const { data, errors } = yield call(GeneralService.search, payload);
+    const user = yield select((state) => state.auth.user);
+    const { data, errors } = yield call(GeneralService.search, { ...payload, userId: user?._id });
     if (errors) throw errors;
     if (data) {
       yield put(generalActions.searchSuccess(data));

@@ -86,7 +86,9 @@ export default function Publications({ tabName }) {
       </HeadContent>
       <Layout
         loading={isLoading}
-        logo={_.get(selectedTab, 'tabType') === 'feature' ? featurePage?.logo : null}
+        logo={
+          _.get(selectedTab, 'tabType') === 'feature' ? featurePage?.logo : null
+        }
       >
         <AligmentPublicationLayout
           layout={homeLayout?.layout}
@@ -103,7 +105,7 @@ export default function Publications({ tabName }) {
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
         />
-        <div className="w-full flex justify-center pb-16 ">
+        <div className="w-full overflow-hidden flex justify-center pb-16 ">
           <div>
             <div
               className={`${
@@ -111,11 +113,11 @@ export default function Publications({ tabName }) {
                 'grid lg:divide-x lg:divide-gray-200 mb-[60px]'
               } `}
             >
-              <div className="divide-y divide-gray-200 w-full overflow-hidden">
+              <div className="divide-y divide-gray-200 ">
                 <PublicationTab tab={selectedTab} publication={publication} />
               </div>
             </div>
-            <div className="px-8 md:w-[100vw] max-w-screen-xl w-full mx-auto ">
+            <div className="px-8 md:w-[100vw] max-w-screen-xl w-full mx-auto overflow-hidden ">
               <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
                 Latest
               </h2>
