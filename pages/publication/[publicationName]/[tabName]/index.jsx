@@ -75,16 +75,19 @@ export default function Publications({ tabName }) {
     }
   }, [publication?.name]);
 
+  const featurePage = useSelector((state) => state.publication.featurePage);
+  console.log(featurePage);
+
   return (
     <div>
       <HeadContent>
         <title>Opinate Publications</title>
-        <meta
-          name="description"
-          content="Opinate Publications"
-        />
+        <meta name="description" content="Opinate Publications" />
       </HeadContent>
-      <Layout loading={isLoading}>
+      <Layout
+        loading={isLoading}
+        logo={_.get(selectedTab, 'tabType') === 'feature' ? featurePage?.logo : null}
+      >
         <AligmentPublicationLayout
           layout={homeLayout?.layout}
           bottomColor={homeLayout?.bottomColor}

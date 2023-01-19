@@ -31,7 +31,7 @@ export default function PublicationsNavigation() {
   const publication = useSelector(
     (state) => state.publication.selectedPublication
   );
-  const isLoading = useSelector((state) => state.publication.isLoading);
+  const isLoading = useSelector((state) => state.publication.navigationLoading);
   const [onDrag, setOnDrag] = useState(false);
   const publicationNavigation = useSelector(
     (state) => state.publication.publicationNavigation
@@ -247,7 +247,7 @@ export default function PublicationsNavigation() {
                 </Button>
               </div>
             </div>
-            <h2 className="text-slate-500 tracking-sm">
+            <h2 className="text-slate-500 tracking-sm " >
               Add tabs and point them to tags or individual stories to create
               navigation. Navigation will be shown on homepage and stories
               within your publication.
@@ -347,7 +347,7 @@ export default function PublicationsNavigation() {
                       />
                     </Switch>
                     <Switch.Label as="span" className="ml-3">
-                      <span className="text-sm font-medium text-slate-700 whitespace-nowrap">
+                      <span className="text-sm font-medium text-slate-700 whitespace-wrap ">
                         Add a tab linking to a different site (e.g. your
                         non-Blog site, or a store)
                       </span>

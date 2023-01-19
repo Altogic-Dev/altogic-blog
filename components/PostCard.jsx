@@ -100,7 +100,7 @@ export default function PostCard({
                   {isDeleted && (
                     <div className="group">
                       <Info className="text-slate-400" />
-                      <div className="hidden rounded-lg p-2 text-xs bg-gray-100 absolute z-50 group-hover:block -mt-16 -ml-48 shadow-md w-48">
+                      <div className="hidden rounded-lg p-2 text-xs bg-gray-100 absolute z-50 group-hover:block shadow-md w-48 mt-5">
                         This story has been deleted or in draft
                       </div>
                     </div>

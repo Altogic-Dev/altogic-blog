@@ -11,6 +11,7 @@ import { ClipLoader } from 'react-spinners';
 import { Fragment, useEffect, useState, useRef } from 'react';
 import { parseHtml } from '@/utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { storyActions } from '@/redux/story/storySlice';
@@ -34,7 +35,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     (state) => state.story.deletingIsLoading
   );
   const user = useSelector((state) => state.auth.user);
-
+  const router = useRouter();
   const likeLoading = useSelector((state) => state.story.likeLoading);
 
   const [commentBoxes, setCommentBoxes] = useState([]);
@@ -137,21 +138,25 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleReplyLike = (reply) => {
-    if (user && !reply.reply_likes) {
-      dispatch(
-        storyActions.likeReplyRequest({
-          replyId: reply._id,
-          userId: user._id,
-        })
-      );
-      sendNotification('reply_like');
-    } else if (reply.reply_likes) {
-      dispatch(
-        storyActions.unlikeReplyRequest({
-          replyId: reply._id,
-          userId: user._id,
-        })
-      );
+    if (user) {
+      if (!reply.reply_likes) {
+        dispatch(
+          storyActions.likeReplyRequest({
+            replyId: reply._id,
+            userId: user._id,
+          })
+        );
+        sendNotification('reply_like');
+      } else {
+        dispatch(
+          storyActions.unlikeReplyRequest({
+            replyId: reply._id,
+            userId: user._id,
+          })
+        );
+      }
+    } else {
+      router.push('/login');
     }
   };
   const handleComment = (e, reply, index) => {
@@ -251,7 +256,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-[90vw] max-w-md ">
-                  <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll w-full overflow-hidden" >
+                  <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll w-full overflow-hidden">
                     {user && (
                       <div>
                         <div className="flex items-start justify-between pb-3">
@@ -339,9 +344,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               <div className="flex items-center gap-4">
                                 <Button
                                   primaryColor
-                                  onClick={() =>
-                                    quillInstance.setText('')
-                                  }
+                                  onClick={() => quillInstance.setText('')}
                                 >
                                   Cancel
                                 </Button>
@@ -485,22 +488,18 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               )}
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
-                                  {user && (
-                                    <Button
-                                      onClick={() => handleReplyLike(reply)}
-                                      disabled={likeLoading}
-                                      className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm"
-                                    >
-                                      <HeartIcon
-                                        className={`w-6 ${
-                                          reply.reply_likes
-                                            ? 'text-red-500'
-                                            : ''
-                                        }`}
-                                      />
-                                      {reply.likeCount}
-                                    </Button>
-                                  )}
+                                  <Button
+                                    onClick={() => handleReplyLike(reply)}
+                                    disabled={likeLoading}
+                                    className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm"
+                                  >
+                                    <HeartIcon
+                                      className={`w-6 ${
+                                        reply.reply_likes ? 'text-red-500' : ''
+                                      }`}
+                                    />
+                                    {reply.likeCount}
+                                  </Button>
                                   <Button
                                     onClick={() => {
                                       setClickedCommentButton(index);
@@ -584,7 +583,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   <div
                                     ref={commentEditor}
                                     id="comment-input"
-                                    className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
+                                    className="w-[405px] h-32 px-4 py-2 leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
                                   />
 
                                   <div className="w-full flex justify-between items-center mt-5">

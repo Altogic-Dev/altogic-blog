@@ -132,7 +132,6 @@ export default function ProfilePage() {
   };
 
   const getUserStoriesRequest = () => {
-    console.log(profileUser)
     if (page === 0 || page === 1) {
       dispatch(
         storyActions.getUserStoriesRequest({
@@ -474,7 +473,11 @@ export default function ProfilePage() {
             </div>
             {/* Desktop Sidebar */}
             <div className="hidden lg:flex lg:flex-col lg:gap-10 p-8">
-              {(!profileUser && !followingModal) || infoLoading ? (
+              {username !== sessionUser?.username &&
+              ((!profileUser &&
+                !followingModal &&
+                username !== sessionUser?.username) ||
+                infoLoading) ? (
                 <ClipLoader />
               ) : (
                 <Sidebar
@@ -484,7 +487,7 @@ export default function ProfilePage() {
                     seeAllButton: toggleFollowingsModal,
                   }}
                   followingTopics={isMyProfile}
-                  profile={profileUser}
+                  profile={username !== sessionUser?.username ? profileUser : sessionUser}
                   followLoading={followLoading && !followingModal}
                   isFollowing={
                     isFollowing ||

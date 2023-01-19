@@ -6,10 +6,10 @@ import Header from '@/components/Header';
 import { ClipLoader } from 'react-spinners';
 import Button from '@/components/basic/button';
 
-export default function Layout({ children, loading }) {
+export default function Layout({ children, loading, logo }) {
   return (
     <div>
-      <Header />
+      <Header logo={logo} />
       <main className="main">
         {loading ? (
           <div className="flex justify-center items-center h-full">

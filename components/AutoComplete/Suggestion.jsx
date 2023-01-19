@@ -58,12 +58,13 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
                       <img src={_.get(suggestion, 'storyImages[0]')} alt="" />
                     )}
                     {(suggestion.logo || suggestion.profilePicture) && (
-                      <Avatar
-                        src={suggestion.logo || suggestion.profilePicture}
-                        alt="profile"
-                        width={40}
-                        height={40}
-                      />
+                      <div className="inline-flex flex-shrink-0 w-8">
+                        <Avatar
+                          width={40}
+                          height={40}
+                          src={suggestion.logo || suggestion.profilePicture}
+                        />
+                      </div>
                     )}
 
                     {!_.get(suggestion, 'storyImages[0]') &&

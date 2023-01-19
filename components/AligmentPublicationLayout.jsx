@@ -122,8 +122,23 @@ export default function AligmentPublicationLayout({
           </div>
         )}
       </div>
-      <div className=" h-auto flex flex-col md:hidden justify-start items-start mt-5 mb-10 gap-6">
-        <Image width={250} height={250} src={logo} alt="" />
+      <div className="h-auto flex flex-col md:hidden justify-start items-start mt-5 mb-10 gap-6">
+        <div className="w-full flex justify-center">
+          <div
+            style={{
+              position: 'relative',
+              width: '250px',
+              paddingBottom: '40%',
+            }}
+          >
+            <Image
+              alt="Image Alt"
+              src={logo}
+              layout="fill"
+              objectFit="contain" // Scale your image down to fit into the container
+            />
+          </div>
+        </div>
         <div className="w-full p-6" style={{ color, backgroundColor: bgColor }}>
           <h1
             style={{ color }}

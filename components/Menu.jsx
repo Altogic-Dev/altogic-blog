@@ -22,7 +22,7 @@ import { authActions } from '../redux/auth/authSlice';
 import Search from './AutoComplete/Search';
 import PublicationDropdown from './publication/PublicationDropdown';
 
-export default function HeaderMenu() {
+export default function HeaderMenu({ logo }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const sessionUser = useSelector((state) => state.auth.user);
@@ -102,11 +102,14 @@ export default function HeaderMenu() {
             <Link href="/">
               <a>
                 <span className="sr-only">Altogic</span>
-                <img
-                  className="w-[114px] h-[39px] sm:w-[135px] sm:h-[46px]"
-                  src="/logo.svg"
-                  alt=""
-                />
+
+                <div className="w-[114px] sm:w-[135px] ">
+                  <img
+                    className=" object-cover"
+                    src={logo || '/logo.svg'}
+                    alt=""
+                  />
+                </div>
               </a>
             </Link>
           </div>
@@ -176,7 +179,9 @@ export default function HeaderMenu() {
               </Button>
             </div>
             {isAuthenticatedState ? (
-              <div className={!hideMenu ? 'flex gap-4' : 'hidden lg:flex gap-4'}>
+              <div
+                className={!hideMenu ? 'flex gap-4' : 'hidden lg:flex gap-4'}
+              >
                 <Button
                   disabled={router.pathname === '/write-a-story'}
                   onClick={() => {
@@ -256,90 +261,92 @@ export default function HeaderMenu() {
           </div>
         </div>
       </div>
-      <div className="flex lg:hidden items-center justify-around gap-8 fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
-        <Link href="/">
-          <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-            <HomeIcon
-              className={`w-8 h-7  group-hover:text-purple-500 ${
-                router.asPath === '/' ? 'text-purple-500' : 'text-slate-300'
-              }`}
-              viewBox="0 0 21 21"
-            />
-          </a>
-        </Link>
-        {user && (
-          <Link href={`/${user?.username}?tab=list`}>
-            <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-              <BookmarkIcon
+      {user && (
+        <div className="flex lg:hidden items-center justify-around gap-8 fixed bottom-0 left-0 w-full h-[72px] bg-white border-b border-gray-200 shadow p-4 z-10">
+          <Link href="/">
+            <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
+              <HomeIcon
                 className={`w-8 h-7  group-hover:text-purple-500 ${
-                  router.asPath.includes('?tab=list')
-                    ? 'text-purple-500'
-                    : 'text-slate-300'
+                  router.asPath === '/' ? 'text-purple-500' : 'text-slate-300'
                 }`}
                 viewBox="0 0 21 21"
               />
             </a>
           </Link>
-        )}
-        {user && (
-          <Link href="/my-stories">
-            <a className="group inline-flex items-center gap-3 text-slate-800  py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 hover:bg-purple-50">
-              <BookOpenIcon
-                className={`w-8 h-7  group-hover:text-purple-500 ${
-                  router.asPath === '/my-stories'
-                    ? 'text-purple-500'
-                    : 'text-slate-300'
-                }`}
-                viewBox="0 0 21 21"
+          {user && (
+            <Link href={`/${user?.username}?tab=list`}>
+              <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
+                <BookmarkIcon
+                  className={`w-8 h-7  group-hover:text-purple-500 ${
+                    router.asPath.includes('?tab=list')
+                      ? 'text-purple-500'
+                      : 'text-slate-300'
+                  }`}
+                  viewBox="0 0 21 21"
+                />
+              </a>
+            </Link>
+          )}
+          {user && (
+            <Link href="/my-stories">
+              <a className="group inline-flex items-center gap-3 text-slate-800  py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
+                <BookOpenIcon
+                  className={`w-8 h-7  group-hover:text-purple-500 ${
+                    router.asPath === '/my-stories'
+                      ? 'text-purple-500'
+                      : 'text-slate-300'
+                  }`}
+                  viewBox="0 0 21 21"
+                />
+              </a>
+            </Link>
+          )}
+          {user && (
+            <Menu
+              as="div"
+              className="relative inline-flex lg:hidden items-center"
+            >
+              <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+                <Avatar
+                  width={40}
+                  height={40}
+                  className="inline-block w-10 h-10 rounded-full"
+                  placeholderName={user?.name}
+                  src={user?.profilePicture}
+                  alt={user?.username}
+                />
+              </Menu.Button>
+              <HeaderDropdown
+                user={user}
+                logout={logout}
+                className="fixed bottom-20 w-full"
               />
-            </a>
-          </Link>
-        )}
-        {user && (
-          <Menu
-            as="div"
-            className="relative inline-flex lg:hidden items-center"
-          >
-            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
-              <Avatar
-                width={40}
-                height={40}
-                className="inline-block w-10 h-10 rounded-full"
-                placeholderName={user?.name}
-                src={user?.profilePicture}
-                alt={user?.username}
-              />
-            </Menu.Button>
-            <HeaderDropdown
-              user={user}
-              logout={logout}
-              className="fixed bottom-20 w-full"
-            />
-          </Menu>
-        )}
-        {selectedPublication && (
-          <Menu
-            as="div"
-            className="relative inline-flex lg:hidden items-center"
-          >
-            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
-              <Avatar
-                width={40}
-                height={40}
-                className="inline-block w-10 h-10 rounded-full"
-                placeholderName={selectedPublication?.name}
-                src={selectedPublication?.logo}
-                alt={selectedPublication?.username}
-              />
-            </Menu.Button>
+            </Menu>
+          )}
+          {selectedPublication && (
+            <Menu
+              as="div"
+              className="relative inline-flex lg:hidden items-center"
+            >
+              <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+                <Avatar
+                  width={40}
+                  height={40}
+                  className="inline-block w-10 h-10 rounded-full"
+                  placeholderName={selectedPublication?.name}
+                  src={selectedPublication?.logo}
+                  alt={selectedPublication?.username}
+                />
+              </Menu.Button>
 
-            <PublicationDropdown
-              publication={selectedPublication}
-              className="fixed bottom-20 w-full"
-            />
-          </Menu>
-        )}
-      </div>
+              <PublicationDropdown
+                publication={selectedPublication}
+                className="fixed bottom-20 w-full"
+              />
+            </Menu>
+          )}
+        </div>
+      )}
     </div>
   );
 }

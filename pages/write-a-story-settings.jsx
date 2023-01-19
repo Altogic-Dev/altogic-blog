@@ -256,7 +256,7 @@ export default function WriteAStorySettings() {
                       authorUrl={`/${_.get(userState, 'username')}`}
                       authorName={_.get(userState, 'username')}
                       authorImage={_.get(userState, 'profilePicture')}
-                      storyUrl={`/story/${_.get(story, 'storySlug')}`}
+                      storyUrl="#"
                       infoText={parseHtml(story?.content).slice(0, 300)}
                       timeAgo={DateTime.fromISO(_.get(story, 'createdAt'))
                         .setLocale('en')
@@ -976,7 +976,7 @@ export default function WriteAStorySettings() {
                   </div>
                 </div>
                 <hr className="my-14" />
-                <div className="mb-12">
+                <div className="pb-20 lg:mb-12">
                   <h2 className="text-slate-700 mb-8 text-2xl font-medium tracking-md">
                     Delete Story
                   </h2>

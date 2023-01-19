@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import HeadContent from '@/components/general/HeadContent';
 import { Tab } from '@headlessui/react';
@@ -13,6 +14,7 @@ import _ from 'lodash';
 import Layout from '@/layouts/Layout';
 import Sidebar from '@/layouts/Sidebar';
 import { ClipLoader } from 'react-spinners';
+import { FlagIcon } from '@heroicons/react/outline';
 
 export default function TagPage() {
   const user = useSelector((state) => state.auth.user);
@@ -29,7 +31,6 @@ export default function TagPage() {
   const trendingLoading = useSelector((state) => state.topics.trendingLoading);
   const bestLoading = useSelector((state) => state.topics.bestLoading);
   const latestLoading = useSelector((state) => state.topics.latestLoading);
-
   const [posts, setPosts] = useState([]);
 
   const getLatests = () => {
@@ -49,7 +50,6 @@ export default function TagPage() {
   const getTrendingTopics = () => {
     dispatch(topicsActions.getTrendingTopicsRequest(tag));
   };
-
   useEffect(() => {
     if (tag) {
       if (_.lowerCase(tab) === 'latest' && latestTopics.length === 0) {
@@ -58,13 +58,13 @@ export default function TagPage() {
       } else if (_.lowerCase(tab) === 'best' && bestTopics.length === 0) {
         getBests(1);
         setSelectedIndex(2);
-      } else if(latestTopics.length === 0){
+      } else if (latestTopics.length === 0) {
         getTrendingTopics();
         setSelectedIndex(0);
       }
       dispatch(topicsActions.getTopicAnalyticsRequest(tag));
     }
-  }, [tag,tab]);
+  }, [tag, tab]);
 
   useEffect(() => {
     if (_.lowerCase(tab) === 'latest') {
@@ -74,7 +74,7 @@ export default function TagPage() {
     } else {
       setPosts(trendingTopics);
     }
-  }, [latestTopics, bestTopics, trendingTopics,tab]);
+  }, [latestTopics, bestTopics, trendingTopics, tab]);
 
   return (
     <div>
@@ -137,8 +137,21 @@ export default function TagPage() {
                 </Tab.List>
                 <Tab.Panels>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {trendingLoading && _.size(posts) === 0 ? (
-                      <ClipLoader className="mt-5" color="#9333ea" size={80} />
+                    {trendingLoading || _.size(posts) === 0 ? (
+                      trendingLoading ? (
+                        <div className="p-20 flex justify-center">
+                          <ClipLoader color="#9333ea" size={80} />
+                        </div>
+                      ) : (
+                        <div className="items-center flex flex-col">
+                          <span className="mt-10 inline-flex items-center justify-center w-14 h-14 rounded-full bg-purple-100 mb-6 ring-8 ring-purple-50">
+                            <FlagIcon className="w-7 h-7 text-purple-600" />
+                          </span>
+                          <p className="text-slate-500 text-md">
+                            No trending stories here.
+                          </p>
+                        </div>
+                      )
                     ) : (
                       posts.map((post) => (
                         <PostCard
@@ -177,7 +190,9 @@ export default function TagPage() {
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {latestLoading && _.size(posts) === 0 ? (
-                      <ClipLoader className="mt-5" color="#9333ea" size={80} />
+                      <div className="p-20 flex justify-center">
+                        <ClipLoader color="#9333ea" size={80} />
+                      </div>
                     ) : (
                       posts.map((post) => (
                         <PostCard
@@ -216,7 +231,9 @@ export default function TagPage() {
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
                     {bestLoading && _.size(posts) === 0 ? (
-                      <ClipLoader className="mt-5" color="#9333ea" size={80} />
+                      <div className="p-20 flex justify-center">
+                        <ClipLoader color="#9333ea" size={80} />
+                      </div>
                     ) : (
                       posts.map((post) => (
                         <PostCard

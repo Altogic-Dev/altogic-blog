@@ -30,6 +30,9 @@ export default function Notifications() {
       );
   }, [notificationLimit]);
 
+  useEffect(() => {
+    dispatch(notificationsActions.markAsSeenRequest({ userId: user._id }));
+  }, [allNotifications]);
   const handleLoadMore = () => {
     setNotificationLimit((prev) => prev + 10);
   };
