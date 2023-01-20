@@ -14,7 +14,7 @@ export default function PublicationHomeStreamCard({
               {storyTitle}
             </h2>
             <div className="mt-4 space-y-1">
-              <span className="flex w-[384px] h-36 overflow-hidden break-words">
+              <span className="flex h-36 overflow-hidden break-words">
                 {storyContent}
               </span>
             </div>

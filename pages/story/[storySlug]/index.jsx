@@ -281,7 +281,7 @@ export default function BlogDetail({ ip, story }) {
             <div className="text-slate-500 ">Story not found</div>
           </div>
         ) : (
-          <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0 ">
+          <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-[72px] lg:pb-0 overflow-hidden ">
             <div className="lg:grid lg:grid-cols-[1fr,352px] divide-x divide-gray-200 lg:-ml-8 lg:-mr-8">
               <div className="pt-8 lg:py-5 lg:px-8">
                 {isPublication && (
@@ -375,7 +375,7 @@ export default function BlogDetail({ ip, story }) {
                         />
                       ))}
                     </div>
-                    <div className="pt-10 border-t border-gray-200 text-center">
+                    <div className="pt-10 border-t border-gray-200 text-center mb-20">
                       <Link
                         href={
                           isPublication

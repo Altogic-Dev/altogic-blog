@@ -86,9 +86,10 @@ export default function NavigationForm({ navigation }) {
         type="text"
         name="title"
         id="title"
+        className="h-10 pr-8 md:pr-0"
         placeholder="Navigation Name One"
         register={register('title')}
-        error={errors.title}
+        error={errors.title ? " " : null}
       />
       <Listbox value={selected} onChange={setSelected} name="type" id="type">
         <div className="relative">

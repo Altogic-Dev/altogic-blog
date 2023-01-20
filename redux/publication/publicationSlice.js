@@ -145,28 +145,28 @@ export const publicationSlice = createSlice({
       state.isLoading = false;
     },
     createPublicationNavigationRequest(state) {
-      state.isLoading = true;
+      state.navigationLoading = true;
     },
     createPublicationNavigationSuccess(state, action) {
       state.publicationNavigation = action.payload;
-      state.isLoading = false;
+      state.navigationLoading = false;
     },
     createPublicationNavigationFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.navigationLoading = false;
     },
     updatePublicationNavigationRequest(state) {
-      state.isLoading = true;
+      state.navigationLoading = true;
     },
     updatePublicationNavigationSuccess(state, action) {
       state.publicationNavigation = action.payload;
-      state.isLoading = false;
+      state.navigationLoading = false;
       ToastMessage.success('Navigation updated succesfully');
 
     },
     updatePublicationNavigationFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.navigationLoading = false;
     },
     setPublicationFromLocalStorage(state, action) {
       state.userPublications = action.payload;

@@ -4,6 +4,7 @@ import { storyActions } from '@/redux/story/storySlice';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { ClipLoader } from 'react-spinners';
 import CreateBookmarkList from '../bookmarks/CreateBookmarkList';
 import StoryContent from '../StoryContent';
 
@@ -66,7 +67,11 @@ function PublicationTabStory({ tab, publication }) {
 
   return (
     <div className="md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
-      {story && (
+      {!story ? (
+        <div className='w-full flex justify-center'>
+          <ClipLoader color="#9333ea" size={80} />
+        </div>
+      ) : (
         <StoryContent
           bookmarkLists={bookmarkLists}
           setCreateNewList={setCreateNewList}

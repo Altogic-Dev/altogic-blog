@@ -117,6 +117,11 @@ export const topicsSlice = createSlice({
       state.isLoading = false;
       state.error = action.payload;
     },
+    clearTopicsDataRequest(state) {
+      state.latestTopics = [];
+      state.bestTopics = [];
+      state.trendingTopics = [];
+    },
 
     extraReducers: {
       [HYDRATE]: (state, action) => ({

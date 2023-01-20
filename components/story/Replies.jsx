@@ -11,6 +11,7 @@ import { ClipLoader } from 'react-spinners';
 import { Fragment, useEffect, useState, useRef } from 'react';
 import { parseHtml } from '@/utils/utils';
 import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import _ from 'lodash';
 import { notificationsActions } from '@/redux/notifications/notificationsSlice';
 import { storyActions } from '@/redux/story/storySlice';
@@ -34,7 +35,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
     (state) => state.story.deletingIsLoading
   );
   const user = useSelector((state) => state.auth.user);
-
+  const router = useRouter();
   const likeLoading = useSelector((state) => state.story.likeLoading);
 
   const [commentBoxes, setCommentBoxes] = useState([]);
@@ -46,6 +47,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const [commentQuill, setCommentQuill] = useState();
   const [replyEditQuill, setReplyEditQuill] = useState();
   const [editText, setEditText] = useState();
+  const [replyLimitError, setReplyLimitError] = useState(false);
+  const [commentLimitError, setCommentLimitError] = useState(false);
   const getReplies = () => {
     dispatch(
       storyActions.getStoryRepliesRequest({
@@ -99,6 +102,8 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleEditReply = (reply) => {
+    console.log(replyEditQuill.root.innerHTML);
+
     if (
       _.size(parseHtml(replyEditQuill.root.innerHTML).trim()) > 0 &&
       (user._id === reply.user._id || user._id === reply.user)
@@ -137,21 +142,25 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleReplyLike = (reply) => {
-    if (user && !reply.reply_likes) {
-      dispatch(
-        storyActions.likeReplyRequest({
-          replyId: reply._id,
-          userId: user._id,
-        })
-      );
-      sendNotification('reply_like');
-    } else if (reply.reply_likes) {
-      dispatch(
-        storyActions.unlikeReplyRequest({
-          replyId: reply._id,
-          userId: user._id,
-        })
-      );
+    if (user) {
+      if (!reply.reply_likes) {
+        dispatch(
+          storyActions.likeReplyRequest({
+            replyId: reply._id,
+            userId: user._id,
+          })
+        );
+        sendNotification('reply_like');
+      } else {
+        dispatch(
+          storyActions.unlikeReplyRequest({
+            replyId: reply._id,
+            userId: user._id,
+          })
+        );
+      }
+    } else {
+      router.push('/login');
     }
   };
   const handleComment = (e, reply, index) => {
@@ -188,6 +197,12 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
           placeholder: 'What are you thoughts?',
         });
         setQuillInstance(quill);
+        quill.on('text-change', () => {
+          if (quill.getLength() > 256) {
+            quill.deleteText(256, quill.getLength());
+            setReplyLimitError(true);
+          } else setReplyLimitError(false);
+        });
         Quill.register(BoldBlot);
         Quill.register(ItalicBlot);
       }, 100);
@@ -195,22 +210,35 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   }, [slideOvers]);
 
   useEffect(() => {
-    if (commentEditor.current) {
-      const commentQuill = new Quill('#comment-input', {
-        placeholder: 'What are you thoughts?',
-      });
-      setCommentQuill(commentQuill);
-    }
-  }, [commentBoxes]);
-  useEffect(() => {
     if (replyEditEditor.current) {
       const replyEditQuill = new Quill('#reply-editor', {
         placeholder: 'What are you thoughts?',
       });
       replyEditQuill.root.innerHTML = editText;
+      replyEditQuill.on('text-change', () => {
+        if (replyEditQuill.getLength() > 256) {
+          replyEditQuill.deleteText(256, replyEditQuill.getLength());
+          setCommentLimitError(true);
+        } else setCommentLimitError(false);
+      });
       setReplyEditQuill(replyEditQuill);
     }
   }, [editRespondBoxes]);
+
+  useEffect(() => {
+    if (commentEditor.current) {
+      const commentQuill = new Quill('#comment-input', {
+        placeholder: 'What are you thoughts?',
+      });
+      setCommentQuill(commentQuill);
+      commentQuill.on('text-change', () => {
+        if (commentQuill.getLength() > 256) {
+          commentQuill.deleteText(256, commentQuill.getLength());
+          setCommentLimitError(true);
+        } else setCommentLimitError(false);
+      });
+    }
+  }, [commentBoxes]);
 
   useEffect(() => {
     if (story) getReplies();
@@ -251,7 +279,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                 leaveTo="translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-[90vw] max-w-md ">
-                  <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll w-full overflow-hidden" >
+                  <div className="flex h-full flex-col bg-white p-6 shadow-xl overflow-y-scroll w-full overflow-hidden">
                     {user && (
                       <div>
                         <div className="flex items-start justify-between pb-3">
@@ -339,9 +367,7 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               <div className="flex items-center gap-4">
                                 <Button
                                   primaryColor
-                                  onClick={() =>
-                                    quillInstance.setText('')
-                                  }
+                                  onClick={() => quillInstance.setText('')}
                                 >
                                   Cancel
                                 </Button>
@@ -355,6 +381,11 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                 </Button>
                               </div>
                             </div>
+                            {replyLimitError && (
+                              <div className="text-red-500 text-sm tracking-sm">
+                                You have reached the limit of 256 characters
+                              </div>
+                            )}
                           </div>
                         </form>
                       )}
@@ -485,22 +516,18 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                               )}
                               <div className="flex items-center justify-between">
                                 <div className="flex gap-4">
-                                  {user && (
-                                    <Button
-                                      onClick={() => handleReplyLike(reply)}
-                                      disabled={likeLoading}
-                                      className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm"
-                                    >
-                                      <HeartIcon
-                                        className={`w-6 ${
-                                          reply.reply_likes
-                                            ? 'text-red-500'
-                                            : ''
-                                        }`}
-                                      />
-                                      {reply.likeCount}
-                                    </Button>
-                                  )}
+                                  <Button
+                                    onClick={() => handleReplyLike(reply)}
+                                    disabled={likeLoading}
+                                    className="group flex items-center gap-2 text-slate-400 text-sm tracking-sm"
+                                  >
+                                    <HeartIcon
+                                      className={`w-6 ${
+                                        reply.reply_likes ? 'text-red-500' : ''
+                                      }`}
+                                    />
+                                    {reply.likeCount}
+                                  </Button>
                                   <Button
                                     onClick={() => {
                                       setClickedCommentButton(index);
@@ -536,7 +563,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                   </Button>
                                 )}
                               </div>
-
                               {showReplies[index] &&
                                 reply.comments &&
                                 reply.comments?.map((comment) => (
@@ -574,65 +600,75 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
                                     />
                                   </div>
                                 ))}
-                              {_.nth(commentBoxes, index) && (
-                                <form
-                                  onSubmit={(e) =>
-                                    handleComment(e, reply, index)
-                                  }
-                                  className="flex flex-col items-center"
-                                >
-                                  <div
-                                    ref={commentEditor}
-                                    id="comment-input"
-                                    className="w-[405px] h-32 px-4 py-2 text-sm leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
-                                  />
 
-                                  <div className="w-full flex justify-between items-center mt-5">
-                                    <div>
-                                      <Button
-                                        onClick={() =>
-                                          commentQuill.format('bold', true)
-                                        }
-                                        type="button"
-                                        className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                      >
-                                        <svg
-                                          className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
+                              {_.nth(commentBoxes, index) && (
+                                <div className="flex flex-col">
+                                  <form
+                                    onSubmit={(e) =>
+                                      handleComment(e, reply, index)
+                                    }
+                                    className="flex flex-col items-center"
+                                  >
+                                    <div
+                                      ref={commentEditor}
+                                      id="comment-input"
+                                      className="w-[405px] h-32 px-4 py-2 leading-tight border rounded-lg border-gray-300 focus:outline-none focus:border-gray-500"
+                                    />
+
+                                    <div className="w-full flex justify-between items-center mt-5">
+                                      <div>
+                                        <Button
+                                          onClick={() =>
+                                            commentQuill.format('bold', true)
+                                          }
+                                          type="button"
+                                          className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
                                         >
-                                          <path
-                                            d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
-                                            fill="currentColor"
-                                          />
-                                        </svg>
-                                      </Button>
-                                      <Button
-                                        onClick={() =>
-                                          commentQuill.format('italic', true)
-                                        }
-                                        type="button"
-                                        className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
-                                      >
-                                        <svg
-                                          className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
-                                          viewBox="0 0 24 24"
-                                          fill="none"
-                                          xmlns="http://www.w3.org/2000/svg"
+                                          <svg
+                                            className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                          >
+                                            <path
+                                              d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
+                                              fill="currentColor"
+                                            />
+                                          </svg>
+                                        </Button>
+                                        <Button
+                                          onClick={() =>
+                                            commentQuill.format('italic', true)
+                                          }
+                                          type="button"
+                                          className="group inline-flex items-center justify-center p-3 rounded-lg transition ease-in-out duration-150 hover:bg-slate-50"
                                         >
-                                          <path
-                                            d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
-                                            fill="currentColor"
-                                          />
-                                        </svg>
+                                          <svg
+                                            className="w-6 h-6 text-slate-400 transition ease-in-out duration-150 group-hover:text-slate-700"
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                          >
+                                            <path
+                                              d="M14.1863 4.35112C14.3802 3.834 14.1182 3.25759 13.6011 3.06367C13.084 2.86975 12.5076 3.13176 12.3137 3.64888L14.1863 4.35112ZM6.31367 19.6489C6.11975 20.166 6.38176 20.7424 6.89888 20.9363C7.416 21.1302 7.99241 20.8682 8.18633 20.3511L6.31367 19.6489ZM17.6863 4.35112C17.8802 3.834 17.6182 3.25759 17.1011 3.06367C16.584 2.86975 16.0076 3.13176 15.8137 3.64888L17.6863 4.35112ZM9.81367 19.6489C9.61975 20.166 9.88176 20.7424 10.3989 20.9363C10.916 21.1302 11.4924 20.8682 11.6863 20.3511L9.81367 19.6489ZM19.5 5C20.0523 5 20.5 4.55229 20.5 4C20.5 3.44772 20.0523 3 19.5 3V5ZM9.5 3C8.94772 3 8.5 3.44772 8.5 4C8.5 4.55228 8.94772 5 9.5 5V3ZM14.5 21C15.0523 21 15.5 20.5523 15.5 20C15.5 19.4477 15.0523 19 14.5 19V21ZM4.5 19C3.94772 19 3.5 19.4477 3.5 20C3.5 20.5523 3.94772 21 4.5 21V19ZM12.3137 3.64888L6.31367 19.6489L8.18633 20.3511L14.1863 4.35112L12.3137 3.64888ZM15.8137 3.64888L9.81367 19.6489L11.6863 20.3511L17.6863 4.35112L15.8137 3.64888ZM19.5 3L9.5 3V5L19.5 5V3ZM14.5 19H4.5V21H14.5V19Z"
+                                              fill="currentColor"
+                                            />
+                                          </svg>
+                                        </Button>
+                                      </div>
+
+                                      <Button extraClasses="h-8" type="submit">
+                                        Comment
                                       </Button>
                                     </div>
-                                    <Button extraClasses="h-8" type="submit">
-                                      Comment
-                                    </Button>
-                                  </div>
-                                </form>
+                                  </form>
+                                  {commentLimitError && (
+                                    <div className="text-red-500 text-sm tracking-sm">
+                                      You have reached the limit of 256
+                                      characters
+                                    </div>
+                                  )}
+                                </div>
                               )}
                             </li>
                           ))}

@@ -6,7 +6,6 @@ import { followerConnectionActions } from '@/redux/followerConnection/followerCo
 import { storyActions } from '@/redux/story/storySlice';
 import { DateTime } from 'luxon';
 import _ from 'lodash';
-import YourTopics from '@/components/general/YourTopics';
 import ListObserver from '@/components/ListObserver';
 import { classNames } from '@/utils/utils';
 
@@ -120,11 +119,9 @@ export default function Home() {
         <meta name="description" content="Opinate Blog" />
       </HeadContent>
       <Layout loading={loading}>
-        <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
-          <div className="flex flex-col-reverse lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
+        <div className="max-w-screen-xl mx-auto px-4 lg:px-8 mt-10">
+          <div className="flex lg:grid lg:grid-cols-[1fr,352px] lg:divide-x lg:divide-gray-200 lg:-ml-8 lg:-mr-8">
             <div className="pt-2 pb-24 lg:py-10 lg:pl-8 lg:pr-8">
-              <YourTopics />
-
               <Tab.Group
                 selectedIndex={selectedIndex}
                 onChange={setSelectedIndex}

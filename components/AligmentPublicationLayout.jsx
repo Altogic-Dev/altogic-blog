@@ -122,8 +122,23 @@ export default function AligmentPublicationLayout({
           </div>
         )}
       </div>
-      <div className=" h-auto flex flex-col md:hidden justify-start items-start mt-5 mb-10 gap-6">
-        <Image width={250} height={250} src={logo} alt="" />
+      <div className="h-auto flex flex-col md:hidden justify-start items-start mt-5 mb-10 gap-6">
+        <div className="w-full flex justify-center">
+          <div
+            style={{
+              position: 'relative',
+              width: '250px',
+              paddingBottom: '40%',
+            }}
+          >
+            <Image
+              alt="Image Alt"
+              src={logo}
+              layout="fill"
+              objectFit="contain" // Scale your image down to fit into the container
+            />
+          </div>
+        </div>
         <div className="w-full p-6" style={{ color, backgroundColor: bgColor }}>
           <h1
             style={{ color }}
@@ -137,69 +152,13 @@ export default function AligmentPublicationLayout({
           >
             {content}
           </h2>
-        </div>
-        <div className="flex justify-between w-full px-6">
-          <SocialIcons
-            twitter={twitter}
-            facebook={facebook}
-            linkedin={linkedin}
-            color={color}
-          />
-          {user && (
-            <FollowButton
-              isFollowing={publication?.isFollowing}
-              isLoading={!preview && isLoading}
-              onClick={!preview ? handleFollowButton : null}
-            />
-          )}
-        </div>
-        <ul className="flex items-center gap-4 w-11/12 overflow-y-auto px-6 md:hidden">
-          {_.map(navigations, (nav, index) => (
-            <li
-              key={`${_.get(nav, 'tabName')}-${index}`}
-              className="flex items-center justify-center"
-            >
-              {nav?.tabType !== 'link' ? (
-                <Button
-                  onClick={() =>
-                    router.push(
-                      `/publication/${publicationName}/${nav.tabName}`
-                    )
-                  }
-                  className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
-                    tabName === nav?.tabName
-                      ? 'text-purple-500'
-                      : 'text-slate-500'
-                  }`}
-                  style={{ color }}
-                >
-                  {_.get(nav, 'tabName')}
-                </Button>
-              ) : (
-                <a
-                  rel="noreferrer"
-                  target="_blank"
-                  href={_.get(nav, 'externalLink')}
-                  style={{ color }}
-                  className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
-                >
-                  {_.get(nav, 'tabName')}
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div className="relative w-[100vw] h-[64px] bg-no-repeat bg-cover bg-center hidden md:flex">
-        <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
-          <div className="flex gap-8 justify-between mb-5">
+          <div className="flex justify-between w-full py-6">
             <SocialIcons
               twitter={twitter}
               facebook={facebook}
               linkedin={linkedin}
               color={color}
             />
-
             {user && (
               <FollowButton
                 isFollowing={publication?.isFollowing}
@@ -208,7 +167,48 @@ export default function AligmentPublicationLayout({
               />
             )}
           </div>
-
+          <ul className="flex items-center gap-4 w-11/12 overflow-y-auto px-6 md:hidden">
+            {_.map(navigations, (nav, index) => (
+              <li
+                key={`${_.get(nav, 'tabName')}-${index}`}
+                className="flex items-center justify-center"
+              >
+                {nav?.tabType !== 'link' ? (
+                  <Button
+                    onClick={() =>
+                      router.push(
+                        `/publication/${publicationName}/${nav.tabName}`,
+                        undefined,
+                        { scroll: false }
+                      )
+                    }
+                    className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
+                      tabName === nav?.tabName
+                        ? 'text-purple-500'
+                        : 'text-slate-500'
+                    }`}
+                    style={{ color }}
+                  >
+                    {_.get(nav, 'tabName')}
+                  </Button>
+                ) : (
+                  <a
+                    rel="noreferrer"
+                    target="_blank"
+                    href={_.get(nav, 'externalLink')}
+                    style={{ color }}
+                    className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
+                  >
+                    {_.get(nav, 'tabName')}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="relative w-[100vw] h-[64px] bg-no-repeat bg-cover bg-center hidden md:flex">
+        <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
           <div
             style={{
               backgroundColor: RGBAToHexA(bottomColor),
@@ -226,7 +226,9 @@ export default function AligmentPublicationLayout({
                     <Button
                       onClick={() =>
                         router.push(
-                          `/publication/${publicationName}/${nav.tabName}`
+                          `/publication/${publicationName}/${nav.tabName}`,
+                          undefined,
+                          { scroll: false }
                         )
                       }
                       className={`inline-block p-3 text-base tracking-sm rounded-md uppercase hover:text-purple-500 ${
@@ -252,6 +254,22 @@ export default function AligmentPublicationLayout({
                 </li>
               ))}
             </ul>
+            <div className="flex gap-8 justify-between">
+              <SocialIcons
+                twitter={twitter}
+                facebook={facebook}
+                linkedin={linkedin}
+                color={color}
+              />
+
+              {user && (
+                <FollowButton
+                  isFollowing={publication?.isFollowing}
+                  isLoading={!preview && isLoading}
+                  onClick={!preview ? handleFollowButton : null}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>

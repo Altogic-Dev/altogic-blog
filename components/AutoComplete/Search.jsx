@@ -55,6 +55,9 @@ export default function Search({
     };
   }, []);
 
+  useEffect(() => {
+    closeSuggestions()
+  }, [router.asPath])
   return (
     <div className="">
       <div>

@@ -2,7 +2,6 @@ import { authActions } from '@/redux/auth/authSlice';
 import { fileActions } from '@/redux/file/fileSlice';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import { removeSpaces } from '@/utils/utils';
-import { PlusIcon } from '@heroicons/react/solid';
 import _ from 'lodash';
 
 import { useRouter } from 'next/router';
@@ -68,11 +67,6 @@ export default function PublicationSettingsInfo({
   const loading = useSelector((state) => state.auth.isLoading);
 
   const watchFields = watch(['twitter', 'linkedin', 'facebook']);
-  const addTagFromRecommended = (tag) => {
-    if (!_.includes(tags, tag) && _.size(tags) < 5) {
-      setTags((prev) => [tag, ...prev]);
-    }
-  };
 
   useEffect(() => {
     setFileUploading([false, false, false]);
@@ -313,7 +307,6 @@ export default function PublicationSettingsInfo({
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
             General
           </h2>
-       
         </div>
         <div className="grid lg:grid-cols-2 gap-8">
           <div>
@@ -598,27 +591,7 @@ export default function PublicationSettingsInfo({
               </p>
             </div>
             <div>
-              <RecommendationInput />
-              <div>
-                <p className="text-slate-600 mb-4 text-sm tracking-sm">
-                  Recommended Categories
-                </p>
-                <div className="flex flex-wrap items-center gap-4">
-                  {_.map(user?.recommendedTopics, (topic) => (
-                    <Button
-                      key={topic}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-5 rounded-md tracking-sm text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                      onClick={() => addTagFromRecommended(topic)}
-                    >
-                      <PlusIcon
-                        className="mr-2 h-5 w-5 text-gray-700"
-                        aria-hidden="true"
-                      />
-                      {topic}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+              <RecommendationInput setTags={setTags} tags={tags} />
             </div>
           </div>
         </div>

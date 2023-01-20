@@ -18,7 +18,6 @@ export default function Notifications({
   );
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-
   return (
     <div>
       {/* Desktop Notification */}
@@ -127,7 +126,7 @@ export default function Notifications({
                       notification={notification}
                     />
                   ))}
-                  <SeeAllNotification />
+                  <SeeAllNotification  />
                 </Dialog.Panel>
               </Transition.Child>
             </div>

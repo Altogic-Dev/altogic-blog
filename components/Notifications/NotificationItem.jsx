@@ -1,11 +1,10 @@
 import React from 'react';
-import { XIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Avatar from '../profile/Avatar';
 import Button from '../basic/button';
 
-export default function NotificationItem({ notification, fromPage }) {
+export default function NotificationItem({ notification }) {
   const router = useRouter();
   const route = () => {
     switch (notification.type) {
@@ -68,7 +67,7 @@ export default function NotificationItem({ notification, fromPage }) {
             </Button>
           </div>
         </div>
-        {!fromPage && (
+        {/* {!fromPage && (
           <div className="ml-4 flex-shrink-0 flex">
             <button
               type="button"
@@ -78,7 +77,7 @@ export default function NotificationItem({ notification, fromPage }) {
               <XIcon className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
