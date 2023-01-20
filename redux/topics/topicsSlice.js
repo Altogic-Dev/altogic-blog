@@ -101,9 +101,13 @@ export const topicsSlice = createSlice({
       state.error = action.payload;
     },
 
-    getPublicationsStoriesByTopicRequest() { },
+    getPublicationsStoriesByTopicRequest(state) {
+      state.isLoading = true;
+
+     },
     getPublicationsStoriesByTopicSuccess(state, action) {
       state.publicationStoriesByTopic = action.payload;
+      state.isLoading = false;
     },
     searchTopicsRequest(state) {
       state.searchTopics = []

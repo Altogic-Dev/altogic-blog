@@ -13,6 +13,9 @@ function PublicationTabTopic({ tab, publication }) {
   const topicStories = useSelector(
     (state) => state.topics.publicationStoriesByTopic
   );
+  const isLoading = useSelector(
+    (state) => state.topics.isLoading
+  );
 
   const stories = _.map(topicStories, 'story');
 
@@ -29,7 +32,7 @@ function PublicationTabTopic({ tab, publication }) {
 
   return (
     <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:min-w-[100vw] lg:min-w-[75vw] px-8 max-w-screen-xl w-full mx-auto ">
-      {stories ? (
+      {!isLoading ? (
         _.map(stories, (post) => (
           <PublicationPostCard
             key={post._id}

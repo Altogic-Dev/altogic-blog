@@ -16,7 +16,6 @@ import Sidebar from '@/layouts/Sidebar';
 import StoryContent from '@/components/StoryContent';
 import { publicationActions } from '@/redux/publication/publicationSlice';
 import Button from '@/components/basic/button';
-import useUnload from '@/hooks/useUnload';
 import Link from 'next/link';
 import { BookOpenIcon } from '@heroicons/react/outline';
 import StoryService from '@/services/story';
@@ -25,7 +24,7 @@ import Image from 'next/image';
 export async function getServerSideProps({ req, params }) {
   const storyName = params.storySlug;
   const storyServerSide = await StoryService.getStoryBySlug(storyName);
-
+  console.log(storyServerSide);
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {
