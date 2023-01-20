@@ -105,8 +105,8 @@ export default function Publications({ tabName }) {
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
         />
-        <div className="w-full overflow-hidden flex justify-center pb-16 ">
-          <div>
+        <div className="w-full overflow-hidden flex justify-center pb-16 px-5">
+          <div className=''>
             <div
               className={`${
                 _.get(selectedTab, 'tabType') !== 'feature' &&
