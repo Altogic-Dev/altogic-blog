@@ -18,7 +18,7 @@ export default function PublicationHomeListImageCard({
           </div>
         </div>
         <img
-          className="w-[210px] h-[150px] mb-4 rounded-lg"
+          className="w-[300px] mb-4 rounded-lg object-cover"
           src={coverImage}
           alt=""
         />
