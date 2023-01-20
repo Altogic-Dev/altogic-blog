@@ -53,17 +53,19 @@ export default function PublicationPostCard({
           </a>
         </Link>
         <Link href={`/story/${story.storySlug}`}>
-          <a className="group mb-4 md:mb-8 flex flex-col justify-start items-start">
+          <a className="group mb-4 md:mb-8  flex flex-col justify-start items-start">
             {image ? (
-              <img
-                className={classNames(
-                  bigImage
-                    ? 'w-full h-[250px] object-cover mb-8 rounded-md'
-                    : 'w-full h-[220px] object-cover mb-8 rounded-md'
-                )}
-                src={image}
-                alt={title}
-              />
+              <div className={`flex items-center ${bigImage ? 'h-[250px]' : 'h-[220px]'}`}>
+                <img
+                  className={classNames(
+                    bigImage
+                      ? 'w-full object-cover mb-8 rounded-md'
+                      : 'w-full object-cover mb-8 rounded-md'
+                  )}
+                  src={image}
+                  alt={title}
+                />
+              </div>
             ) : (
               <div className="h-[280px] w-[250px]" />
             )}
