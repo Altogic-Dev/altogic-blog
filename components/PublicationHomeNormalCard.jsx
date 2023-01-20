@@ -36,7 +36,7 @@ export default function PublicationHomeNormalCard({
           <div className={classNames(singleBigCard ? 'lg:mt-14' : null)}>
             <div>
               <h2 className="text-slate-500 mb-4 text-2xl font-semibold">
-                {storyTitle.substring(0, 50)}
+                {storyTitle}
               </h2>
             </div>
             <div className="mt-4 space-y-1">
