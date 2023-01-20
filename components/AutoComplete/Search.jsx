@@ -20,11 +20,6 @@ export default function Search({
       closeModal();
     }
   };
-  // const onClick = (e) => {
-  //   setInput(e.target.innerText);
-  //   closeSuggestions();
-  // };
-
   const handleDebounceFn = (inputValue) => {
     if (inputValue.length >= 3) {
       onSearch(inputValue);
