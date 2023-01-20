@@ -5,9 +5,9 @@ import {
   CogIcon,
   ChartBarIcon,
   PencilAltIcon,
-  BookOpenIcon,
   UserAddIcon,
   DocumentDuplicateIcon,
+  HomeIcon,
 } from '@heroicons/react/outline';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,8 +65,8 @@ export default function PublicationDropdown({ publication, className }) {
               className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer "
               onClick={() => router.push(`/publication/${publication.name}`)}
             >
-              <BookOpenIcon className="w-4 h-4 text-slate-500" />
-              Stories
+              <HomeIcon className="w-4 h-4 text-slate-500" />
+              Home
             </Popover.Button>
 
             <Popover.Button

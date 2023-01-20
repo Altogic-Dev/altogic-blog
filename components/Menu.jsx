@@ -37,7 +37,6 @@ export default function HeaderMenu({ logo }) {
   const [user, setUser] = useState('undefined');
   const [isAuthenticatedState, setIsAuthenticatedState] = useState(true);
 
-  const [selectedPublication, setSelectedPublication] = useState();
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hideMenu, setHideMenu] = useState(false);
 
@@ -48,12 +47,6 @@ export default function HeaderMenu({ logo }) {
   useEffect(() => {
     setUser(sessionUser);
   }, [sessionUser]);
-
-  useEffect(() => {
-    if (selectedPublicationState) {
-      setSelectedPublication(selectedPublicationState);
-    }
-  }, [selectedPublicationState]);
 
   const logout = () => {
     dispatch(authActions.logoutRequest());
@@ -90,6 +83,7 @@ export default function HeaderMenu({ logo }) {
       })
     );
   };
+
   return (
     <div>
       <div className="max-w-screen-xl mx-auto p-4 lg:px-8 lg:py-6">
@@ -236,7 +230,7 @@ export default function HeaderMenu({ logo }) {
                 </Link>
               </div>
             )}
-            {selectedPublication && (
+            {selectedPublicationState && (
               <Menu
                 as="div"
                 className="relative hidden lg:inline-flex items-center"
@@ -246,14 +240,14 @@ export default function HeaderMenu({ logo }) {
                     width={40}
                     height={40}
                     className="inline-block w-10 h-10 rounded-full"
-                    placeholderName={selectedPublication?.name}
-                    src={selectedPublication?.logo}
-                    alt={selectedPublication?.name}
+                    placeholderName={selectedPublicationState?.name}
+                    src={selectedPublicationState?.logo}
+                    alt={selectedPublicationState?.name}
                   />
                 </Menu.Button>
 
                 <PublicationDropdown
-                  publication={selectedPublication}
+                  publication={selectedPublicationState}
                   className="origin-top-right absolute top-10 w-56"
                 />
               </Menu>
@@ -273,57 +267,51 @@ export default function HeaderMenu({ logo }) {
               />
             </a>
           </Link>
-          {user && (
-            <Link href={`/${user?.username}?tab=list`}>
-              <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
-                <BookmarkIcon
-                  className={`w-8 h-7  group-hover:text-purple-500 ${
-                    router.asPath.includes('?tab=list')
-                      ? 'text-purple-500'
-                      : 'text-slate-300'
-                  }`}
-                  viewBox="0 0 21 21"
-                />
-              </a>
-            </Link>
-          )}
-          {user && (
-            <Link href="/my-stories">
-              <a className="group inline-flex items-center gap-3 text-slate-800  py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
-                <BookOpenIcon
-                  className={`w-8 h-7  group-hover:text-purple-500 ${
-                    router.asPath === '/my-stories'
-                      ? 'text-purple-500'
-                      : 'text-slate-300'
-                  }`}
-                  viewBox="0 0 21 21"
-                />
-              </a>
-            </Link>
-          )}
-          {user && (
-            <Menu
-              as="div"
-              className="relative inline-flex lg:hidden items-center"
-            >
-              <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
-                <Avatar
-                  width={40}
-                  height={40}
-                  className="inline-block w-10 h-10 rounded-full"
-                  placeholderName={user?.name}
-                  src={user?.profilePicture}
-                  alt={user?.username}
-                />
-              </Menu.Button>
-              <HeaderDropdown
-                user={user}
-                logout={logout}
-                className="fixed bottom-20 w-full"
+          <Link href={`/${user?.username}?tab=list`}>
+            <a className="group inline-flex items-center gap-3 text-slate-800 py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
+              <BookmarkIcon
+                className={`w-8 h-7  group-hover:text-purple-500 ${
+                  router.asPath.includes('?tab=list')
+                    ? 'text-purple-500'
+                    : 'text-slate-300'
+                }`}
+                viewBox="0 0 21 21"
               />
-            </Menu>
-          )}
-          {selectedPublication && (
+            </a>
+          </Link>
+          <Link href="/my-stories">
+            <a className="group inline-flex items-center gap-3 text-slate-800  py-2 text-base font-medium leading-6 tracking-sm rounded-md hover:text-purple-700 ">
+              <BookOpenIcon
+                className={`w-8 h-7  group-hover:text-purple-500 ${
+                  router.asPath === '/my-stories'
+                    ? 'text-purple-500'
+                    : 'text-slate-300'
+                }`}
+                viewBox="0 0 21 21"
+              />
+            </a>
+          </Link>
+          <Menu
+            as="div"
+            className="relative inline-flex lg:hidden items-center"
+          >
+            <Menu.Button className="inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-purple-500">
+              <Avatar
+                width={40}
+                height={40}
+                className="inline-block w-10 h-10 rounded-full"
+                placeholderName={user?.name}
+                src={user?.profilePicture}
+                alt={user?.username}
+              />
+            </Menu.Button>
+            <HeaderDropdown
+              user={user}
+              logout={logout}
+              className="fixed bottom-20 w-full"
+            />
+          </Menu>
+          {selectedPublicationState && (
             <Menu
               as="div"
               className="relative inline-flex lg:hidden items-center"
@@ -333,14 +321,14 @@ export default function HeaderMenu({ logo }) {
                   width={40}
                   height={40}
                   className="inline-block w-10 h-10 rounded-full"
-                  placeholderName={selectedPublication?.name}
-                  src={selectedPublication?.logo}
-                  alt={selectedPublication?.username}
+                  placeholderName={selectedPublicationState?.name}
+                  src={selectedPublicationState?.logo}
+                  alt={selectedPublicationState?.username}
                 />
               </Menu.Button>
 
               <PublicationDropdown
-                publication={selectedPublication}
+                publication={selectedPublicationState}
                 className="fixed bottom-20 w-full"
               />
             </Menu>
