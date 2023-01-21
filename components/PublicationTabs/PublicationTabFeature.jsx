@@ -56,7 +56,7 @@ function PublicationTabFeature({ tab }) {
                 }`}
               >
                 {_.get(section, 'sectionTitle') && (
-                  <h2 className="text-slate-500 mb-4 text-2xl font-semibold ">
+                  <h2 className="text-slate-500 mb-4 text-2xl font-semibold w-full break-all ">
                     {_.get(section, 'sectionTitle')}
                   </h2>
                 )}

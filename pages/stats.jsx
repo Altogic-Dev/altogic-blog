@@ -30,7 +30,7 @@ const statCards = [
 
 export default function Stats() {
   const [stats, setStats] = useState([]);
-  const [percentages, setPercentages] = useState([]);
+  const [percentages, setPercentages] = useState();
   const dispatch = useDispatch();
 
   const user = useSelector((state) => state.auth.user);
@@ -39,7 +39,6 @@ export default function Stats() {
     (state) => state.stats.storiesStatistics
   );
   const isLoading = useSelector((state) => state.stats.isLoading);
-
   const getStatistics = () => {
     dispatch(statsActions.getStatisticsRequest({ userId: user._id }));
   };
@@ -52,6 +51,7 @@ export default function Stats() {
     getAllStoriesStatistics();
   }, []);
 
+ 
   useEffect(() => {
     if (statisticsData) {
       setStats(() => {
@@ -191,8 +191,8 @@ export default function Stats() {
               </div>
             </form>
           </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 xl:gap-6 w-full  ">
-            {!isLoading ? (
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 lg:gap-4 xl:gap-6 w-full   h-[200px]">
+            {!isLoading && stats && percentages ? (
               statCards.map((statCard) => (
                 <StatsCard
                   key={statCard.title}

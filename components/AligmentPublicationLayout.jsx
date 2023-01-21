@@ -152,7 +152,7 @@ export default function AligmentPublicationLayout({
           >
             {content}
           </h2>
-          <div className="flex justify-between w-full py-6">
+          <div className="flex justify-between w-full py-6 ">
             <SocialIcons
               twitter={twitter}
               facebook={facebook}
@@ -254,7 +254,7 @@ export default function AligmentPublicationLayout({
                 </li>
               ))}
             </ul>
-            <div className="flex gap-8 justify-between">
+            <div className="flex gap-8 justify-between pr-5">
               <SocialIcons
                 twitter={twitter}
                 facebook={facebook}

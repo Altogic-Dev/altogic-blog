@@ -326,8 +326,7 @@ export default function WriteAStorySettings() {
                         storyActions.updateStoryFieldRequest({
                           story: {
                             ...story,
-                            publication:
-                              story?.publication?._id || story?.publication,
+                            publication: story?.publication,
                           },
                           newStoryField: {
                             pinnedStory: inpPinStory,
@@ -456,9 +455,7 @@ export default function WriteAStorySettings() {
                               storyActions.updateStoryFieldRequest({
                                 story: {
                                   ...story,
-                                  publication:
-                                    story?.publication?._id ||
-                                    story?.publication,
+                                  publication: story?.publication,
                                 },
                                 newStoryField: {
                                   seoTitle:
@@ -516,9 +513,7 @@ export default function WriteAStorySettings() {
                               storyActions.updateStoryFieldRequest({
                                 story: {
                                   ...story,
-                                  publication:
-                                    story?.publication?._id ||
-                                    story?.publication,
+                                  publication: story?.publication,
                                 },
                                 newStoryField: {
                                   seoDescription:
@@ -850,8 +845,7 @@ export default function WriteAStorySettings() {
                           storyActions.updateStoryFieldRequest({
                             story: {
                               ...story,
-                              publication:
-                                story?.publication?._id || story?.publication,
+                              publication: story?.publication,
                             },
                             newStoryField: {
                               license: radiolicense,
@@ -957,9 +951,7 @@ export default function WriteAStorySettings() {
                               storyActions.updateStoryFieldRequest({
                                 story: {
                                   ...story,
-                                  publication:
-                                    story?.publication?._id ||
-                                    story?.publication,
+                                  publication: story?.publication,
                                 },
                                 newStoryField: {
                                   storySlug: inpStorySlug.toLowerCase(),

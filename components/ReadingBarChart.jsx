@@ -9,13 +9,13 @@ import React, { useEffect, useState } from 'react';
 
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
-const getIntroOfPage = (count) => {
-  if (count > 10) {
-    return 'Bu tarihte çok okumuşsun';
-  }
+// const getIntroOfPage = (count) => {
+//   if (count > 10) {
+//     return 'Bu tarihte çok okumuşsun';
+//   }
 
-  return '';
-};
+//   return '';
+// };
 
 function CustomTooltip({ active, payload, label }) {
   if (active && payload && payload.length) {
@@ -25,7 +25,7 @@ function CustomTooltip({ active, payload, label }) {
           <span className="font-semibold">{label}: </span>
           {`${payload[0].value}`}
         </p>
-        <p>{getIntroOfPage(payload[0].value)}</p>
+        {/* <p>{getIntroOfPage(payload[0].value)}</p> */}
       </div>
     );
   }

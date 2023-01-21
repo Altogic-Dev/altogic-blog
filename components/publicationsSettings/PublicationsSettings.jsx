@@ -58,10 +58,7 @@ export default function PublicationsSettings({ isCreate }) {
       .string()
       .max(100, 'Description should be max 100 characters')
       .required('Description is required'),
-    tagline: yup
-      .string()
-      .max(100, 'Tagline should be max 100 characters')
-      .required('Tagline is required'),
+
     email: yup
       .string()
       .email('Please enter a valid email')
@@ -249,6 +246,22 @@ export default function PublicationsSettings({ isCreate }) {
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
+        <div className="flex lg:hidden items-center justify-end gap-4 pb-[120px]">
+          <button
+            type="button"
+            className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            onClick={handleSave}
+          >
+            {isCreate ? 'Create' : 'Save'}
+          </button>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
+            onClick={isCreate ? router.back : handleClear}
+          >
+            Cancel
+          </button>
+        </div>
       </Layout>
     </div>
   );
