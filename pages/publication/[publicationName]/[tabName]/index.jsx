@@ -104,41 +104,39 @@ export default function Publications({ tabName }) {
           facebook={publication?.facebook}
           linkedin={publication?.linkedin}
         />
-        <div className="w-full overflow-hidden flex justify-center pb-16 ">
-          <div className='w-[95vw] md:w-full'>
-            <div
-              className={`${
-                _.get(selectedTab, 'tabType') !== 'feature' &&
-                'grid lg:divide-x lg:divide-gray-200 mb-[60px]'
-              } `}
-            >
-              <div className="divide-y divide-gray-200 ">
-                <PublicationTab tab={selectedTab} publication={publication} />
-              </div>
+        <div className="w-full overflow-hidden pb-16 ">
+          <div
+            className={`${
+              _.get(selectedTab, 'tabType') !== 'feature' &&
+              'grid lg:divide-x lg:divide-gray-200 mb-[60px]'
+            } `}
+          >
+            <div className="divide-y divide-gray-200 ">
+              <PublicationTab tab={selectedTab} publication={publication} />
             </div>
-            <div className="px-8 md:w-[100vw] max-w-screen-xl w-full mx-auto overflow-hidden ">
-              <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
-                Latest
-              </h2>
-              <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
-                {latestPublicationStories?.map((post) => (
-                  <PublicationPostCard
-                    key={post._id}
-                    image={_.first(post.storyImages)}
-                    title={post.title ?? 'Untitled'}
-                    description={parseHtml(post.content) ?? ''}
-                    readMoreUrl={`/story/${post.storySlug}`}
-                    personName={post.username}
-                    profilePicture={post.user?.profilePicture}
-                    date={DateTime.fromISO(post.createdAt).toRelative()}
-                    storiesCount={post.user?.storyCount}
-                    bookmark={post.bookmark}
-                    firstPadding={false}
-                    bigImage={_.first(post.storyImages)}
-                    story={post}
-                  />
-                ))}
-              </div>
+          </div>
+          <div className="md:w-[100vw] max-w-screen-xl w-full mx-auto overflow-hidden  px-8 ">
+            <h2 className="text-slate-500 pb-5 text-lg tracking-sm border-b border-gray-200">
+              Latest
+            </h2>
+            <div className="mt-5 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
+              {latestPublicationStories?.map((post) => (
+                <PublicationPostCard
+                  key={post._id}
+                  image={_.first(post.storyImages)}
+                  title={post.title ?? 'Untitled'}
+                  description={parseHtml(post.content) ?? ''}
+                  readMoreUrl={`/story/${post.storySlug}`}
+                  personName={post.username}
+                  profilePicture={post.user?.profilePicture}
+                  date={DateTime.fromISO(post.createdAt).toRelative()}
+                  storiesCount={post.user?.storyCount}
+                  bookmark={post.bookmark}
+                  firstPadding={false}
+                  bigImage={_.first(post.storyImages)}
+                  story={post}
+                />
+              ))}
             </div>
           </div>
         </div>

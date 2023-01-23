@@ -66,7 +66,7 @@ function PublicationTabStory({ tab, publication }) {
   }, [story]);
 
   return (
-    <div className="md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
+    <div className="md:w-[100vw] max-w-screen-xl w-full mx-auto">
       {!story ? (
         <div className='w-full flex justify-center'>
           <ClipLoader color="#9333ea" size={80} />
