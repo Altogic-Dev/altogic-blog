@@ -188,12 +188,7 @@ export default function BlogDetail({ ip, story }) {
     setStoryUser(_.get(storyState, 'user'));
   }, [storyState]);
 
-  // useEffect(
-  //   () => () => {
-  //     visitStory();
-  //   },
-  //   []
-  // );
+
   useEffect(() => {
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -337,7 +332,7 @@ export default function BlogDetail({ ip, story }) {
                               _.get(story, 'publication.description') ||
                               _.get(story, 'user.about'),
                           }}
-                          className="max-w-xl text-slate-600 text-xs tracking-sm"
+                          className="max-w-xl text-slate-600 text-xs tracking-sm break-all"
                         />
                       </div>
                       <Button

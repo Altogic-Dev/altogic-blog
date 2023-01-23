@@ -89,12 +89,15 @@ export default function PublicationsSettings({ isCreate }) {
     else setDoHomeClear(true);
   };
 
-  const checkAuthorization = (publication, sessionUser) => {
+  const checkAuthorization = (publication) => {
+    const sessionUser = _.find(
+      publication.users,
+      (person) => person.user === user?._id
+    );
     if (
       _.isNil(sessionUser) ||
       !['admin'].includes(sessionUser.role) ||
-      _.lowerCase(publicationName) !== _.lowerCase(publication.name) ||
-      _.isNil(publication)
+      _.lowerCase(publicationName) !== _.lowerCase(publication.name)
     ) {
       router.push('/');
     }
@@ -102,10 +105,6 @@ export default function PublicationsSettings({ isCreate }) {
 
   useEffect(() => {
     if (!isCreate && publication && publicationName && user) {
-      const sessionUser = _.find(
-        publication.users,
-        (person) => person.user === user?._id
-      );
       checkAuthorization(publication, sessionUser);
     }
   }, [publication, publicationName, user]);
@@ -113,6 +112,8 @@ export default function PublicationsSettings({ isCreate }) {
   useEffect(() => {
     if (sessionUser) {
       setUser(sessionUser);
+    } else {
+      router.push('/');
     }
   }, [sessionUser]);
 

@@ -143,15 +143,16 @@ const StoryService = {
       .get();
   },
   getPublicationStoriesByTopic(publication, topic, limit) {
-    return db
-      .model('story')
-      .filter(
-        `publication == '${publication}' && isPublished == true && IN(this.categoryNames, '${topic}')`
-      )
-      .lookup({ field: 'user' })
-      .sort('createdAt', 'desc')
-      .limit(limit)
-      .get();
+    return endpoint.get(`/publication/${publication}/topic`, { topic, limit });
+    // return db
+    //   .model('story')
+    //   .filter(
+    //     `publication == '${publication}' && isPublished == true && IN(this.categoryNames, '${topic}')`
+    //   )
+    //   .lookup({ field: 'user' })
+    //   .sort('createdAt', 'desc')
+    //   .limit(limit)
+    //   .get();
   },
 
 

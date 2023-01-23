@@ -33,6 +33,7 @@ const initialState = {
   error: null,
   mutedUsers: [],
   likeLoading: false,
+  publicationTopicStories: null,
 };
 
 // Actual Slice
@@ -485,8 +486,10 @@ export const storySlice = createSlice({
     },
     getPublicationsStoriesByTopicSuccess(state, action) {
       state.isLoading = false;
-      state.publicationsStories[action.payload.sectionIndex] =
-        action.payload.data;
+      state.publicationTopicStories = action.payload.data;
+      if (action.payload.sectionIndex)
+        state.publicationsStories[action.payload.sectionIndex] =
+          action.payload.data;
     },
     getPublicationsStoriesByTopicFailure(state, action) {
       state.error = action.payload;

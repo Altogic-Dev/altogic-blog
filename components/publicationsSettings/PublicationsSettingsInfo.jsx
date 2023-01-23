@@ -178,10 +178,8 @@ export default function PublicationSettingsInfo({
           logo: uploadedFileLinks?.logo || publication?.logo,
           tags,
           users: [...adminUsers, ...writerList, ...editorList],
-          name: getValues('name'),
+          name: getValues('name').trim(),
         };
-        console.log(publication);
-
         dispatch(
           publicationActions.updatePublicationRequest({
             publication: editedPublication,

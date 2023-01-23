@@ -31,6 +31,7 @@ import { ClipLoader } from 'react-spinners';
 import ToastMessage from '@/utils/toast';
 import AuthService from '@/services/auth';
 import { storyActions } from '@/redux/story/storySlice';
+import { XIcon } from '@heroicons/react/outline';
 
 export default function ProfilePage() {
   const BOOKMARK_LIST_LIMIT = 3;
@@ -49,9 +50,6 @@ export default function ProfilePage() {
 
   const followLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
-  );
-  const followerConnectionLoading = useSelector(
-    (state) => state.followerConnection.isLoading
   );
   const profileUser = useSelector((state) => state.auth.profileUser);
 
@@ -276,7 +274,6 @@ export default function ProfilePage() {
     profileUser,
     userFollowingsCount,
   ]);
-
   return (
     <div>
       <HeadContent>
@@ -487,7 +484,11 @@ export default function ProfilePage() {
                     seeAllButton: toggleFollowingsModal,
                   }}
                   followingTopics={isMyProfile}
-                  profile={username !== sessionUser?.username ? profileUser : sessionUser}
+                  profile={
+                    username !== sessionUser?.username
+                      ? profileUser
+                      : sessionUser
+                  }
                   followLoading={followLoading && !followingModal}
                   isFollowing={
                     isFollowing ||
@@ -505,8 +506,10 @@ export default function ProfilePage() {
             </div>
             {/* Mobile Sidebar */}
             <div className="flex flex-col gap-6 lg:hidden py-8 lg:p-8">
-              {(followerConnectionLoading || followLoading || !profileUser) &&
-              !followingModal ? (
+              {(!profileUser &&
+                !followingModal &&
+                username !== sessionUser?.username) ||
+              infoLoading ? (
                 <ClipLoader />
               ) : (
                 <Sidebar
@@ -636,7 +639,12 @@ export default function ProfilePage() {
                     className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                   >
                     {userFollowingsCount} Following
+                    <XIcon
+                      onClick={() => setFollowingModal(false)}
+                      className="w-5 h-5 absolute right-8 top-8 cursor-pointer"
+                    />
                   </Dialog.Title>
+
                   <div>
                     <ul className="mb-6">
                       {_.map(userFollowings, (person) => (

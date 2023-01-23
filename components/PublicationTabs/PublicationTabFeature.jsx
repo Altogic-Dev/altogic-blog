@@ -17,6 +17,7 @@ function PublicationTabFeature({ tab }) {
   const [basePath, setBasePath] = useState();
 
   useEffect(() => {
+    console.log(tab)
     if (tab) {
       dispatch(
         publicationActions.getFeaturePageRequest({ featureId: tab.contents })

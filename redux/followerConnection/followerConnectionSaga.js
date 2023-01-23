@@ -98,12 +98,12 @@ function* getFollowerUsersSaga({ payload: { username, userId, page, limit } }) {
       limit
     );
     if (errors) throw errors;
-    if (_.isArray(data.data)) {
+    if (_.isArray(data.result)) {
       yield put(
         followerConnectionActions.getFollowerUsersSuccess({
           sessionUser: userId === sessionUserId,
-          data: data.data,
-          info: data.info,
+          data: data.result,
+          info: data.countInfo,
           username,
           page,
         })
@@ -133,9 +133,9 @@ function* getFollowingUsersSaga({ payload: { username, userId, page, limit } }) 
         followerConnectionActions.getFollowingUsersSuccess({
           sessionUser: userId === sessionUserId,
           data: data.result.map((user) => ({
-              ...user,
-              isFollowing: user.follower_connection
-            })),
+            ...user,
+            isFollowing: user.follower_connection
+          })),
           info: data.countInfo,
           username,
           page,

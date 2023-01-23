@@ -31,6 +31,8 @@ const initialState = {
   viewDateType: '30 Days',
   storyName: null,
   publicationStories: [],
+  cardsLoading: false,
+  storyStatsLoading: true,
 };
 
 // Actual Slice
@@ -84,19 +86,19 @@ export const statsSlice = createSlice({
       state.isLoading = false;
     },
     getAllStoriesStatisticsRequest(state) {
-      state.isLoading = true;
+      state.cardsLoading = true;
     },
     getAllStoriesStatisticsSuccess(state, action) {
-      state.isLoading = false;
+      state.cardsLoading = false;
       state.storiesStatistics = action.payload;
     },
     getAllStoriesStatisticsFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.cardsLoading = false;
     },
 
     getStoryStatisticsRequest(state) {
-      state.isLoading = true;
+      state.storyStatsLoading = true;
     },
     getStoryStatisticsSuccess(state, action) {
       state.storyCreatedAt = action.payload.story.createdAt;
@@ -107,11 +109,11 @@ export const statsSlice = createSlice({
       state.storyTotalReadTime =
         _.first(action.payload.totalReadTime)?.sum ?? 0;
       state.error = null;
-      state.isLoading = false;
+      state.storyStatsLoading = false;
     },
     getStoryStatisticsFailure(state, action) {
       state.error = action.payload;
-      state.isLoading = false;
+      state.storyStatsLoading = false;
     },
     getStoryStatisticsPeriodicallyRequest(state) {
       state.isLoading = true;

@@ -51,13 +51,7 @@ const TopicsService = {
       .compute([{ name: 'count', type: 'count' }]);
 
   },
-  getPublicationsStoriesByTopic(publicationId, topicName) {
-    return db
-      .model('topic_writers')
-      .filter(`publication == '${publicationId}' && topic == '${topicName}'`)
-      .lookup({ field: 'story' })
-      .get();
-  },
+
   searchTopics(topic) {
     return endpoint.get('/topic/search', { topic });
   },

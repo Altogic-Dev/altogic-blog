@@ -69,7 +69,7 @@ export default function Suggestion({ suggestions, name, onClick, selected }) {
 
                     {!_.get(suggestion, 'storyImages[0]') &&
                       !suggestion.profilePicture && (
-                        <div className="w-8 h-8 rounded-full mr-2 bg-gray-200" />
+                        <div className="w-[67px] h-8 bg-gray-200 " />
                       )}
                   </div>
                 )}

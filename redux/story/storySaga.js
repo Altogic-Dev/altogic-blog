@@ -529,7 +529,6 @@ function* getPublicationStoriesByTopicSaga({
       limit
     );
     if (!_.isNil(errors)) throw errors.items;
-
     if (!_.isNil(data)) {
       yield put(
         storyActions.getPublicationsStoriesByTopicSuccess({

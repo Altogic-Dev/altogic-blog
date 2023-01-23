@@ -4,6 +4,7 @@ import _, { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Transition, Dialog } from '@headlessui/react';
 import { htmlToText } from 'html-to-text';
+import { XIcon } from '@heroicons/react/outline';
 import Link from 'next/link';
 import { followerConnectionActions } from '@/redux/followerConnection/followerConnectionSlice';
 import Topic from '../basic/topic';
@@ -117,7 +118,7 @@ function About(props) {
       </div>
       <div className="flex items-center gap-4 text-slate-500 text-base tracking-sm py-10 border-b border-slate-200">
         <Button onClick={followerCount ? toggleFollowersModal : null}>
-          {followerCount ?? 0 } Followers
+          {followerCount ?? 0} Followers
         </Button>
         <svg
           className="h-1 w-1 text-slate-500"
@@ -164,6 +165,10 @@ function About(props) {
                       className="text-2xl font-semibold text-slate-700 mb-6 tracking-md text-center"
                     >
                       {followerCount} Followers
+                      <XIcon
+                        onClick={() => setFollowersModal(false)}
+                        className="w-5 h-5 absolute right-8 top-8 cursor-pointer"
+                      />
                     </Dialog.Title>
                     <div>
                       <ul className="mb-6">
