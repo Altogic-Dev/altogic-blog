@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 
 function PublicationTabAbout({ publication }) {
   return (
-    <div className="md:w-[100vw] px-8 max-w-screen-xl w-full mx-auto ">
+    <div className="md:w-[100vw] max-w-screen-xl w-full mx-auto ">
       <div className="prose text-lg font-normal tracking-sm text-slate-500 max-w-full ">
         {_.get(publication, 'description')}
       </div>

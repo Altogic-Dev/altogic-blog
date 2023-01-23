@@ -23,7 +23,7 @@ export default function PublicationPostCard({
   const [createNewList, setCreateNewList] = useState(false);
 
   return (
-    <>
+    <div className='w-full'>
       <div className="py-8 ">
         <Link href={`/${personName}`}>
           <a className="inline-flex items-center gap-3 mb-4">
@@ -53,7 +53,7 @@ export default function PublicationPostCard({
           </a>
         </Link>
         <Link href={`/story/${story.storySlug}`}>
-          <a className="group mb-4 md:mb-8  flex flex-col justify-start items-start">
+          <a className="group mb-4 md:mb-8 flex flex-col justify-start items-start">
             {image ? (
               <div className={`flex items-center ${bigImage ? 'h-[250px]' : 'h-[220px]'}`}>
                 <img
@@ -74,7 +74,7 @@ export default function PublicationPostCard({
                 {title}
               </h2>
             </div>
-            <p className="text-slate-500 text-sm tracking-sm break-words w-96 sm:w-full">
+            <p className="text-slate-500 text-sm tracking-sm break-words md:w-96 sm:w-full">
               {htmlToText(description?.substring(0, 200)) || 'No content'}
             </p>
           </a>
@@ -201,6 +201,6 @@ export default function PublicationPostCard({
       {createNewList && (
         <CreateBookmarkList setCreateNewList={setCreateNewList} story={story} />
       )}
-    </>
+    </div>
   );
 }

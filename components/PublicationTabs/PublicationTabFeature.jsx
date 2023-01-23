@@ -17,7 +17,6 @@ function PublicationTabFeature({ tab }) {
   const [basePath, setBasePath] = useState();
 
   useEffect(() => {
-    console.log(tab)
     if (tab) {
       dispatch(
         publicationActions.getFeaturePageRequest({ featureId: tab.contents })
@@ -50,7 +49,7 @@ function PublicationTabFeature({ tab }) {
           if (section?.designType === 'grid') {
             return (
               <div
-                className={`mb-10 flex flex-col overflow-hidden text-ellipsis md:min-w-[100vw]  max-w-screen-xl px-8  w-full mx-auto ${
+                className={`mb-10 flex flex-col overflow-hidden text-ellipsis md:min-w-[100vw] max-w-screen-xl w-full mx-auto ${
                   section?.isFullContainerGrid
                     ? 'lg:min-w-[100vw]'
                     : 'lg:min-w-[75vw]'
