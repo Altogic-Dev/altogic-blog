@@ -40,24 +40,22 @@ export default function PublicationsFeature() {
   const checkAuthorization = (publication) => {
     const sessionUser = _.find(
       publication.users,
-      (person) => person.user === user._id
+      (person) => person.user === user?._id
     );
     if (
-      publicationName &&
-      (_.isNil(sessionUser) ||
-        !['admin', 'editor'].includes(sessionUser.role) ||
-        _.lowerCase(publicationName) !==
-          _.lowerCase(publication.name) ||
-        _.isNil(publication) ||
-        !_.includes(user.publications, publication._id))
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !== _.lowerCase(publication.name)
     ) {
       router.push('/');
     }
   };
 
   useEffect(() => {
+    if (!user) router.push('/');
     if (publication) {
       checkAuthorization(publication);
+
       if (_.isEmpty(publicationFeatures)) getPublicationFeatures();
     }
   }, [publication]);
@@ -66,10 +64,7 @@ export default function PublicationsFeature() {
     <div>
       <HeadContent>
         <title>Opinate Publications Feature</title>
-        <meta
-          name="description"
-          content="Opinate Publications Feature"
-        />
+        <meta name="description" content="Opinate Publications Feature" />
       </HeadContent>
       <Layout>
         <div className="h-screen max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">

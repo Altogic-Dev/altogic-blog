@@ -11,7 +11,6 @@ import FileInput from '../FileInput';
 import Input from '../Input';
 import UserInput from '../UserInput';
 import PublicationSettingsSuggestions from './suggestions/PublicationSettingsSuggestions';
-import Button from '../basic/button';
 import RecommendationInput from '../general/RecommendationInput';
 
 export default function PublicationSettingsInfo({
@@ -60,9 +59,7 @@ export default function PublicationSettingsInfo({
   const isValid = useSelector(
     (state) => state.publication.isPublicationnameValid
   );
-  const publicationname = useSelector(
-    (state) => state.publication.publication?.name
-  );
+
   const foundUsers = useSelector((state) => state.auth.foundUsers);
   const loading = useSelector((state) => state.auth.isLoading);
 
@@ -181,9 +178,8 @@ export default function PublicationSettingsInfo({
           logo: uploadedFileLinks?.logo || publication?.logo,
           tags,
           users: [...adminUsers, ...writerList, ...editorList],
-          name: getValues('name'),
+          name: getValues('name').trim(),
         };
-
         dispatch(
           publicationActions.updatePublicationRequest({
             publication: editedPublication,
@@ -223,7 +219,6 @@ export default function PublicationSettingsInfo({
       );
       setValue('name', publication.name);
       setValue('description', publication.description);
-      setValue('tagline', publication.tagline);
       setValue('email', publication.email);
       setValue('twitter', publication.twitter);
       setValue('facebook', publication.facebook);
@@ -350,31 +345,7 @@ export default function PublicationSettingsInfo({
               />
               <p className="mt-1.5 text-sm text-slate-500">
                 The description is longer, and appears in story footers, search
-                results and the like. Max 100 characters.
-              </p>
-            </div>
-          </div>
-          <div>
-            <label
-              htmlFor="tagline"
-              className="block text-slate-700 mb-3 text-lg"
-            >
-              Tagline*
-            </label>
-            <div className="mt-1 sm:mt-0 sm:col-span-2">
-              <Input
-                type="text"
-                name="tagline"
-                id="tagline"
-                placeholder="Type a short tagline"
-                className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
-                register={register('tagline')}
-                error={errors.tagline}
-              />
-              <p className="mt-1.5 text-sm text-slate-500">
-                The tagline is short and appears on your publication’s homepage.
-                It’s a quick way to tell readers about your publication. Max 100
-                characters.
+                results and the like.
               </p>
             </div>
           </div>
@@ -408,9 +379,6 @@ export default function PublicationSettingsInfo({
               error={avatarError}
             />
           </div>
-        </div>
-        <hr className="my-8 lg:my-14 border-gray-200" />
-        <div className="grid lg:grid-cols-2 gap-8 mb-14">
           <div id="logo">
             <FileInput
               hideDelete
@@ -438,6 +406,7 @@ export default function PublicationSettingsInfo({
             />
           </div>
         </div>
+
         <div className="pb-2 mb-8 border-b border-gray-200">
           <h2 className="text-slate-700 text-2xl font-medium tracking-md">
             Social and categories
@@ -492,7 +461,7 @@ export default function PublicationSettingsInfo({
                   name="twitter"
                   id="twitter"
                   placeholder={
-                    `https://twitter.com/${_.toLower(publicationname)}` ||
+                    `https://twitter.com/${_.toLower(getValues('name'))}` ||
                     'https://twitter.com/opinate'
                   }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
@@ -523,7 +492,7 @@ export default function PublicationSettingsInfo({
                   name="facebook"
                   id="facebook"
                   placeholder={
-                    `https://facebook.com/${_.toLower(publicationname)}` ||
+                    `https://facebook.com/${_.toLower(getValues('name'))}` ||
                     'https://facebook.com/opinate'
                   }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
@@ -554,7 +523,7 @@ export default function PublicationSettingsInfo({
                   name="linkedin"
                   id="linkedin"
                   placeholder={
-                    `https://linkedin.com/${_.toLower(publicationname)}` ||
+                    `https://linkedin.com/${_.toLower(getValues('name'))}` ||
                     'https://linkedin.com/opinate'
                   }
                   className="block w-full min-h-[44px] text-slate-500 placeholder-slate-500 pl-10 text-base tracking-sm border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
@@ -660,22 +629,7 @@ export default function PublicationSettingsInfo({
             </div>
           </div>
         </div>
-        <hr className="my-8 lg:my-14 border-gray-200" />
-        <div className="flex items-center justify-end gap-4 pb-[120px]">
-          <Button
-            type="submit"
-            className="flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 text-md font-medium tracking-sm rounded-full text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-          >
-            {isCreate ? 'Create' : 'Save'}
-          </Button>
-          <Button
-            type="button"
-            className="inline-flex items-center justify-center w-full md:w-auto px-[18px] py-2.5 border border-gray-300 text-sm font-medium tracking-sm rounded-full text-slate-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
-            onClick={isCreate ? router.back : fillFields}
-          >
-            Cancel
-          </Button>
-        </div>
+
       </form>
     </div>
   );

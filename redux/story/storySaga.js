@@ -378,9 +378,10 @@ function* updateStoryFieldSaga({ payload: { story, newStoryField } }) {
     const newStory = {
       ...story,
       ...newStoryField,
+      user: story.user?._id || story.user
     };
 
-    const { errors } = yield call(StoryService.updateStory, newStory);
+    const { errors } = yield call(StoryService.updateStory, { ...newStory, publication: story.publication?._id || story.publication });
     if (errors) throw errors;
     yield put(storyActions.updateStoryFieldSuccess(newStory));
   } catch (e) {
@@ -528,7 +529,6 @@ function* getPublicationStoriesByTopicSaga({
       limit
     );
     if (!_.isNil(errors)) throw errors.items;
-
     if (!_.isNil(data)) {
       yield put(
         storyActions.getPublicationsStoriesByTopicSuccess({

@@ -66,7 +66,7 @@ const PublicationService = {
     return endpoint.put(`publication/navigation/${publicationId}`, navigation);
   },
   getFeaturePage(featureId) {
-    return db.model('feature_page').object(featureId).get();
+    return endpoint.get(`/feature_page/${featureId}`);
   },
 
   getPublicationById(publicationId) {

@@ -39,6 +39,7 @@ export default function Chart() {
   const totalLikesLastXDays = useSelector(
     (state) => state.stats.totalLikesLastXDays
   );
+
   const getTotalReadsLastXDays = (date, dateType) => {
     dispatch(
       statsActions.getTotalReadsLastXDaysRequest({
@@ -114,11 +115,13 @@ export default function Chart() {
         Total {`${selectedChart} `}
         <span className="font-medium">{_.first(data)?.text}</span>
       </h2>
-      <ReadingBarChart
-        type={data?.dateType}
-        data={data}
-        isHour={selectedPeriod.includes('Hour')}
-      />
+      
+        <ReadingBarChart
+          type={data?.dateType}
+          data={data}
+          isHour={selectedPeriod.includes('Hour')}
+        />
+
     </div>
   );
 }

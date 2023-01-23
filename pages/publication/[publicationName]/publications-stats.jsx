@@ -11,6 +11,7 @@ import _ from 'lodash';
 import PeriodButtons from '@/components/stats/PeriodButtons';
 import MonthlyStatsCard from '@/components/publication/MonthlyStatsCard';
 import ListObserver from '@/components/ListObserver';
+import { useRouter } from 'next/router';
 
 const ReadingBarChart = dynamic(import('@/components/ReadingBarChart'), {
   ssr: false,
@@ -35,17 +36,17 @@ export default function PublicationsStats({ publicationName }) {
     (state) => state.stats.readsPeriodically
   );
   const publication = useSelector((state) =>
-    _.get(state.publication.publication, '_id')
+    _.get(state.publication.selectedPublication, '_id')
   );
 
   const viewsDateType = useSelector((state) => state.stats.viewsDateType);
   const readsDateType = useSelector((state) => state.stats.readsDateType);
   const likesDateType = useSelector((state) => state.stats.likesDateType);
-
+  const user = useSelector((state) => state.auth.user);
   const publicationStories = useSelector(
     (state) => state.stats.publicationStories
   );
-
+  const router = useRouter();
   const [tabIndex, setTabIndex] = useState(0);
 
   const [totalViewsCount, setTotalViewsCount] = useState(0);
@@ -55,6 +56,21 @@ export default function PublicationsStats({ publicationName }) {
   const [readsDateTypeState, setReadsDateTypeState] = useState();
   const [likesDateTypeState, setLikesDateTypeState] = useState();
   const [page, setPage] = useState(0);
+
+  const checkAuthorization = (publication) => {
+    const sessionUser = _.find(
+      publication.users,
+      (person) => person.user === user?._id
+    );
+    if (
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !== _.lowerCase(publication.name)
+    ) {
+      router.push('/');
+    }
+  };
+
   const getPublicationViewsPeriodically = (date, type) => {
     dispatch(
       statsActions.getPublicationViewsPeriodicallyRequest({
@@ -116,7 +132,8 @@ export default function PublicationsStats({ publicationName }) {
       (publication && _.isEmpty(publicationStories)) ||
       _.get(_.last(publicationStories)) < page
     )
-      getPublicationsStoriesStats(page);
+      checkAuthorization(publication);
+    getPublicationsStoriesStats(page);
   }, [page, publication, tabIndex]);
 
   useEffect(() => {

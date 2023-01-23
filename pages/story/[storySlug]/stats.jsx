@@ -35,6 +35,9 @@ export default function StatsBlogPost() {
   const totalReadTime = useSelector((state) => state.stats.storyTotalReadTime);
   const externalViews = useSelector((state) => state.stats.externalViews);
   const internalViews = useSelector((state) => state.stats.internalViews);
+  const storyStatsLoading = useSelector(
+    (state) => state.stats.storyStatsLoading
+  );
   const totalLikes = useSelector((state) => state.stats.totalLikes);
   const storyCreatedAt = useSelector((state) => state.stats.storyCreatedAt);
   const storyName = useSelector((state) => state.stats.storyName);
@@ -107,6 +110,7 @@ export default function StatsBlogPost() {
 
     setPeriodialTotalReadingTime(periodicalTotalReadingTime);
   }, [
+    storyTotalReadTimePeriodically,
     externalViewsPeriodically,
     internalViewsPeriodically,
     readingDateTypeState,
@@ -186,7 +190,7 @@ export default function StatsBlogPost() {
     },
     []
   );
-
+  console.log(periodialTotalReadingTime)
 
   return (
     <div>
@@ -194,7 +198,7 @@ export default function StatsBlogPost() {
         <title>Opinate Stats Blog Post</title>
         <meta name="description" content="Opinate Stats Blog Post" />
       </HeadContent>
-      <Layout>
+      <Layout loading={storyStatsLoading}>
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8 pb-16">
           <div className="flex items-center justify-between py-6 mb-6 border-b border-gray-200">
             <h1 className="text-slate-800 text-3xl font-medium tracking-md">
@@ -304,7 +308,6 @@ export default function StatsBlogPost() {
                 firstData={internalViewsPeriodically[viewDateTypeState]}
                 secondData={externalViewsPeriodically[viewDateTypeState]}
                 isHour={viewDateTypeState?.includes('Hour')}
-
               />
             </div>
           </div>

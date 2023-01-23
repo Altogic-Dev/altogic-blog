@@ -1,4 +1,4 @@
-import { topicsActions } from '@/redux/topics/topicsSlice';
+import { storyActions } from '@/redux/story/storySlice';
 import { parseHtml } from '@/utils/utils';
 import _ from 'lodash';
 import { DateTime } from 'luxon';
@@ -10,21 +10,15 @@ import PublicationPostCard from '../PublicationsPostCard';
 function PublicationTabTopic({ tab, publication }) {
   const dispatch = useDispatch();
 
-  const topicStories = useSelector(
-    (state) => state.topics.publicationStoriesByTopic
-  );
-  const isLoading = useSelector(
-    (state) => state.topics.isLoading
-  );
-
-  const stories = _.map(topicStories, 'story');
+  const stories = useSelector((state) => state.story.publicationTopicStories);
+  const isLoading = useSelector((state) => state.topics.isLoading);
 
   useEffect(() => {
     if (publication && tab) {
       dispatch(
-        topicsActions.getPublicationsStoriesByTopicRequest({
-          publicationId: publication._id,
-          topicName: tab.contents,
+        storyActions.getPublicationsStoriesByTopicRequest({
+          publication: publication?._id,
+          topic: tab.contents,
         })
       );
     }

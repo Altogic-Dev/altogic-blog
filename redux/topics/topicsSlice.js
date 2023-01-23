@@ -9,7 +9,6 @@ const initialState = {
   relatedTopics: [],
   popularTopics: [],
   publicationsTopics: [],
-  publicationStoriesByTopic: [],
   searchTopics: [],
   topicAnalytics: null,
   bestLoading: false,
@@ -101,14 +100,6 @@ export const topicsSlice = createSlice({
       state.error = action.payload;
     },
 
-    getPublicationsStoriesByTopicRequest(state) {
-      state.isLoading = true;
-
-     },
-    getPublicationsStoriesByTopicSuccess(state, action) {
-      state.publicationStoriesByTopic = action.payload;
-      state.isLoading = false;
-    },
     searchTopicsRequest(state) {
       state.searchTopics = []
       state.isLoading = true;

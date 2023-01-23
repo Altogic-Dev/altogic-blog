@@ -117,14 +117,12 @@ export default function PublicationsNavigation() {
   const checkAuthorization = (publication) => {
     const sessionUser = _.find(
       publication.users,
-      (person) => person.user === user._id
+      (person) => person.user === user?._id
     );
-
     if (
-      publicationName &&
-      (_.isNil(sessionUser) ||
-        !['admin', 'editor'].includes(sessionUser.role) ||
-        _.lowerCase(publicationName) !== _.lowerCase(publication.name))
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !== _.lowerCase(publication.name)
     ) {
       router.push('/');
     }

@@ -136,23 +136,7 @@ function* publicationsTopicsSaga({ payload }) {
   }
 }
 
-function* getPublicationsStoriesByTopicSaga({
-  payload: { publicationId, topicName },
-}) {
-  try {
-    const { data, errors } = yield call(
-      TopicsService.getPublicationsStoriesByTopic,
-      publicationId,
-      topicName
-    );
-    if (errors) throw errors;
-    else if (data) {
-      yield put(topicsActions.getPublicationsStoriesByTopicSuccess(data));
-    }
-  } catch (e) {
-    console.error(e);
-  }
-}
+
 function* searchTopicsSaga({ payload }) {
   try {
     const { data, errors } = yield call(TopicsService.searchTopics, payload);
@@ -193,9 +177,6 @@ export default function* rootSaga() {
     topicsActions.getPublicationsTopicsRequest.type,
     publicationsTopicsSaga
   );
-  yield takeEvery(
-    topicsActions.getPublicationsStoriesByTopicRequest.type,
-    getPublicationsStoriesByTopicSaga
-  );
+ 
   yield takeEvery(topicsActions.searchTopicsRequest.type, searchTopicsSaga);
 }

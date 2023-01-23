@@ -65,7 +65,7 @@ export default function FileInput({
             className="text-purple-700 text-sm font-medium tracking-sm"
             onClick={onChange}
           >
-            Change
+            Upload
           </button>
         </div>
       </div>

@@ -50,19 +50,16 @@ export default function PublicationsNewFeature() {
   } = useForm({
     resolver: yupResolver(formSchema),
   });
+
   const checkAuthorization = (publication) => {
     const sessionUser = _.find(
       publication.users,
-      (person) => person.user === user._id
+      (person) => person.user === user?._id
     );
     if (
-      publicationName &&
-      (_.isNil(sessionUser) ||
-        !['admin', 'editor'].includes(sessionUser.role) ||
-        _.lowerCase(publicationName) !==
-          _.lowerCase(publication.name) ||
-        _.isNil(publication) ||
-        !_.includes(user.publications, publication._id))
+      _.isNil(sessionUser) ||
+      !['admin', 'editor'].includes(sessionUser.role) ||
+      _.lowerCase(publicationName) !== _.lowerCase(publication.name)
     ) {
       router.push('/');
     }
@@ -79,6 +76,10 @@ export default function PublicationsNewFeature() {
     dispatch(publicationActions.clearFeaturePageRequest());
   };
 
+  useEffect(() => {
+    if (!user) router.push('/');
+  }, [user]);
+  
   useEffect(() => {
     if (publication) {
       checkAuthorization(publication);
@@ -211,10 +212,7 @@ export default function PublicationsNewFeature() {
     <div>
       <HeadContent>
         <title>Opinate Publications New Feature</title>
-        <meta
-          name="description"
-          content="Opinate Publications New Feature"
-        />
+        <meta name="description" content="Opinate Publications New Feature" />
       </HeadContent>
       <Layout>
         <form
