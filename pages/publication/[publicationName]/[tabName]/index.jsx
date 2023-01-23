@@ -47,7 +47,7 @@ export default function Publications({ tabName }) {
       );
     }
   };
-
+//
   const getPublicationNavigations = (publication) => {
     dispatch(
       publicationActions.getPublicationNavigationRequest(publication._id)
