@@ -34,6 +34,7 @@ export default function PublicationsSettings({ isCreate }) {
   const [layout, setLayout] = useState('title');
   const [isCentered, setIsCentered] = useState(false);
   const [textColor, setTextColor] = useState('#000');
+  const [bottomTextColor, setBottomTextColor] = useState('#000');
   const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
   const [bottomColor, setBottomColor] = useState();
@@ -243,6 +244,8 @@ export default function PublicationsSettings({ isCreate }) {
                 setBgColor={setBgColor}
                 bottomColor={bottomColor}
                 setBottomColor={setBottomColor}
+                bottomTextColor={bottomTextColor}
+                setBottomTextColor={setBottomTextColor}
               />
             </Tab.Panel>
           </Tab.Panels>

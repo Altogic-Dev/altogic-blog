@@ -92,6 +92,7 @@ export default function Publications({ tabName }) {
         <AligmentPublicationLayout
           layout={homeLayout?.layout}
           bottomColor={homeLayout?.bottomColor}
+          bottomTextColor={homeLayout?.bottomTextColor}
           bgColor={homeLayout?.backgroundColor}
           color={homeLayout?.textColor}
           logo={publication?.logo}

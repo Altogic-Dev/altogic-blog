@@ -377,6 +377,17 @@ export const publicationSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    leavePublicationRequest(state) {
+      state.isLoading = true;
+    },
+    leavePublicationSuccess(state, action) {
+      state.userPublications = state.userPublications.filter(publication => publication._id !== action.payload)
+      state.isLoading = false;
+    },
+    leavePublicationPublicationFailure(state, action) {
+      state.error = action.payload;
+      state.isLoading = false;
+    },
     isFollowingPublicationRequest(state) {
       state.isLoading = true;
     },

@@ -77,7 +77,7 @@ export default function PublicationsNavigation() {
           };
         }
 
-        if (pair[0].includes('url')) {
+        if (pair[0].includes('url') && !pair[0].includes('logo')) {
           req = {
             ...req,
             contents: pair[1],
