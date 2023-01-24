@@ -54,6 +54,15 @@ export default function PublicationCard({
     }
   };
 
+  const leavePublication = () => {
+    dispatch(
+      publicationActions.leavePublicationRequest({
+        publicationId: _.get(publication, '_id'),
+        sessionUser : sessionUser?._id,
+      })
+    );
+  };
+
   useEffect(() => {
     if (!isLoading) setFollowingLoad(false);
   }, [isLoading]);
@@ -108,6 +117,15 @@ export default function PublicationCard({
             >
               Select
             </Button>
+            <button
+              type="button"
+              onClick={() => {
+                leavePublication();
+              }}
+              className="text-slate-500 text-sm font-medium underline cursor-pointer"
+            >
+              Leave
+            </button>
           </div>
         )}
       </div>

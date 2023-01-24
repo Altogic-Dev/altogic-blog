@@ -23,6 +23,8 @@ export default function PublicationsSettingsHome({
   setTextColor,
   bgColor,
   setBgColor,
+  bottomTextColor,
+  setBottomTextColor,
   selectedTabIndex,
   setSelectedTabIndex,
   isMounted,
@@ -46,12 +48,13 @@ export default function PublicationsSettingsHome({
     dispatch(
       publicationActions.updatePublicationHomeLayoutRequest({
         ...homeLayout,
-        ...(uploadedFileLink && { backgroundImage: uploadedFileLink}),
+        ...(uploadedFileLink && { backgroundImage: uploadedFileLink }),
         layout,
         isCentered,
         textColor: RGBAToHexA(textColor),
         backgroundColor: RGBAToHexA(bgColor),
         bottomColor: RGBAToHexA(bottomColor),
+        bottomTextColor: RGBAToHexA(bottomTextColor),
       })
     );
     dispatch(fileActions.updateFileState());
@@ -145,7 +148,7 @@ export default function PublicationsSettingsHome({
       <div className="mt-12 ">
         <div className="max-w-screen-xl mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-2 gap-x-36 gap-y-2 md:flex md:gap-x-0 items-center justify-center pb-6 mb-6 border-b border-gray-200 md:divide-x md:divide-gray-200 ">
-            <div className="flex items-center gap-5  px-5" >
+            <div className="flex items-center gap-5  px-5">
               <span className="hidden lg:inline-flex items-center text-slate-400 py-1 md:px-0 text-sm tracking-sm">
                 Layout
               </span>
@@ -351,7 +354,7 @@ export default function PublicationsSettingsHome({
                   handleUploadPhoto('backgroundImage', layout?.backgroundImage)
                 }
               >
-              Background image
+                Background image
               </button>
             </div>
             <Popover>
@@ -401,11 +404,35 @@ export default function PublicationsSettingsHome({
                 onChangeComplete={({ rgb }) => setBottomColor(rgb)}
               />
             </Popover>
+            <Popover>
+              <Popover.Button
+                type="button"
+                className="inline-flex items-center gap-2 ml-5 text-slate-400 py-1 text-sm tracking-sm transition hover:text-purple-700"
+              >
+                <svg
+                  className="w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7 4C7 3.44772 6.55228 3 6 3C5.44772 3 5 3.44772 5 4H7ZM5 20C5 20.5523 5.44772 21 6 21C6.55228 21 7 20.5523 7 20H5ZM9.5 11C8.94772 11 8.5 11.4477 8.5 12C8.5 12.5523 8.94772 13 9.5 13V11ZM4 3C3.44772 3 3 3.44772 3 4C3 4.55228 3.44772 5 4 5V3ZM4 19C3.44772 19 3 19.4477 3 20C3 20.5523 3.44772 21 4 21V19ZM5 4V20H7V4H5ZM9.5 5H15.5V3H9.5V5ZM15.5 11H9.5V13H15.5V11ZM18.5 8C18.5 9.65685 17.1569 11 15.5 11V13C18.2614 13 20.5 10.7614 20.5 8H18.5ZM15.5 5C17.1569 5 18.5 6.34315 18.5 8H20.5C20.5 5.23858 18.2614 3 15.5 3V5ZM9.5 13H16.5V11H9.5V13ZM16.5 19H9.5V21H16.5V19ZM19.5 16C19.5 17.6569 18.1569 19 16.5 19V21C19.2614 21 21.5 18.7614 21.5 16H19.5ZM16.5 13C18.1569 13 19.5 14.3431 19.5 16H21.5C21.5 13.2386 19.2614 11 16.5 11V13ZM8.5 4V20H10.5V4H8.5ZM9.5 3H4V5H9.5V3ZM9.5 19H4V21H9.5V19Z"
+                    fill="currentColor"
+                  />
+                </svg>
+                Bottom text
+              </Popover.Button>
+              <ColorPicker
+                color={bottomTextColor}
+                onChangeComplete={({ rgb }) => setBottomTextColor(rgb)}
+              />
+            </Popover>
           </div>
         </div>
         <AligmentPublicationLayout
-          bottomColor={bottomColor}
-          bgColor={bgColor}
+          bottomColor={RGBAToHexA(bottomColor)}
+          bottomTextColor={RGBAToHexA(bottomTextColor)}
+          bgColor={RGBAToHexA(bgColor)}
           layout={layout}
           color={RGBAToHexA(textColor)}
           logo={publication?.logo}

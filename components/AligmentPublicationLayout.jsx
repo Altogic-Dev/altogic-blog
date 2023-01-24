@@ -1,5 +1,5 @@
 import { publicationActions } from '@/redux/publication/publicationSlice';
-import { classNames, RGBAToHexA } from '@/utils/utils';
+import { classNames } from '@/utils/utils';
 import _ from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -24,7 +24,9 @@ export default function AligmentPublicationLayout({
   preview,
   bgColor,
   bottomColor,
+  bottomTextColor,
 }) {
+
   const dispatch = useDispatch();
   const router = useRouter();
   const { publicationName, tabName } = router.query;
@@ -76,7 +78,7 @@ export default function AligmentPublicationLayout({
         style={
           _.isNil(bgImage)
             ? {
-                backgroundColor: RGBAToHexA(bgColor),
+                backgroundColor: bgColor,
               }
             : {
                 backgroundImage: `url(${bgImage})`,
@@ -157,7 +159,7 @@ export default function AligmentPublicationLayout({
               twitter={twitter}
               facebook={facebook}
               linkedin={linkedin}
-              color={color}
+              color={bottomTextColor}
             />
             {user && (
               <FollowButton
@@ -187,7 +189,7 @@ export default function AligmentPublicationLayout({
                         ? 'text-purple-500'
                         : 'text-slate-500'
                     }`}
-                    style={{ color }}
+                    style={{ color: bottomTextColor }}
                   >
                     {_.get(nav, 'tabName')}
                   </Button>
@@ -196,7 +198,7 @@ export default function AligmentPublicationLayout({
                     rel="noreferrer"
                     target="_blank"
                     href={_.get(nav, 'externalLink')}
-                    style={{ color }}
+                    style={{ color: bottomTextColor }}
                     className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
                   >
                     {_.get(nav, 'tabName')}
@@ -211,7 +213,7 @@ export default function AligmentPublicationLayout({
         <div className="absolute left-1/2 bottom-0 -translate-x-1/2 max-w-screen-xl w-full mx-auto px-4 lg:px-8 mb-16">
           <div
             style={{
-              backgroundColor: RGBAToHexA(bottomColor),
+              backgroundColor: bottomColor,
               borderRadius: '10px 10px 0px 0px',
             }}
             className=" flex items-center justify-between gap-4 py-3 border-b border-gray-200"
@@ -236,7 +238,7 @@ export default function AligmentPublicationLayout({
                           ? 'text-purple-500'
                           : 'text-slate-500'
                       }`}
-                      style={{ color }}
+                      style={{ color: bottomTextColor }}
                     >
                       {_.get(nav, 'tabName')}
                     </Button>
@@ -245,7 +247,7 @@ export default function AligmentPublicationLayout({
                       rel="noreferrer"
                       target="_blank"
                       href={_.get(nav, 'externalLink')}
-                      style={{ color }}
+                      style={{ color: bottomTextColor }}
                       className="inline-block text-slate-500 p-3 text-base tracking-sm rounded-md uppercase hover:bg-gray-700"
                     >
                       {_.get(nav, 'tabName')}
@@ -259,7 +261,7 @@ export default function AligmentPublicationLayout({
                 twitter={twitter}
                 facebook={facebook}
                 linkedin={linkedin}
-                color={color}
+                color={bottomTextColor}
               />
 
               {user && (

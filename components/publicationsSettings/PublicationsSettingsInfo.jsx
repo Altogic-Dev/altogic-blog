@@ -94,13 +94,13 @@ export default function PublicationSettingsInfo({
 
   const handleAddUser = (isWriter, user) => {
     if (isWriter) {
-      const userIds = _.map(writers, '_id');
+      const userIds = writers?.map((writer) => writer.user || writer._id);
       if (!_.includes(userIds, user._id)) {
         setWriters((prev) => [...prev, user]);
       }
       setInpWriter('');
     } else {
-      const userIds = _.map(editors, '_id');
+      const userIds = editors?.map((editor) => editor.user || editor._id);
       if (!_.includes(userIds, user._id)) {
         setEditors((prev) => [...prev, user]);
       }
@@ -629,7 +629,6 @@ export default function PublicationSettingsInfo({
             </div>
           </div>
         </div>
-
       </form>
     </div>
   );

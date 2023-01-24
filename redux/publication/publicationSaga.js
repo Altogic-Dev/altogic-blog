@@ -557,11 +557,31 @@ function* isFollowingPublicationSaga({ payload: { publicationId, userId } }) {
   }
 }
 
+function* leavePublicationSaga({ payload: { publicationId, sessionUser } }) {
+  try {
+    const { data, errors } = yield call(
+      PublicationService.leavePublication,
+      publicationId,
+      sessionUser
+    );
+    if (errors) throw errors.items;
+    if (data) {
+      yield put(publicationActions.leavePublicationSuccess(publicationId));
+    }
+  } catch (e) {
+    yield put(publicationActions.leavePublicationFailure(e));
+  }
+}
+
 export default function* rootSaga() {
   yield all([
     takeEvery(
       publicationActions.getPublicationFollowersRequest.type,
       getPublicationFollowersSaga
+    ),
+    takeEvery(
+      publicationActions.leavePublicationRequest.type,
+      leavePublicationSaga
     ),
     takeEvery(
       publicationActions.getPublicationRequest.type,

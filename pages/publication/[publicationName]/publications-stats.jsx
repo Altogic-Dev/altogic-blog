@@ -233,6 +233,7 @@ export default function PublicationsStats({ publicationName }) {
                       />
                     </div>
                     <ReadingBarChart
+                      isHour={readsDateTypeState?.includes('Hour')}
                       timeUnit={convertTime(totalReadsCount).split(' ')[1]}
                       data={readsPeriodically[readsDateTypeState]}
                       type={readsDateTypeState}
@@ -263,6 +264,7 @@ export default function PublicationsStats({ publicationName }) {
                       />
                     </div>
                     <ReadingBarChart
+                      isHour={viewsDateTypeState?.includes('Hour')}
                       data={viewsPeriodically[viewsDateTypeState]}
                       type={viewsDateTypeState}
                     />
@@ -292,6 +294,7 @@ export default function PublicationsStats({ publicationName }) {
                       />
                     </div>
                     <ReadingBarChart
+                      isHour={likesDateTypeState?.includes('Hour')}
                       data={likesPeriodically[likesDateTypeState]}
                       type={likesDateTypeState}
                     />

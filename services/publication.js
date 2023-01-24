@@ -15,6 +15,12 @@ const PublicationService = {
       user
     });
   },
+  leavePublication(publicationId, sessionUser) {
+    return endpoint.post('/publication/leave', {
+      publicationId,
+      sessionUser
+    });
+  },
 
   getAllUserPublications(publications) {
     return db

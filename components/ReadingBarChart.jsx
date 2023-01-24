@@ -38,7 +38,6 @@ function CustomTooltip({ active, payload, label }) {
 export default function ReadingBarChart({ type, data, timeUnit, isHour }) {
   const [dataManipulated, setDataManipulated] = useState();
   const isLoading = useSelector((state) => state.stats.isLoading);
-
   useEffect(() => {
     let tempData;
     const tempDataManipulated = [];
@@ -103,8 +102,8 @@ export default function ReadingBarChart({ type, data, timeUnit, isHour }) {
       tempDataManipulated.push(tempObj);
     });
     setDataManipulated(sortDate(tempDataManipulated, 'name', isHour));
+    
   }, [data, timeUnit]);
-
   if (data?.length > 0) {
     return (
       <>
