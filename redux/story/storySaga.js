@@ -71,13 +71,14 @@ function* editReply({ payload: reply }) {
     yield put(storyActions.editReplyFailure(e));
   }
 }
-function* createReply({ payload: reply }) {
+function* createReply({ payload: { reply, onSuccess } }) {
   try {
     const { data, errors } = yield call(StoryService.createReply, reply);
     if (errors) throw errors;
     if (data) {
       yield put(storyActions.createReplySuccess(data));
     }
+    if (_.isFunction(onSuccess)) onSuccess();
   } catch (e) {
     yield put(storyActions.createReplyFailure(e));
   }
@@ -96,7 +97,7 @@ function* getReplyComments({ payload: reply }) {
   }
 }
 
-function* createReplyComment({ payload: comment }) {
+function* createReplyComment({ payload: { comment, onSuccess } }) {
   try {
     const { data, errors } = yield call(
       StoryService.createReplyComment,
@@ -106,6 +107,8 @@ function* createReplyComment({ payload: comment }) {
     if (data) {
       yield put(storyActions.createReplyCommentSuccess(data));
     }
+    if (_.isFunction(onSuccess)) onSuccess();
+
   } catch (e) {
     yield put(storyActions.createReplyCommentFailure(e));
   }
@@ -605,7 +608,7 @@ function* likeNormalizeStorySaga(likeNormalizedBody) {
 }
 
 function* likeStorySaga({
-  payload: { userId, storyId, authorId, publicationId, categoryNames },
+  payload: { userId, storyId, authorId, publicationId, categoryNames,onSuccess },
 }) {
   try {
     const likeNormalizedBody = _.map(categoryNames, (category) => ({
@@ -626,12 +629,11 @@ function* likeStorySaga({
       yield fork(likeNormalizeStorySaga, likeNormalizedBody);
     }
     yield put(storyActions.likeStorySuccess(storyId));
+    if (_.isFunction(onSuccess)) onSuccess();
     yield fork(updateStoryLikeCountSaga, true);
   } catch (e) {
-    console.log(e)
     yield put(storyActions.likeStoryFailure(e));
 
-    console.error({ e });
   }
 }
 
@@ -673,11 +675,13 @@ function* isLikedSaga({ payload: { userId, storyId } }) {
   }
 }
 
-function* likeReplySaga({ payload: { userId, replyId } }) {
+function* likeReplySaga({ payload: { userId, replyId, onSuccess } }) {
   try {
     const { data, errors } = yield call(StoryService.likeReply, userId, replyId);
     if (errors) throw errors;
     yield put(storyActions.likeReplySuccess(data));
+    if (_.isFunction(onSuccess)) onSuccess();
+
   } catch (e) {
     yield put(storyActions.likeReplyFailure(e));
 

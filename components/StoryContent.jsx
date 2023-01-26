@@ -91,9 +91,9 @@ function StoryContent(props) {
           authorId: _.get(story, 'user._id'),
           publicationId: _.get(story, 'publication._id'),
           categoryNames: _.get(story, 'categoryNames'),
+          onSuccess: () => sendNotification('story_like'),
         })
       );
-      sendNotification('story_like');
     }
   };
   const getMenuItems = (isBottom) => {
