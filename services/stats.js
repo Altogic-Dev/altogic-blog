@@ -29,7 +29,7 @@ const StatsService = {
   getTotalLikesLastXDays(userId, date, dateType) {
     return db
       .model('story_likes')
-      .filter(`createdAt > ${date} && this.author == '${userId}'`)
+      .filter(`createdAt > '${date}' && this.author == '${userId}'`)
       .group(
         dateType === '24 Hours'
           ? "TOTEXT(hour(this.createdAt)) + ':' + TOTEXT(minute(this.createdAt))"
