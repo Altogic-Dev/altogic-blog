@@ -77,7 +77,6 @@ export default function Publications({ tabName }) {
 
   const featurePage = useSelector((state) => state.publication.featurePage);
 
-  console.log(selectedTab)
   return (
     <div>
       <HeadContent>

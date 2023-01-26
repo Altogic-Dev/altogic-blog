@@ -24,7 +24,6 @@ import Image from 'next/image';
 export async function getServerSideProps({ req, params }) {
   const storyName = params.storySlug;
   const storyServerSide = await StoryService.getStoryBySlug(storyName);
-  console.log(storyServerSide);
   const ip = req.headers['x-real-ip'] || req.connection.remoteAddress;
   return {
     props: {

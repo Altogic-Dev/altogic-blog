@@ -190,7 +190,6 @@ export default function StatsBlogPost() {
     },
     []
   );
-  console.log(periodialTotalReadingTime)
 
   return (
     <div>
