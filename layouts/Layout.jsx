@@ -10,7 +10,7 @@ export default function Layout({ children, loading, logo }) {
   return (
     <div>
       <Header logo={logo} />
-      <main>
+      <main className=' overflow-scroll'>
         {loading ? (
           <div style={{height: "90vh"}} className="flex justify-center items-center">
             <ClipLoader color="#9333ea" loading={loading} size={80} />

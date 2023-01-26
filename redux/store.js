@@ -11,7 +11,6 @@ import { reportSlice } from './report/reportSlice';
 import { recommendationsSlice } from './recommendations/recommendationsSlice';
 import { subscribeConnectionSlice } from './subscribeConnection/subscribeConnectionSlice';
 import { topicsSlice } from './topics/topicsSlice';
-import { subscribeSlice } from './subscribe/subscribeSlice';
 import { publicationSlice } from './publication/publicationSlice';
 import { generalSlice } from './general/generalSlice';
 import { fileSlice } from './file/fileSlice';
@@ -35,9 +34,7 @@ const makeStore = () => {
       [reportSlice.name]: reportSlice.reducer,
       [recommendationsSlice.name]: recommendationsSlice.reducer,
       [subscribeConnectionSlice.name]: subscribeConnectionSlice.reducer,
-
       [topicsSlice.name]: topicsSlice.reducer,
-      [subscribeSlice.name]: subscribeSlice.reducer,
       [publicationSlice.name]: publicationSlice.reducer,
       [generalSlice.name]: generalSlice.reducer,
       [fileSlice.name]: fileSlice.reducer,

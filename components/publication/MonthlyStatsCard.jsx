@@ -95,7 +95,7 @@ export default function MonthlyStatsCard({ name, statistics }) {
       </div>
       <div className="lg:hidden">
         <span className="inline-block text-slate-700 mb-4 text-lg font-medium tracking-sm uppercase">
-          June 2022
+        {name}
         </span>
         <ul className="divide-y divide-gray-200">
           {statistics.map((statistic) => (
@@ -112,25 +112,27 @@ export default function MonthlyStatsCard({ name, statistics }) {
                 <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                   View
                   <span className="text-purple-700 text-lg font-semibold">
-                    {statistic.views}
+                    {statistic.viewCount ?? 0}
                   </span>
                 </span>
                 <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                   Reads
                   <span className="text-purple-700 text-lg font-semibold">
-                    {statistic.reads}
+                  {statistic.readingCount ?? 0}
                   </span>
                 </span>
                 <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                   Read Ratio
                   <span className="text-purple-700 text-lg font-semibold">
-                    {statistic.readRatio}
+                    {Math.ceil(
+                      (statistic.readingCount / statistic.viewCount) * 100 || 0
+                    )}
                   </span>
                 </span>
                 <span className="inline-flex flex-col items-center text-slate-800 p-2 text-xs font-medium tracking-sm border border-gray-200 rounded-lg">
                   Fans
                   <span className="text-purple-700 text-lg font-semibold">
-                    {statistic.fans}
+                    {statistic.fanCount ?? 0}
                   </span>
                 </span>
                 <a

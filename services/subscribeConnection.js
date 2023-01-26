@@ -1,4 +1,4 @@
-import { db } from '@/utils/altogic';
+import { db, endpoint } from '@/utils/altogic';
 
 const SubscribeConnectionService = {
   unsubscribe(subscribeUser, subscribingUser) {
@@ -11,7 +11,7 @@ const SubscribeConnectionService = {
   },
 
   subscribe(subscribingUser, subscribeUser, subscribeUserEmail) {
-    return db.model('subscribe_connection').create({
+    return endpoint.post('/subscribe_user', {
       subscribeUser,
       subscribeUserEmail,
       subscribingUser,
@@ -28,6 +28,7 @@ const SubscribeConnectionService = {
       .limit(limit)
       .get(true);
   },
+
 };
 
 export default SubscribeConnectionService;

@@ -35,7 +35,7 @@ export default function PublicationDropdown({ publication, className }) {
       leaveTo="transform opacity-0 scale-95"
     >
       <Popover.Panel
-        className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50 `}
+        className={`${className} right-0 mt-2 rounded-md shadow-lg bg-white overflow-hidden ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none z-50`}
       >
         <div className="py-3 px-4 flex items-center gap-3 border-b border-gray-200 w-full h-full ">
           <Image
@@ -62,7 +62,7 @@ export default function PublicationDropdown({ publication, className }) {
             </Popover.Button>
 
             <Popover.Button
-              className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer "
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
               onClick={() => router.push(`/publication/${publication.name}`)}
             >
               <HomeIcon className="w-4 h-4 text-slate-500" />
@@ -70,7 +70,7 @@ export default function PublicationDropdown({ publication, className }) {
             </Popover.Button>
 
             <Popover.Button
-              className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
               onClick={() =>
                 router.push(
                   `/publication/${publication.name}/publications-stats`
@@ -82,7 +82,7 @@ export default function PublicationDropdown({ publication, className }) {
             </Popover.Button>
 
             <Popover.Button
-              className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+              className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
               onClick={() =>
                 router.push(
                   `/publication/${publication.name}/publications-followers`
@@ -107,7 +107,7 @@ export default function PublicationDropdown({ publication, className }) {
             </Popover.Button> */}
             {['admin', 'editor'].includes(pubUser?.role) && (
               <Popover.Button
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+                className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
                 onClick={() =>
                   router.push(`/publication/${publication.name}/navigation`)
                 }
@@ -131,7 +131,7 @@ export default function PublicationDropdown({ publication, className }) {
             )}
             {['admin', 'editor'].includes(pubUser?.role) && (
               <Popover.Button
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+                className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
                 onClick={() =>
                   router.push(`/publication/${publication.name}/feature`)
                 }
@@ -142,7 +142,7 @@ export default function PublicationDropdown({ publication, className }) {
             )}
             {['admin'].includes(pubUser?.role) && (
               <Popover.Button
-                className="flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer"
+                className="w-full flex items-center gap-3 text-slate-500 px-6 py-2.5 text-sm tracking-sm cursor-pointer hover:text-purple-700 hover:bg-purple-50 "
                 onClick={() =>
                   router.push(
                     `/publication/${publication.name}/publications-settings`

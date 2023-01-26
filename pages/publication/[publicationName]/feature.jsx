@@ -96,7 +96,7 @@ export default function PublicationsFeature() {
                   <Link
                     href={`/publication/${publicationName}/new-feature?id=${feature?._id}`}
                   >
-                    <h2 className="text-slate-700 mb-2 text-2xl font-bold tracking-md cursor-pointer">
+                    <h2 className="text-slate-700 mb-2 text-2xl font-bold tracking-md cursor-pointer break-all">
                       {feature.title}
                     </h2>
                   </Link>
