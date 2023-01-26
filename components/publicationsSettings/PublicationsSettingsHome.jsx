@@ -360,7 +360,7 @@ export default function PublicationsSettingsHome({
             <Popover>
               <Popover.Button
                 type="button"
-                className="inline-flex items-center gap-2 ml-5 text-slate-400 py-1 text-sm tracking-sm transition hover:text-purple-700"
+                className="inline-flex items-center gap-2 ml-5 text-slate-400 py-1 px-3 text-sm tracking-sm transition hover:text-purple-700"
               >
                 <svg
                   className="w-6 h-6"
@@ -420,7 +420,7 @@ export default function PublicationsSettingsHome({
                     fill="currentColor"
                   />
                 </svg>
-                Bottom text
+                Bottom text color
               </Popover.Button>
               <ColorPicker
                 color={bottomTextColor}
