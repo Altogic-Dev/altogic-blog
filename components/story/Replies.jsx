@@ -63,13 +63,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   const getReplyComments = (reply) => {
     dispatch(storyActions.getReplyCommentsRequest(reply));
   };
-
-  const createReply = (reply) => {
-    dispatch(storyActions.createReplyRequest(reply));
-  };
-  const createComment = (comment) => {
-    dispatch(storyActions.createReplyCommentRequest(comment));
-  };
   const sendNotification = (type) => {
     if (user._id !== story.user._id) {
       dispatch(
@@ -86,6 +79,23 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       );
     }
   };
+  const createReply = (reply) => {
+    dispatch(
+      storyActions.createReplyRequest({
+        reply,
+        onSuccess: () => sendNotification('reply'),
+      })
+    );
+  };
+  const createComment = (comment) => {
+    dispatch(
+      storyActions.createReplyCommentRequest({
+        comment,
+        onSuccess: () => sendNotification('comment'),
+      })
+    );
+  };
+
   const getComments = (reply) => {
     getReplyComments(reply._id);
   };
@@ -135,7 +145,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       };
       createReply(reply);
       quillInstance.setContents([{ insert: '\n' }]);
-      sendNotification('reply');
     }
   };
 
@@ -146,9 +155,9 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
           storyActions.likeReplyRequest({
             replyId: reply._id,
             userId: user._id,
+            onSuccess: () => sendNotification('reply_like'),
           })
         );
-        sendNotification('reply_like');
       } else {
         dispatch(
           storyActions.unlikeReplyRequest({
@@ -183,7 +192,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
       };
 
       createComment(comment);
-      sendNotification('comment');
       getComments(reply, index);
     }
   };

@@ -80,7 +80,6 @@ function* followSaga({
     });
   } catch (e) {
 
-    console.log(e)
     yield put(followerConnectionActions.followFailure(e));
   }
 }

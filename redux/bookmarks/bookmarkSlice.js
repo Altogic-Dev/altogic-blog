@@ -135,21 +135,16 @@ export const bookmarkSlice = createSlice({
     },
     getBookmarkListDetailSuccess(state, action) {
 
-      try {
-        state.bookmarkListLoading = false;
+      state.bookmarkListLoading = false;
 
-        if (!state.bookmarkLists[action.payload.list.username]) {
-          state.bookmarkLists[action.payload.list.username] = { bookmarkLists: [] }
-        }
-        if (!_.some(state.bookmarkLists[action.payload.list.username].bookmarkLists, list => list._id === action.payload.list._id))
-          state.bookmarkLists[action.payload.list.username].bookmarkLists = [...state.bookmarkLists[action.payload.list.username].bookmarkLists, action.payload.list]
-        state.bookmarks[action.payload.list._id] = [...(state.bookmarks[action.payload.list._id] ?? []), ...action.payload.bookmarks]
-
-      } catch (error) {
-        state.bookmarkListLoading = false;
-
-        console.log(error)
+      if (!state.bookmarkLists[action.payload.list.username]) {
+        state.bookmarkLists[action.payload.list.username] = { bookmarkLists: [] }
       }
+      if (!_.some(state.bookmarkLists[action.payload.list.username].bookmarkLists, list => list._id === action.payload.list._id))
+        state.bookmarkLists[action.payload.list.username].bookmarkLists = [...state.bookmarkLists[action.payload.list.username].bookmarkLists, action.payload.list]
+      state.bookmarks[action.payload.list._id] = [...(state.bookmarks[action.payload.list._id] ?? []), ...action.payload.bookmarks]
+
+      state.bookmarkListLoading = false;
     },
     getBookmarkListDetailFailure(state, action) {
       state.bookmarkListLoading = false;
