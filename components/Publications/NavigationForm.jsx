@@ -41,7 +41,10 @@ export default function NavigationForm({ navigation }) {
     if (topics || stories || featurePages) {
       setTabData({
         topic: topics,
-        story: stories.map((story) => ({  story: story._id ,title: story.title  })),
+        story: stories.map((story) => ({
+          story: story._id,
+          title: story.title,
+        })),
         feature: featurePages,
       });
     }
@@ -75,7 +78,7 @@ export default function NavigationForm({ navigation }) {
               item._id === navigation?.contents ||
               item.title === navigation?.contents ||
               item.topic === navigation?.contents
-          )
+          ) || _.first(tabData[selected.value])
         );
     }
   }, [tabData, selected, navigation]);
@@ -89,7 +92,7 @@ export default function NavigationForm({ navigation }) {
         className="h-10 pr-8 md:pr-0"
         placeholder="Navigation Name One"
         register={register('title')}
-        error={errors.title ? " " : null}
+        error={errors.title ? ' ' : null}
       />
       <Listbox value={selected} onChange={setSelected} name="type" id="type">
         <div className="relative">
