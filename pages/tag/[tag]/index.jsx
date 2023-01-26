@@ -48,7 +48,6 @@ export default function TagPage() {
     );
   };
   const getTrendingTopics = () => {
-    console.log('girdi')
     dispatch(topicsActions.getTrendingTopicsRequest(tag));
   };
   useEffect(() => {

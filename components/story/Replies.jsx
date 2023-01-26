@@ -102,8 +102,6 @@ export default function Replies({ story, slideOvers, setSlideOvers }) {
   };
 
   const handleEditReply = (reply) => {
-    console.log(replyEditQuill.root.innerHTML);
-
     if (
       _.size(parseHtml(replyEditQuill.root.innerHTML).trim()) > 0 &&
       (user._id === reply.user._id || user._id === reply.user)
