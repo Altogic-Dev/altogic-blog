@@ -35,8 +35,8 @@ export default function PublicationsStats({ publicationName }) {
   const readsPeriodically = useSelector(
     (state) => state.stats.readsPeriodically
   );
-  const publication = useSelector((state) =>
-    _.get(state.publication.selectedPublication, '_id')
+  const publication = useSelector(
+    (state) => state.publication.selectedPublication
   );
 
   const viewsDateType = useSelector((state) => state.stats.viewsDateType);
@@ -74,7 +74,7 @@ export default function PublicationsStats({ publicationName }) {
   const getPublicationViewsPeriodically = (date, type) => {
     dispatch(
       statsActions.getPublicationViewsPeriodicallyRequest({
-        publication,
+        publication: publication?._id,
         date,
         type,
       })
@@ -84,7 +84,7 @@ export default function PublicationsStats({ publicationName }) {
   const getPublicationLikesPeriodically = (date, type) => {
     dispatch(
       statsActions.getPublicationLikesPeriodicallyRequest({
-        publication,
+        publication: publication?._id,
         date,
         type,
       })
@@ -94,7 +94,8 @@ export default function PublicationsStats({ publicationName }) {
   const getPublicationReadsPeriodically = (date, type) => {
     dispatch(
       statsActions.getPublicationReadsPeriodicallyRequest({
-        publication,
+        publication: publication?._id,
+
         date,
         type,
       })
@@ -104,11 +105,22 @@ export default function PublicationsStats({ publicationName }) {
   const getPublicationsStoriesStats = (page) => {
     dispatch(
       statsActions.getPublicationsStoriesStatsRequest({
-        publication,
+        publication: publication?._id,
+
         page,
       })
     );
   };
+
+  useEffect(() => {
+
+
+    if (publication) {
+      checkAuthorization(publication);
+    }
+    else 
+      router.push('/');
+  }, [publication]);
 
   useEffect(() => {
     if (publication && tabIndex === 0) {
@@ -131,9 +143,9 @@ export default function PublicationsStats({ publicationName }) {
     if (
       (publication && _.isEmpty(publicationStories)) ||
       _.get(_.last(publicationStories)) < page
-    )
-      checkAuthorization(publication);
-    getPublicationsStoriesStats(page);
+    ) {
+      getPublicationsStoriesStats(page);
+    }
   }, [page, publication, tabIndex]);
 
   useEffect(() => {

@@ -11,6 +11,7 @@ import Button from '@/components/basic/button';
 import { DateTime } from 'luxon';
 import PeriodButtons from '@/components/stats/PeriodButtons';
 import { convertTime } from '@/utils/utils';
+import Link from 'next/link';
 
 const ViewAreaChart = dynamic(import('@/components/ViewAreaChart'), {
   ssr: false,
@@ -234,7 +235,10 @@ export default function StatsBlogPost() {
           <div className="flex flex-col md:flex-row items-start justify-between gap-6 mt-12">
             <div className="max-w-[800px]">
               <h2 className="text-slate-800 mb-5 text-3xl sm:text-4xl md:text-5xl font-bold tracking-md">
-                Stats For <span className="text-purple-500">{storyName}</span>
+                Stats For{' '}
+                <Link href={`/story/${storySlug}`}>
+                  <a className="text-purple-500">{storyName}</a>
+                </Link>
               </h2>
             </div>
             <Button

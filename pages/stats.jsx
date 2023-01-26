@@ -320,7 +320,7 @@ export default function Stats() {
                       <p className="text-slate-800 text-base font-medium tracking-sm">
                         {statistic.title ?? 'Untitled'}
                       </p>
-                      <p className="text-slate-500 text-sm tracking-sm">
+                      <p className="text-slate-500 text-sm tracking-sm w-96 line-clamp-1 overflow-hidden text-ellipsis">
                         {parseHtml(statistic.content) ?? ''}
                       </p>
                     </div>

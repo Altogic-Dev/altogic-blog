@@ -26,7 +26,7 @@ export default function PublicationPostCard({
     <div className='w-full'>
       <div className="py-8 ">
         <Link href={`/${personName}`}>
-          <a className="inline-flex items-center gap-3 mb-4">
+          <a className="inline-flex items-center gap-3 mb-10">
             <Avatar
               width={50}
               height={50}
@@ -53,7 +53,7 @@ export default function PublicationPostCard({
           </a>
         </Link>
         <Link href={`/story/${story.storySlug}`}>
-          <a className="group mb-4 md:mb-8 flex flex-col justify-start items-start">
+          <a className="group mb-4 md:mb-8 flex flex-col justify-start items-start ">
             {image ? (
               <div className={`flex items-center ${bigImage ? 'h-[250px]' : 'h-[220px]'}`}>
                 <img
@@ -69,7 +69,7 @@ export default function PublicationPostCard({
             ) : (
               <div className="h-[280px] w-[250px]" />
             )}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 ">
               <h2 className="text-slate-900 text-3xl mb-2 font-semibold leading-9 tracking-md transition ease-in-out duration-150 group-hover:text-purple-700">
                 {title}
               </h2>
