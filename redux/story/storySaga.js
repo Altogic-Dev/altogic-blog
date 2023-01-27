@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { call, takeEvery, put, all, select, fork } from 'redux-saga/effects';
-import TopicsService from '@/services/topics';
 import StoryService from '@/services/story';
 import { storyActions } from './storySlice';
 import { deleteStorySuccess } from '../bookmarks/bookmarkSlice';
@@ -354,15 +353,17 @@ function* deleteStorySaga({
   }
 }
 
-function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
+function* updateCategoryNamesSaga({ payload: { story, newCategoryNames } }) {
   try {
+    console.log(story)
     const { data, errors } = yield call(
       StoryService.updateCategory,
-      storyId,
+      story?._id,
       newCategoryNames
     );
-    yield call(
-      TopicsService.insertTopics,
+    yield fork(
+      insertTopicsSaga,
+      { ...story, publication: story.publication?._id || story.publication, categoryNames: newCategoryNames },
       newCategoryNames.map(item => {
         const topic = { name: item }
         return topic
@@ -370,7 +371,7 @@ function* updateCategoryNamesSaga({ payload: { storyId, newCategoryNames } }) {
 
     if (errors) throw errors;
     if (data)
-      yield put(storyActions.updateCategoryNamesSuccess({ newCategoryNames, storyId }));
+      yield put(storyActions.updateCategoryNamesSuccess({ newCategoryNames, storyId: story?._id }));
   } catch (e) {
     console.error({ e });
   }
@@ -608,7 +609,7 @@ function* likeNormalizeStorySaga(likeNormalizedBody) {
 }
 
 function* likeStorySaga({
-  payload: { userId, storyId, authorId, publicationId, categoryNames,onSuccess },
+  payload: { userId, storyId, authorId, publicationId, categoryNames, onSuccess },
 }) {
   try {
     const likeNormalizedBody = _.map(categoryNames, (category) => ({

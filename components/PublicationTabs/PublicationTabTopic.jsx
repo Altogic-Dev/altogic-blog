@@ -11,7 +11,7 @@ function PublicationTabTopic({ tab, publication }) {
   const dispatch = useDispatch();
 
   const stories = useSelector((state) => state.story.publicationTopicStories);
-  const isLoading = useSelector((state) => state.topics.isLoading);
+  const isLoading = useSelector((state) => state.story.isLoading);
 
   useEffect(() => {
     if (publication && tab) {
@@ -24,6 +24,7 @@ function PublicationTabTopic({ tab, publication }) {
     }
   }, [publication, tab]);
 
+  console.log(isLoading)
   return (
     <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:min-w-[100vw] lg:min-w-[75vw] max-w-screen-xl w-full mx-auto ">
       {!isLoading ? (
@@ -48,7 +49,7 @@ function PublicationTabTopic({ tab, publication }) {
           />
         ))
       ) : (
-        <div className="w-full flex justify-center">
+        <div className="max-w-screen-xl w-screen h-[700px] flex justify-center items-center">
           <ClipLoader color="#9333ea" size={80} />
         </div>
       )}
