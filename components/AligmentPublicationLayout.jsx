@@ -26,7 +26,6 @@ export default function AligmentPublicationLayout({
   bottomColor,
   bottomTextColor,
 }) {
-
   const dispatch = useDispatch();
   const router = useRouter();
   const { publicationName, tabName } = router.query;
@@ -106,7 +105,9 @@ export default function AligmentPublicationLayout({
               <img className="w-[250px] text-center" src={logo} alt="" />
             )}
             <h1
-              className="text-slate-600 max-w-4xl text-5xl tracking-md mt-2 break-words  w-60 md:w-full"
+              className={`text-slate-600 max-w-4xl text-5xl tracking-md mt-2 break-words w-60 md:w-full ${
+                isCentered ? 'text-center' : ''
+              } `}
               style={{ color }}
             >
               {title}
