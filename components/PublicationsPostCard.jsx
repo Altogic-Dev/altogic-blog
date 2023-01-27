@@ -23,7 +23,7 @@ export default function PublicationPostCard({
   const [createNewList, setCreateNewList] = useState(false);
 
   return (
-    <div className='w-full'>
+    <div className="w-full">
       <div className="py-8 ">
         <Link href={`/${personName}`}>
           <a className="inline-flex items-center gap-3 mb-10">
@@ -55,12 +55,16 @@ export default function PublicationPostCard({
         <Link href={`/story/${story.storySlug}`}>
           <a className="group mb-4 md:mb-8 flex flex-col justify-start items-start ">
             {image ? (
-              <div className={`flex items-center ${bigImage ? 'h-[250px]' : 'h-[220px]'}`}>
+              <div
+                className={`flex items-center ${
+                  bigImage ? 'h-[250px]' : 'h-[220px]'
+                }`}
+              >
                 <img
                   className={classNames(
                     bigImage
-                      ? 'w-full object-cover mb-8 rounded-md'
-                      : 'w-full object-cover mb-8 rounded-md'
+                      ? 'h-[250px] w-full object-cover mb-8 rounded-md '
+                      : 'h-[220px] w-full object-cover mb-8 rounded-md'
                   )}
                   src={image}
                   alt={title}

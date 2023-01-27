@@ -398,7 +398,7 @@ export default function WriteAStorySettings() {
                           setCategoryLoading(true);
                           dispatch(
                             storyActions.updateCategoryNamesRequest({
-                              storyId: _.get(story, '_id'),
+                              story,
                               newCategoryNames: inpCategoryNames,
                             })
                           );
