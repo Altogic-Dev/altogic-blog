@@ -77,6 +77,7 @@ export default function Chart() {
     } else if (selectedChart === 'Views') {
       getTotalViewsLastXDays(time, dateType);
     } else if (selectedChart === 'Likes') {
+
       getTotalLikesLastXDays(time, dateType);
     }
   };
@@ -86,9 +87,12 @@ export default function Chart() {
     } else if (selectedChart === 'Views') {
       setData(totalViewsLastXDays);
     } else if (selectedChart === 'Likes') {
+
       setData(totalLikesLastXDays);
     }
   }, [totalReadsLastXDays, totalViewsLastXDays, totalLikesLastXDays]);
+
+  console.log(selectedChart)
 
   useEffect(() => {
     getDataByTime(DateTime.local().plus({ year: -1 }).toISODate(), '12 Months');

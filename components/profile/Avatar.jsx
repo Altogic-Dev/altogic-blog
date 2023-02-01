@@ -30,7 +30,7 @@ export default function Avatar({
       id={id}
       className={`rounded-full bg-gray-400 flex items-center justify-center ${className}`}
     >
-      <span id={id} className={`text-white ${fontClassName}`}>
+      <span id={id} className={`text-white  ${fontClassName}`}>
         {placeholderName?.charAt(0).toUpperCase()}
       </span>
     </div>
