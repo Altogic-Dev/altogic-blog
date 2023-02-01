@@ -14,8 +14,6 @@ export default function UserCard({ subscription, user, isFollowing }) {
   const dispatch = useDispatch();
   const me = useSelector((state) => state.auth.user);
 
-
-
   const followingUserLoading = useSelector(
     (state) => state.followerConnection.followingUserLoading
   );
@@ -84,6 +82,7 @@ export default function UserCard({ subscription, user, isFollowing }) {
           <div className="flex gap-3 flex-shrink-0">
             <div className="w-10 h-10 rounded-full">
               <Avatar
+                className="w-10 h-10 rounded-full"
                 width={40}
                 height={40}
                 placeholderName={user?.name}
