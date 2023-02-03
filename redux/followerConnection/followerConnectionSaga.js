@@ -133,7 +133,7 @@ function* getFollowingUsersSaga({ payload: { username, userId, page, limit } }) 
           sessionUser: userId === sessionUserId,
           data: data.result.map((user) => ({
             ...user,
-            isFollowing: user.follower_connection
+            isFollowing: user.followerConnection
           })),
           info: data.countInfo,
           username,

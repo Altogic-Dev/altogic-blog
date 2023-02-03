@@ -99,7 +99,7 @@ export const followerConnectionSlice = createSlice({
     },
     getFollowerUsersSuccess(state, action) {
       state.followersData[action.payload.username] = {
-        userFollowers: [...(_.get(state.followersData, `${action.payload.username}.userFollowers`) ?? []), ...action.payload.data],
+        userFollowers: action.payload.page === 1 ? action.payload.data : [...(_.get(state.followersData, `${action.payload.username}.userFollowers`) ?? []), ...action.payload.data],
         count: action.payload.count,
         totalPages: action.payload.info.totalPages,
         page: action.payload.page

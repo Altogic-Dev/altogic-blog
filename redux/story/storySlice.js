@@ -16,7 +16,7 @@ const initialState = {
   moreUserStories: null,
   userStories: [],
   userStoriesInfo: null,
-  userStoriesLoading: false,
+  userStoriesLoading: true,
   userDraftStories: null,
   userDraftStoriesInfo: null,
   publicationsStories: [],
@@ -34,6 +34,7 @@ const initialState = {
   mutedUsers: [],
   likeLoading: false,
   publicationTopicStories: null,
+  userDraftStoriesLoading: true,
 };
 
 // Actual Slice
@@ -301,6 +302,7 @@ export const storySlice = createSlice({
     getUserStoriesRequestNextPage(state) {
       state.userStoriesLoading = true;
     },
+   
     getUserStoriesSuccess(state, action) {
       if (state.userStoriesOwner === action.payload.owner) {
         state.userStories =
@@ -324,10 +326,9 @@ export const storySlice = createSlice({
     },
 
     getUserDraftStoriesRequest(state) {
-      state.userStoriesLoading = true;
+      state.userDraftStoriesLoading = true;
     },
     getUserDraftStoriesSuccess(state, action) {
-      state.userStoriesLoading = false;
       if (_.isArray(state.userDraftStories)) {
         state.userDraftStories = [
           ...state.userDraftStories,
@@ -337,10 +338,12 @@ export const storySlice = createSlice({
         state.userDraftStories = action.payload.data;
       }
       state.userDraftStoriesInfo = action.payload.info;
+      state.userDraftStoriesLoading = false;
+      
     },
 
     getUserDraftStoriesFailure(state) {
-      state.userStoriesLoading = false;
+      state.userDraftStoriesLoading = false;
     },
 
     deleteStoryRequest(state) {
@@ -591,7 +594,7 @@ export const storySlice = createSlice({
           if (reply._id === action.payload.reply) {
             const temp = { ...reply }
             temp.likeCount += 1
-            temp.reply_likes = true
+            temp.replyLike = true
             return temp
           }
           return reply
@@ -619,7 +622,7 @@ export const storySlice = createSlice({
           if (reply._id === action.payload.ids.id) {
             const temp = { ...reply }
             temp.likeCount -= 1
-            temp.reply_likes = false
+            temp.replyLike = false
             return temp
           }
           return reply
