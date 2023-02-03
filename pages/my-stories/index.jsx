@@ -31,6 +31,9 @@ export default function MyStories() {
   const userStoriesLoading = useSelector(
     (state) => state.story.userStoriesLoading
   );
+  const userDraftStoriesLoading = useSelector(
+    (state) => state.story.userDraftStoriesLoading
+  );
   const dispatch = useDispatch();
   const [blockModal, setBlockModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -294,7 +297,7 @@ export default function MyStories() {
                     )}
                   </Tab.Panel>
                   <Tab.Panel className="divide-y divide-gray-200">
-                    {userStoriesLoading && draftPage === 1 ? (
+                    {userDraftStoriesLoading && draftPage === 1 ? (
                       <ClipLoader className="my-10" />
                     ) : (
                       <MyStoriesDraft

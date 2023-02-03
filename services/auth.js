@@ -61,7 +61,7 @@ const AuthService = {
     auth.setUser(user);
   },
   updateUser(newUser) {
-    return db.model('users').object(auth.getUser()._id).update(newUser);
+    return db.model('user').object(auth.getUser()._id).update(newUser);
   },
 
   resetPassword({ accessToken, newPassword }) {
@@ -72,7 +72,7 @@ const AuthService = {
   },
 
   updateFollowingTopics(followingTopicsUpdated) {
-    return db.model('users').object(auth.getUser()._id).update({
+    return db.model('user').object(auth.getUser()._id).update({
       followingTopics: followingTopicsUpdated,
     });
   },
