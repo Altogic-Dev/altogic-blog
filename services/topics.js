@@ -33,17 +33,17 @@ const TopicsService = {
     return endpoint.post('/topic', topics);
   },
   deleteTopicWriters(storyId) {
-    return endpoint.delete(`/topic_writers/${storyId}`);
+    return endpoint.delete(`/topic_writer/${storyId}`);
   },
   insertTopicWriters(topics) {
-    return endpoint.post('/topic_writers', topics);
+    return endpoint.post('/topic_writer', topics);
   },
   getTopicAnalytics(topicName) {
     return endpoint.get('/topic_writes/analytics', { topicName });
   },
   getPublicationsTopics(publicationId) {
     return db
-      .model('topic_writers')
+      .model('topic_writer')
       .filter(`publication == '${publicationId}'`)
       .group(
         'topic'

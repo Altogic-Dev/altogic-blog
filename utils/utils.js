@@ -167,8 +167,8 @@ function sortByMonth(data, value) {
 }
 function sortByHour(data, value) {
   return data.sort((a, b) => {
-    const [hourA, minuteA] = a[value].split('/:./');
-    const [hourB, minuteB] = b[value].split('/:./');
+    const [hourA, minuteA] = a[value].split(':');
+    const [hourB, minuteB] = b[value].split(':');
     if (hourA === hourB) {
       return minuteA - minuteB;
     }
