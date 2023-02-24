@@ -64,17 +64,29 @@ export default function HeaderMenu({ logo }) {
     }
   }, [user]);
 
+  const getRealtimeNotifications = (payload) => {
+    dispatch(
+      notificationsActions.getRealtimeNotificationsRequest(payload.message)
+    );
+  };
+
   useEffect(() => {
     if (sessionUser && !isMounted) {
       setIsMounted(true);
       realtime.join('notification');
       realtime.on(user?._id, (payload) => {
-        dispatch(
-          notificationsActions.getRealtimeNotificationsRequest(payload.message)
-        );
+        getRealtimeNotifications(payload);
       });
     }
-  }, [user]);
+
+    return () => {
+      if (sessionUser && !isMounted) {
+        realtime.off(user?._id, (payload) => {
+          getRealtimeNotifications(payload);
+        });
+      }
+    };
+  }, [sessionUser]);
 
   const handleOnSearch = (value) => {
     dispatch(
